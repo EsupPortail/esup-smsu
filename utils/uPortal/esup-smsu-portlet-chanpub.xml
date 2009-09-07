@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	ESUP-Portail esup-smsu - Copyright (c) 2006 ESUP-Portail consortium
+	http://sourcesup.cru.fr/projects/esup-smsu
+-->
+<!DOCTYPE channel-definition SYSTEM "channelDefinition.dtd">
+<channel-definition>
+	<title>ESUP-Portail esup-smsu Portlet</title>
+	<name>ESUP-Portail esup-smsu Portlet</name>
+	<fname>esup-smsu</fname>
+	<desc>ESUP-Portail esup-smsu Portlet</desc>
+	<type>Portlet</type>
+	<class>org.jasig.portal.channels.portlet.CPortletAdapter</class>
+	<timeout>20000</timeout>
+	<hasedit>N</hasedit>
+	<hashelp>N</hashelp>
+	<hasabout>N</hasabout>
+	<secure>N</secure>
+	<locale>en_US</locale>
+	<categories>
+		<category>uPortal</category>
+	</categories>
+	<groups>
+		<group>Tous les groupes de personnes</group>
+	</groups>
+	<parameters>
+
+		<parameter>
+			<name>portletDefinitionId</name>
+			<value>esup-smsu.esup-smsu</value>
+			<description>
+				Identifies the portlet deployed within the portlet
+				container
+			</description>
+			<ovrd>N</ovrd>
+		</parameter>
+	</parameters>
+</channel-definition>

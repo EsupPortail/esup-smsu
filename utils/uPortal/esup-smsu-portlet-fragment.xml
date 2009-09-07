@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	ESUP-Portail esup-smsu - Copyright (c) 2006 ESUP-Portail consortium
+	http://sourcesup.cru.fr/projects/esup-smsu
+-->
+<!-- 
+	This file can be used to push a fragment to uPortal users.
+	In order to do it:
+	1. copy this file to folder uPortal_dir/properties/al
+	2. run ant pubfragments -DfragmentFile=/properties/al/esup-smsu-portlet-fragment.xml
+	Note: the ant target is named uportal.pushfragments in package uPortal-esup.
+-->
+<fragments>
+	<fragment name="esup-smsu-portlet" type="pushed">
+		<description>ESUP-Portail esup-smsu Portlet</description>
+		<groups>
+			<!-- 
+				set the name of the group of users for whom the channel will be published.
+				users of package uportal-esup can use :
+				<group>Tous les groupes de personnes</group>
+			-->
+			<group>Tous les groupes de personnes</group>
+		</groups>
+		<restrictions>
+			<restriction path="local" name="priority" value="10000"/>
+			<restriction path="local" name="depth" value="1"/>
+		</restrictions>
+		<folder name="esup-smsu-folder" immutable="Y" unremovable="Y" hidden="N">
+			<folder name="column1" immutable="Y" unremovable="Y" hidden="N">
+				<channel fname="esup-smsu" immutable="Y" unremovable="Y" hidden="N"/>
+			</folder>
+		</folder>
+	</fragment>
+
+</fragments>

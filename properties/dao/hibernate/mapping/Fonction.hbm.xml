@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping package="org.esupportail.smsu.dao.beans">
+
+	<class name="Fonction" table="fonction"	lazy="false">
+		<id	name="Id" type="integer" column="FCT_ID">
+			<generator class="native"/>
+		</id>
+
+		<property name="Name" column="FCT_NAME"	type="string" not-null="true" length="32" />
+
+		<set cascade="all" name="Roles"	table="role_composition">
+			<key column="FCT_ID" />
+			<many-to-many class="Role" column="ROL_ID" />
+		</set>
+	</class>	
+
+</hibernate-mapping>

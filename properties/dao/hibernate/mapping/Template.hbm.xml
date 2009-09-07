@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.esupportail.smsu.dao.beans">
+	<class name="Template" table="template" lazy="false">
+		<id name="Id" type="integer" column="TPL_ID">
+			<generator class="native"/>
+		</id>
+		<property name="Label" column="TPL_LABEL" type="string" not-null="true" length="32"/>
+		<property name="Heading" column="TPL_HEADING" type="string" not-null="false" length="50"/>
+		<property name="Body" column="TPL_BODY" type="string" not-null="false" length="160"/>
+		<property name="Signature" column="TPL_SIGNATURE" type="string" not-null="false" length="50"/>
+		<set inverse="true" name="Messages">
+			<key column="TPL_ID"/>
+			<one-to-many class="Message"/>
+		</set>
+		<set inverse="true" name="Mails">
+			<key column="TPL_ID"/>
+			<one-to-many class="Mail"/>
+		</set>
+	</class>
+</hibernate-mapping>

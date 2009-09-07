@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.esupportail.smsu.dao.beans">
+	
+	<class name="MailRecipient" table="mail_recipient" lazy="false">
+		<id name="Id" type="integer" column="MRC_ID">
+			<generator class="native"/>
+		</id>
+
+		<property name="Address" column="MRC_ADDRESS" type="string" not-null="true" length="100"/>
+		<property name="Login" column="MRC_LOGIN" type="string" not-null="false" length="32"/>
+
+		<set cascade="all" name="Mails" table="to_mail_recipient">
+			<key column="MRC_ID"/>
+			<many-to-many class="Mail" column="MAIL_ID"/>
+		</set>
+	</class>
+	
+</hibernate-mapping>

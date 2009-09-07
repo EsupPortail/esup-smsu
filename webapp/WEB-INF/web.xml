@@ -1,0 +1,268 @@
+<?xml version="1.0"?>
+
+	<!--
+		/webapp/WEB-INF/web.xml The main configuration file of the application
+		for servlet installations.
+	-->
+
+<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+	<display-name>esup-smsu</display-name>
+
+	<context-param>
+		<param-name>webAppRootKey</param-name>
+		<param-value>esup-smsu</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>log4jConfigLocation</param-name>
+		<param-value>classpath:log4j.properties</param-value>
+	</context-param>
+
+	<context-param>
+		<description>
+			The location of the main configuration file of the Spring framework.
+		</description>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>
+			classpath:/properties/applicationContext.xml
+		</param-value>
+	</context-param>
+
+	<context-param>
+		<description>
+			The location of the main configuration file of the JSF framework.
+		</description>
+		<param-name>javax.faces.CONFIG_FILES</param-name>
+		<param-value>
+			/WEB-INF/classes/properties/jsf/commons-render-kit.xml,/WEB-INF/classes/properties/jsf/navigation-rules.xml,/WEB-INF/classes/properties/jsf/application.xml,/WEB-INF/classes/properties/jsf/fck-faces-config.xml,/WEB-INF/classes/properties/jsf/commons-pattern-faces-config.xml
+		</param-value>
+	</context-param>
+	
+	<context-param>
+		<description>State saving method: "client" or "server" (= default)
+            See JSF Specification 2.5.3</description>
+		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+		<param-value>client</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>org.fckfaces.CUSTOM_CONFIGURATIONS_PATH</param-name>
+		<param-value>/media/FCKeditor/custom-fckconfig.js</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>org.apache.myfaces.PRETTY_HTML</param-name>
+		<param-value>true</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>org.apache.myfaces.ALLOW_JAVASCRIPT</param-name>
+		<param-value>true</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>org.apache.myfaces.DETECT_JAVASCRIPT</param-name>
+		<param-value>false</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>org.apache.myfaces.AUTO_SCROLL</param-name>
+		<param-value>false</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>org.apache.myfaces.ADD_RESOURCE_CLASS</param-name>
+		<param-value>org.apache.myfaces.renderkit.html.util.DefaultAddResource</param-value>
+	</context-param>
+
+	<!--BEGIN-SERVLET-ONLY-->
+
+	<context-param>
+		<param-name>org.apache.myfaces.CHECK_EXTENSIONS_FILTER</param-name>
+		<param-value>true</param-value>
+	</context-param>
+
+	<!--END-SERVLET-ONLY-->
+
+	<!--BEGIN-PORTLET-ONLY-->
+
+	<context-param>
+		<param-name>org.apache.myfaces.CHECK_EXTENSIONS_FILTER</param-name>
+		<param-value>false</param-value>
+	</context-param>
+
+	<!--END-PORTLET-ONLY-->
+
+	<context-param>
+		<description>
+			The logout URL of the CAS server.
+		</description>
+		<param-name>edu.yale.its.tp.cas.client.logoutUrl</param-name>
+		<param-value>
+			${cas.url}/logout?service=%s
+		</param-value>
+	</context-param>
+
+	<listener>
+		<listener-class>
+			org.springframework.web.util.Log4jConfigListener
+		</listener-class>
+	</listener>
+
+	<listener>
+		<listener-class>
+			org.springframework.web.context.ContextLoaderListener
+		</listener-class>
+	</listener>
+	
+	<listener>
+		<listener-class>
+			org.esupportail.smsu.business.context.SmsuServletContextListener
+		</listener-class>
+	</listener>
+
+<!--BEGIN-SERVLET-ONLY-->
+
+	<filter>
+		<description>
+			The CAS filter, used to authenticate users.
+		</description>
+		<display-name>CASFilter</display-name>
+		<filter-name>CAS Filter</filter-name>
+		<filter-class>
+			edu.yale.its.tp.cas.client.filter.CASFilter
+		</filter-class>
+		<init-param>
+			<param-name>
+				edu.yale.its.tp.cas.client.filter.loginUrl
+			</param-name>
+			<param-value>
+				${cas.url}/cas/login
+			</param-value>
+		</init-param>
+		<init-param>
+			<param-name>
+				edu.yale.its.tp.cas.client.filter.validateUrl
+			</param-name>
+			<param-value>
+				${cas.url}/serviceValidate
+			</param-value>
+		</init-param>
+		<init-param>
+			<param-name>
+				edu.yale.its.tp.cas.client.filter.serverName
+			</param-name>
+			<param-value>${tomcat.host}${tomcat.port.string}</param-value>
+		</init-param>
+		<init-param>
+			<param-name>
+				edu.yale.its.tp.cas.client.filter.wrapRequest
+			</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>CAS Filter</filter-name>
+		<url-pattern>/stylesheets/cas.faces</url-pattern>
+	</filter-mapping>
+
+	<servlet>
+		<description>
+			The main servlet of the application. This class inherits from 
+			the MyFaces implementation and handles exceptions thrown for
+			specific exception handling.
+		</description>
+		<display-name>Faces Servlet</display-name>
+		<servlet-name>Faces Servlet</servlet-name>
+		<servlet-class>
+			org.esupportail.commons.web.servlet.FacesServlet
+		</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Faces Servlet</servlet-name>
+		<url-pattern>*.faces</url-pattern>
+	</servlet-mapping>
+
+<!--END-SERVLET-ONLY-->
+
+<!--BEGIN-PORTLET-ONLY-->
+
+	<servlet> 
+		<servlet-name>esup-smsu</servlet-name>
+		<servlet-class>
+			org.apache.pluto.core.PortletServlet
+		</servlet-class>
+		<init-param>
+			<param-name>portlet-class</param-name>
+			<param-value>
+				org.apache.portals.bridges.portletfilter.FilterPortlet
+			</param-value>
+		</init-param>
+		<init-param>
+			<param-name>portlet-guid</param-name>
+			<param-value>esup-smsu.esup-smsu</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>esup-smsu</servlet-name>
+		<url-pattern>/esup-smsu/*</url-pattern>
+	</servlet-mapping>
+
+<!--END-PORTLET-ONLY-->
+
+	<servlet>
+		<servlet-name>Download Servlet</servlet-name>
+		<servlet-class>
+			org.esupportail.commons.web.servlet.DownloadServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Download Servlet</servlet-name>
+		<url-pattern>/download</url-pattern>
+	</servlet-mapping>
+
+	<filter>
+		<description>
+			This filter is needed to use some Tomahawk extentions.
+		</description>
+		<display-name>MyFacesExtensionsFilter</display-name>
+		<filter-name>MyFacesExtensionsFilter</filter-name>
+		<filter-class>
+			org.apache.myfaces.webapp.filter.ExtensionsFilter
+		</filter-class>
+		<init-param>
+			<description>
+				The maximum size of uploaded files.
+			</description>
+			<param-name>maxFileSize</param-name>
+			<param-value>20m</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>MyFacesExtensionsFilter</filter-name>
+		<servlet-name>Faces Servlet</servlet-name>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>MyFacesExtensionsFilter</filter-name>
+	    <url-pattern>/faces/myFacesExtensionResource/*</url-pattern>
+	</filter-mapping>
+	
+	<!--BEGIN TEST SERVLET-->
+	<!-- 
+	<servlet>
+		<servlet-name>TestServlet</servlet-name>
+		<servlet-class>
+			org.esupportail.smsu.services.servlet.TestServlet
+		</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>TestServlet</servlet-name>
+		<url-pattern>/testServlet</url-pattern>
+	</servlet-mapping>
+	 -->
+	<!--END TEST SERVLET-->
+
+</web-app>

@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.esupportail.smsu.dao.beans">
+
+	<class name="Mail" table="mail" lazy="false">
+		<id name="Id" type="integer" column="MAIL_ID">
+			<generator class="native"/>
+		</id>
+		
+		<property name="Content" column="MAIL_CONTENT" type="string" not-null="true" length="300"/>
+		<property name="State" column="MAIL_STATE" type="string" not-null="true" length="16"/>
+		<property name="Subject" column="MAIL_SUBJECT" type="string" not-null="false" length="300"/>
+		
+		<many-to-one name="Template" column="TPL_ID" class="Template" not-null="false" />
+		
+		<one-to-one class="Message"	name="Message"	property-ref="Mail"	 />
+		
+		<set cascade="all" name="MailRecipients" table="to_mail_recipient">
+			<key column="MAIL_ID"/>
+			<many-to-many class="MailRecipient" column="MRC_ID"/>
+		</set>
+	</class>
+	
+</hibernate-mapping>

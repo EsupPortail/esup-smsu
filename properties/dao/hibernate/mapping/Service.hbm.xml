@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.esupportail.smsu.dao.beans">
+	<class name="Service" table="service" lazy="false">
+		<id name="Id" type="integer" column="SVC_ID">
+			<generator class="native"/>
+		</id>
+		<property name="Name" column="SVC_NAME" type="string" not-null="true" length="32"/>
+		<property name="Key" column="SVC_KEY" type="string" not-null="true" length="16"/>
+		<set inverse="true" name="Messages">
+			<key column="SVC_ID"/>
+			<one-to-many class="Message"/>
+		</set>
+	</class>
+</hibernate-mapping>

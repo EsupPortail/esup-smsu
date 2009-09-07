@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.esupportail.smsu.dao.beans">
+	<class name="Person" table="person" lazy="false">
+		<id name="Id" type="integer" column="PER_ID">
+			<generator class="native"/>
+		</id>
+		<property name="Login" column="PER_LOGIN" type="string" not-null="true" length="32"/>
+		<set inverse="true" name="MessagesBySender">
+			<key column="PER_ID"/>
+			<one-to-many class="Message"/>
+		</set>
+		<set cascade="all" name="MessagesBySupervisor" table="supervisor_sender">
+			<key column="PER_ID"/>
+			<many-to-many class="Message" column="MSG_ID"/>
+		</set>
+		<set cascade="all" name="CustomizedGroups" table="supervisor">
+			<key column="PER_ID"/>
+			<many-to-many class="CustomizedGroup" column="CGR_ID"/>
+		</set>
+	</class>
+</hibernate-mapping>

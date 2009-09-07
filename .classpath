@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/esup-commons"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/quartz-1.5.2.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/quartz-all-1.5.2.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/quartz-jboss-1.5.2.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/quartz-oracle-1.5.2.jar"/>
+	<classpathentry kind="lib" path="webapp/WEB-INF/lib/quartz-weblogic-1.5.2.jar"/>
+	<classpathentry kind="output" path="build/WEB-INF/classes"/>
+</classpath>

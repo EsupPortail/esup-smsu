@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.esupportail.smsu.dao.beans">
+	<class name="Role" table="role" lazy="false">
+		<id name="Id" type="integer" column="ROL_ID">
+			<generator class="native"/>
+		</id>
+		<property name="Name" column="ROL_NAME" type="string" not-null="true" length="32"/>
+		<set inverse="true" name="CustomizedGroups">
+			<key column="ROL_ID"/>
+			<one-to-many class="CustomizedGroup"/>
+		</set>
+		<set cascade="all" name="Fonctions" table="role_composition">
+			<key column="ROL_ID"/>
+			<many-to-many class="Fonction" column="FCT_ID"/>
+		</set>
+	</class>
+</hibernate-mapping>

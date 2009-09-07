@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Implementation-Title: esup-smsu
+Implementation-Version: 0.0.1
+Implementation-Vendor: ESUP-Portail consortium

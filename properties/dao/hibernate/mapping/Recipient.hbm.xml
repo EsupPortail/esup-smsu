@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.esupportail.smsu.dao.beans">
+	<class name="Recipient" table="recipient" lazy="false">
+		<id name="Id" type="integer" column="RCP_ID">
+			<generator class="native"/>
+		</id>
+		<property name="Phone" column="RCP_PHONE" type="string" not-null="true" length="10"/>
+		<property name="Login" column="RCP_LOGIN" type="string" not-null="false" length="32"/>
+		<set cascade="all" name="Messages" table="to_recipient">
+			<key column="RCP_ID"/>
+			<many-to-many class="Message" column="MSG_ID"/>
+		</set>
+	</class>
+</hibernate-mapping>

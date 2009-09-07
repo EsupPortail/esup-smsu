@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.esupportail.smsu.dao.beans">
+	<class name="Supervisor" table="supervisor" lazy="false">
+		<composite-id>
+			<key-many-to-one name="group" class="CustomizedGroup" column="CGR_ID"/>
+			<key-many-to-one name="person" class="Person" column="PER_ID"/>
+		</composite-id>
+	</class>
+</hibernate-mapping>

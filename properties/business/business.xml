@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<beans 
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd"
+	>
+
+	<bean id="memberManager"
+		class="org.esupportail.smsu.business.MemberManager">
+		<description>The business layer concerning smsu member.</description>
+		<property name="ldapUtils" ref="ldapUtils" />
+		<property name="daoService" ref="daoService" />
+		<property name="sendSmsClient" ref="sendSmsClient" />
+		<property name="notificationPhoneNumberInBlackListClient" ref="notificationPhoneNumberInBlackListClient" />
+		<property name="maxNumberCodeValidation"> 
+			<value type="java.lang.Integer">${adhesion.maxNumberCodeValidation}</value>
+		</property>
+		<property name="activateValidation"> 
+			<value type="java.lang.Boolean">${adhesion.activateValidation}</value>
+		</property>
+		<property name="accountValidation"> 
+			<value type="java.lang.String">${adhesion.accountValidation}</value>
+		</property>
+		<property name="titleSmsValidation"> 
+			<value type="java.lang.String">${adhesion.titleSmsValidation}</value>
+		</property>
+		<property name="phoneAttributesAsString"> 
+			<value type="java.lang.String">${adhesion.phoneNumberAttributes}</value>
+		</property>
+		<property name="phoneNumberPattern" value="${adhesion.phoneNumberPattern}"></property>
+		<property name="phoneNumberPrefixToRemove" value="${adhesion.phoneNumberPrefixToRemove}"></property>
+	</bean>
+	
+	<bean id="sendSmsManager"
+		class="org.esupportail.smsu.business.SendSmsManager">
+		<description>The business layer concerning the sending.</description>
+		<property name="i18nService" ref="i18nService">
+			<description>
+				The i18nService, used for statistics.
+			</description>
+		</property>
+		<property name="daoService" ref="daoService" />
+		<property name="customizer" ref="customizer" />
+		<property name="sendSmsClient" ref="sendSmsClient" />
+		<property name="nbMaxSmsBeforeSupervising" value="${sms.nbMaxSmsBeforeSupervising}"/>
+		<property name="defaultSupervisorLogin" value="${sms.defaultSupervisorLogin}"/>
+		<property name="schedulerUtils" ref="schedulerUtils"/>
+		<property name="ldapUtils" ref="ldapUtils"/>
+		<property name="smtpServiceUtils" ref="smtpServiceUtils"/>
+		<property name="smsMaxSize" value="${sms.maxLength}"/>
+		<property name="defaultAccount" value="${sms.defaultAccount}"/>
+		<property name="userEmailAttribute" value="${ldap.emailAttribute}"/>
+	</bean>
+	
+  
+	<bean id="sendTrackManager"
+		class="org.esupportail.smsu.business.SendTrackManager">
+		<description>The business layer concerning the sending.</description>
+		<property name="daoService" ref="daoService" />
+		<property name="sendTrackClient" ref="sendTrackClient" />
+	</bean>
+
+	<bean id="phoneNumbersInBlackListManager"
+		class="org.esupportail.smsu.business.PhoneNumbersInBlackListManager">
+		<description>The business layer concerning the sending.</description>
+		<property name="listPhoneNumbersInBlackListClient" ref="listPhoneNumbersInBlackListClient" />
+	</bean>
+	
+	<bean id="customizer"
+		class="org.esupportail.smsu.business.ContentCustomizationManager">
+		<description>The business layer concerning the sending.</description>
+		<property name="ldapUtils" ref="ldapUtils" />
+		<property name="defaultNotFoundData" value="${sms.nodatafound}"/>
+	</bean>
+	
+	<bean id="serviceManager"
+		class="org.esupportail.smsu.business.ServiceManager">
+		<description>The business layer concerning the smsu service.</description>
+		<property name="daoService" ref="daoService" />
+	</bean>
+	
+	<bean id="templateManager"
+		class="org.esupportail.smsu.business.TemplateManager">
+		<description>The business layer concerning the templates.</description>
+		<property name="daoService" ref="daoService" />
+	</bean>
+	
+	<bean id="securityManager"
+		class="org.esupportail.smsu.business.SecurityManager">
+		<description>The business layer concerning the templates.</description>
+		<property name="daoService" ref="daoService" />
+		<property name="ldapUtils" ref="ldapUtils" />
+	</bean>
+	
+	<bean id="messageManager"
+		class="org.esupportail.smsu.business.MessageManager">
+		<description>The business layer concerning the messages.</description>
+		<property name="ldapUtils" ref="ldapUtils">
+			<description>The LDAP service.</description>
+		</property>
+		<property name="daoService" ref="daoService" />
+		<property name="displayNameAttributeAsString"> 
+			<value type="java.lang.String">${ldap.displayNameAttribute}</value>
+		</property>
+		<property name="i18nService" ref="i18nService">
+			<description>
+				The i18nService, used for statistics.
+			</description>
+		</property>
+	</bean>
+	
+	<bean id="roleManager"
+		class="org.esupportail.smsu.business.RoleManager">
+		<description>The business layer concerning the smsu role.</description>
+		<property name="daoService" ref="daoService" />
+	</bean>
+	
+	<bean id="approvalManager"
+		class="org.esupportail.smsu.business.ApprovalManager">
+		<description>The business layer concerning the smsu approval.</description>
+		<property name="ldapUtils" ref="ldapUtils">
+			<description>The LDAP service.</description>
+		</property>
+		<property name="sendSmsManager" ref="sendSmsManager">
+			<description>The SendSmsManager service.</description>
+		</property>
+		<property name="daoService" ref="daoService" />
+		<property name="displayNameAttributeAsString"> 
+			<value type="java.lang.String">${ldap.displayNameAttribute}</value>
+		</property>
+	</bean>
+	
+	<bean id="groupManager"
+		class="org.esupportail.smsu.business.GroupManager">
+		<description>The business layer concerning the smsu group.</description>
+		<property name="ldapUtils" ref="ldapUtils">
+			<description>The LDAP service.</description>
+		</property>
+		<property name="daoService" ref="daoService" />
+		<property name="userDisplayName" value="${ldap.displayNameAttribute}"/>
+	
+	</bean>
+	
+	<bean id="fonctionManager"
+		class="org.esupportail.smsu.business.FonctionManager">
+		<description>The business layer concerning the smsu fonction.</description>
+		<property name="daoService" ref="daoService" />
+	</bean>
+	
+	<bean id="notificationByMailForInvalidPhoneManager"
+		class="org.esupportail.smsu.business.NotificationByMailForInvalidPhoneManager">
+		<description>The business layer concerning smsu member.</description>
+		<property name="ldapUtils" ref="ldapUtils" />
+		<property name="listPhoneNumbersInBlackListClient" ref="listPhoneNumbersInBlackListClient" />
+		<property name="smtpServiceUtils" ref="smtpServiceUtils" />
+		<property name="i18nService" ref="i18nService">
+			<description>
+				The i18nService, used for statistics.
+			</description>
+		</property>
+	</bean>
+	
+	<bean id="purgePendingMember"
+		class="org.esupportail.smsu.business.purge.PurgePendingMember">
+		<property name="daoService" ref="daoService" />
+		<property name="seniorityDay">
+			<value type="int">${purge.pendingMember.seniorityDay}</value>
+		</property>
+	</bean>
+	
+	<bean id="periodicPurge"
+		class="org.esupportail.smsu.business.purge.PeriodicPurge">
+		<property name="daoService" ref="daoService"/>
+		<property name="seniorityDay">
+			<value type="int">${purge.periodic.seniorityDay}</value>
+		</property>
+	</bean>
+</beans>

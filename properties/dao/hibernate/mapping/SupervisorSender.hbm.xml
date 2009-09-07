@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.esupportail.smsu.dao.beans">
+	<class name="SupervisorSender" table="supervisor_sender" lazy="false">
+		<composite-id>
+			<key-many-to-one name="Supervisor" class="Person" column="PER_ID"/>
+			<key-many-to-one name="Msg" class="Message" column="MSG_ID"/>
+		</composite-id>
+	</class>
+</hibernate-mapping>

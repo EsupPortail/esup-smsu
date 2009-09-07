@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<beans 
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-2.0.xsd 		
+	http://www.springframework.org/schema/aop 
+	http://www.springframework.org/schema/aop/spring-aop.xsd"
+	>
+
+	<!-- Notification by mail for invalide number phone  -->
+	<bean id="notificationByMailForInvalidPhoneJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+		<property name="jobClass" value="org.esupportail.smsu.services.scheduler.job.NotificationByMailForInvalidPhoneJob" />
+	</bean>
+	
+	<bean id="notificationByMailForInvalidPhoneTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+    	<property name="jobDetail" ref="notificationByMailForInvalidPhoneJob" />
+		<!-- Cron expression -->
+		<property name="cronExpression"> 
+			<value>${quartz.notificationByMailForInvalidPhoneTrigger.cronExpression}</value>
+		</property>
+	</bean>
+	
+	<!-- Supervise sms sending -->
+	<bean id="superviseSmsSendingJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+		<property name="jobClass" value="org.esupportail.smsu.services.scheduler.job.SuperviseSmsSending" />
+	</bean>
+	
+	<bean id="superviseSmsSendingTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+    	<property name="jobDetail" ref="superviseSmsSendingJob" />
+		<!-- Cron expression -->
+		<property name="cronExpression"> 
+			<value>${quartz.superviseSmsSendingTrigger.cronExpression}</value>
+		</property>
+	</bean>
+	
+	<!-- purgePendingMemberJob -->
+	<bean id="purgePendingMemberJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+		<property name="jobClass" value="org.esupportail.smsu.services.scheduler.job.PurgePendingMemberJob" />
+	</bean>
+	
+	<bean id="purgePendingMemberTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+    	<property name="jobDetail" ref="purgePendingMemberJob" />
+		<!-- Cron expression -->
+		<property name="cronExpression"> 
+			<value>${quartz.purgePendingMemberTrigger.cronExpression}</value>
+		</property>
+	</bean>
+	
+	<bean id="periodicPurgeJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+		<property name="jobClass" value="org.esupportail.smsu.services.scheduler.job.PeriodicPurgeJob" />
+	</bean>
+	
+	<bean id="periodicPurgeTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+    	<property name="jobDetail" ref="periodicPurgeJob" />
+		<!-- Cron expression -->
+		<property name="cronExpression"> 
+			<value>${quartz.periodicPurgeTrigger.cronExpression}</value>
+		</property>
+	</bean>
+
+	<bean id="quartzExceptionHandler" class="org.esupportail.smsu.services.scheduler.QuartzExceptionHandler">
+	</bean>
+
+
+	<bean id="schedulerUtils" class="org.esupportail.smsu.services.scheduler.SchedulerUtils">
+		<property name="scheduler" ref="schedulerSmsu"/>
+	</bean> 
+
+	<!-- The Scheduler   -->
+	<bean id="schedulerSmsu"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean"
+		destroy-method="destroy" >
+		<property name="configLocation">
+			<value>file:${quartz.configFile.location}</value>
+		</property>
+		<property name="waitForJobsToCompleteOnShutdown" value="true"/>
+		<property name="overwriteExistingJobs" value="true"/>
+		<property name="autoStartup" value="true" />
+		<property name="triggers">
+        	<list>
+        		<ref bean="superviseSmsSendingTrigger" />
+        		<ref bean="purgePendingMemberTrigger" />
+        		<ref bean="notificationByMailForInvalidPhoneTrigger" />
+        		<ref bean="periodicPurgeTrigger" />
+          	</list>
+    	</property>
+    	<property name="applicationContextSchedulerContextKey"> 
+    		<value>applicationContext</value>
+    	</property>
+	</bean>
+	
+</beans>

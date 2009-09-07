@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<bean id="domainService" class="org.esupportail.smsu.domain.DomainServiceImpl">
+		<property name="daoService" ref="daoService" />
+		<property name="ldapUserService" ref="ldapUserService" />
+		<property name="memberManager" ref="memberManager" /> 
+		<property name="serviceManager" ref="serviceManager" />
+		<property name="roleManager" ref="roleManager" />
+		<property name="messageManager" ref="messageManager" />
+		<property name="approvalManager" ref="approvalManager" />
+		<property name="groupManager" ref="groupManager" />
+		<property name="securityManager" ref="securityManager" />
+		<property name="fonctionManager" ref="fonctionManager" /> 
+		<property name="sendSmsManager" ref="sendSmsManager" />
+		<property name="sendTrackManager" ref="sendTrackManager" />  
+		<property name="displayNameLdapAttribute" value="displayName" />
+		<property name="templateManager" ref="templateManager" />
+		<property name="phoneNumbersInBlackListManager" ref="phoneNumbersInBlackListManager" />
+		<property name="testConnexion" ref="testConnexionClient" /> 
+	</bean>
+
+</beans>
