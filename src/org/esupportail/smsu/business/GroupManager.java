@@ -210,6 +210,11 @@ public class GroupManager {
 		daoService.updateCustomizedGroup(newcustomizedGroup);
 	}
 	
+	public void updateCustomizedGroup(final CustomizedGroup customizedGroup) {
+		daoService.updateCustomizedGroup(customizedGroup);
+		
+	}
+	
 	/**
 	 * Retrieve customizedGroup by id.
 	 * @return
@@ -282,6 +287,8 @@ public class GroupManager {
 	public String getUserDisplayName() {
 		return userDisplayName;
 	}
+
+	
 
 
 }

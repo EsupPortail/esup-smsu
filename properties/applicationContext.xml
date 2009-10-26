@@ -26,6 +26,7 @@
 
 	<import resource="auth/auth.xml" />
 	<import resource="business/business.xml" />
+	<import resource="groups/groups.xml" />
 	<import resource="cache/cache.xml" />
 	<import resource="dao/dao.xml" />
  	<import resource="domain/domain.xml" />

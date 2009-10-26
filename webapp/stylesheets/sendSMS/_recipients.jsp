@@ -49,8 +49,10 @@
 	<e:commandButton value="#{msgs['SENDSMS.LABEL.SEARCH']}"
 		action="#{usersSearchController.searchUser}">
 	</e:commandButton>
-	<f:verbatim><br></f:verbatim>
-	<e:message for="ldapUid"/>
+	<f:verbatim>
+		<br>
+	</f:verbatim>
+	<e:message for="ldapUid" />
 </t:panelGroup>
 
 <t:panelGroup binding="#{smsRecipientController.ldapRequestPanelGrid}"
@@ -60,13 +62,15 @@
 
 	<e:commandButton value="#{msgs['SENDSMS.LABEL.SEARCH']}"
 		action="#{usersSearchController.searchLdapWithFilter}" />
-	<f:verbatim><br></f:verbatim>
-	<e:message for="ldapFilter"/>
+	<f:verbatim>
+		<br>
+	</f:verbatim>
+	<e:message for="ldapFilter" />
 </t:panelGroup>
 
 
 <t:panelGroup colspan="2">
-<e:dataTable var="recipient" value="#{usersSearchController.ldapUsers}"
+	<e:dataTable var="recipient" value="#{usersSearchController.ldapUsers}"
 		rendered="#{not empty usersSearchController.ldapUsers}"
 		id="recipientSearchList" rowIndexVar="variable">
 		<t:column>
@@ -75,15 +79,39 @@
 			</f:facet>
 			<e:text value="#{recipient.displayName}" />
 		</t:column>
-		<t:column>	
-			<e:commandButton id="add" value="Ajouter"
-				action="#{smsRecipientController.selectRecipient}" >
+		<t:column>
+			<e:commandButton id="add" value="#{msgs['SENDSMS.LABEL.ADD']}"
+				action="#{smsRecipientController.selectRecipient}">
 				<t:updateActionListener value="#{recipient}"
 					property="#{smsRecipientController.selectedRecipient}" />
 			</e:commandButton>
 		</t:column>
-</e:dataTable>
+	</e:dataTable>
+</t:panelGroup>
 
+<t:panelGroup colspan="2">
+	<e:dataTable var="listRecipient"
+		value="#{usersSearchController.ldapRequestUsers}"
+		rendered="#{not empty usersSearchController.ldapRequestUsers}"
+		id="listRecipientSearchList" rowIndexVar="variable">
+		<t:column>
+			<f:facet name="header">
+				<e:text value="#{msgs['SENDSMS.LABEL.SEARCHRESULT']}" />
+			</f:facet>
+			<e:text value="#{listRecipient.displayName}" />
+		</t:column>
+	</e:dataTable>
+	<e:panelGrid columns="2"
+		rendered="#{not empty usersSearchController.ldapRequestUsers}">
+		<e:outputLabel
+			value="#{msgs['SENDSMS.LABEL.NBVALIDRECIPIENT']} : #{usersSearchController.nbAvailableUsersInTheList}"
+			for="addList" />
+		<e:commandButton id="addList" value="#{msgs['SENDSMS.LABEL.VALIDATE']}"
+			action="#{smsRecipientController.addRecipientList}">
+			<t:updateActionListener value="#{usersSearchController.ldapValidUsers}"
+				property="#{smsRecipientController.recipientList}" />
+		</e:commandButton>
+	</e:panelGrid>
 </t:panelGroup>
 
 <t:panelGroup

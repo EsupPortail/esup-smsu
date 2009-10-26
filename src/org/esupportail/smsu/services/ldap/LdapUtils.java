@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.esupportail.commons.exceptions.UserNotFoundException;
 import org.esupportail.commons.services.ldap.LdapException;
@@ -19,7 +20,16 @@ import org.esupportail.portal.ws.client.exceptions.PortalErrorException;
 import org.esupportail.portal.ws.client.exceptions.PortalGroupNotFoundException;
 import org.esupportail.portal.ws.client.exceptions.PortalUserNotFoundException;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
+import org.esupportail.smsu.groups.SmsuLdapGroupPersonAttributeDaoImpl;
+import org.esupportail.smsu.groups.SmsuLdapPersonAttributeDaoImpl;
+import org.esupportail.smsu.groups.pags.SmsuPersonAttributesGroupStore.GroupDefinition;
+import org.esupportail.smsu.groups.pags.SmsuPersonAttributesGroupStore.TestGroup;
 import org.esupportail.smsu.services.ldap.beans.UserGroup;
+import org.jasig.portal.groups.pags.testers.BaseAttributeTester;
+import org.springframework.ldap.support.filter.AndFilter;
+import org.springframework.ldap.support.filter.EqualsFilter;
+import org.springframework.ldap.support.filter.Filter;
+import org.springframework.ldap.support.filter.OrFilter;
 
 
 
@@ -62,6 +72,12 @@ public class LdapUtils {
 	 */
 	private String cgKeyName;
 	
+	/**
+	 * 
+	 */
+	private SmsuLdapGroupPersonAttributeDaoImpl smsuLdapGroupPersonAttributeDaoImpl;
+	
+	private SmsuLdapPersonAttributeDaoImpl smsuLdapPersonAttributeDaoImpl;
 	
 	public LdapUtils() {
 		
@@ -782,6 +798,59 @@ public class LdapUtils {
 	public List<String> getMemberIds(final LdapGroup ldapGroup) {
 		return ldapUserAndGroupService.getMemberIds(ldapGroup);
 	}
+	
+	/**
+	 * @param ldapGroup
+	 * @return the string id list of a ldap group. 
+	 */
+	public List<LdapUser> getMembers(final GroupDefinition gd) {
+		final List<LdapUser> users = new LinkedList<LdapUser>();
+		final List<TestGroup> tgs = gd.getTestGroups();
+		final String groupPortalParameter = smsuLdapGroupPersonAttributeDaoImpl.getPortalAttribute();
+		OrFilter orFilter = null; 
+		for (TestGroup testGroup : tgs) {
+			
+			final List<BaseAttributeTester> tests = testGroup.getTests();
+			AndFilter andFilter = null;
+			for (BaseAttributeTester test : tests) {
+				final String portalAttributeName = test.getAttributeName();
+				final String testValue = test.getTestValue();
+				if (portalAttributeName.equals(groupPortalParameter)) {
+					final String groupLdapAttribute = smsuLdapGroupPersonAttributeDaoImpl.getLdapAttribute();
+					EqualsFilter filter = new EqualsFilter(groupLdapAttribute,testValue);
+					if (logger.isDebugEnabled()) {
+						logger.debug("Search group with filter : " + filter.toString());
+					}
+					// TODO : paramétrer le DN dans le service au lieu d'utiliser le paramétrage général du Ldap?
+					List<LdapGroup> ldapGroups = ldapUserAndGroupService.getLdapGroupsFromToken(filter.toString());
+					LdapGroup ldapGroup = ldapGroups.get(0);
+					users.addAll(ldapUserAndGroupService.getMembers(ldapGroup));
+				} else {
+					final String attributeName = (String) smsuLdapPersonAttributeDaoImpl.getReverseAttributeMappings().get(portalAttributeName);
+					Filter filter = test.getLdapFilter(attributeName, testValue);
+					if (filter != null) {
+						if (andFilter == null) {
+							andFilter = new AndFilter();
+						}
+						andFilter.and(filter);
+					}
+				}
+			}
+			if (andFilter != null) {
+				orFilter = new OrFilter();
+				orFilter.or(andFilter);
+			}
+		}
+		if (orFilter != null) {
+			if (logger.isDebugEnabled()) {
+				logger.debug("getMember : executed filter for person attribute search : " + orFilter.toString());
+			}
+			users.addAll(ldapUserAndGroupService.getLdapUsersFromFilter(orFilter.toString()));
+		}
+		
+		return users;
+	}
+	
 	/**
 	 * Mutator
 	 */
@@ -834,5 +903,24 @@ public class LdapUtils {
 	public void setCgKeyName(final String cgKeyName) {
 		this.cgKeyName = cgKeyName;
 	}
+
+	public SmsuLdapGroupPersonAttributeDaoImpl getSmsuLdapGroupPersonAttributeDaoImpl() {
+		return smsuLdapGroupPersonAttributeDaoImpl;
+	}
+
+	public void setSmsuLdapGroupPersonAttributeDaoImpl(
+			final SmsuLdapGroupPersonAttributeDaoImpl smsuLdapGroupPersonAttributeDaoImpl) {
+		this.smsuLdapGroupPersonAttributeDaoImpl = smsuLdapGroupPersonAttributeDaoImpl;
+	}
+
+	public SmsuLdapPersonAttributeDaoImpl getSmsuLdapPersonAttributeDaoImpl() {
+		return smsuLdapPersonAttributeDaoImpl;
+	}
+
+	public void setSmsuLdapPersonAttributeDaoImpl(
+			final SmsuLdapPersonAttributeDaoImpl smsuLdapPersonAttributeDaoImpl) {
+		this.smsuLdapPersonAttributeDaoImpl = smsuLdapPersonAttributeDaoImpl;
+	}
+
 	
 }

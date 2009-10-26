@@ -45,6 +45,8 @@ public class User implements Serializable {
 	 * True for administrators.
 	 */
     private boolean admin;
+    
+    private boolean superAdmin;
 	
     /**
      * The prefered language.
@@ -170,6 +172,14 @@ public class User implements Serializable {
 	 */
 	public List<Integer> getRoles() {
 		return roles;
+	}
+
+	public void setSuperAdmin(final boolean superAdmin) {
+		this.superAdmin = superAdmin;
+	}
+
+	public boolean isSuperAdmin() {
+		return superAdmin;
 	}
     
 

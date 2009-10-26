@@ -24,6 +24,10 @@ public class Member {
 	private String phoneNumber;
 
 	/**
+	 * available phone numbers.
+	 */
+	private List<String> availablePhoneNumbers;
+	/**
 	 * validation code for membership activation.
 	 */
 	private String phoneNumberValidationCode;
@@ -69,10 +73,12 @@ public class Member {
 	 * @param validCP
 	 * @param phoneNumberValidationCode
 	 * @param isPending 
+	 * @param availablePhoneNumbers 
 	 */
 	public Member(final String login, final String firstName, final String lastName,
 			final String phoneNumber, final Boolean validCG, final List<String> validCP,
-			final Boolean isPending, final String phoneNumberValidationCode) {
+			final Boolean isPending, final String phoneNumberValidationCode,
+			final List<String> availablePhoneNumbers) {
 		super();
 		this.setFirstName(firstName);
 		this.setLogin(login);
@@ -82,6 +88,7 @@ public class Member {
 		this.setValidCG(validCG);
 		this.setValidCP(validCP);
 		this.setFlagPending(isPending);
+		this.setAvailablePhoneNumbers(availablePhoneNumbers);
 	}
 
 
@@ -238,6 +245,24 @@ public class Member {
 			}
 		}
 		return this.hashCode;
+	}
+
+
+
+	/**
+	 * @param availablePhoneNumbers
+	 */
+	public void setAvailablePhoneNumbers(final List<String> availablePhoneNumbers) {
+		this.availablePhoneNumbers = availablePhoneNumbers;
+	}
+
+
+
+	/**
+	 * @return the list of available phone numbers.
+	 */
+	public List<String> getAvailablePhoneNumbers() {
+		return availablePhoneNumbers;
 	}
 
 

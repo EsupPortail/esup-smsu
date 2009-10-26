@@ -5,10 +5,18 @@ import java.util.List;
 
 import javax.faces.model.SelectItem;
 
+import org.apache.myfaces.custom.tree2.TreeModelBase;
+import org.apache.myfaces.custom.tree2.TreeNode;
+import org.apache.myfaces.custom.tree2.TreeNodeBase;
+import org.esupportail.commons.services.logging.Logger;
+import org.esupportail.commons.services.logging.LoggerImpl;
+import org.esupportail.portal.ws.client.PortalGroupHierarchy;
 import org.esupportail.smsu.dao.beans.Account;
 import org.esupportail.smsu.dao.beans.CustomizedGroup;
 import org.esupportail.smsu.domain.beans.User;
 import org.esupportail.smsu.domain.beans.fonction.FonctionName;
+import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
+import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.web.beans.GroupPaginator;
 import org.esupportail.smsu.web.beans.GroupPerson;
 import org.esupportail.smsu.web.beans.UIPerson;
@@ -55,6 +63,11 @@ public class GroupsManagerController extends AbstractContextAwareController {
 	private List<SelectItem> selectRoleListItems;
 	
 	/**
+	 * list of available accounts
+	 */
+	private List<SelectItem> availableAccounts;
+	
+	/**
 	 * selectedPerson.
 	 */
 	private UIPerson selectedPerson;
@@ -64,6 +77,11 @@ public class GroupsManagerController extends AbstractContextAwareController {
 	 */
 	private Boolean grpAlreadySelected = false;
 
+	/**
+	 * 
+	 */
+	private String selectedGroupFromTree;
+	
 	/**
 	 * persons(supervisors) list.
 	 */
@@ -88,8 +106,21 @@ public class GroupsManagerController extends AbstractContextAwareController {
 	 * The group paginator.
 	 */
 	private GroupPaginator paginator;
-		
-	 
+	/**
+	 * The tree model passed to JSP pages.
+	 */
+	private TreeModelBase treeModel;
+
+	/**
+	 * the ldap service.
+	 */
+	private LdapUtils ldapUtils;
+	
+	/**
+	 * Log4j logger.
+	 */
+	private final Logger logger = new LoggerImpl(getClass());
+	
 	//////////////////////////////////////////////////////////////
 	// Constructors
 	//////////////////////////////////////////////////////////////
@@ -153,15 +184,18 @@ public class GroupsManagerController extends AbstractContextAwareController {
 	 * initialize data in the page.
 	 */
 	private void init()  {
-	 	paginator = new GroupPaginator(getDomainService());
+	 	paginator = new GroupPaginator(getDomainService(), ldapUtils);
+	 	treeModel = new TreeModelBase(getRootNode());
 		// récupérer la liste des roles
 		initSelectRoleListItems();
-		
+		// initialize the available accounts list
+		initAvailableAccounts();
 		if (getCurrentUser().getFonctions().contains(FonctionName.FCTN_GESTION_ROLES_AFFECT.name())) {
 			this.isShowCreateButton = true;
 		} 
 	}
 
+	
 	/**
 	 * initialize roles in the page.
 	 */
@@ -178,6 +212,17 @@ public class GroupsManagerController extends AbstractContextAwareController {
 			}
 	}
 
+	/**
+	 * initialize the available accounts list.
+	 */
+	private void initAvailableAccounts() {
+		availableAccounts = new ArrayList<SelectItem>();
+		List<Account> accounts = getDomainService().getAccounts();
+		for (Account curAccount : accounts) {
+			SelectItem option = new SelectItem(curAccount.getId().toString(), curAccount.getLabel());
+			availableAccounts.add(option);
+		}
+	}
 	//////////////////////////////////////////////////////////////
 	// reset method 
 	//////////////////////////////////////////////////////////////
@@ -187,12 +232,67 @@ public class GroupsManagerController extends AbstractContextAwareController {
 	@Override
 	public void reset() {
 		super.reset();
-		paginator = new GroupPaginator(getDomainService());
+		paginator = new GroupPaginator(getDomainService(), ldapUtils);
 		
 	}
 	//////////////////////////////////////////////////////////////
 	// Principal methods
 	//////////////////////////////////////////////////////////////
+	
+	public void selectGroup() {
+		if (this.selectedGroupFromTree != null) {
+			logger.error("toto " +this.selectedGroupFromTree);
+			CustomizedGroup cg = new CustomizedGroup();
+			cg.setLabel(this.selectedGroupFromTree);
+			setGroup(cg);
+		}
+	}
+	
+	/**
+	 * JSF callback.
+	 * @return a string.
+	 */
+	public String refreshTree() {
+		treeModel = new TreeModelBase(getRootNode());
+		return null;
+	}
+
+	/**
+	 * @return the root node.
+	 */
+	private TreeNode getRootNode() {
+		PortalGroupHierarchy groupHierarchy = ldapUtils.getPortalGroupHierarchy();
+
+		TreeNode rootNode = getChildrenNodes(groupHierarchy);
+
+		return rootNode;
+	}
+	
+	/**
+	 * @param groupHierarchy
+	 * @return the children nodes of a portal group hierarchy.
+	 */
+	@SuppressWarnings("unchecked")
+	private TreeNodeBase getChildrenNodes(final PortalGroupHierarchy groupHierarchy) {
+		String groupDescription = groupHierarchy.getGroup().getName();
+		String groupIdentifer = groupHierarchy.getGroup().getId();
+		List<PortalGroupHierarchy> childs = groupHierarchy.getSubHierarchies(); 
+		 
+		Boolean isGroupLeaf = true;
+		if (childs != null) {
+			isGroupLeaf = false;
+		}
+		TreeNodeBase node = new TreeNodeBase("group", groupDescription, groupIdentifer, isGroupLeaf);
+		
+		if (!isGroupLeaf) {
+			for (PortalGroupHierarchy child : childs) {
+				TreeNodeBase childNode = getChildrenNodes(child);
+				node.getChildren().add(childNode);
+			}
+		}
+		
+		return node;
+	}
 	/**
 	 * save action.
 	 * @return A String
@@ -281,6 +381,12 @@ public class GroupsManagerController extends AbstractContextAwareController {
 		return "navigationAdminGroups";
 	}
 	
+	public String resetConsumption() {
+		group.setConsumedSms(Long.parseLong("0"));
+		group.setQuotaSms(Long.parseLong("0"));
+		getDomainService().updateCustomizedGroup(group);
+		return "";
+	}
 	/**
 	 * create action.
 	 * @return A String
@@ -447,6 +553,19 @@ public class GroupsManagerController extends AbstractContextAwareController {
 		return addQuotaSms;
 	}
 
+	public String getGroupDisplayName() {
+		String displayName;
+		try {
+			displayName = ldapUtils.getUserDisplayNameByUserUid(group.getLabel());
+		} catch (LdapUserNotFoundException e) {
+			displayName = ldapUtils.getGroupNameByUid(group.getLabel());
+			if (displayName == null) {
+				logger.debug("Group not found : " + group.getLabel());
+				displayName = group.getLabel();
+			}	
+		}
+		return displayName;
+	}
 	//////////////////////////////////////////////////////////////
 	// Getter and Setter of grpAlreadySelected
 	//////////////////////////////////////////////////////////////
@@ -532,5 +651,43 @@ public class GroupsManagerController extends AbstractContextAwareController {
 	public Boolean getIsShowCreateButton() {
 		return isShowCreateButton;
 	}
+
+	public void setSelectedGroupFromTree(final String selectedGroupFromTree) {
+		this.selectedGroupFromTree = selectedGroupFromTree;
+	}
+
+	public String getSelectedGroupFromTree() {
+		return selectedGroupFromTree;
+	}
+
+	public void setTreeModel(final TreeModelBase treeModel) {
+		this.treeModel = treeModel;
+	}
+
+	public TreeModelBase getTreeModel() {
+		if (treeModel == null) {
+			treeModel = new TreeModelBase(getRootNode());
+		}
+		return treeModel;
+	}
+
+	public void setLdapUtils(final LdapUtils ldapUtils) {
+		this.ldapUtils = ldapUtils;
+	}
+
+	public LdapUtils getLdapUtils() {
+		return ldapUtils;
+	}
+
+	public void setAvailableAccounts(final List<SelectItem> availableAccounts) {
+		this.availableAccounts = availableAccounts;
+	}
+
+	public List<SelectItem> getAvailableAccounts() {
+		return availableAccounts;
+	}
+
+	
+	
 	
 }

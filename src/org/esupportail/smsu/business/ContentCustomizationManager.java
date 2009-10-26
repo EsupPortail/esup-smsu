@@ -329,7 +329,25 @@ public class ContentCustomizationManager {
 				try {
 
 					if (isExpGroupNomTag(tag)) {
-						cutomizedContent = cutomizedContent.replaceAll(tag, expGroupName);
+						// a sending group can be a user name
+						String expGroupDisplayName = null;
+						try {
+							expGroupDisplayName = ldapUtils.getUserDisplayNameByUserUid(expGroupName);
+						} catch (LdapUserNotFoundException e) {
+							if (logger.isDebugEnabled()) {
+								logger.debug("User not found : " + expGroupName);
+							}
+							expGroupDisplayName = ldapUtils.getGroupNameByUid(expGroupName);
+							if (expGroupDisplayName == null) {
+								logger.debug("Group not found : " + expGroupName);
+								expGroupDisplayName = expGroupName;
+							}	
+						}
+						 
+						if (logger.isDebugEnabled()) {
+							logger.debug("Group name used :" + expGroupDisplayName);
+						}
+						cutomizedContent = cutomizedContent.replaceAll(tag, expGroupDisplayName);
 					}
 
 					if (isExpNomTag(tag)) {

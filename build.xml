@@ -61,7 +61,7 @@
 		<fail message="target init is deprecated, please use target init-data instead"/>
 	</target>
 
-	<target name="init-data" depends="compile-batch,check-batch-config,commons-init-data" description="initialize the database" />
+	<target name="init-data" depends="create-table,compile-batch,check-batch-config" description="initialize the database" />
 
 	<target name="upgrade" depends="compile-batch,check-batch-config,commons-upgrade" description="upgrade the database" /> 
 	
@@ -71,6 +71,28 @@
 
 	<target name="stop" depends="commons-stop-tomcat" description="Stop the application" />
 
+	<target name="create-table" depends="sql-properties"  description="create all tables">
+			<!-- create main tables -->
+			<property name="sql.src.create" value="${basedir}/utils/database/create_tables_esup-smsu.sql"/>
+			<property name="sql.src.createqrtz" value="${basedir}/utils/database/create_qrtz_tables_esup-smsu.sql"/>
+			<property name="sql.src.populate" value="${basedir}/utils/database/populate_tables_esup-smsu.sql" />
+			
+			<sql driver="${sql.driver}" url="${hibernate.connection.jdbc.url}"
+			     userid="${hibernate.connection.jdbc.username}"   password="${hibernate.connection.jdbc.password}"
+				 classpath="${sql.classpath}">
+				<transaction src="${sql.src.create}"/>
+				<transaction src="${sql.src.createqrtz}"/>
+				<transaction src="${sql.src.populate}"/>
+			</sql>
+		</target>
+		
+		<target name="sql-properties" description="initialize some sql properties">
+			<property name="sql.driver" value="org.gjt.mm.mysql.Driver"/>
+			<property name="mysql-connector.version" value="3.1.12-bin"/>
+			<property name="sql.classpath" value="${basedir}/utils/libAnt/mysql-connector-java-${mysql-connector.version}.jar"/>
+		</target>
+	
+	
 </project>
 
 

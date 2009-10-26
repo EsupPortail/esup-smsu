@@ -508,7 +508,7 @@ public class HibernateDaoServiceImpl extends AbstractJdbcJndiHibernateDaoService
 	@SuppressWarnings("unchecked")
 	public List<Account> getAccounts() {
 		DetachedCriteria criteria = DetachedCriteria.forClass(Account.class);
-		criteria.addOrder(Order.asc(Account.PROP_ID));
+		criteria.addOrder(Order.asc(Account.PROP_LABEL));
 		return  getHibernateTemplate().findByCriteria(criteria);
 	}
 
@@ -979,6 +979,18 @@ public class HibernateDaoServiceImpl extends AbstractJdbcJndiHibernateDaoService
 		return (Role) getHibernateTemplate().get(Role.class, id);
 	}
 	
+
+	public Role getRoleByName(final String name) {
+		Role role = new Role();
+		Session currentSession = getCurrentSession();
+		Criteria criteria = currentSession.createCriteria(Role.class);
+		criteria.add(Restrictions.eq(Role.PROP_NAME, name));
+
+		role = (Role) criteria.uniqueResult();
+		
+		return role;
+	}
+	
 	/**
 	 * @see org.esupportail.smsu.dao.DaoService#getFctsByRole
 	 */
@@ -1092,4 +1104,5 @@ public class HibernateDaoServiceImpl extends AbstractJdbcJndiHibernateDaoService
 		MailRecipient mailRecipient = (MailRecipient) criteria.uniqueResult();
 		return mailRecipient;
 	}
+
 }

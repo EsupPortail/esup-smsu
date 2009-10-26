@@ -247,6 +247,7 @@ public class DomainServiceImpl implements DomainService, InitializingBean {
 		}
 		user.setFonctions(securityManager.loadUserRightsByUsername(user.getId()));
 		user.setRoles(securityManager.loadUserRolesByUsername(user.getId()));
+		user.setSuperAdmin(securityManager.isUserSuperAdmin(user.getId()));
 		return user;
 	}
 
@@ -675,6 +676,10 @@ public class DomainServiceImpl implements DomainService, InitializingBean {
 	public void updateCustomizedGroup(final CustomizedGroup customizedGroup, final UIRole role, 
 			final Account account, final Long quotaAdd, final List<UIPerson> persons) {
 		groupManager.updateCustomizedGroup(customizedGroup, role, account, quotaAdd, persons);
+	}
+	
+	public void updateCustomizedGroup(final CustomizedGroup customizedGroup) {
+		groupManager.updateCustomizedGroup(customizedGroup);
 	}
 	
 	public List<UIPerson> getPersonsByIdCustomizedGroup(final Integer id) {

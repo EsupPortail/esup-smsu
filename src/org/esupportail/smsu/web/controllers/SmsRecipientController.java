@@ -79,6 +79,11 @@ public class SmsRecipientController extends AbstractContextAwareController {
 	private UiRecipient selectedRecipient;
 
 	/**
+	 * recipientList.
+	 */
+	private List<UiRecipient> recipientList;
+
+	/**
 	 * recipient list.
 	 */
 	private List<UiRecipient> recipients;
@@ -192,6 +197,16 @@ public class SmsRecipientController extends AbstractContextAwareController {
 	}
 
 	/**
+	 * add a list of recipients.
+	 */
+	public void addRecipientList() {
+		for (UiRecipient recipient : this.recipientList) {
+			if (!this.recipients.contains(recipient)) {
+				this.recipients.add(recipient);
+			}
+		}
+	}
+	/**
 	 * delete a recipient.
 	 */
 	public void deleteRecipient() {
@@ -201,7 +216,7 @@ public class SmsRecipientController extends AbstractContextAwareController {
 	}
 
 	/**
-	 * @param ValueChangeEvent
+	 * @param e 
 	 */
 	public void modifTypeDest(final ValueChangeEvent e) {
 
@@ -211,6 +226,8 @@ public class SmsRecipientController extends AbstractContextAwareController {
 		phoneNumberListPanelGrid.setRendered(false);
 
 		userSearchController.setLdapUsers(new ArrayList<UiRecipient>());
+		userSearchController.setLdapRequestUsers(new ArrayList<UiRecipient>());
+		userSearchController.setLdapValidUsers(new ArrayList<UiRecipient>());
 		this.setRecipientType((String) e.getNewValue());
 
 		if (recipientType.equals("t1")) {
@@ -230,7 +247,7 @@ public class SmsRecipientController extends AbstractContextAwareController {
 
 	/**
 	 * clear the recipient list.
-	 * @param ValueChangeEvent 
+	 * @param e 
 	 */
 	public void clearRecipients(final ValueChangeEvent e) {
 		recipients.clear();
@@ -606,5 +623,19 @@ public class SmsRecipientController extends AbstractContextAwareController {
 	 */
 	public void setUserSearchController(final UsersSearchController usersSearchController) {
 		this.userSearchController = usersSearchController;
+	}
+	
+	/**
+	 * @return recipientList.
+	 */
+	public List<UiRecipient> getRecipientList() {
+		return recipientList;
+	}
+
+	/**
+	 * @param recipientList
+	 */
+	public void setRecipientList(final List<UiRecipient> recipientList) {
+		this.recipientList = recipientList;
 	}
 }

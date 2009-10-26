@@ -19,6 +19,20 @@
 			simulateLinkClick(linkId);
 	  	
 	}
+
+	function calcCarat() {
+		var bodyLenght = document.getElementById("formGeneral:SMSbody").value.length;
+		var prefixLength = document.getElementById("formGeneral:SMSPrefix").value.length;
+		var signatureLength = document.getElementById("formGeneral:SMSSignature").value.length;
+		var remainings = 160 - bodyLenght - prefixLength - signatureLength;
+		document.getElementById("formGeneral:caract").value = remainings;
+		if (remainings < 0) {
+			document.getElementById("formGeneral:caract").style.color = "red";
+		} else {
+			document.getElementById("formGeneral:caract").style.color = "black";
+		}
+	}
+	
 </script>
 
 
@@ -27,8 +41,7 @@
 <e:form id="formGeneral" >
 	
 
-		<e:panelGrid border="0" columns="2" width="550px">
-		
+		<e:panelGrid border="0" columns="2" >
 		<%--
 	group selection
 	 --%>
@@ -49,7 +62,6 @@
 			<%-- 
 	SMS data
 	 --%>
-
 			<%@include file="./sendSMS/_SMSData.jsp"%>
 			
 			<e:outputLabel value="#{msgs['SENDMAIL.LABEL']}" rendered="#{sendSMSController.isCheckBoxSendMailShow}"/>
@@ -62,8 +74,8 @@
 		</e:panelGrid>
         <f:verbatim><br/><br/></f:verbatim>
         
-        <t:panelGroup id="mailPanel" binding="#{sendSMSController.mailPanelGrid}">
-		<e:panelGrid border="0" columns="2" width="550px" >
+        <t:panelGroup colspan="2" id="mailPanel" binding="#{sendSMSController.mailPanelGrid}">
+		<e:panelGrid border="0" columns="2" >
 		<%-- 
 	MAIL data
 	 --%>
@@ -71,6 +83,7 @@
 		</e:panelGrid>
 		
 		</t:panelGroup>
+		
 		<f:verbatim><br/><br/></f:verbatim>
 		
 		<e:commandButton value="#{msgs['SENDSMS.SENDBUTTON']}"
@@ -79,5 +92,6 @@
 </e:form>
 <script type="text/javascript">
 highlightTableRows("formLdapSearchResult:recipientSearchList");
+calcCarat();
 </script>
 </e:page>

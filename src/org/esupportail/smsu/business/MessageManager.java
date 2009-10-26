@@ -12,6 +12,7 @@ import org.esupportail.smsu.dao.DaoService;
 import org.esupportail.smsu.dao.beans.Message;
 import org.esupportail.smsu.domain.beans.mail.MailStatus;
 import org.esupportail.smsu.domain.beans.message.MessageStatus;
+import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.web.beans.UIMessage;
 
@@ -98,6 +99,7 @@ public class MessageManager {
 				String stateMessage = NONE;
 				String stateMail = NONE;
 				String groupName;
+				String groupId;
 				
 				// 1 - Retrieve displayName
 				Boolean testVal = true;
@@ -186,8 +188,18 @@ public class MessageManager {
 				}
 				
 				
-				groupName = mess.getUserGroupLabel();
+				groupId = mess.getUserGroupLabel();
 				
+				try {
+					groupName = ldapUtils.getUserDisplayNameByUserUid(groupId);
+				} catch (LdapUserNotFoundException e) {
+					
+					groupName = ldapUtils.getGroupNameByUid(groupId);
+					if (groupName == null) {
+						
+						groupName = groupId;
+					}	
+				}
 				uimessages.add(new UIMessage(stateMessage, stateMail, displayName, groupName, mess));
 			}
 		}

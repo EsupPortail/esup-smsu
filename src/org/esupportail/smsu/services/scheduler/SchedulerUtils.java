@@ -53,7 +53,7 @@ public class SchedulerUtils {
 			sb.append(" - jobName : ").append(jobName).append("\n");
 			sb.append(" - groupName : ").append(groupName).append("\n");
 			
-			logger.debug(sb.toString());
+			logger.warn(sb.toString());
 		}
 	}
 	

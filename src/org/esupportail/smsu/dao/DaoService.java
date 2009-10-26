@@ -454,9 +454,16 @@ public interface DaoService extends Serializable {
 	void updateRole(Role role);
 	
 	/**
-	 * @param id.
+	 * @param id 
+	 * @return 
 	 */
 	Role getRoleById(Integer id);
+	
+	/**
+	 * @param name
+	 * @return
+	 */
+	Role getRoleByName(String name);
 	
 	/**
 	 * @return set of Fonction.

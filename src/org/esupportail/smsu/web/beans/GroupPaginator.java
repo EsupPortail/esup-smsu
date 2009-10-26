@@ -6,6 +6,7 @@ package org.esupportail.smsu.web.beans;
  */
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -14,12 +15,14 @@ import org.esupportail.smsu.dao.beans.Account;
 import org.esupportail.smsu.dao.beans.CustomizedGroup;
 import org.esupportail.smsu.dao.beans.Role;
 import org.esupportail.smsu.domain.DomainService;
+import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
+import org.esupportail.smsu.services.ldap.LdapUtils;
 
 
 /** 
  * A paginator for roles.
  */ 
-public class GroupPaginator extends ListPaginator<CustomizedGroup> {
+public class GroupPaginator extends ListPaginator<DisplayedGroup> {
 	
 	/**
 	 * The serialization id.
@@ -31,6 +34,7 @@ public class GroupPaginator extends ListPaginator<CustomizedGroup> {
 	 */
 	private DomainService domainService;
 	
+	private LdapUtils ldapUtils;
 	
 	 //////////////////////////////////////////////////////////////
 	 // Constructors
@@ -40,9 +44,10 @@ public class GroupPaginator extends ListPaginator<CustomizedGroup> {
 	 * @param domainService 
 	 */
 	@SuppressWarnings("deprecation")
-	public GroupPaginator(final DomainService domainService) {
+	public GroupPaginator(final DomainService domainService, final LdapUtils ldapUtils) {
 		super(null, 0);
 		this.domainService = domainService;
+		this.ldapUtils = ldapUtils;
 	}
 
 	//////////////////////////////////////////////////////////////
@@ -52,7 +57,7 @@ public class GroupPaginator extends ListPaginator<CustomizedGroup> {
 	 * @see org.esupportail.commons.web.beans.ListPaginator#getData()
 	 */
 	@Override
-	protected List<CustomizedGroup> getData() {
+	protected List<DisplayedGroup> getData() {
 		/*
 		List<CustomizedGroup> list = new ArrayList<CustomizedGroup>();
 		Account acc = new Account(1,"acc1");
@@ -61,7 +66,26 @@ public class GroupPaginator extends ListPaginator<CustomizedGroup> {
 		list.add(ctm);
 		return list;
 		*/
-		return domainService.getAllGroups();
+		List<CustomizedGroup> listCg = domainService.getAllGroups();
+		List<DisplayedGroup> listGroup = new LinkedList<DisplayedGroup>();
+		for (CustomizedGroup cg : listCg) {
+			DisplayedGroup dg = new DisplayedGroup();
+			dg.setCustomizedGroup(cg);
+			String displayName;
+			try {
+				displayName = ldapUtils.getUserDisplayNameByUserUid(cg.getLabel());
+			} catch (LdapUserNotFoundException e) {
+				
+				displayName = ldapUtils.getGroupNameByUid(cg.getLabel());
+				if (displayName == null) {
+					displayName = cg.getLabel();
+				}	
+			}
+			dg.setDisplayName(displayName);
+			listGroup.add(dg);
+		}
+		//return domainService.getAllGroups();
+		return listGroup;
 	} 
 	
 }

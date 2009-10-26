@@ -12,12 +12,15 @@
 <%--</e:form>--%>
 <e:outputLabel for="SMSPrefix" value="#{msgs['SENDSMS.LABEL.PREFIX']}" />
 <e:inputText id="SMSPrefix" value="#{sendSMSController.smsPrefix}"
-	disabled="true" size="50" />
+	disabled="true" size="50" style="background-color:#cecece;"/>
 
 <e:outputLabel for="SMSbody" value="#{msgs['SENDSMS.LABEL.BODY']}" />
 <e:inputTextarea id="SMSbody" binding="#{sendSMSController.smsBody}"
-	style="width:319px;" />
+	style="width:319px;" onkeyup="calcCarat();"/>
 
 <e:outputLabel for="SMSSignature" value="#{msgs['SENDSMS.LABEL.SIGNATURE']}" />
 <e:inputText id="SMSSignature" value="#{sendSMSController.smsSuffix}"
-	readonly="true" disabled="true" size="50" />
+	readonly="true" disabled="true" size="50"  style="background-color:#cecece;"/>
+
+<e:outputLabel for="caract" value="#{msgs['SENDSMS.LABEL.CARACT']}" />
+<e:inputText id="caract" readonly="true" disabled="true" size="10" style="border:0px;"/>

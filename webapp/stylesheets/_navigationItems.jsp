@@ -45,11 +45,7 @@
         <e:menuItem id="gestionComptesImputation"
             value="#{msgs['NAVIGATION.TEXT.GESTIONCOMPTESIMPUTATION']}"
             rendered="false" />
-        <e:menuItem id="preferences"
-            value="#{msgs['NAVIGATION.TEXT.PREFERENCES']}"
-            accesskey="#{msgs['NAVIGATION.ACCESSKEY.PREFERENCES']}"
-            action="#{preferencesController.enter}"
-            rendered="#{preferencesController.pageAuthorized}" />
+        
         <e:menuItem id="about" value="#{msgs['NAVIGATION.TEXT.ABOUT']}"
             accesskey="#{msgs['NAVIGATION.ACCESSKEY.ABOUT']}"
             action="#{aboutController.enter}" />

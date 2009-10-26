@@ -84,7 +84,7 @@ authorized="#{groupsManagerController.pageAuthorized}">
 							<e:text
 								value="#{msgs['GROUPE.NAME']}" />
 						</f:facet>
-						<e:text value="#{group.label}" />
+						<e:text value="#{group.displayName}" />
 						
 					</t:column>
 					
@@ -95,7 +95,7 @@ authorized="#{groupsManagerController.pageAuthorized}">
 						</f:facet>
 						<e:commandButton id="detailPage" value="#{msgs['GROUPE.DISPLAY']}"	action="#{groupsManagerController.display}"
 						image="/media/icons/pencil.png" title="#{msgs['GROUPE.DISPLAY']}" >
-							<t:updateActionListener value="#{group}"
+							<t:updateActionListener value="#{group.customizedGroup}"
 							property="#{groupsManagerController.group}" />
 						</e:commandButton>
 					</t:column>

@@ -12,6 +12,7 @@ import javax.faces.model.SelectItem;
 //import org.esupportail.commons.services.logging.Logger;
 //import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.dao.beans.BasicGroup;
+import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 
 /**
@@ -97,7 +98,19 @@ public class GroupsController extends AbstractContextAwareController {
 		for (BasicGroup grp : groups) {
 			//groupItems.add(new SelectItem(grp.getBgrId().toString(), grp.getBgrLabel()));
 			//String label = ldapUtils.getGroupNameByUid(grp.getLabel());
-			groupItems.add(new SelectItem(grp.getId().toString(), grp.getLabel()));
+			String groupDisplayName;
+			String groupLabel = grp.getLabel();
+			try {
+				groupDisplayName = ldapUtils.getUserDisplayNameByUserUid(groupLabel);
+			} catch (LdapUserNotFoundException e) {
+				
+				groupDisplayName = ldapUtils.getGroupNameByUid(groupLabel);
+				if (groupDisplayName == null) {
+					
+					groupDisplayName = groupLabel;
+				}	
+			}
+			groupItems.add(new SelectItem(grp.getId().toString(), groupDisplayName));
 		}
 		}
 		return groupItems;

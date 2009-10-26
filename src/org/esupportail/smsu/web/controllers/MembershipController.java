@@ -1,9 +1,11 @@
 package org.esupportail.smsu.web.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 import javax.faces.validator.ValidatorException;
 
 import org.esupportail.commons.services.logging.Logger;
@@ -42,7 +44,13 @@ public class MembershipController extends AbstractContextAwareController {
 	 * list of the service.
 	 */
 	private List<Service> allServices;
-
+	
+	private List<SelectItem> availablePhoneNumbers;
+	
+	private Boolean activateValidation;
+	
+	private Boolean isValidationOK;
+		
 	/**
 	 * Log4j logger.
 	 */
@@ -108,6 +116,7 @@ public class MembershipController extends AbstractContextAwareController {
 	 * @throws LdapUserNotFoundException 
 	 */
 	private void init() throws LdapUserNotFoundException {
+		isValidationOK = false;
 		User user = getCurrentUser();
 		ldapUid = user.getId();
 		this.member = getDomainService().getMember(ldapUid);
@@ -160,7 +169,7 @@ public class MembershipController extends AbstractContextAwareController {
 		init();
 		// create a message to give a feedback to the member
 		if (valid) {
-			addInfoMessage(null, "ADHESION.MESSAGE.MEMBERCODEOK");
+			isValidationOK = true;
 		} else {
 			addErrorMessage("formMembership:phoneNumberValidationCode", "ADHESION.MESSAGE.MEMBERCODEKO");
 		}
@@ -254,6 +263,44 @@ public class MembershipController extends AbstractContextAwareController {
 	 */
 	public String getLdapUid() {
 		return ldapUid;
+	}
+
+	public void setAvailablePhoneNumbers(final List<SelectItem> availablePhoneNumbers) {
+		this.availablePhoneNumbers = availablePhoneNumbers;
+	}
+
+	/**
+	 * @return
+	 */
+	public List<SelectItem> getAvailablePhoneNumbers() {
+		availablePhoneNumbers = new ArrayList<SelectItem>();
+		List<String> phoneNumbers = member.getAvailablePhoneNumbers();
+		for (String phoneNumber : phoneNumbers) {
+			availablePhoneNumbers.add(new SelectItem(phoneNumber));
+		}
+		return availablePhoneNumbers;
+	}
+
+	/**
+	 * @param activateValidation
+	 */
+	public void setActivateValidation(final Boolean activateValidation) {
+		this.activateValidation = activateValidation;
+	}
+
+	/**
+	 * @return
+	 */
+	public Boolean getActivateValidation() {
+		return activateValidation;
+	}
+
+	public void setIsValidationOK(final Boolean isValidationOK) {
+		this.isValidationOK = isValidationOK;
+	}
+
+	public Boolean getIsValidationOK() {
+		return isValidationOK;
 	}
 	
 }

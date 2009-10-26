@@ -1,7 +1,10 @@
 package org.esupportail.smsu.web.controllers;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+
+import javax.mail.search.RecipientStringTerm;
 
 import org.esupportail.commons.services.ldap.LdapException;
 import org.esupportail.commons.services.ldap.LdapUser;
@@ -42,6 +45,16 @@ public class UsersSearchController extends AbstractContextAwareController {
 	 * list of ldapUsers.
 	 */
 	private List<UiRecipient> ldapUsers;
+	
+	/**
+	 * list of ldapUsers get from a user ldap request
+	 */
+	private List<UiRecipient> ldapRequestUsers;
+	
+	/**
+	 * list of valid ldapUsers get from a user ldap request
+	 */
+	private List<UiRecipient> ldapValidUsers;
  
 	/**
 	 * list of ldapUsers for Person.
@@ -63,6 +76,11 @@ public class UsersSearchController extends AbstractContextAwareController {
 	 */
 	private String userDisplayName;
 	
+	/**
+	 * number of user with a phone number in the user LDAP request result.
+	 */
+	private Integer nbAvailableUsersInTheList = 0;
+
 	/**
 	 * Log4j logger.
 	 */
@@ -154,7 +172,8 @@ public class UsersSearchController extends AbstractContextAwareController {
 	 * @return null
 	 */
 	public String searchLdapWithFilter() {
-		ldapUsers = new ArrayList<UiRecipient>();
+		ldapValidUsers = new LinkedList<UiRecipient>();
+		ldapRequestUsers = new LinkedList<UiRecipient>();
 		
 		if (this.ldapFilter != null) {
 			if (this.ldapFilter.length() > 0 ) {
@@ -175,6 +194,7 @@ public class UsersSearchController extends AbstractContextAwareController {
 				String displayName;
 				String userId;
 				String phone;
+				nbAvailableUsersInTheList = 0;
 				SingleUserRecipient recipient;
 				
 				for (LdapUser user : list) {
@@ -191,19 +211,22 @@ public class UsersSearchController extends AbstractContextAwareController {
 					
 					if (phone == null) {
 						displayName = displayName.concat(" ".concat(this.getI18nService().
-								getString("SENDSMS.MESSAGE.UNSELECTABLEUSER"))); 
+								getString("SENDSMS.MESSAGE.UNSELECTABLEUSER")));
+						recipient = new  SingleUserRecipient(displayName, userId, userId, phone);
+					} else {
+						nbAvailableUsersInTheList++;
+						recipient = new  SingleUserRecipient(displayName, userId, userId, phone);
+						ldapValidUsers.add(recipient);
 					}
-					recipient = new  SingleUserRecipient(displayName, userId, userId, phone);
-					ldapUsers.add(recipient);
+					ldapRequestUsers.add(recipient);
 				}
-				if (ldapUsers.size() == 0) {
+				if (ldapRequestUsers.size() == 0) {
 					addInfoMessage("formGeneral:ldapFilter", "SENDSMS.MESSAGE.NOUSERFOUND");
 				}
 			}
 		}
 		return null;
 	}
-
 	
 	//////////////////////////////////////////////////////////////
 	// Getter and Setter of userPagerAttribute
@@ -323,5 +346,51 @@ public class UsersSearchController extends AbstractContextAwareController {
 	public LdapUtils getLdapUtils() {
 		return ldapUtils;
 	}
-	
+
+	/**
+	 * @return nbAvailableUsersInTheList
+	 */
+	public Integer getNbAvailableUsersInTheList() {
+		return nbAvailableUsersInTheList;
+	}
+
+
+	/**
+	 * @param nbAvailableUsersInTheList
+	 */
+	public void setNbAvailableUsersInTheList(final Integer nbAvailableUsersInTheList) {
+		this.nbAvailableUsersInTheList = nbAvailableUsersInTheList;
+	}
+
+
+	/**
+	 * @param ldapRequestUsers
+	 */
+	public void setLdapRequestUsers(final List<UiRecipient> ldapRequestUsers) {
+		this.ldapRequestUsers = ldapRequestUsers;
+	}
+
+
+	/**
+	 * @return ldapRequestUsers
+	 */
+	public List<UiRecipient> getLdapRequestUsers() {
+		return ldapRequestUsers;
+	}
+
+
+	/**
+	 * @param ldapValidUsers
+	 */
+	public void setLdapValidUsers(final List<UiRecipient> ldapValidUsers) {
+		this.ldapValidUsers = ldapValidUsers;
+	}
+
+
+	/**
+	 * @return ldapValidUsers
+	 */
+	public List<UiRecipient> getLdapValidUsers() {
+		return ldapValidUsers;
+	}
 }

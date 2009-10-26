@@ -7,7 +7,7 @@
 		<f:param value="#{applicationService.version}" />
 	</e:section>
 
-	<e:paragraph value="#{msgs['ABOUT.TEXT.SUMMARY']}">
+	<e:paragraph escape="false" value="#{msgs['ABOUT.TEXT.SUMMARY']}">
 		<f:param value="#{applicationService.name}" />
 	</e:paragraph>
 
@@ -15,7 +15,8 @@
 		<f:param value="#{applicationService.name}" />
 	</e:paragraph>
 	<e:ul>
-		<e:li value="#{msgs['ABOUT.TEXT.AUTHORS.PA']}" />
+		<e:li value="#{msgs['ABOUT.TEXT.AUTHORS.BR']}" />
+		<e:li value="#{msgs['ABOUT.TEXT.AUTHORS.AA']}" />
 	</e:ul>
 
 	<e:subSection value="#{msgs['ABOUT.SUBTITLE.COPYRIGHT']}" />
@@ -32,13 +33,14 @@
 		<f:param value="#{applicationService.name}" />
 	</e:subSection>
 	<e:ul>
-		<e:li escape="false" value="#{msgs['ABOUT.TEXT.MORE_INFORMATION.ESUP_BLANK']}" />
-		<e:li escape="false" value="#{msgs['ABOUT.TEXT.MORE_INFORMATION.ESUP_COMMONS']}" />
+		<e:li escape="false" value="#{msgs['ABOUT.TEXT.MORE_INFORMATION.ESUP_SMSU']}" />
 		<e:li escape="false" value="#{msgs['ABOUT.TEXT.MORE_INFORMATION.ESUP_PORTAIL']}" />
 	</e:ul>
+	<h:panelGroup rendered="#{aboutController.exceptionAuthorized}">
 	<e:subSection value="#{msgs['ABOUT.SUBTITLE.EXCEPTION']}" />
 	<e:form>
 		<e:commandButton immediate="true" action="#{aboutController.throwException}" value="#{msgs['ABOUT.BUTTON.EXCEPTION']}" />
 	</e:form>
+	</h:panelGroup>
 <% /* @include file="_debug.jsp" */ %>
 </e:page>

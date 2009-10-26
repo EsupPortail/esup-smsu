@@ -8,12 +8,6 @@
 		<e:messages />
 
 		<e:panelGrid columns="2">
-			<e:outputLabel for="id" value="#{msgs['PREFERENCES.TEXT.ID']}" />
-			<e:text id="id" value="#{sessionController.currentUser.id}" />
-			<e:outputLabel for="displayName"
-				value="#{msgs['PREFERENCES.TEXT.DISPLAY_NAME']}" />
-			<e:text id="displayName"
-				value="#{sessionController.currentUser.displayName}" />
 			<e:outputLabel for="locale" 
 				value="#{msgs['PREFERENCES.TEXT.LANGUAGE']}" />
 			<h:panelGroup>

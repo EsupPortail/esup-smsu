@@ -1,14 +1,22 @@
 package org.esupportail.smsu.business;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.business.beans.Member;
 import org.esupportail.smsu.dao.DaoService;
+import org.esupportail.smsu.dao.beans.Account;
+import org.esupportail.smsu.dao.beans.CustomizedGroup;
+import org.esupportail.smsu.dao.beans.Message;
 import org.esupportail.smsu.dao.beans.PendingMember;
+import org.esupportail.smsu.dao.beans.Recipient;
+import org.esupportail.smsu.dao.beans.Role;
+import org.esupportail.smsu.exceptions.UnknownIdentifierApplicationException;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
 import org.esupportail.smsu.services.client.NotificationPhoneNumberInBlackListClient;
 import org.esupportail.smsu.services.client.SendSmsClient;
@@ -62,6 +70,11 @@ public class MemberManager {
 	private String accountValidation;
 
 	/**
+	 * the role name (usually a empty role)
+	 */
+	private String validationRoleName;
+
+	/**
 	 * title to used in the sms message.
 	 */
 	private String titleSmsValidation;
@@ -75,7 +88,7 @@ public class MemberManager {
 	 * a prefix to remove.
 	 */
 	private String phoneNumberPrefixToRemove = "";
-	
+
 	/**
 	 * Log4j logger.
 	 */
@@ -88,9 +101,9 @@ public class MemberManager {
 	 * Bean constructor.
 	 */
 	public MemberManager() {
-		
+
 	}
-	
+
 	///////////////////////////////////////
 	//  private method
 	//////////////////////////////////////
@@ -118,11 +131,56 @@ public class MemberManager {
 			logger.debug("Send the sms to " + memberPhoneNumber
 					+ " containing the validation code " + code);
 		}
+
+
 		String smsCode = titleSmsValidation + "\n" + code;
 		sendSmsClient.sendSMS(null, null, null, null, memberPhoneNumber,
 				accountValidation , smsCode);
-	}
 
+		CustomizedGroup cg = daoService.getCustomizedGroupByLabel(accountValidation);
+		// the sms is sent, the goup is consumption is updated.
+		if (cg == null) {
+			if (logger.isDebugEnabled()) {
+				logger.debug("Create the customized group corresponding to : " + accountValidation );
+			}
+			cg = new CustomizedGroup();
+			cg.setLabel(accountValidation);
+
+			Account acc = daoService.getAccountByLabel(accountValidation);
+			if (acc == null) {
+				acc = new Account();
+				acc.setLabel(accountValidation);
+				daoService.saveAccount(acc);
+			}
+
+			cg.setAccount(acc);
+
+			cg.setQuotaOrder(Long.parseLong("1"));
+
+			//this value is actually not used, all validation sms are sent.
+			cg.setQuotaSms(Long.parseLong("1"));
+
+			cg.setConsumedSms(Long.parseLong("0"));
+
+			Role role = daoService.getRoleByName(validationRoleName);
+			if (role == null) {
+				if (logger.isDebugEnabled()) {
+					logger.debug("Create the role : " + validationRoleName);
+				}
+				role = new Role();
+				role.setName(validationRoleName);
+				daoService.saveRole(role);
+			}
+
+			cg.setRole(role);
+
+			daoService.addCustomizedGroup(cg);
+		}
+
+		cg.setConsumedSms(cg.getConsumedSms() + 1);
+		daoService.updateCustomizedGroup(cg);
+
+	}
 
 	///////////////////////////////////////
 	// Public method
@@ -140,6 +198,7 @@ public class MemberManager {
 		final String firstName = ldapUtils.getUserFirstNameByUid(userIdentifier);
 		final String lastName = ldapUtils.getUserLastNameByUid(userIdentifier);
 		final String phoneNumber = getPhoneNumber(userIdentifier);
+		final List<String> availablePhoneNumbers = getAvailablePhoneNumbers(userIdentifier);
 		boolean validCG = ldapUtils.isGeneralConditionValidateByUid(userIdentifier);
 		final List<String> validCP = ldapUtils.getSpecificConditionValidateByUid(userIdentifier);
 		boolean isPending = false;
@@ -154,10 +213,45 @@ public class MemberManager {
 		String phoneNumberValidationCode = null;
 		final Member member = new Member(userIdentifier, firstName, lastName, 
 				phoneNumber, validCG, validCP, 
-				isPending, phoneNumberValidationCode);
+				isPending, phoneNumberValidationCode, availablePhoneNumbers);
 		return member;
 	}
 
+	/**
+	 * @param userIdentifier
+	 * @return the list of available phone numbers
+	 * @throws LdapUserNotFoundException
+	 */
+	private List<String> getAvailablePhoneNumbers(final String userIdentifier) throws LdapUserNotFoundException {
+		List<String> phoneNumbers = new ArrayList();
+		List<String> values;
+		for (String attribute : this.phoneAttribute) {
+			if (logger.isDebugEnabled()) {
+				logger.debug("Search phone number with attribute " + attribute);
+			}
+			values = ldapUtils.getLdapAttributesByUidAndName(userIdentifier, attribute);
+			for (String value : values) {
+				String nValue = value.replaceAll(" ", "");
+				if (!phoneNumberPrefixToRemove.equals("")) {
+					if (logger.isDebugEnabled()) {
+						logger.debug("phone Number Prefix To Remove " + phoneNumberPrefixToRemove);
+					}
+					nValue = nValue.replaceAll(phoneNumberPrefixToRemove, "0");
+				}
+				if (logger.isDebugEnabled()) {
+					logger.debug("test pattern with value " + nValue);
+				}
+				if (nValue.matches(this.phoneNumberPattern)) {
+					phoneNumbers.add(nValue);
+					if (logger.isDebugEnabled()) {
+						logger.debug("phone number found from attribute " + attribute);
+					}
+				}
+			}
+		}	
+
+		return phoneNumbers;
+	}
 	/**
 	 * @param userIdentifier
 	 * @return the phone number from the pager ldap field, or from a parametric ldap field if no pager is found
@@ -169,37 +263,37 @@ public class MemberManager {
 		}
 		String phoneNumber = ldapUtils.getUserPagerByUid(userIdentifier);
 
-		if (phoneNumber == null) {
-			List<String> values;
-			for (String attribute : this.phoneAttribute) {
-				if (logger.isDebugEnabled()) {
-					logger.debug("Search phone number with attribute " + attribute);
-				}
-				values = ldapUtils.getLdapAttributesByUidAndName(userIdentifier, attribute);
-				for (String value : values) {
-					String nValue = value.replaceAll(" ", "");
-					if (!phoneNumberPrefixToRemove.equals("")) {
-						if (logger.isDebugEnabled()) {
-							logger.debug("phone Number Prefix To Remove " + phoneNumberPrefixToRemove);
-						}
-						nValue = nValue.replaceAll(phoneNumberPrefixToRemove, "0");
-					}
-					if (logger.isDebugEnabled()) {
-						logger.debug("test pattern with value " + nValue);
-					}
-					if (nValue.matches(this.phoneNumberPattern)) {
-						phoneNumber = nValue;
-						if (logger.isDebugEnabled()) {
-							logger.debug("phone number found from attribute " + attribute);
-						}
-					}
-				}
-			}	
-		} else {
-			if (logger.isDebugEnabled()) {
-				logger.debug("phone number found from pager attribute " + phoneNumber);
-			}
-		}
+		//		if (phoneNumber == null) {
+		//			List<String> values;
+		//			for (String attribute : this.phoneAttribute) {
+		//				if (logger.isDebugEnabled()) {
+		//					logger.debug("Search phone number with attribute " + attribute);
+		//				}
+		//				values = ldapUtils.getLdapAttributesByUidAndName(userIdentifier, attribute);
+		//				for (String value : values) {
+		//					String nValue = value.replaceAll(" ", "");
+		//					if (!phoneNumberPrefixToRemove.equals("")) {
+		//						if (logger.isDebugEnabled()) {
+		//							logger.debug("phone Number Prefix To Remove " + phoneNumberPrefixToRemove);
+		//						}
+		//						nValue = nValue.replaceAll(phoneNumberPrefixToRemove, "0");
+		//					}
+		//					if (logger.isDebugEnabled()) {
+		//						logger.debug("test pattern with value " + nValue);
+		//					}
+		//					if (nValue.matches(this.phoneNumberPattern)) {
+		//						phoneNumber = nValue;
+		//						if (logger.isDebugEnabled()) {
+		//							logger.debug("phone number found from attribute " + attribute);
+		//						}
+		//					}
+		//				}
+		//			}	
+		//		} else {
+		//			if (logger.isDebugEnabled()) {
+		//				logger.debug("phone number found from pager attribute " + phoneNumber);
+		//			}
+		//		}
 		return phoneNumber;
 
 	}
@@ -323,7 +417,7 @@ public class MemberManager {
 		return activateValidation;
 	}
 
-	
+
 	//////////////////////////////////////////////////////////////
 	// Getter and Setter of phoneAttribute
 	//////////////////////////////////////////////////////////////
@@ -446,5 +540,12 @@ public class MemberManager {
 		return phoneNumberPrefixToRemove;
 	}
 
+	public String getValidationRoleName() {
+		return validationRoleName;
+	}
+
+	public void setValidationRoleName(final String validationRoleName) {
+		this.validationRoleName = validationRoleName;
+	}
 
 }

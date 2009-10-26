@@ -279,7 +279,8 @@ public class PerformSendSmsController extends AbstractContextAwareController {
 			} else {
 				ret = "contentValidated";
 			}
-		}
+		}		
+		
 		return ret;
 	}
 

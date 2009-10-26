@@ -3,34 +3,10 @@
 	<property name="app.zip-files.include" value="
 		build.xml
 		version.properties
-		properties/auth/auth.xml
-		properties/cache/cache.xml
-		properties/cache/ehcache.xml
-		properties/dao/hibernate/mapping/*
-		properties/dao/hibernate/hibernate-*.cfg.xml
-		properties/dao/dao.xml
-		properties/deepLinking/deepLinking.xml
-		properties/domain/domain.xml
-		properties/exceptionHandling/exceptionHandling.xml
-		properties/export/export.xml
-		properties/i18n/i18n.xml
-		properties/i18n/bundles/Messages*.properties
-		properties/i18n/bundles/Custom*.properties
-		properties/init/init.xml
-		properties/jsf/application.xml
-		properties/jsf/navigation-rules.xml
-		properties/ldap/ldap.xml
-		properties/logging/log4j-batch.properties
-		properties/misc/abstractBeans.xml
-		properties/misc/application.xml
-		properties/smtp/smtp.xml
-		properties/tags/tags.xml
-		properties/web/controllers.xml
-		properties/web/converters.xml
-		properties/applicationContext.xml
-		properties/defaults.properties
+		properties/**/*.*
 		src/**/*.java 
 		src/**/*.html 
+		utils/**/*.*
     	webapp/media/**/*
 		webapp/META-INF/MANIFEST.MF
 		webapp/stylesheets/**/*.jsp
@@ -39,7 +15,10 @@
 		webapp/WEB-INF/portlet.xml
 	" />
 	<property name="app.zip-files.exclude" value="
+		build.properties
 		webapp/media/images/*.ppt
+		properties/config.properties
+		properties/logging/log4j.properties
 	" />
 
 	<property name="commons.basedir" value="${basedir}/../esup-commons"/>

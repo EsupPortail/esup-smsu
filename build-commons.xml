@@ -738,6 +738,7 @@
 						<echo>up to date.</echo>
 					</then>
 				</if>
+<!--
 				<echo>checking ${app.name} libs...</echo>
 				<if>
 					<not>
@@ -765,6 +766,7 @@
 				</if>
 				<touch file="${lib.dir}/.${app.name}.ok" />
 				<echo>up to date.</echo>
+-->
 			</then>
 		</if>
 	</target>

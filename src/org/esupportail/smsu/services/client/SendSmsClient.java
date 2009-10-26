@@ -50,8 +50,12 @@ public class SendSmsClient  {
 	
 	/**
 	 * send SMS.
+	 * @throws UnknownIdentifierApplicationException 
 	 */
-	public void sendSMS(final Integer msgId, final Integer perId, final Integer bgrId, final Integer svcId, final String smsPhone, final String labelAccount, final String msgContent) {
+	public void sendSMS(final Integer msgId, final Integer perId, 
+			final Integer bgrId, final Integer svcId, 
+			final String smsPhone, final String labelAccount, 
+			final String msgContent) {
 		if (logger.isDebugEnabled()) {
 			final StringBuilder sb = new StringBuilder(200);
 			sb.append("SendSms client message : ");

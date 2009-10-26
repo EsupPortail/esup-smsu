@@ -411,6 +411,12 @@ public interface DomainService extends Serializable {
 			Account account, Long quotaAdd, List<UIPerson> persons);
 	
 	/**
+	 * update a customized group.
+	 * @param customizedGroup
+	 */
+	void updateCustomizedGroup(CustomizedGroup customizedGroup);
+	
+	/**
 	 * @param id
 	 */
 	List<UIPerson> getPersonsByIdCustomizedGroup(Integer id);

@@ -59,7 +59,7 @@
     	>
 		<description>A bean to manage user preferences.</description>
 	</bean>
-
+	
 	<bean id="welcomeController"
 		class="org.esupportail.smsu.web.controllers.WelcomeController"
 		parent="abstractContextAwareController"
@@ -82,6 +82,9 @@
 		parent="abstractContextAwareController" scope="session">
 		<description>A bean to manage the membership page.</description>
 		<property name="phoneNumberPattern" value="${adhesion.phoneNumberPattern}"></property>
+		<property name="activateValidation"> 
+			<value type="java.lang.Boolean">${adhesion.activateValidation}</value>
+		</property>
 	</bean>
 
 	<bean id="sendSMSController" class="org.esupportail.smsu.web.controllers.SendSMSController"
@@ -240,6 +243,7 @@
     	>
 		<description>A bean to manage roles.</description>
 		<property name="usersSearchController" ref="usersSearchController" />
+		<property name="ldapUtils" ref="ldapUtils" />
 	</bean>
 	
 	<bean id="servicesSmsuController"

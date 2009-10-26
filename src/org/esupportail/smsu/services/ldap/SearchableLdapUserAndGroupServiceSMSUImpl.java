@@ -81,12 +81,14 @@ public class SearchableLdapUserAndGroupServiceSMSUImpl extends SearchableLdapUse
 	 */
 	private String userObjectClass;
 	
-	
 	/**
 	 * The search attribute field.
 	 */
 	private String searchAttribute;
 	
+	/**
+	 * constructor.
+	 */
 	public SearchableLdapUserAndGroupServiceSMSUImpl() {
 		super();
 	}

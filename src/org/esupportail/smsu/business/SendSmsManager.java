@@ -6,9 +6,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.esupportail.commons.exceptions.ObjectNotFoundException;
+import org.apache.commons.lang.StringUtils;
 import org.esupportail.commons.services.i18n.I18nService;
-import org.esupportail.commons.services.ldap.LdapGroup;
 import org.esupportail.commons.services.ldap.LdapUser;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
@@ -32,6 +31,8 @@ import org.esupportail.smsu.exceptions.BackOfficeUnrichableException;
 import org.esupportail.smsu.exceptions.InsufficientQuotaException;
 import org.esupportail.smsu.exceptions.UnknownIdentifierApplicationException;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
+import org.esupportail.smsu.groups.pags.SmsuPersonAttributesGroupStore;
+import org.esupportail.smsu.groups.pags.SmsuPersonAttributesGroupStore.GroupDefinition;
 import org.esupportail.smsu.services.client.SendSmsClient;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.services.scheduler.SchedulerUtils;
@@ -55,7 +56,7 @@ public class SendSmsManager  {
 	private DaoService daoService;
 
 	/**
-	 * {@link i18nService}.
+	 * {@link I18nService}.
 	 */
 	private I18nService i18nService;
 
@@ -75,12 +76,12 @@ public class SendSmsManager  {
 	private String defaultSupervisorLogin;
 
 	/**
-	 * {@link smtpServiceUtils}.
+	 * {@link SmtpServiceUtils}.
 	 */
 	private SmtpServiceUtils smtpServiceUtils;
 
 	/**
-	 *  {@link ldapUtils}.
+	 *  {@link LdapUtils}.
 	 */
 	private LdapUtils ldapUtils;
 
@@ -108,6 +109,18 @@ public class SendSmsManager  {
 	 * the LDAP Email attribute.
 	 */
 	private String userEmailAttribute;
+
+	/**
+	 * The pager attributeName.
+	 */
+	private String userPagerAttribute;
+
+	/**
+	 * The key used to represent the CG in the ldap (up1terms).
+	 */
+	private String cgKeyName;
+
+	private SmsuPersonAttributesGroupStore smsuPersonAttributesGroupStore;
 
 	/**
 	 * Log4j logger.
@@ -686,36 +699,28 @@ public class SendSmsManager  {
 			} else {
 				// Group users are search from the portal.
 				String groupName = uiRecipient.getDisplayName();
-				List<String> groupUserIds = getUserIdsByGroup(groupName);
+				List<LdapUser> groupUsers = getUsersByGroup(groupName);
 				// users are filtered to keep only service compliant ones.
 				String serviceKey = null;
 				if (service != null) {
-					service.getKey();
+					serviceKey = service.getKey();
 				}
-				List<LdapUser> filteredUsers = filterUsers(groupUserIds, serviceKey);
+				List<LdapUser> filteredUsers = filterUsers(groupUsers, serviceKey);
 				//users are added to the recipient list.
 				for (LdapUser ldapUser : filteredUsers) {
 					String phone;
-					try {
-						phone = ldapUtils.getUserPagerByUid(ldapUser.getId());
+					phone = ldapUser.getAttribute(userPagerAttribute);
 
-						recipient = daoService.getRecipientByPhone(phone);
-						if (recipient == null) {	
-							recipient = new Recipient(null, phone,
-									ldapUser.getId());
-						}
-						// the recipient is added to the list.
-						if (!recipients.contains(recipient)) {
-							recipients.add(recipient);
-						}
-					} catch (LdapUserNotFoundException e) {
-						final StringBuilder exMessage = new StringBuilder(50);
-						exMessage.append("Unable to find user from LDAP : [");
-						exMessage.append(ldapUser.getId());
-						exMessage.append("]");
-						final String messageStr = exMessage.toString();
-						logger.warn(messageStr, e);
+					recipient = daoService.getRecipientByPhone(phone);
+					if (recipient == null) {	
+						recipient = new Recipient(null, phone,
+								ldapUser.getId());
 					}
+					// the recipient is added to the list.
+					if (!recipients.contains(recipient)) {
+						recipients.add(recipient);
+					}
+
 				}
 
 			}
@@ -728,7 +733,7 @@ public class SendSmsManager  {
 	 * @param groupName
 	 * @return the user list.
 	 */
-	public List<String> getUserIdsByGroup(final String groupName) {
+	public List<LdapUser> getUsersByGroup(final String groupName) {
 		if (logger.isDebugEnabled()) {
 			final StringBuilder info = new StringBuilder(50);
 			info.append("Search users for group [");
@@ -739,17 +744,17 @@ public class SendSmsManager  {
 		}
 		//get the recipient group hierarchy
 		PortalGroupHierarchy groupHierarchy = ldapUtils.getPortalGroupHierarchyByGroupName(groupName);
-		//get all the unique user ids from the group hierarchy
-		List<String> memberIds = getMemberIds(groupHierarchy);
+		//get all users from the group hierarchy
+		List<LdapUser> members = getMembers(groupHierarchy);
 
 		if (logger.isDebugEnabled()) {
 			final StringBuilder res = new StringBuilder(50);
 			res.append("Number of ldap users found : ");
-			res.append(memberIds.size());
+			res.append(members.size());
 			final String message = res.toString();
 			logger.debug(message);
 		}
-		return memberIds;
+		return members;
 	}
 
 
@@ -757,7 +762,7 @@ public class SendSmsManager  {
 	 * @param groupHierarchy
 	 * @return the list of the unique sub-members of a group (recursive)
 	 */
-	private List<String> getMemberIds(final PortalGroupHierarchy groupHierarchy) {
+	private List<LdapUser> getMembers(final PortalGroupHierarchy groupHierarchy) {
 		final PortalGroup currentGroup = groupHierarchy.getGroup();
 		if (logger.isDebugEnabled()) {
 			final StringBuilder info = new StringBuilder(50);
@@ -770,15 +775,17 @@ public class SendSmsManager  {
 			logger.debug(message);
 		}
 		final List<PortalGroupHierarchy> childs = groupHierarchy.getSubHierarchies();
-		List<String> memberIds = new ArrayList<String>();
+		List<LdapUser> members = new LinkedList<LdapUser>();
 		//get the corresponding ldap group to extract members
 
 		try {
-			LdapGroup ldapGroup = ldapUtils.getLdapGroup(currentGroup.getName());
-			//LdapGroup ldapGroup = ldapUtils.getLdapGroup(currentGroup.getId());
-			//recursive call
-			memberIds = ldapUtils.getMemberIds(ldapGroup);
-		} catch (ObjectNotFoundException e) {
+			String idFromPortal = currentGroup.getId();
+			String groupStoreId = StringUtils.split(idFromPortal,".")[1];
+			GroupDefinition gd = smsuPersonAttributesGroupStore.getGroupDefinition(groupStoreId);
+			if (gd != null) {
+				members = ldapUtils.getMembers(gd);
+			}
+		} catch (Throwable e) {
 			logger.warn(e.getMessage());
 		}
 
@@ -788,15 +795,15 @@ public class SendSmsManager  {
 		}
 		if (!isGroupLeaf) {
 			for (PortalGroupHierarchy child : childs) {
-				List<String> subMemberIds = getMemberIds(child);
+				List<LdapUser> subMembers = getMembers(child);
 				if (logger.isDebugEnabled()) {
 					logger.debug("Merge members for group " + child.getGroup().getName());
 				}
-				memberIds = mergeStringLists(memberIds, subMemberIds);
+				members = mergeUserLists(members, subMembers);
 			}
 		}
 
-		return memberIds;
+		return members;
 	}
 
 
@@ -805,9 +812,9 @@ public class SendSmsManager  {
 	 * @param toMerge
 	 * @return the merged list
 	 */
-	private List<String> mergeStringLists(final List<String> source, final List<String> toMerge) {
-		final List<String> finalList = source;
-		for (String sToMerge : toMerge) {
+	private List<LdapUser> mergeUserLists(final List<LdapUser> source, final List<LdapUser> toMerge) {
+		final List<LdapUser> finalList = source;
+		for (LdapUser sToMerge : toMerge) {
 			if (!finalList.contains(sToMerge)) {
 				finalList.add(sToMerge);
 				if (logger.isDebugEnabled()) {
@@ -819,11 +826,10 @@ public class SendSmsManager  {
 	}
 
 	/**
-	 * @param portalUsers
 	 * @param service
 	 * @return the filtered list of users
 	 */
-	private List<LdapUser> filterUsers(final List<String> userIds, final String service) {
+	private List<LdapUser> filterUsers(final List<LdapUser> users, final String service) {
 		if (logger.isDebugEnabled()) {
 			final StringBuilder info = new StringBuilder(50);
 			info.append("Filtering users for service [");
@@ -833,15 +839,28 @@ public class SendSmsManager  {
 			logger.debug(message);
 		}
 		List<LdapUser> filteredUsers = new ArrayList<LdapUser>();
-		//		List<LdapUser> users = new ArrayList<LdapUser>();
-		//		for (String id : userIds) {
-		//			users = ldapUtils.getConditionFriendlyLdapUsersFromUid(id, service);
-		//			if (users.size() > 0) {
-		//				filteredUsers.add(users.get(0));
-		//			}
-		//		}
-		if (userIds.size() > 0) {
-			filteredUsers = ldapUtils.getConditionFriendlyLdapUsersFromUid(userIds, service);
+
+		for (LdapUser user : users) {
+			List<String> userTermsOfUse = user.getAttributes("up1TermsOfUse");
+			if (userTermsOfUse.contains(cgKeyName)) {
+				if (service != null) {
+					if (logger.isDebugEnabled()) {
+						logger.debug("Service filter activated");
+					}
+					if (userTermsOfUse.contains(service)) {
+						filteredUsers.add(user);
+					}
+				} else {
+					if (logger.isDebugEnabled()) {
+						logger.debug("No service filter");
+					}
+					filteredUsers.add(user);
+				}
+			} else {
+				if (logger.isDebugEnabled()) {
+					logger.debug("CG not validated, user : " + user.getId());
+				}
+			}
 		}
 		if (logger.isDebugEnabled()) {
 			final StringBuilder res = new StringBuilder(50);
@@ -1011,8 +1030,10 @@ public class SendSmsManager  {
 			logger.debug(sb.toString());
 		}
 		// send the message to the back office
+
 		sendSmsClient.sendSMS(messageId, senderId, groupSenderId, serviceId, 
 				recipiendPhoneNumber,	userLabelAccount, message);
+
 	}
 
 	private Boolean checkMaxSmsGroupQuota(final Message message, final CustomizedGroup cGroup) {
@@ -1353,4 +1374,37 @@ public class SendSmsManager  {
 	public void setUserEmailAttribute(final String userEmailAttribute) {
 		this.userEmailAttribute = userEmailAttribute;
 	}
+
+	public void setSmsuPersonAttributesGroupStore(
+			final SmsuPersonAttributesGroupStore smsuPersonAttributesGroupStore) {
+		this.smsuPersonAttributesGroupStore = smsuPersonAttributesGroupStore;
+	}
+
+	public SmsuPersonAttributesGroupStore getSmsuPersonAttributesGroupStore() {
+		return smsuPersonAttributesGroupStore;
+	}
+
+	/**
+	 * @return the cg Key Name
+	 */
+	public String getCgKeyName() {
+		return cgKeyName;
+	}
+
+	/**
+	 * @param cgKeyName
+	 */
+	public void setCgKeyName(final String cgKeyName) {
+		this.cgKeyName = cgKeyName;
+	}
+
+	public void setUserPagerAttribute(final String userPagerAttribute) {
+		this.userPagerAttribute = userPagerAttribute;
+	}
+
+	public String getUserPagerAttribute() {
+		return userPagerAttribute;
+	}
+
+
 }
