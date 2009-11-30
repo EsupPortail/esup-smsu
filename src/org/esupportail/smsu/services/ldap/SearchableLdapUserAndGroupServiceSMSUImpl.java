@@ -208,7 +208,6 @@ public class SearchableLdapUserAndGroupServiceSMSUImpl extends SearchableLdapUse
 			message.append(uid);
 			message.append("]");
 			final String messageStr = message.toString();
-			logger.warn(messageStr, e);
 			throw new LdapUserNotFoundException(messageStr, e);
 		}
 		return retVal;
@@ -344,9 +343,9 @@ public class SearchableLdapUserAndGroupServiceSMSUImpl extends SearchableLdapUse
 
 		//add the general condition, service and pager filter
 		filter.and(new WhitespaceWildcardsFilter(userPagerAttribute, " "));
-		filter.and(new WhitespaceWildcardsFilter(userTermsOfUseAttribute, cgKeyName));
+		filter.and(new EqualsFilter(userTermsOfUseAttribute, cgKeyName));
 		if (service != null) {
-			filter.and(new WhitespaceWildcardsFilter(userTermsOfUseAttribute, service));
+			filter.and(new EqualsFilter(userTermsOfUseAttribute, service));
 		}
 
 		for (String tok : tokenList) {

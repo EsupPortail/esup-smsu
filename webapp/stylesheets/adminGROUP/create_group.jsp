@@ -36,7 +36,7 @@
 	</e:form>
 	<e:form id="groupForm">
 		<e:panelGrid columns="4">
-			<e:outputLabel value="#{msgs['GROUPE.NAME']}" for="GName" />
+			<e:outputLabel value="#{msgs['GROUPE.ID']}" for="GName" />
 
 			<h:panelGroup>
 				<e:inputText id="GName"

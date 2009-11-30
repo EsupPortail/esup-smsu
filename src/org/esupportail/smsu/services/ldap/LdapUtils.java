@@ -39,6 +39,9 @@ import org.springframework.ldap.support.filter.OrFilter;
  */
 public class LdapUtils {
 
+	/**
+	 * a logger.
+	 */
 	private final Logger logger = new LoggerImpl(getClass());
 	
 	/**
@@ -102,7 +105,7 @@ public class LdapUtils {
 			message.append(ldapUserUid);
 			message.append("]");
 			final String messageStr = message.toString();
-			logger.warn(messageStr, e);
+			logger.debug(messageStr, e);
 			throw new LdapUserNotFoundException(messageStr, e);
 		}
 		
@@ -746,7 +749,6 @@ public class LdapUtils {
 			message.append(uid);
 			message.append("]");
 			final String messageStr = message.toString();
-			logger.warn(messageStr, e);
 			throw new LdapUserNotFoundException(messageStr, e);
 		}
 		return attributes;
@@ -800,19 +802,33 @@ public class LdapUtils {
 	}
 	
 	/**
+	 * @param serviceKey 
+	 * @param cgKeyName2 
+	 * @param string 
+	 * @param serviceKey 
+	 * @param serviceKey2 
+	 * @param cgKeyName2 
 	 * @param ldapGroup
 	 * @return the string id list of a ldap group. 
 	 */
-	public List<LdapUser> getMembers(final GroupDefinition gd) {
+	public List<LdapUser> getMembers(final GroupDefinition gd, String cgPropertyName, String serviceKey) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("getMembers.start");
+		}
 		final List<LdapUser> users = new LinkedList<LdapUser>();
 		final List<TestGroup> tgs = gd.getTestGroups();
 		final String groupPortalParameter = smsuLdapGroupPersonAttributeDaoImpl.getPortalAttribute();
 		OrFilter orFilter = null; 
 		for (TestGroup testGroup : tgs) {
-			
+			if (logger.isDebugEnabled()) {
+				logger.debug("test group : " + testGroup.toString());
+			}
 			final List<BaseAttributeTester> tests = testGroup.getTests();
 			AndFilter andFilter = null;
 			for (BaseAttributeTester test : tests) {
+				if (logger.isDebugEnabled()) {
+					logger.debug("test : " + test.toString());
+				}
 				final String portalAttributeName = test.getAttributeName();
 				final String testValue = test.getTestValue();
 				if (portalAttributeName.equals(groupPortalParameter)) {
@@ -824,7 +840,10 @@ public class LdapUtils {
 					// TODO : paramétrer le DN dans le service au lieu d'utiliser le paramétrage général du Ldap?
 					List<LdapGroup> ldapGroups = ldapUserAndGroupService.getLdapGroupsFromToken(filter.toString());
 					LdapGroup ldapGroup = ldapGroups.get(0);
-					users.addAll(ldapUserAndGroupService.getMembers(ldapGroup));
+					List<String> uids = getMemberIds(ldapGroup);
+					List<LdapUser> usersToAdd = ldapUserAndGroupService.getConditionFriendlyLdapUsersFromUid(uids, cgKeyName, serviceKey);
+					//users.addAll(ldapUserAndGroupService.getMembers(ldapGroup));
+					users.addAll(usersToAdd);
 				} else {
 					final String attributeName = (String) smsuLdapPersonAttributeDaoImpl.getReverseAttributeMappings().get(portalAttributeName);
 					Filter filter = test.getLdapFilter(attributeName, testValue);
@@ -833,11 +852,18 @@ public class LdapUtils {
 							andFilter = new AndFilter();
 						}
 						andFilter.and(filter);
+						andFilter.and(new EqualsFilter(cgPropertyName,cgKeyName));
+
+						if (serviceKey != null) {
+							andFilter.and(new EqualsFilter(cgPropertyName ,serviceKey));
+						}
 					}
 				}
 			}
 			if (andFilter != null) {
-				orFilter = new OrFilter();
+				if (orFilter == null) {
+					orFilter = new OrFilter();
+				}
 				orFilter.or(andFilter);
 			}
 		}
@@ -847,7 +873,9 @@ public class LdapUtils {
 			}
 			users.addAll(ldapUserAndGroupService.getLdapUsersFromFilter(orFilter.toString()));
 		}
-		
+		if (logger.isDebugEnabled()) {
+			logger.debug("getMembers.end");
+		}
 		return users;
 	}
 	

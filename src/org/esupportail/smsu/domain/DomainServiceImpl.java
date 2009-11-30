@@ -412,6 +412,14 @@ public class DomainServiceImpl implements DomainService, InitializingBean {
 	}
 
 	/**
+	 * {@inheritDoc}
+	 * @see org.esupportail.smsu.domain.DomainService#getMessage(java.lang.Integer)
+	 */
+	public Message getMessage(Integer messageId) {
+		return messageManager.getMessage(messageId);
+	}
+	
+	/**
 	 * @see org.esupportail.smsu.domain.DomainService#addMessage(org.esupportail.smsu.dao.beans.Message)
 	 */
 	public void addMessage(final Message message) {

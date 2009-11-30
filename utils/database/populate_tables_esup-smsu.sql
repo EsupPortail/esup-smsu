@@ -40,7 +40,7 @@ INSERT INTO role_composition VALUES(1,14);
 INSERT INTO role_composition VALUES(1,15);
 
 /* Ajout du compte par defaut */
-INSERT INTO account VALUES (1, "default account");
+INSERT INTO account VALUES (1, "default_account");
 
 /* Ajout du compte par defaut */
 INSERT INTO customized_group VALUES (1, 1, 1, "admin", 1, 1, 1);

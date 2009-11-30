@@ -576,7 +576,7 @@ public class SendSmsManager  {
 				exMessage.append("Unable to find the user with id : [");
 				exMessage.append(expUid);
 				exMessage.append("]");
-				logger.warn(exMessage.toString(), e1);
+				logger.debug(exMessage.toString(), e1);
 				message.getMail().setStateAsEnum(MailStatus.ERROR);
 			} 
 		}
@@ -600,6 +600,7 @@ public class SendSmsManager  {
 					buff.append("]");
 					logger.debug(buff.toString());
 				}
+				
 				supervisors.addAll(customizedGroup.getSupervisors());
 			} else {
 				if (logger.isDebugEnabled()) {
@@ -697,14 +698,14 @@ public class SendSmsManager  {
 				}
 
 			} else {
-				// Group users are search from the portal.
-				String groupName = uiRecipient.getDisplayName();
-				List<LdapUser> groupUsers = getUsersByGroup(groupName);
-				// users are filtered to keep only service compliant ones.
 				String serviceKey = null;
 				if (service != null) {
 					serviceKey = service.getKey();
 				}
+				// Group users are search from the portal.
+				String groupName = uiRecipient.getDisplayName();
+				List<LdapUser> groupUsers = getUsersByGroup(groupName,serviceKey);
+				// users are filtered to keep only service compliant ones.
 				List<LdapUser> filteredUsers = filterUsers(groupUsers, serviceKey);
 				//users are added to the recipient list.
 				for (LdapUser ldapUser : filteredUsers) {
@@ -731,9 +732,10 @@ public class SendSmsManager  {
 
 	/**
 	 * @param groupName
+	 * @param serviceKey 
 	 * @return the user list.
 	 */
-	public List<LdapUser> getUsersByGroup(final String groupName) {
+	public List<LdapUser> getUsersByGroup(final String groupName, String serviceKey) {
 		if (logger.isDebugEnabled()) {
 			final StringBuilder info = new StringBuilder(50);
 			info.append("Search users for group [");
@@ -745,7 +747,7 @@ public class SendSmsManager  {
 		//get the recipient group hierarchy
 		PortalGroupHierarchy groupHierarchy = ldapUtils.getPortalGroupHierarchyByGroupName(groupName);
 		//get all users from the group hierarchy
-		List<LdapUser> members = getMembers(groupHierarchy);
+		List<LdapUser> members = getMembers(groupHierarchy, serviceKey);
 
 		if (logger.isDebugEnabled()) {
 			final StringBuilder res = new StringBuilder(50);
@@ -760,9 +762,10 @@ public class SendSmsManager  {
 
 	/**
 	 * @param groupHierarchy
+	 * @param serviceKey 
 	 * @return the list of the unique sub-members of a group (recursive)
 	 */
-	private List<LdapUser> getMembers(final PortalGroupHierarchy groupHierarchy) {
+	private List<LdapUser> getMembers(final PortalGroupHierarchy groupHierarchy, String serviceKey) {
 		final PortalGroup currentGroup = groupHierarchy.getGroup();
 		if (logger.isDebugEnabled()) {
 			final StringBuilder info = new StringBuilder(50);
@@ -783,10 +786,17 @@ public class SendSmsManager  {
 			String groupStoreId = StringUtils.split(idFromPortal,".")[1];
 			GroupDefinition gd = smsuPersonAttributesGroupStore.getGroupDefinition(groupStoreId);
 			if (gd != null) {
-				members = ldapUtils.getMembers(gd);
+				if (logger.isDebugEnabled()) {
+					logger.debug("search members");
+				}
+				members = ldapUtils.getMembers(gd, "up1TermsOfUse", serviceKey);
+			} else {
+				if (logger.isDebugEnabled()) {
+					logger.debug("No group definition found");
+				}
 			}
 		} catch (Throwable e) {
-			logger.warn(e.getMessage());
+			logger.debug(e.getMessage());
 		}
 
 		Boolean isGroupLeaf = true;
@@ -795,7 +805,7 @@ public class SendSmsManager  {
 		}
 		if (!isGroupLeaf) {
 			for (PortalGroupHierarchy child : childs) {
-				List<LdapUser> subMembers = getMembers(child);
+				List<LdapUser> subMembers = getMembers(child, serviceKey);
 				if (logger.isDebugEnabled()) {
 					logger.debug("Merge members for group " + child.getGroup().getName());
 				}
@@ -1000,7 +1010,7 @@ public class SendSmsManager  {
 			exMessage.append("Unable to find the user with id : [");
 			exMessage.append(expUid);
 			exMessage.append("]");
-			logger.warn(exMessage.toString(), e1);
+			logger.debug(exMessage.toString(), e1);
 		} 
 		return customizedMessageList;
 	}

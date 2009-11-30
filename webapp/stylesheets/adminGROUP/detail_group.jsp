@@ -78,7 +78,7 @@
 				<f:verbatim> </f:verbatim>
 			</h:panelGroup>
 
-			<e:outputLabel value="#{msgs['ACCOUNT.NAME']}" />
+			<e:outputLabel value="#{msgs['ACCOUNT.NAME']}" for="AName"/>
 			<h:panelGroup>
 
 
@@ -141,7 +141,7 @@
 						.isFieldAuthorized(FonctionName.FCTN_GESTIONS_RESPONSABLES
 								.toString())) {
 			%>
-			<e:outputLabel value="#{msgs['GROUPE.SEARCH.SUPERVISORS.LDAP']}" />
+			<e:outputLabel value="#{msgs['GROUPE.SEARCH.SUPERVISORS.LDAP']}" for="ldapUid"/>
 			<h:panelGroup>
 				<%--	<e:form id="formSearchUser">--%>
 				<e:inputText id="ldapUid" value="#{usersSearchController.ldapUid}" />
@@ -177,7 +177,7 @@
 			<%
 				}
 			%>
-			<e:outputLabel value="" />
+			<e:outputLabel value="" for="persons"/>
 			<h:panelGroup>
 				<%--	<e:form id="formpersons">--%>
 				<e:dataTable id="persons" var="persons"
@@ -214,7 +214,7 @@
 			</h:panelGroup>
 
 
-			<e:outputLabel value="#{msgs['GROUPE.QUOTA.SMS']}" />
+			<e:outputLabel value="#{msgs['GROUPE.QUOTA.SMS']}" for="quota"/>
 			<e:inputText id="quota"
 				value="#{groupsManagerController.group.quotaSms}" maxlength="10"
 				disabled="true" style="background-color:#cecece;"/>
@@ -229,7 +229,7 @@
 						.isFieldAuthorized(FonctionName.FCTN_GESTION_QUOTAS
 								.toString())) {
 			%>
-			<e:outputLabel value="#{msgs['GROUPE.QUOTA.SMS.ADD']}" />
+			<e:outputLabel value="#{msgs['GROUPE.QUOTA.SMS.ADD']}" for="quotaAdd"/>
 			<h:panelGroup>
 				<e:inputText id="quotaAdd"
 					value="#{groupsManagerController.addQuotaSms}" maxlength="10">
@@ -248,7 +248,7 @@
 				}
 			%>
 
-			<e:outputLabel value="#{msgs['GROUPE.QUOTA.ORDER']}" />
+			<e:outputLabel value="#{msgs['GROUPE.QUOTA.ORDER']}" for="dest"/>
 			<%
 				if (groupsManagerController
 						.isFieldAuthorized(FonctionName.FCTN_GESTION_QUOTAS
@@ -265,7 +265,7 @@
 			<%
 				} else {
 			%>
-			<e:inputText value="#{groupsManagerController.group.quotaOrder}"
+			<e:inputText id="dest" value="#{groupsManagerController.group.quotaOrder}"
 				maxlength="10" disabled="true" style="background-color:#cecece;" />
 			<%
 				}

@@ -8,7 +8,7 @@ authorized="#{rolesController.pageAuthorized}">
 		<e:panelGrid columns="2" >
 
 			<e:outputLabel 
-				value="#{msgs['ROLE.LABEL.NAME']}" />
+				value="#{msgs['ROLE.LABEL.NAME']}" for="Name" />
 			<h:panelGroup>
 				<e:inputText id="Name"
 					value="#{rolesController.role.name}" maxlength="30"
@@ -17,7 +17,7 @@ authorized="#{rolesController.pageAuthorized}">
 				<e:message for="Name" />
 			</h:panelGroup>
 
-			<e:outputLabel for="fonctions"
+			<e:outputLabel for="validFonctions"
 				value="#{msgs['ROLE.LIST.FONCTIONS']}" />
 			<h:panelGroup>
 				<e:selectManyCheckbox id="validFonctions"

@@ -5,6 +5,6 @@
 	<%@include file="_navigation.jsp"%>
 	
 	<e:form id="formMembershipNotInLdap">
-			<e:outputLabel style="color:red;" value="#{msgs['ADHESION.LOGIN.NOT.IN.LDAP']}" />
+			<e:paragraph style="color:red;" value="#{msgs['ADHESION.LOGIN.NOT.IN.LDAP']}" />
 	</e:form>
 </e:page>

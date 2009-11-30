@@ -79,7 +79,7 @@ public class ApprovalManager {
 		List<String> displayNameList = new ArrayList<String>();
 		List<LdapUser> ldapUserList = new ArrayList<LdapUser>();
 
-		if (messages != null) {
+		if (!messages.isEmpty()) {
 			Person user = daoService.getPersonByLogin(idUser);
 			for (Message mess : messages) {
 				if (!displayNameList.contains(mess.getUserUserLabel())) {

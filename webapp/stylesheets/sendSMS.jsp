@@ -64,7 +64,7 @@
 	 --%>
 			<%@include file="./sendSMS/_SMSData.jsp"%>
 			
-			<e:outputLabel value="#{msgs['SENDMAIL.LABEL']}" rendered="#{sendSMSController.isCheckBoxSendMailShow}"/>
+			<e:outputLabel value="#{msgs['SENDMAIL.LABEL']}" rendered="#{sendSMSController.isCheckBoxSendMailShow}" for="checkbox1"/>
 			<e:selectBooleanCheckbox id="checkbox1" binding="#{sendSMSController.checkbox}" 
 			onchange="javascript:{simulateLinkClick('formGeneral:changeButton');}" rendered="#{sendSMSController.isCheckBoxSendMailShow}"/>
 			 

@@ -11,8 +11,10 @@ import java.util.List;
 import org.apache.myfaces.component.html.ext.HtmlPanelGroup;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
+import org.esupportail.smsu.dao.beans.Message;
 import org.esupportail.smsu.domain.beans.User;
 import org.esupportail.smsu.domain.beans.fonction.FonctionName;
+import org.esupportail.smsu.domain.beans.message.MessageStatus;
 import org.esupportail.smsu.exceptions.UnknownIdentifierApplicationException;
 import org.esupportail.smsu.exceptions.UnknownIdentifierMessageException;
 import org.esupportail.smsu.web.beans.MessagePaginator;
@@ -231,11 +233,20 @@ public class MessagesController<DomaineService> extends AbstractContextAwareCont
 		this.sentSMSCount = null;
 
 		try {
-			TrackInfos infos = getDomainService().getTrackInfos(message.getId());
-			this.destCount = infos.getNbDestTotal().toString();
-			this.backListDestCount = infos.getNbDestBlackList().toString();
-			this.sentSMSCount = infos.getNbSentSMS().toString();
+			if (MessageStatus.SENT.name().equals(message.getStateAsEnum().name())) {
 
+				TrackInfos infos = getDomainService().getTrackInfos(message.getId());
+				this.destCount = infos.getNbDestTotal().toString();
+				this.backListDestCount = infos.getNbDestBlackList().toString();
+				this.sentSMSCount = infos.getNbSentSMS().toString();
+			} else {
+				this.backListDestCount = getI18nService().getString("MSG.UNAVAILABLEINFO", 
+						getI18nService().getDefaultLocale());
+				this.sentSMSCount = getI18nService().getString("MSG.UNAVAILABLEINFO", 
+							getI18nService().getDefaultLocale());
+				Message mess = getDomainService().getMessage(message.getId());
+				this.destCount = Integer.toString(mess.getRecipients().size());
+			}
 		} catch (UnknownIdentifierApplicationException e) {
 			addErrorMessage(
 					"TT", "WS.ERROR.APPLICATION.MESSAGE", null);

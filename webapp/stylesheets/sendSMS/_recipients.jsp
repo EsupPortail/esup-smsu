@@ -1,7 +1,7 @@
 <%@include file="../_include.jsp"%>
 
 <e:outputLabel for="selectTypeRecipient"
-	value="#{msgs['SENDSMS.LABEL.RECIPIENTTYPE']}" />
+	value="#{msgs['SENDSMS.LABEL.RECIPIENTTYPE']}" for="selectTypeRecipient"/>
 <%--<e:form id="formRecipientType">--%>
 <e:selectOneMenu id="selectTypeRecipient" onchange="submit();"
 	binding="#{smsRecipientController.selectTypeDest}"

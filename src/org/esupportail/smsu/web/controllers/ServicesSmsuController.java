@@ -89,7 +89,7 @@ public class ServicesSmsuController extends AbstractContextAwareController {
 	public String delete() {
 
 		getDomainService().deleteUIService(uiService);
-
+		init();
 		return null;
 	}
 

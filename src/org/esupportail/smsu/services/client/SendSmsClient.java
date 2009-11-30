@@ -68,7 +68,8 @@ public class SendSmsClient  {
 			sb.append(" - message = ").append(msgContent);
 			logger.debug(sb.toString());
 		}
-		sendSms.sendSMS(msgId, perId, bgrId, svcId, smsPhone, labelAccount, msgContent);	
+		sendSms.sendSMS(msgId, perId, bgrId, svcId, smsPhone, labelAccount, msgContent);
+		
 	}
 
 	/**

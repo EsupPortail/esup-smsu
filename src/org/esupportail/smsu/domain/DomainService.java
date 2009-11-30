@@ -152,6 +152,12 @@ public interface DomainService extends Serializable {
 			Integer userTemplateId, Integer userUserId, Date beginDate, Date endDate);
 
 	/**
+	 * @param messageId
+	 * @return the message
+	 */
+	Message getMessage(Integer messageId);
+	
+	/**
 	 * @param message
 	 */
 	void addMessage(Message message);

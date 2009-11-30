@@ -107,7 +107,7 @@ authorized="#{groupsManagerController.pageAuthorized}">
 					</f:facet>
 					<e:commandButton id="delete" value="#{msgs['GROUPE.DELETE']}"	action="#{groupsManagerController.delete}"
 					image="/media/icons/minus-circle-frame.png" title="#{msgs['GROUPE.DELETE']}" >
-						<t:updateActionListener value="#{group}"
+						<t:updateActionListener value="#{group.customizedGroup}"
 						property="#{groupsManagerController.group}" />
 					</e:commandButton>
 					</t:column>

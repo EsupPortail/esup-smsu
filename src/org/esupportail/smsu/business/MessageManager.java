@@ -207,6 +207,13 @@ public class MessageManager {
 		 return uimessages;
 	}
 	
+	/**
+	 * @param messageId
+	 * @return a message
+	 */
+	public Message getMessage(final Integer messageId) {
+		return daoService.getMessageById(messageId);
+	}
 	////////////////////////////
 	// Setter of daoService
 	////////////////////////////

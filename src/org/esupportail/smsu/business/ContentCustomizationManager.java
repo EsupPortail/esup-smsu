@@ -291,7 +291,7 @@ public class ContentCustomizationManager {
 							message.append(destUid);
 							message.append("]");
 							final String messageStr = message.toString();
-							logger.warn(messageStr, e);
+							logger.debug(messageStr, e);
 							customAttribut = defaultNotFoundData;
 						}
 					} else {
@@ -377,7 +377,7 @@ public class ContentCustomizationManager {
 					message.append(expUid);
 					message.append("]");
 					final String messageStr = message.toString();
-					logger.warn(messageStr, e);
+					logger.debug(messageStr, e);
 					throw new LdapUserNotFoundException(messageStr, e);
 				}
 			}

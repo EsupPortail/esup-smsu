@@ -241,7 +241,6 @@ public class GroupsManagerController extends AbstractContextAwareController {
 	
 	public void selectGroup() {
 		if (this.selectedGroupFromTree != null) {
-			logger.error("toto " +this.selectedGroupFromTree);
 			CustomizedGroup cg = new CustomizedGroup();
 			cg.setLabel(this.selectedGroupFromTree);
 			setGroup(cg);
