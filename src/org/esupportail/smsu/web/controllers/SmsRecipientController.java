@@ -224,7 +224,7 @@ public class SmsRecipientController extends AbstractContextAwareController {
 		ldapRequestPanelGrid.setRendered(false);
 		ldapSearchPanelGrid.setRendered(false);
 		phoneNumberListPanelGrid.setRendered(false);
-
+		
 		userSearchController.setLdapUsers(new ArrayList<UiRecipient>());
 		userSearchController.setLdapRequestUsers(new ArrayList<UiRecipient>());
 		userSearchController.setLdapValidUsers(new ArrayList<UiRecipient>());
@@ -271,6 +271,8 @@ public class SmsRecipientController extends AbstractContextAwareController {
 		ldapRequestPanelGrid = new HtmlPanelGroup();
 		ldapRequestPanelGrid.setRendered(false);
 
+		userSearchController.setLdapUsers(new ArrayList<UiRecipient>());
+		
 		recipients = new ArrayList<UiRecipient>();
 		
 		if (!destTypeOptions.isEmpty()) {

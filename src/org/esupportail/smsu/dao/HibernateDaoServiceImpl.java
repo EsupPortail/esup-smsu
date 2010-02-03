@@ -300,7 +300,9 @@ public class HibernateDaoServiceImpl extends AbstractJdbcJndiHibernateDaoService
 			queryString = selectFrom.append(orderBy).toString();
 		}
 		
-		
+		if (logger.isDebugEnabled()) {
+			logger.debug("queryString : " + queryString);
+		}
 		result = getHibernateTemplate().find(queryString);
 		
 		//criteria.addOrder(Order.asc(Message.PROP_ID));

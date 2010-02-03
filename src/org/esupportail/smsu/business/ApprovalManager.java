@@ -8,6 +8,7 @@ import org.esupportail.commons.services.ldap.LdapUser;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.dao.DaoService;
+import org.esupportail.smsu.dao.beans.BasicGroup;
 import org.esupportail.smsu.dao.beans.Message;
 import org.esupportail.smsu.dao.beans.Person;
 import org.esupportail.smsu.domain.beans.message.MessageStatus;
@@ -96,7 +97,6 @@ public class ApprovalManager {
 				if (mess.getSupervisors().contains(user)) { 
 
 					String displayName = NONE;
-					String groupName;
 
 					// 1 - Retrieve displayName
 					Boolean testVal = true;
@@ -121,18 +121,22 @@ public class ApprovalManager {
 					} else {
 						displayName = displayName + "  (" + mess.getUserUserLabel() + ")"; 
 					}
+					
+					String groupName = NONE;
+					BasicGroup recipientGroup = mess.getGroupRecipient();
+					if (recipientGroup != null) {
+						String groupLabel = recipientGroup.getLabel();
+						//getUserGroupLabel();
 
-					String groupLabel = mess.getGroupRecipient().getLabel();
-					//getUserGroupLabel();
-					 
-					try {
-						groupName = ldapUtils.getUserDisplayNameByUserUid(groupLabel);
-					} catch (LdapUserNotFoundException e) {
-						
-						groupName = ldapUtils.getGroupNameByUid(groupLabel);
-						if (groupName == null) {
-							groupName = groupLabel;
-						}	
+						try {
+							groupName = ldapUtils.getUserDisplayNameByUserUid(groupLabel);
+						} catch (LdapUserNotFoundException e) {
+
+							groupName = ldapUtils.getGroupNameByUid(groupLabel);
+							if (groupName == null) {
+								groupName = groupLabel;
+							}	
+						} 
 					}
 					
 					// add UI message to list

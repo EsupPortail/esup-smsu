@@ -9,31 +9,32 @@
 	
 <h:form id="searchSMS">
   
-  <e:panelGrid columns="5" width="100%">
-              
+  <e:panelGrid columns="2" width="100%">
+        <e:outputLabel for="beginDate" value="#{msgs['SEND.DATE.BEGIN']}"/>
+  		<h:panelGroup>  
+    	<e:inputText id="beginDate" value="#{messagesController.beginDate}" maxlength="10">
+			<f:convertDateTime locale="#{preferencesController.locale}" pattern="dd/MM/yyyy" timeZone="Europe/Paris"/>
+		</e:inputText>	
+		<e:message for="beginDate" style="color:#f00;"/>
+		</h:panelGroup>
+		
+		<e:outputLabel for="endDate" value="#{msgs['SEND.DATE.END']}"/>
+  		<h:panelGroup>  
+    	<e:inputText id="endDate" value="#{messagesController.endDate}" maxlength="10">
+			<f:convertDateTime locale="#{preferencesController.locale}" pattern="dd/MM/yyyy" timeZone="Europe/Paris"/>
+		</e:inputText>
+    	<e:message for="endDate" style="color:#f00;"/>
+		</h:panelGroup>	
+		
         <e:outputLabel  for="users"  value="#{msgs['SEND.SEARCH.USERS']}" />
     	<e:selectOneMenu id="users" value="#{usersController.userUserId}">
 		   	<f:selectItems  value="#{usersController.userUserItems}" />
   		</e:selectOneMenu>
-  		<t:outputLabel for="beginDate" value="#{msgs['SEND.DATE.BEGIN']}"/>  
-    		<e:inputText id="beginDate" value="#{messagesController.beginDate}" maxlength="10">
-			<f:convertDateTime locale="#{preferencesController.locale}" pattern="dd/MM/yyyy" timeZone="Europe/Paris"/>
-		</e:inputText>	
-		<e:message for="beginDate" style="color:#f00;"/>
 		
   	    <e:outputLabel  for="templates"   value="#{msgs['SEND.SEARCH.MODELS']}" />
     	<e:selectOneMenu id="templates"  value="#{templatesController.userTemplateId}" >
 			<f:selectItems value="#{templatesController.userTemplateItems}" />
   		</e:selectOneMenu>
-  		<t:outputLabel for="endDate" value="#{msgs['SEND.DATE.END']}"/>  
-    	<e:inputText id="endDate" value="#{messagesController.endDate}" maxlength="10">
-			<f:convertDateTime locale="#{preferencesController.locale}" pattern="dd/MM/yyyy" timeZone="Europe/Paris"/>
-		</e:inputText>
-    	<e:message for="endDate" style="color:#f00;"/>	
-  		
-  	</e:panelGrid>
-	
-	<e:panelGrid columns="2">
 	
 		<e:outputLabel  for="groups"  value="#{msgs['SEND.SEARCH.GROUPS']}" />
     	<e:selectOneMenu id="groups" value="#{groupsController.userGroupId}" >

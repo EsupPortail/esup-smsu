@@ -6,9 +6,12 @@ package org.esupportail.smsu.web.beans;
  */
 
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 
+import org.esupportail.commons.services.logging.Logger;
+import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.commons.web.beans.ListPaginator;
 import org.esupportail.smsu.domain.DomainService;
 
@@ -22,7 +25,7 @@ public class MessagePaginator extends ListPaginator<UIMessage> {
 	 * The serialization id.
 	 */
 	private static final long serialVersionUID = 5351945226908445094L;
-
+	private final Logger logger = new LoggerImpl(this.getClass());
 	/**
 	 * The domain service.
 	 */
@@ -40,7 +43,7 @@ public class MessagePaginator extends ListPaginator<UIMessage> {
 
 	private Integer userTemplateId;
 
-	private Integer userUserId;
+	private String userUserId;
 
 	 //////////////////////////////////////////////////////////////
 	 // Constructors
@@ -63,7 +66,23 @@ public class MessagePaginator extends ListPaginator<UIMessage> {
 	  */
 	 @Override
 	 protected List<UIMessage> getData() {
-		 return domainService.getMessages(userGroupId, userAccountId, userServiceId, userTemplateId, userUserId, beginDate, endDate);
+		 List<UIMessage> data = new LinkedList();
+		 if (logger.isDebugEnabled()) {
+			 logger.debug("userUserId : " + userUserId);
+		 }
+		 if (!userUserId.equals("noId")) {
+			 if (logger.isDebugEnabled()) {
+				 logger.debug("user id exists");
+			 }
+			 final Integer userId = Integer.valueOf(userUserId);
+			 if (logger.isDebugEnabled()) {
+				 logger.debug("userId : " + userId.toString());
+			 }
+			 data = domainService.getMessages(userGroupId, userAccountId, userServiceId, userTemplateId, userId, beginDate, endDate);
+		
+		 } 
+		
+		 return data;
 		 //return domainService.getMessages();
 	 } 
 
@@ -106,8 +125,8 @@ public class MessagePaginator extends ListPaginator<UIMessage> {
 		 return this;
 	 }
 
-	 public MessagePaginator setUserUserId(final Integer userUserId) {
-		 this.userUserId = userUserId;
+	 public MessagePaginator setUserUserId(final String userUserId2) {
+		 this.userUserId = userUserId2;
 		 forceReload();
 		 return this;
 	 }

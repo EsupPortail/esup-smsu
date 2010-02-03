@@ -75,7 +75,7 @@ public class MessagesController<DomaineService> extends AbstractContextAwareCont
 	/**
 	 * The userUserId.
 	 */
-	private Integer userUserId;
+	private String userUserId;
 
 	/**
 	 * The UI message.
@@ -437,14 +437,14 @@ public class MessagesController<DomaineService> extends AbstractContextAwareCont
 	/**
 	 * @return the userUserId
 	 */
-	public Integer getUserUserId() {
+	public String getUserUserId() {
 		return userUserId;
 	}
 
 	/**
 	 * @param userUserId the userUserId to set
 	 */
-	public void setUserUserId(final Integer userUserId) {
+	public void setUserUserId(final String userUserId) {
 		this.userUserId = userUserId;
 		paginator.setUserUserId(userUserId);
 	}

@@ -5,5 +5,3 @@
 	value="#{sendSMSController.selectedUserGroup}">
 	<f:selectItems value="#{sendSMSController.userGroupsOptions}" />
 </e:selectOneMenu>
-<t:panelGroup colspan="2">
-</t:panelGroup>

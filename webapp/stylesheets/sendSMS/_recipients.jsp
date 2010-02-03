@@ -1,15 +1,16 @@
 <%@include file="../_include.jsp"%>
 
 <e:outputLabel for="selectTypeRecipient"
-	value="#{msgs['SENDSMS.LABEL.RECIPIENTTYPE']}" for="selectTypeRecipient"/>
-<%--<e:form id="formRecipientType">--%>
+	value="#{msgs['SENDSMS.LABEL.RECIPIENTTYPE']}"
+	for="selectTypeRecipient" />
+
 <e:selectOneMenu id="selectTypeRecipient" onchange="submit();"
 	binding="#{smsRecipientController.selectTypeDest}"
 	valueChangeListener="#{smsRecipientController.modifTypeDest}"
 	value="#{smsRecipientController.recipientType}">
 	<f:selectItems value="#{smsRecipientController.destTypeOptions}" />
 </e:selectOneMenu>
-<%--</e:form>--%>
+
 
 <t:panelGroup binding="#{smsRecipientController.groupPanelGrid}"
 	colspan="2">
@@ -48,6 +49,8 @@
 	<e:inputText id="ldapUid" value="#{usersSearchController.ldapUid}" />
 	<e:commandButton value="#{msgs['SENDSMS.LABEL.SEARCH']}"
 		action="#{usersSearchController.searchUser}">
+		<t:updateActionListener value="#{sendSMSController.selectedService}"
+			property="#{usersSearchController.service}" />
 	</e:commandButton>
 	<f:verbatim>
 		<br>
@@ -106,9 +109,11 @@
 		<e:outputLabel
 			value="#{msgs['SENDSMS.LABEL.NBVALIDRECIPIENT']} : #{usersSearchController.nbAvailableUsersInTheList}"
 			for="addList" />
-		<e:commandButton id="addList" value="#{msgs['SENDSMS.LABEL.VALIDATE']}"
+		<e:commandButton id="addList"
+			value="#{msgs['SENDSMS.LABEL.VALIDATE']}"
 			action="#{smsRecipientController.addRecipientList}">
-			<t:updateActionListener value="#{usersSearchController.ldapValidUsers}"
+			<t:updateActionListener
+				value="#{usersSearchController.ldapValidUsers}"
 				property="#{smsRecipientController.recipientList}" />
 		</e:commandButton>
 	</e:panelGrid>

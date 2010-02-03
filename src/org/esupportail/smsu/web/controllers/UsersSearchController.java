@@ -10,6 +10,7 @@ import org.esupportail.commons.services.ldap.LdapException;
 import org.esupportail.commons.services.ldap.LdapUser;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
+import org.esupportail.smsu.dao.beans.Service;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.web.beans.SingleUserRecipient;
 import org.esupportail.smsu.web.beans.UIPerson;
@@ -77,6 +78,11 @@ public class UsersSearchController extends AbstractContextAwareController {
 	private String userDisplayName;
 	
 	/**
+	 * the service chosen by the user
+	 */
+	private String service;
+	
+	/**
 	 * number of user with a phone number in the user LDAP request result.
 	 */
 	private Integer nbAvailableUsersInTheList = 0;
@@ -107,14 +113,29 @@ public class UsersSearchController extends AbstractContextAwareController {
 	public String searchUser() {
 
 		ldapUsers = new ArrayList<UiRecipient>();
-		
+		logger.debug("SERVICE : " + service);
 		if (this.ldapUid != null) {
 			if (this.ldapUid.length() > 0 ) {
 				if (logger.isDebugEnabled()) {
 					logger.debug("Recherche d'utilisateurs à partir du token : " + this.ldapUid);
 				}
+				if (logger.isDebugEnabled()) {
+					logger.debug("Chosen service ? => " + service);
+				}
+				String serviceKey = null;
+				
+				if (!service.equals("none")) {
+					if (logger.isDebugEnabled()) {
+						logger.debug("Chosen service id : " + service);
+					}
+					Integer serviceId = Integer.valueOf(service);
+					Service serviceFromDb = getDomainService().getServiceById(serviceId);
+					serviceKey = serviceFromDb.getKey();
+
+				}
+
 				List<LdapUser> list = ldapUtils.searchConditionFriendlyLdapUsersByToken(
-									  this.ldapUid, null);
+									  this.ldapUid, serviceKey);
 				String displayName;
 				String phone;
 				String userId;
@@ -392,5 +413,23 @@ public class UsersSearchController extends AbstractContextAwareController {
 	 */
 	public List<UiRecipient> getLdapValidUsers() {
 		return ldapValidUsers;
+	}
+
+
+	/**
+	 * setter for the service
+	 * @param service
+	 */
+	public void setService(final String service) {
+		this.service = service;
+	}
+
+
+	/**
+	 * 
+	 * @return the current service
+	 */
+	public String getService() {
+		return service;
 	}
 }

@@ -183,12 +183,20 @@ public class SendSmsManager  {
 
 		message.setRecipients(recipients);
 
+		if (logger.isDebugEnabled()) {
+			logger.debug("get recipient group");
+		}
 		BasicGroup groupRecipient = getGroupRecipient(uiRecipients);
 		message.setGroupRecipient(groupRecipient);
-
+		if (logger.isDebugEnabled()) {
+			logger.debug("get workflow state");
+		}
 		MessageStatus state = getWorkflowState(message);
 		message.setStateAsEnum(state);
 
+		if (logger.isDebugEnabled()) {
+			logger.debug("get supervisors");
+		}
 		Set<Person> supervisors;
 		//	message.getGroupRecipient() != null | 
 		if (MessageStatus.WAITING_FOR_APPROVAL.equals(message.getStateAsEnum())) {
@@ -908,9 +916,23 @@ public class SendSmsManager  {
 	 */
 	private MessageStatus getWorkflowState(final Message message) {
 		final Integer nbRecipients = message.getRecipients().size();
+		if (logger.isDebugEnabled()) {
+			logger.debug(nbRecipients.toString());
+		}
 		final String groupLabel = message.getGroupSender().getLabel();
+		if (logger.isDebugEnabled()) {
+			logger.debug("sender group label : ");
+			logger.debug(groupLabel);
+		}
 		final CustomizedGroup cGroup = getRecurciveCustomizedGroupByLabel(groupLabel);
+		if (logger.isDebugEnabled()) {
+			logger.debug("checkFrontOfficeQuota");
+		}
 		final Boolean foQuota = checkFrontOfficeQuota(message, cGroup);
+		if (logger.isDebugEnabled()) {
+			logger.debug("checkFrontOfficeQuota result :");
+			logger.debug(foQuota.toString());
+		}
 		if (nbRecipients.equals(0)) {
 			return 	MessageStatus.NO_RECIPIENT_FOUND;
 		}

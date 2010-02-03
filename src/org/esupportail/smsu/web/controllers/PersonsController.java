@@ -82,61 +82,84 @@ public class PersonsController extends AbstractContextAwareController {
 	public List<SelectItem> getUserUserItems() {
 		List<SelectItem> personItems = new ArrayList<SelectItem>();
 		personItems.clear();
+
 		
-		List<Person> persons = getDomainService().getPersons();
-	
+
 		List<String> displayNameList = new ArrayList<String>();
-		
+
 		List<LdapUser> ldapUserList = new ArrayList<LdapUser>();
-	
-		
+
+
 		if (getCurrentUser().getFonctions().contains(FonctionName.FCTN_SUIVI_ENVOIS_ETABL.name())) {
-			
-		personItems.add(new SelectItem("0", ""));	
-				
-	
-		if (persons != null) {
-			for (Person per : persons) {
-				if (!displayNameList.contains(per.getLogin())) {
-					displayNameList.add(per.getLogin());
-				}
+			if (logger.isDebugEnabled()) {
+				logger.debug("get user items");
 			}
-
-			if (!displayNameList.isEmpty()) {
-				ldapUserList = ldapUtils.getUsersByUids(displayNameList);
-			}
-
-			for (Person per : persons) {
-				String displayName = NONE;
-				// 1 - Retrieve displayName
-				Boolean testVal = true;
-				LdapUser ldapUser;
-				int i = 0;
-
-				while ((i < ldapUserList.size()) && testVal) {
-					ldapUser = ldapUserList.get(i);
-					logger.debug("ldapUser.getId is: " + ldapUser.getId());
-					logger.debug("per.getLogin is: " + per.getLogin());
-					if (ldapUser.getId().equals(per.getLogin())) {
-						displayName = ldapUser.getAttribute(displayNameAttributeAsString);
-						logger.debug("displayName is: " + displayName);
-						testVal = false;
-					}
-					i++;
-				}
+			List<Person> persons = getDomainService().getPersons();
+			personItems.add(new SelectItem("0", ""));	
 
 
-				if (displayName.equals(NONE)) {
-					displayName = per.getLogin();
-				} else {
-					displayName = displayName + "  (" + per.getLogin() + ")"; 
-				}
-				personItems.add(new SelectItem(per.getId().toString(), displayName));
-			}
-		  }
-		
-		} else {
 			if (persons != null) {
+				for (Person per : persons) {
+					if (!displayNameList.contains(per.getLogin())) {
+						displayNameList.add(per.getLogin());
+					}
+				}
+
+				if (!displayNameList.isEmpty()) {
+					ldapUserList = ldapUtils.getUsersByUids(displayNameList);
+				}
+
+				for (Person per : persons) {
+					String displayName = NONE;
+					// 1 - Retrieve displayName
+					Boolean testVal = true;
+					LdapUser ldapUser;
+					int i = 0;
+
+					while ((i < ldapUserList.size()) && testVal) {
+						ldapUser = ldapUserList.get(i);
+						logger.debug("ldapUser.getId is: " + ldapUser.getId());
+						logger.debug("per.getLogin is: " + per.getLogin());
+						if (ldapUser.getId().equals(per.getLogin())) {
+							displayName = ldapUser.getAttribute(displayNameAttributeAsString);
+							logger.debug("displayName is: " + displayName);
+							testVal = false;
+						}
+						i++;
+					}
+
+
+					if (displayName.equals(NONE)) {
+						displayName = per.getLogin();
+					} else {
+						displayName = displayName + "  (" + per.getLogin() + ")"; 
+					}
+					personItems.add(new SelectItem(per.getId().toString(), displayName));
+				}
+			}
+			if (logger.isDebugEnabled()) {
+				logger.debug("end of get user items");
+			}
+		} else {
+			final String perId = getCurrentUser().getId();
+			final String displayName = getCurrentUser().getDisplayName();
+			
+			Person person = getDomainService().getPersonByLogin(perId);
+			String id = "noId";
+			if (logger.isDebugEnabled()) {
+				logger.debug("id set to noId");
+			}
+			if (person != null) {
+				if (logger.isDebugEnabled()) {
+					logger.debug("person login = " + person.getLogin());
+					logger.debug("person id = " + person.getId().toString());
+				}
+				
+				id = person.getId().toString();
+			}
+			personItems.add(new SelectItem(id, displayName));
+			
+/*			if (persons != null) {
 				for (Person per : persons) {
 					if (getCurrentUser().getId().equals(per.getLogin())) {
 						displayNameList.add(per.getLogin());
@@ -149,37 +172,39 @@ public class PersonsController extends AbstractContextAwareController {
 
 				for (Person per : persons) {
 					if (getCurrentUser().getId().equals(per.getLogin())) {
-					String displayName = NONE;
-					// 1 - Retrieve displayName
-					Boolean testVal = true;
-					LdapUser ldapUser;
-					int i = 0;
+						String displayName = NONE;
+						// 1 - Retrieve displayName
+						Boolean testVal = true;
+						LdapUser ldapUser;
+						int i = 0;
 
-					while ((i < ldapUserList.size()) && testVal) {
-						ldapUser = ldapUserList.get(i);
-						logger.debug("ldapUser.getId is: " + ldapUser.getId());
-						logger.debug("per.getLogin is: " + per.getLogin());
-						if (ldapUser.getId().equals(per.getLogin())) {
-						displayName = ldapUser.getAttribute(displayNameAttributeAsString);
-						logger.debug("displayName is: " + displayName);
-						testVal = false;
+						while ((i < ldapUserList.size()) && testVal) {
+							ldapUser = ldapUserList.get(i);
+							logger.debug("ldapUser.getId is: " + ldapUser.getId());
+							logger.debug("per.getLogin is: " + per.getLogin());
+							if (ldapUser.getId().equals(per.getLogin())) {
+								displayName = ldapUser.getAttribute(displayNameAttributeAsString);
+								logger.debug("displayName is: " + displayName);
+								testVal = false;
+							}
+							i++;
 						}
-						i++;
-					}
 
 
-					if (displayName.equals(NONE)) {
-						displayName = per.getLogin();
-					} else {
-						displayName = displayName + "  (" + per.getLogin() + ")"; 
-					}
-					personItems.add(new SelectItem(per.getId().toString(), displayName));
-				  }	
+						if (displayName.equals(NONE)) {
+							displayName = per.getLogin();
+						} else {
+							displayName = displayName + "  (" + per.getLogin() + ")"; 
+						}
+						personItems.add(new SelectItem(per.getId().toString(), displayName));
+					}	
 				}
-			  }
+			}
+*/
+			
 			
 		}
-		
+
 		return personItems;
 	}
 
