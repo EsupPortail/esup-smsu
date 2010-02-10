@@ -12,7 +12,7 @@
 		
 	<e:bold value="#{msgs['SMS.DATE']}"></e:bold>
 	<e:text value="#{messagesController.message.date}" >
-	<f:convertDateTime locale="#{preferencesController.locale}" pattern="dd/MM/yyyy" timeZone="Europe/Paris"/>
+	<f:convertDateTime locale="#{preferencesController.locale}" pattern="dd/MM/yyyy kk:mm" timeZone="Europe/Paris"/>
 	</e:text>
 	
 	<e:bold value="#{msgs['SMS.NBR.RECEVERS']}"></e:bold>
