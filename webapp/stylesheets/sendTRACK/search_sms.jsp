@@ -9,7 +9,7 @@
 	
 <h:form id="searchSMS">
   
-  <e:panelGrid columns="2" width="100%">
+  <e:panelGrid columns="2">
         <e:outputLabel for="beginDate" value="#{msgs['SEND.DATE.BEGIN']}"/>
   		<h:panelGroup>  
     	<e:inputText id="beginDate" value="#{messagesController.beginDate}" maxlength="10">
