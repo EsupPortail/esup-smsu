@@ -42,37 +42,27 @@
 	
 
 		<e:panelGrid border="0" columns="2" >
-		<%--
-	group selection
-	 --%>
+			<%--group selection --%>
 			<%@include file="./sendSMS/_senderGroupSelection.jsp"%>
 
-			<%--
-	service selection
-	 --%>
-
+			<%--service selection--%>
 			<%@include file="./sendSMS/_serviceSelection.jsp"%>
 
-			<%--
-	service selection
-	 --%>
-
+			<%--service selection --%>
 			<%@include file="./sendSMS/_recipients.jsp"%>
 			
-			<%-- 
-	SMS data
-	 --%>
+			<%--SMS data--%>
 			<%@include file="./sendSMS/_SMSData.jsp"%>
-			
+		<t:panelGroup colspan="2">			
 			<e:outputLabel value="#{msgs['SENDMAIL.LABEL']}" rendered="#{sendSMSController.isCheckBoxSendMailShow}" for="checkbox1"/>
 			<e:selectBooleanCheckbox id="checkbox1" binding="#{sendSMSController.checkbox}" 
 			onchange="javascript:{simulateLinkClick('formGeneral:changeButton');}" rendered="#{sendSMSController.isCheckBoxSendMailShow}"/>
-			 
+		</t:panelGroup>	 
 			<e:commandButton value="#{msgs['_.BUTTON.CHANGE']}" style="display:none;"
 								id="changeButton" action="#{sendSMSController.showMailPanel}"/>
 		
 		</e:panelGrid>
-        <f:verbatim><br/><br/></f:verbatim>
+        <f:verbatim><br/></f:verbatim>
         
         <t:panelGroup colspan="2" id="mailPanel" binding="#{sendSMSController.mailPanelGrid}">
 		<e:panelGrid border="0" columns="2" >
@@ -84,7 +74,7 @@
 		
 		</t:panelGroup>
 		
-		<f:verbatim><br/><br/></f:verbatim>
+		<f:verbatim><br/></f:verbatim>
 		
 		<e:commandButton value="#{msgs['SENDSMS.SENDBUTTON']}"
 			id="sendSMSButton" action="#{performSendSmsController.sendSMSAction}" >
