@@ -1,11 +1,10 @@
 <%@include file="_include.jsp"%>
 <e:page stringsVar="msgs" menuItem="welcome" locale="#{sessionController.locale}" >
 	<%@include file="_navigation.jsp"%>
-	<e:section value="#{msgs['WELCOME.TITLE']}" />
-	<e:paragraph value="#{msgs['WELCOME.TEXT.TOP']}" />
-	
 	<e:messages/>
-
+	<e:section value="#{msgs['WELCOME.TITLE']}" />
+	<e:paragraph  escape="false" value="#{msgs['WELCOME.TEXT.TOP']}" />
+	
 	<h:panelGroup rendered="#{sessionController.currentUser != null}">
 		<e:paragraph value="#{msgs['WELCOME.TEXT.AUTHENTICATED']}" />
 	</h:panelGroup>
