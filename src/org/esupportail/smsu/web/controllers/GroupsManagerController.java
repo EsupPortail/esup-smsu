@@ -185,8 +185,8 @@ public class GroupsManagerController extends AbstractContextAwareController {
 	 */
 	private void init()  {
 	 	paginator = new GroupPaginator(getDomainService(), ldapUtils);
-	 	treeModel = new TreeModelBase(getRootNode());
-		// récupérer la liste des roles
+	 	//treeModel = new TreeModelBase(getRootNode());
+		// rï¿½cupï¿½rer la liste des roles
 		initSelectRoleListItems();
 		// initialize the available accounts list
 		initAvailableAccounts();
@@ -261,9 +261,7 @@ public class GroupsManagerController extends AbstractContextAwareController {
 	 */
 	private TreeNode getRootNode() {
 		PortalGroupHierarchy groupHierarchy = ldapUtils.getPortalGroupHierarchy();
-
 		TreeNode rootNode = getChildrenNodes(groupHierarchy);
-
 		return rootNode;
 	}
 	

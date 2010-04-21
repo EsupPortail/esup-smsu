@@ -306,23 +306,22 @@ public class SmsRecipientController extends AbstractContextAwareController {
 		SelectItem option;
 		
 		if (currentUser != null) {
-			//ordre d'apparence des types d'envoi
-			if (currentUser.getFonctions().contains(FonctionName.FCTN_SMS_ENVOI_ADH.name())) {
-				option = new SelectItem("t3", this.getI18nService().getString("SENDSMS.LABEL.USERS"));
-				destTypeOptions.add(option);
-			}
-			if (currentUser.getFonctions().contains(FonctionName.FCTN_SMS_ENVOI_NUM_TEL.name())) {
-				option = new SelectItem("t4", this.getI18nService().getString("SENDSMS.LABEL.PHONENUMBERS"));
-				destTypeOptions.add(option);
-			}
 			if (currentUser.getFonctions().contains(FonctionName.FCTN_SMS_ENVOI_GROUPES.name())) {
-				option = new SelectItem("t1", this.getI18nService().getString("SENDSMS.LABEL.USERGROUP"));
-				destTypeOptions.add(option);
+		option = new SelectItem("t1", this.getI18nService().getString("SENDSMS.LABEL.USERGROUP"));
+		destTypeOptions.add(option);
 			}
 			if (currentUser.getFonctions().contains(FonctionName.FCTN_SMS_REQ_LDAP_ADH.name())) {
-				option = new SelectItem("t2", this.getI18nService().getString("SENDSMS.LABEL.LDAP"));
-				destTypeOptions.add(option);
-			}	
+		option = new SelectItem("t2", this.getI18nService().getString("SENDSMS.LABEL.LDAP"));
+		destTypeOptions.add(option);
+			}
+			if (currentUser.getFonctions().contains(FonctionName.FCTN_SMS_ENVOI_ADH.name())) {
+		option = new SelectItem("t3", this.getI18nService().getString("SENDSMS.LABEL.USERS"));
+		destTypeOptions.add(option);
+			}
+			if (currentUser.getFonctions().contains(FonctionName.FCTN_SMS_ENVOI_NUM_TEL.name())) {
+		option = new SelectItem("t4", this.getI18nService().getString("SENDSMS.LABEL.PHONENUMBERS"));
+		destTypeOptions.add(option);
+			}
 		}
 	}
 

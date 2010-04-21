@@ -491,7 +491,7 @@ public class SendSmsManager  {
 				if (mailRecipient == null) {
 					mailRecipient = new MailRecipient(null, addresse, login);
 				} else {
-					// cas tordu d'un destinataire sans login remonté.
+					// cas tordu d'un destinataire sans login remontï¿½.
 					if (mailRecipient.getLogin() == null) {
 						mailRecipient.setLogin(login);
 					}
@@ -724,6 +724,7 @@ public class SendSmsManager  {
 					if (recipient == null) {	
 						recipient = new Recipient(null, phone,
 								ldapUser.getId());
+						daoService.addRecipient(recipient);
 					}
 					// the recipient is added to the list.
 					if (!recipients.contains(recipient)) {
@@ -1078,7 +1079,7 @@ public class SendSmsManager  {
 			final StringBuffer buff = new StringBuffer();
 			buff.append("Erreur de nombre maximum de sms par envoi pour le groupe d'envoi [");
 			buff.append(message.getGroupSender().getLabel());
-			buff.append("] et groupe associé [");
+			buff.append("] et groupe associï¿½ [");
 			buff.append(cGroup.getLabel());
 			buff.append("]. Essai d'envoi de ");
 			buff.append(nbToSend);
@@ -1104,15 +1105,15 @@ public class SendSmsManager  {
 
 		if (logger.isDebugEnabled()) {
 			final StringBuffer buff = new StringBuffer();
-			buff.append("Vérification du quota front office pour le groupe d'envoi [");
+			buff.append("Vï¿½rification du quota front office pour le groupe d'envoi [");
 			buff.append(message.getGroupSender().getLabel());
-			buff.append("] et groupe associé [");
+			buff.append("] et groupe associï¿½ [");
 			buff.append(cGroup.getLabel());
 			buff.append("]. Essai d'envoi de ");
 			buff.append(nbToSend);
 			buff.append(" message(s), quota = ");
 			buff.append(quotaSms);
-			buff.append(" , consommé = ");
+			buff.append(" , consommï¿½ = ");
 			buff.append(consumedSms);
 			final String mess = buff.toString();
 			logger.warn(mess);
@@ -1123,13 +1124,13 @@ public class SendSmsManager  {
 			final StringBuffer buff = new StringBuffer();
 			buff.append("Erreur de quota pour le groupe d'envoi [");
 			buff.append(message.getGroupSender().getLabel());
-			buff.append("] et groupe associé [");
+			buff.append("] et groupe associï¿½ [");
 			buff.append(cGroup.getLabel());
 			buff.append("]. Essai d'envoi de ");
 			buff.append(nbToSend);
 			buff.append(" message(s), quota = ");
 			buff.append(quotaSms);
-			buff.append(" , consommé = ");
+			buff.append(" , consommï¿½ = ");
 			buff.append(consumedSms);
 			final String mess = buff.toString();
 			logger.warn(mess);

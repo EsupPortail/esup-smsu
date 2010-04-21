@@ -12,6 +12,15 @@
     	Note: EhCache is disabled by default in hibernate.cfg.xml.
     -->
 
+	<cache 
+    	name="portalCache"
+    	maxElementsInMemory="1000" 
+    	eternal="false" 
+    	timeToIdleSeconds="300"
+    	timeToLiveSeconds="600" 
+    	overflowToDisk="true" 
+    	/>
+    	
     <cache 
     	name="org.esupportail.smsu.domain.beans.User"
     	maxElementsInMemory="1000" 
