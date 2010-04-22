@@ -14,10 +14,10 @@
 
 	<cache 
     	name="portalCache"
-    	maxElementsInMemory="1000" 
+    	maxElementsInMemory="1500" 
     	eternal="false" 
-    	timeToIdleSeconds="300"
-    	timeToLiveSeconds="600" 
+    	timeToIdleSeconds="30000
+    	timeToLiveSeconds="60000" 
     	overflowToDisk="true" 
     	/>
     	
