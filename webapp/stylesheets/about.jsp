@@ -36,11 +36,13 @@
 		<e:li escape="false" value="#{msgs['ABOUT.TEXT.MORE_INFORMATION.ESUP_SMSU']}" />
 		<e:li escape="false" value="#{msgs['ABOUT.TEXT.MORE_INFORMATION.ESUP_PORTAIL']}" />
 	</e:ul>
+	<!-- 
 	<h:panelGroup rendered="#{aboutController.exceptionAuthorized}">
 	<e:subSection value="#{msgs['ABOUT.SUBTITLE.EXCEPTION']}" />
 	<e:form>
 		<e:commandButton immediate="true" action="#{aboutController.throwException}" value="#{msgs['ABOUT.BUTTON.EXCEPTION']}" />
 	</e:form>
 	</h:panelGroup>
+	-->
 <% /* @include file="_debug.jsp" */ %>
 </e:page>
