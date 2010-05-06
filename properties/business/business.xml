@@ -57,6 +57,7 @@
 		<property name="cgKeyName" value="${ldap.key.cg}"/>
 		<property name="smsuPersonAttributesGroupStore" ref="personAttributesGroupStore" />
 		<property name="userPagerAttribute" value="${ldap.pagerAttribute}" />
+		<property name="userTermsOfUseAttribute" value="${ldap.termsOfUseAttribute}" />
 	</bean>
 	
   

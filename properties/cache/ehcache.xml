@@ -16,7 +16,7 @@
     	name="portalCache"
     	maxElementsInMemory="1500" 
     	eternal="false" 
-    	timeToIdleSeconds="30000
+    	timeToIdleSeconds="30000"
     	timeToLiveSeconds="60000" 
     	overflowToDisk="true" 
     	/>

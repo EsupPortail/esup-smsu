@@ -123,6 +123,11 @@ public class SendSmsManager  {
 	private SmsuPersonAttributesGroupStore smsuPersonAttributesGroupStore;
 
 	/**
+	 * attribut used to get user's services
+	 */
+	private String userTermsOfUseAttribute;
+	
+	/**
 	 * Log4j logger.
 	 */
 	private final Logger logger = new LoggerImpl(getClass());
@@ -699,6 +704,7 @@ public class SendSmsManager  {
 
 				if (recipient == null) {	
 					recipient = new Recipient(null, uiRecipient.getPhone(), uiRecipient.getLogin());
+					daoService.addRecipient(recipient);
 				}
 				// the recipient is added.
 				if (!recipients.contains(recipient)) {
@@ -798,7 +804,7 @@ public class SendSmsManager  {
 				if (logger.isDebugEnabled()) {
 					logger.debug("search members");
 				}
-				members = ldapUtils.getMembers(gd, "up1TermsOfUse", serviceKey);
+				members = ldapUtils.getMembers(gd, userTermsOfUseAttribute, serviceKey);
 			} else {
 				if (logger.isDebugEnabled()) {
 					logger.debug("No group definition found");
@@ -860,7 +866,7 @@ public class SendSmsManager  {
 		List<LdapUser> filteredUsers = new ArrayList<LdapUser>();
 
 		for (LdapUser user : users) {
-			List<String> userTermsOfUse = user.getAttributes("up1TermsOfUse");
+			List<String> userTermsOfUse = user.getAttributes(userTermsOfUseAttribute);
 			if (userTermsOfUse.contains(cgKeyName)) {
 				if (service != null) {
 					if (logger.isDebugEnabled()) {
@@ -1437,6 +1443,13 @@ public class SendSmsManager  {
 
 	public String getUserPagerAttribute() {
 		return userPagerAttribute;
+	}
+
+	/**
+	 * @param userTermsOfUseAttribute to set
+	 */
+	public void setUserTermsOfUseAttribute(final String userTermsOfUseAttribute) {
+		this.userTermsOfUseAttribute = userTermsOfUseAttribute;
 	}
 
 
