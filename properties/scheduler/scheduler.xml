@@ -73,7 +73,7 @@
 		class="org.springframework.scheduling.quartz.SchedulerFactoryBean"
 		destroy-method="destroy" >
 		<property name="configLocation">
-			<value>classpath:properties/smsu_quartz.properties</value>
+			<value>classpath:properties/config.properties</value>
 		</property>
 		<property name="waitForJobsToCompleteOnShutdown" value="true"/>
 		<property name="overwriteExistingJobs" value="true"/>
