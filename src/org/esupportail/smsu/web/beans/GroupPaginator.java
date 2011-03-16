@@ -5,15 +5,12 @@ package org.esupportail.smsu.web.beans;
  * http://sourcesup.cru.fr/projects/esup-example
  */
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 
 import org.esupportail.commons.web.beans.ListPaginator;
-import org.esupportail.smsu.dao.beans.Account;
 import org.esupportail.smsu.dao.beans.CustomizedGroup;
-import org.esupportail.smsu.dao.beans.Role;
 import org.esupportail.smsu.domain.DomainService;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
 import org.esupportail.smsu.services.ldap.LdapUtils;

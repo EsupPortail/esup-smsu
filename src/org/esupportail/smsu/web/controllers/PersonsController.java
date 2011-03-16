@@ -16,8 +16,6 @@ import org.esupportail.smsu.dao.beans.Person;
 import org.esupportail.smsu.domain.beans.fonction.FonctionName;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 
-import sun.misc.Sort;
-
 /**
  * A bean to manage user preferences.
  */

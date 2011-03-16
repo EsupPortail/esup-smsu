@@ -6,7 +6,6 @@ import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.domain.beans.User;
 import org.esupportail.smsu.domain.beans.fonction.FonctionName;
-import org.esupportail.smsu.web.beans.GroupPaginator;
 import org.esupportail.smsu.web.beans.TemplatesPaginator;
 import org.esupportail.smsu.web.beans.UITemplate;
 

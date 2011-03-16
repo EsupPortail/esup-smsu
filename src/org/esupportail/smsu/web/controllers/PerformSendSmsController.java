@@ -9,7 +9,6 @@ import javax.faces.validator.ValidatorException;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.dao.beans.Message;
-import org.esupportail.smsu.dao.beans.Service;
 import org.esupportail.smsu.domain.beans.User;
 import org.esupportail.smsu.domain.beans.message.MessageStatus;
 import org.esupportail.smsu.exceptions.BackOfficeUnrichableException;

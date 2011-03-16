@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
-
 import org.esupportail.commons.exceptions.UserNotFoundException;
 import org.esupportail.commons.services.ldap.LdapException;
 import org.esupportail.commons.services.ldap.LdapGroup;

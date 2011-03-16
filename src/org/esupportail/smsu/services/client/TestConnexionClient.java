@@ -2,7 +2,6 @@ package org.esupportail.smsu.services.client;
 
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
-import org.esupportail.commons.utils.BeanUtils;
 
 /**
  * @author xphp8691

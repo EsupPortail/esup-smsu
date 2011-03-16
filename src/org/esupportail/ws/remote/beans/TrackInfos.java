@@ -3,8 +3,6 @@ package org.esupportail.ws.remote.beans;
 import java.io.Serializable;
 import java.util.HashSet;
 
-import org.esupportail.smsu.dao.beans.Account;
-
 
 /**
  * The class that represents accounts.

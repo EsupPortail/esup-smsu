@@ -3,7 +3,6 @@ package org.esupportail.smsu.services.scheduler.job;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.business.NotificationByMailForInvalidPhoneManager;
-import org.esupportail.smsu.business.purge.PurgePendingMember;
 import org.esupportail.smsu.services.scheduler.AbstractQuartzJob;
 import org.springframework.context.ApplicationContext;
 

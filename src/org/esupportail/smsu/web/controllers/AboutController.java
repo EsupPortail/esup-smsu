@@ -4,7 +4,6 @@
  */
 package org.esupportail.smsu.web.controllers;
 
-import org.esupportail.smsu.domain.beans.EnumeratedRole;
 import org.esupportail.smsu.domain.beans.User;
 
 /**

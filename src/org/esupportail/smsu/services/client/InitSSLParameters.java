@@ -1,8 +1,5 @@
 package org.esupportail.smsu.services.client;
 
-import java.io.FileNotFoundException;
-import java.io.PrintStream;
-
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.springframework.beans.factory.InitializingBean;
