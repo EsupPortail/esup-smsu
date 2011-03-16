@@ -501,16 +501,8 @@ public class Message  implements Serializable {
 	}
 
 	//////////////////////////////////////////////////////////////
-	// Getter and Setter of userGroupLabel
+	// Getter of userGroupLabel
 	//////////////////////////////////////////////////////////////
-	
-	/**
-	 * @param userGroupLabel the userGroupLabel to set
-	 */
-	//public void setUserGroupLabel(final String userGroupLabel) {
-	//	this.userGroupLabel = userGroupLabel;
-	//}
-
 	/**
 	 * @return the userGroupLabel
 	 */
@@ -520,14 +512,8 @@ public class Message  implements Serializable {
 	}
 
 	//////////////////////////////////////////////////////////////
-	// Getter and Setter of userAccountLabel
+	// Getter of userAccountLabel
 	//////////////////////////////////////////////////////////////
-	/**
-	 * @param userAccountLabel the userAccountLabel to set
-	 */
-	//public void setUserAccountLabel(final String userAccountLabel) {
-	//	this.userAccountLabel = userAccountLabel;
-	//}
 
 	/**
 	 * @return the userAccountLabel
@@ -536,43 +522,5 @@ public class Message  implements Serializable {
 		return account.getLabel();
 
 	}
-
-	//////////////////////////////////////////////////////////////
-	// Getter and Setter of userServiceLabel
-	//////////////////////////////////////////////////////////////
-	/**
-	 * @param userServiceLabel the userServiceLabel to set
-	 */
-	//public void setUserServiceLabel(final String userServiceLabel) {
-	//	this.userServiceLabel = userServiceLabel;
-	//}
-
-	/**
-	 * @return the userServiceLabel
-	 */
-	public String getUserServiceLabel() {
-		if (service != null) {
-			return service.getName();
-		}
-		return null;
-	}
-
-	//////////////////////////////////////////////////////////////
-	// Getter and Setter of userUserLabel
-	//////////////////////////////////////////////////////////////
-	/**
-	 * @param userUserLabel the userUserLabel to set
-	 */
-	//public void setUserUserLabel(final String userUserLabel) {
-	//	this.userUserLabel = userUserLabel;
-	//}
-
-	/**
-	 * @return the userUserLabel
-	 */
-	public String getUserUserLabel() {
-		return sender.getLogin();
-	}
-
 	
 }

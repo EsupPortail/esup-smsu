@@ -79,21 +79,21 @@ public class ApprovalManager {
 	public List<UIMessage> getApprovalUIMessages(final String idUser) {
 		List<Message> messages = getApprovalMessagesASupervisorCanApprove(idUser);
 
-		Map<String, LdapUser> ldapUserByUid = getLdapUserByUid(userLabels(messages));
+		Map<String, LdapUser> ldapUserByUid = getLdapUserByUid(senderLogins(messages));
 
 		List<UIMessage> uimessages = new ArrayList<UIMessage>();
 		for (Message mess : messages) {
-			String displayName = retreiveNiceDisplayName(ldapUserByUid, mess.getUserUserLabel());					
+			String displayName = retreiveNiceDisplayName(ldapUserByUid, mess.getSender().getLogin());
 			String groupName = retreiveNiceGroupName(mess.getGroupRecipient());					
 			uimessages.add(new UIMessage(displayName, groupName, mess));
 		}
 		return uimessages;
 	}
 
-	private LinkedHashSet<String> userLabels(List<Message> messages) {
+	private LinkedHashSet<String> senderLogins(List<Message> messages) {
 		LinkedHashSet<String> l = new LinkedHashSet<String>();	       		
 		for (Message mess : messages)
-			l.add(mess.getUserUserLabel());
+			l.add(mess.getSender().getLogin());
 		return l;
 	}
 
@@ -104,16 +104,16 @@ public class ApprovalManager {
 		return ldapUserByUid;
 	}
 
-	private String retreiveNiceDisplayName(Map<String, LdapUser> ldapUserByUid, String userLabel) {
-		logger.debug("mess.getUserUserLabel is: " + userLabel);
+	private String retreiveNiceDisplayName(Map<String, LdapUser> ldapUserByUid, String senderLogin) {
+		logger.debug("mess.getSender.getLogin is: " + senderLogin);
 		
-		LdapUser ldapUser = ldapUserByUid.get(userLabel);
+		LdapUser ldapUser = ldapUserByUid.get(senderLogin);
 		if (ldapUser != null) {
 			String displayName = ldapUser.getAttribute(displayNameAttributeAsString);
 			logger.debug("displayName is: " + displayName);
-			return displayName + "  (" + userLabel + ")"; 
+			return displayName + "  (" + senderLogin + ")"; 
 		} else {
-			return userLabel;
+			return senderLogin;
 		}
 	}
 
