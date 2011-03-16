@@ -96,7 +96,7 @@ public class MessageManager {
 
 			for (Message mess : messages) {
 				String displayName = NONE;
-				String stateMessage = NONE;
+				String stateMessage;
 				String stateMail = NONE;
 				String groupName;
 				String groupId;
@@ -125,66 +125,21 @@ public class MessageManager {
 					displayName = displayName + "  (" + mess.getUserUserLabel() + ")"; 
 				}
 
+				MessageStatus messageStatus = mess.getStateAsEnum();
 				if (logger.isDebugEnabled()) {
-				logger.debug("mess.getStateAsEnum : " + mess.getStateAsEnum());
-				}
-				
-				if (mess.getStateAsEnum().equals(MessageStatus.IN_PROGRESS)) {
-					stateMessage = getI18nService().getString("MSG.STATE.IN.PROGRESS", 
-							getI18nService().getDefaultLocale());
-				} else if (mess.getStateAsEnum().equals(MessageStatus.WAITING_FOR_APPROVAL)) {
-					stateMessage = getI18nService().getString("MSG.STATE.IN.APPROVAL", 
-							getI18nService().getDefaultLocale());
-				} else if (mess.getStateAsEnum().equals(MessageStatus.WAITING_FOR_SENDING)) {
-					stateMessage = getI18nService().getString("MSG.STATE.IN.SENDING", 
-							getI18nService().getDefaultLocale());
-				} else if (mess.getStateAsEnum().equals(MessageStatus.SENT)) {
-					stateMessage = getI18nService().getString("MSG.STATE.SENT", 
-							getI18nService().getDefaultLocale());
-				} else if (mess.getStateAsEnum().equals(MessageStatus.WS_ERROR)) {
-					stateMessage = getI18nService().getString("MSG.STATE.WS.ERROR", 
-							getI18nService().getDefaultLocale());
-				} else if (mess.getStateAsEnum().equals(MessageStatus.LDAP_ERROR)) {
-					stateMessage = getI18nService().getString("MSG.STATE.LDAP.ERROR", 
-							getI18nService().getDefaultLocale());
-				} else if (mess.getStateAsEnum().equals(MessageStatus.WS_QUOTA_ERROR)) {
-					stateMessage = getI18nService().getString("MSG.STATE.WS.QUOTA.ERROR", 
-							getI18nService().getDefaultLocale());
-				} else if (mess.getStateAsEnum().equals(MessageStatus.CANCEL)) {
-					stateMessage = getI18nService().getString("MSG.STATE.CANCEL", 
-							getI18nService().getDefaultLocale());
-				} else if (mess.getStateAsEnum().equals(MessageStatus.FO_QUOTA_ERROR)) {
-					stateMessage = getI18nService().getString("MSG.STATE.FO.QUOTA.ERROR", 
-							getI18nService().getDefaultLocale());
-				} else if (mess.getStateAsEnum().equals(
-						MessageStatus.FO_NB_MAX_CUSTOMIZED_GROUP_ERROR)) {
-					stateMessage = getI18nService().getString("MSG.STATE.CUSTOMIZED.GROUP.ERROR", 
-							getI18nService().getDefaultLocale());
-				} else if (mess.getStateAsEnum().equals(MessageStatus.NO_RECIPIENT_FOUND)) {
-					stateMessage = getI18nService().getString("MSG.STATE.NO.RECIPIENT.FOUND", 
-							getI18nService().getDefaultLocale());
-				} 
+					logger.debug("mess.getStateAsEnum : " + messageStatus);
+				}				
+				stateMessage = messageStatusI18nMessage(messageStatus);
 
 				if (logger.isDebugEnabled()) {
 					logger.debug("mess.getMail : " + mess.getMail());
-				}
-				
+				}				
 				if (mess.getMail() != null) {
+					MailStatus mailStatus = mess.getMail().getStateAsEnum();
 					if (logger.isDebugEnabled()) {
-						logger.debug("mess.getMail.getStateAsEnum : " 
-								+ mess.getMail().getStateAsEnum());
+						logger.debug("mess.getMail.getStateAsEnum : " + mailStatus);
 					}
-
-					if (mess.getMail().getStateAsEnum().equals(MailStatus.SENT)) {
-						stateMail = getI18nService().getString("MSG.STATE.MAIL.SENT", 
-								getI18nService().getDefaultLocale());
-					} else if (mess.getMail().getStateAsEnum().equals(MailStatus.WAITING)) {
-						stateMail = getI18nService().getString("MSG.STATE.MAIL.WAITING", 
-								getI18nService().getDefaultLocale());
-					} else if (mess.getMail().getStateAsEnum().equals(MailStatus.ERROR)) {
-						stateMail = getI18nService().getString("MSG.STATE.MAIL.ERROR", 
-								getI18nService().getDefaultLocale());
-					}
+					stateMail = mailStatusI18nMessage(mailStatus);
 				}
 				
 				
@@ -205,6 +160,60 @@ public class MessageManager {
 		}
 
 		 return uimessages;
+	}
+
+	private String i18nMessageKeyToMessage(String i18nKey) {
+		return getI18nService().getString(i18nKey, getI18nService().getDefaultLocale());
+	}
+
+	private String messageStatusI18nMessage(MessageStatus messageStatus) {
+		String i18nKey = messageStatusI18nMessageKey(messageStatus);
+		return i18nKey != null ? i18nMessageKeyToMessage(i18nKey) : NONE;
+	}
+
+	private String mailStatusI18nMessage(MailStatus mailStatus) {
+		String i18nKey = mailStatusI18nMessageKey(mailStatus);
+		return i18nKey != null ? i18nMessageKeyToMessage(i18nKey) : NONE;
+	}
+
+	private String messageStatusI18nMessageKey(MessageStatus messageStatus) {
+		switch (messageStatus) {
+		case IN_PROGRESS:
+			return "MSG.STATE.IN.PROGRESS";
+		case WAITING_FOR_APPROVAL:
+			return "MSG.STATE.IN.APPROVAL";
+		case WAITING_FOR_SENDING:
+			return "MSG.STATE.IN.SENDING";
+		case SENT:
+			return "MSG.STATE.SENT";
+		case WS_ERROR:
+			return "MSG.STATE.WS.ERROR";
+		case LDAP_ERROR:
+			return "MSG.STATE.LDAP.ERROR";
+		case WS_QUOTA_ERROR:
+			return "MSG.STATE.WS.QUOTA.ERROR";
+		case CANCEL:
+			return "MSG.STATE.CANCEL";
+		case FO_QUOTA_ERROR:
+			return "MSG.STATE.FO.QUOTA.ERROR";
+		case FO_NB_MAX_CUSTOMIZED_GROUP_ERROR:
+			return "MSG.STATE.CUSTOMIZED.GROUP.ERROR";
+		case NO_RECIPIENT_FOUND:
+			return "MSG.STATE.NO.RECIPIENT.FOUND";
+		}
+		return null;
+	}
+
+	private String mailStatusI18nMessageKey(MailStatus mailStatus) {
+		switch (mailStatus) {
+		case SENT:
+		    return "MSG.STATE.MAIL.SENT";
+		case WAITING:
+		    return "MSG.STATE.MAIL.WAITING";
+		case ERROR:
+		    return "MSG.STATE.MAIL.ERROR";
+		}
+		return null;
 	}
 	
 	/**
