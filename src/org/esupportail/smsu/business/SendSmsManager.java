@@ -156,80 +156,49 @@ public class SendSmsManager  {
 	 * @param mailToSend 
 	 * @return a message.
 	 */
-	public Message composeMessage(final List<UiRecipient> uiRecipients, 
-			final String login, final String content, final String smsTemplate, final String userGroup,
-			final Integer serviceId, final MailToSend mailToSend) {
-		Message message = new Message();
-
-		message.setContent(content);
-
-		////////////////Message template///////////////////
-		if (smsTemplate != null) {
-			Template tpl = getMessageTemplate(smsTemplate);
-			message.setTemplate(tpl);
-		}
-
-		////////////////Sender informations///////////////////
-		Person sender =	getSender(login);
-		message.setSender(sender);
-
-		Account account = getAccount(userGroup);
-		message.setAccount(account);
-
+	public Message createMessage(final List<UiRecipient> uiRecipients,
+			final String login, final String content, final String smsTemplate,
+			final String userGroup, final Integer serviceId,
+			final MailToSend mailToSend) {
 		Service service = getService(serviceId);
-		message.setService(service);
-
-		BasicGroup groupSender = getGroupSender(userGroup);
-		message.setGroupSender(groupSender);
-
-		////////////////Recipients///////////////////
-
-		Set<Recipient> recipients;
-		recipients = getRecipients(uiRecipients, service);
-
-		message.setRecipients(recipients);
-
-		if (logger.isDebugEnabled()) {
-			logger.debug("get recipient group");
-		}
+		Set<Recipient> recipients = getRecipients(uiRecipients, service);
+				
+		if (logger.isDebugEnabled()) logger.debug("get recipient group");
 		BasicGroup groupRecipient = getGroupRecipient(uiRecipients);
+				
+		Message message = new Message();
+		message.setContent(content);
+		if (smsTemplate != null) message.setTemplate(getMessageTemplate(smsTemplate));
+		message.setSender(getSender(login));
+		message.setAccount(getAccount(userGroup));
+		message.setService(service);
+		message.setGroupSender(getGroupSender(userGroup));
+		message.setRecipients(recipients);
 		message.setGroupRecipient(groupRecipient);
-		if (logger.isDebugEnabled()) {
-			logger.debug("get workflow state");
-		}
-		MessageStatus state = getWorkflowState(message);
-		message.setStateAsEnum(state);
-
+				
+		if (logger.isDebugEnabled()) logger.debug("get workflow state");
+		message.setStateAsEnum(getWorkflowState(message));
+				
 		if (logger.isDebugEnabled()) {
 			logger.debug("get supervisors");
 		}
+		message.setSupervisors(mayGetSupervisorsOrNull(message));
+				
+		if (mailToSend != null) message.setMail(getMail(message, mailToSend));
+		return message;
+	}
+
+	private Set<Person> mayGetSupervisorsOrNull(Message message) {
 		Set<Person> supervisors;
 		//	message.getGroupRecipient() != null | 
 		if (MessageStatus.WAITING_FOR_APPROVAL.equals(message.getStateAsEnum())) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("Supervisors needed");
-			}
+			logger.debug("Supervisors needed");
 			supervisors = getSupervisors(message);
 		} else {
-			if (logger.isDebugEnabled()) {
-				logger.debug("No supervisors needed");
-			}
+			logger.debug("No supervisors needed");
 			supervisors = null;
 		}
-		message.setSupervisors(supervisors);
-
-		if (mailToSend != null) {
-			Mail mail = getMail(message, mailToSend);
-			message.setMail(mail);
-		}
-
-		//the message is not saved if the front office quotas check failed.
-		if ((!MessageStatus.FO_QUOTA_ERROR.equals(message.getStateAsEnum()))
-				&&(!MessageStatus.FO_NB_MAX_CUSTOMIZED_GROUP_ERROR.equals(message.getStateAsEnum()))) {
-			daoService.addMessage(message);
-		}
-
-		return message;
+		return supervisors;
 	}
 
 	/**
