@@ -13,6 +13,7 @@ import org.esupportail.smsu.dao.beans.CustomizedGroup;
 import org.esupportail.smsu.dao.beans.PendingMember;
 import org.esupportail.smsu.dao.beans.Role;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
+import org.esupportail.smsu.exceptions.ldap.LdapWriteException;
 import org.esupportail.smsu.services.client.NotificationPhoneNumberInBlackListClient;
 import org.esupportail.smsu.services.client.SendSmsClient;
 import org.esupportail.smsu.services.ldap.LdapUtils;
@@ -296,8 +297,9 @@ public class MemberManager {
 	 * save the member.
 	 * @param member
 	 * @throws LdapUserNotFoundException 
+	 * @throws LdapWriteException 
 	 */
-	public void saveOrUpdateMember(final Member member) throws LdapUserNotFoundException {
+	public void saveOrUpdateMember(final Member member) throws LdapUserNotFoundException, LdapWriteException {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Save a member ");
 		}
@@ -361,8 +363,9 @@ public class MemberManager {
 	 * @param member
 	 * @return
 	 * @throws LdapUserNotFoundException 
+	 * @throws LdapWriteException 
 	 */
-	public boolean valid(final Member member) throws LdapUserNotFoundException {
+	public boolean valid(final Member member) throws LdapUserNotFoundException, LdapWriteException {
 		// retrieve the corresponding pending member
 		final String login = member.getLogin();
 		PendingMember pendingMember = daoService.getPendingMember(login);

@@ -14,6 +14,7 @@ import org.esupportail.smsu.business.beans.Member;
 import org.esupportail.smsu.dao.beans.Service;
 import org.esupportail.smsu.domain.beans.User;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
+import org.esupportail.smsu.exceptions.ldap.LdapWriteException;
 
 /**
  * A bean to manage files.
@@ -137,8 +138,9 @@ public class MembershipController extends AbstractContextAwareController {
 	 * save action.
 	 * @return A String
 	 * @throws LdapUserNotFoundException 
+	 * @throws LdapWriteException 
 	 */
-	public String save() throws LdapUserNotFoundException {
+	public String save() throws LdapUserNotFoundException, LdapWriteException {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Save data of a member");
 		}
@@ -157,8 +159,9 @@ public class MembershipController extends AbstractContextAwareController {
 	 * valid the member thank to its code.
 	 * @return A String
 	 * @throws LdapUserNotFoundException 
+	 * @throws LdapWriteException 
 	 */
-	public String validCode() throws LdapUserNotFoundException  {
+	public String validCode() throws LdapUserNotFoundException, LdapWriteException  {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Valid the code");
 		}

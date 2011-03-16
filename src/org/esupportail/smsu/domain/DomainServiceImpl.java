@@ -53,6 +53,7 @@ import org.esupportail.smsu.exceptions.CreateMessageException;
 import org.esupportail.smsu.exceptions.UnknownIdentifierApplicationException;
 import org.esupportail.smsu.exceptions.UnknownIdentifierMessageException;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
+import org.esupportail.smsu.exceptions.ldap.LdapWriteException;
 import org.esupportail.smsu.services.client.TestConnexionClient;
 import org.esupportail.smsu.web.beans.MailToSend;
 import org.esupportail.smsu.web.beans.UIMessage;
@@ -724,17 +725,19 @@ public class DomainServiceImpl implements DomainService, InitializingBean {
 	}
 	/** 
 	 * @throws LdapUserNotFoundException 
+	 * @throws LdapWriteException 
 	 * @see org.esupportail.smsu.domain.DomainService#getMember(java.lang.String)
 	 */
-	public void saveOrUpdateMember(final Member member) throws LdapUserNotFoundException {
+	public void saveOrUpdateMember(final Member member) throws LdapUserNotFoundException, LdapWriteException {
 		memberManager.saveOrUpdateMember(member);
 	}
 
 	/** 
 	 * @throws LdapUserNotFoundException 
+	 * @throws LdapWriteException 
 	 * @see org.esupportail.smsu.domain.DomainService#validMember(org.esupportail.smsu.business.beans.Member)
 	 */
-	public boolean validMember(final Member member) throws LdapUserNotFoundException {
+	public boolean validMember(final Member member) throws LdapUserNotFoundException, LdapWriteException {
 		return memberManager.valid(member);
 	}
 

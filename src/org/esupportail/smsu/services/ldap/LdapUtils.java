@@ -18,6 +18,7 @@ import org.esupportail.portal.ws.client.exceptions.PortalErrorException;
 import org.esupportail.portal.ws.client.exceptions.PortalGroupNotFoundException;
 import org.esupportail.portal.ws.client.exceptions.PortalUserNotFoundException;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
+import org.esupportail.smsu.exceptions.ldap.LdapWriteException;
 import org.esupportail.smsu.groups.SmsuLdapGroupPersonAttributeDaoImpl;
 import org.esupportail.smsu.groups.SmsuLdapPersonAttributeDaoImpl;
 import org.esupportail.smsu.groups.pags.SmsuPersonAttributesGroupStore.GroupDefinition;
@@ -178,8 +179,9 @@ public class LdapUtils {
 	 * @param uid
 	 * @param pagerValue
 	 * @throws LdapUserNotFoundException if the user is not found in the ldap 
+	 * @throws LdapWriteException 
 	 */
-	public void setUserPagerByUid(final String uid, final String pagerValue) throws LdapUserNotFoundException {
+	public void setUserPagerByUid(final String uid, final String pagerValue) throws LdapUserNotFoundException, LdapWriteException {
 		setOrClearLdapAttributeByUidAndName(uid, userPagerAttribute, pagerValue);
 
 	}
@@ -188,8 +190,9 @@ public class LdapUtils {
 	 * Clear the pager attribute for the specified user.
 	 * @param uid
 	 * @throws LdapUserNotFoundException
+	 * @throws LdapWriteException 
 	 */
-	public void clearUserPager(final String uid) throws LdapUserNotFoundException {
+	public void clearUserPager(final String uid) throws LdapUserNotFoundException, LdapWriteException {
 		clearLdapAttributeByUidAndName(uid, userPagerAttribute);
 	}
 	
@@ -198,10 +201,11 @@ public class LdapUtils {
 	 * @param uid
 	 * @param termsOfUseValue
 	 * @throws LdapUserNotFoundException if the user is not found in the ldap
+	 * @throws LdapWriteException 
 	 */
 	private void setUserTermsOfUse(final String uid, 
 			final List<String> termsOfUseValue) 
-			throws LdapUserNotFoundException {
+			throws LdapUserNotFoundException, LdapWriteException {
 		setOrClearLdapAttributeByUidAndName(uid, userTermsOfUseAttribute, termsOfUseValue);
 	}
 	
@@ -211,8 +215,9 @@ public class LdapUtils {
 	 * Clear the term of use attribute for the specified user.
 	 * @param uid
 	 * @throws LdapUserNotFoundException
+	 * @throws LdapWriteException 
 	 */
-	private void clearUserTermsOfUse(final String uid) throws LdapUserNotFoundException {
+	private void clearUserTermsOfUse(final String uid) throws LdapUserNotFoundException, LdapWriteException {
 		clearLdapAttributeByUidAndName(uid, userTermsOfUseAttribute);
 	}
 	
@@ -222,9 +227,10 @@ public class LdapUtils {
 	 * @param uid
 	 * @param name
 	 * @throws LdapUserNotFoundException
+	 * @throws LdapWriteException 
 	 */
 	private void clearLdapAttributeByUidAndName(final String uid, final String name) 
-					throws LdapUserNotFoundException {
+					throws LdapUserNotFoundException, LdapWriteException {
 		setOrClearLdapAttributeByUidAndName(uid, name, (List<String>) null);
 	}
 	
@@ -235,18 +241,45 @@ public class LdapUtils {
 	 * @param name
 	 * @param value
 	 * @throws LdapUserNotFoundException
+	 * @throws LdapWriteException 
 	 */
 	private void setOrClearLdapAttributeByUidAndName(final String uid, final String name, final List<String> value) 
-					throws LdapUserNotFoundException {
+					throws LdapUserNotFoundException, LdapWriteException {
 		final LdapUser ldapUser = getLdapUserByUserUid(uid);
 		// flush all paramter to update only specified attribute
 		ldapUser.getAttributes().clear();
 		ldapUser.getAttributes().put(name, value);
 		writeableLdapUserService.updateLdapUser(ldapUser);
+
+		checkAttributeWriteByUidAndNameSucceeded(uid, name, value);
+	}
+
+	/**
+	 * Check wether setting or clearing attribute worked correctly
+	 * @throws LdapUserNotFoundException 
+	 * @throws LdapWriteException 
+	 */
+	private void checkAttributeWriteByUidAndNameSucceeded(final String uid, final String name, final List<String> value) throws LdapUserNotFoundException, LdapWriteException {
+		List<String> storedValue = getLdapAttributesByUidAndName(uid, name);
+
+		String error = null;
+		if (value == null && (storedValue == null || storedValue.isEmpty()))
+			;
+		// nb: we can't check wether clearing attribute really removed the attribute or simply emptied it
+		else if (value != null && storedValue == null)
+			// this never happens, storedValue is never null afaik
+			error = "could not create attribute '" + name + "' with value " + join(value, ", ");
+		else if (!value.containsAll(storedValue) || !storedValue.containsAll(value))
+			error = "could not modify attribute '" + name + "' with value " + join(value, ", ") + ", it's value is still " + join(storedValue, ", "); 
+
+		if (error != null) {
+			logger.error(error);
+			throw new LdapWriteException(error);
+		}
 	}
 	
 	private void setOrClearLdapAttributeByUidAndName(final String uid, final String name, String value) 
-					throws LdapUserNotFoundException {
+					throws LdapUserNotFoundException, LdapWriteException {
 		List<String> l = value != null ? singletonList(value) : null;
 		setOrClearLdapAttributeByUidAndName(uid, name, l);
 	}
@@ -302,8 +335,9 @@ public class LdapUtils {
 	 * Add the general condition flag in the ldap.
 	 * @param uid
 	 * @throws LdapUserNotFoundException
+	 * @throws LdapWriteException 
 	 */
-	public void addGeneralConditionByUid(final String uid) throws LdapUserNotFoundException {
+	public void addGeneralConditionByUid(final String uid) throws LdapUserNotFoundException, LdapWriteException {
 		addSpecificConditionByUidAndSpecificConditionKey(uid, cgKeyName);
 	}
 	
@@ -311,8 +345,9 @@ public class LdapUtils {
 	 * Remove the general condition flag in the ldap.
 	 * @param uid
 	 * @throws LdapUserNotFoundException
+	 * @throws LdapWriteException 
 	 */
-	public void removeGeneralConditionByUid(final String uid) throws LdapUserNotFoundException {
+	public void removeGeneralConditionByUid(final String uid) throws LdapUserNotFoundException, LdapWriteException {
 		removeSpecificConditionByUidAndSpecificConditionKey(uid, cgKeyName);
 	}
 	
@@ -360,9 +395,10 @@ public class LdapUtils {
 	 * @param uid
 	 * @param newListSP
 	 * @throws LdapUserNotFoundException 
+	 * @throws LdapWriteException 
 	 */
 	public void updateAllSpecificConditionByUid(final String uid,
-			final List<String> newListSP) throws LdapUserNotFoundException {
+			final List<String> newListSP) throws LdapUserNotFoundException, LdapWriteException {
 		// retrieve the list of specific conditions stored in the LDAP
 		final List<String> originalTermsOfuse = getSpecificConditionValidateByUid(uid);
 		// add the new specific conditions not already stored in the LDAP
@@ -383,8 +419,9 @@ public class LdapUtils {
 	 * Remove the list of specific conditions for the given user.
 	 * @param uid
 	 * @throws LdapUserNotFoundException 
+	 * @throws LdapWriteException 
 	 */
-	public void removeAllSpecificConditionByUid(final String uid) throws LdapUserNotFoundException {
+	public void removeAllSpecificConditionByUid(final String uid) throws LdapUserNotFoundException, LdapWriteException {
 		// retrieve the list of specific conditions stored in the LDAP
 		final List<String> originalTermsOfuse = getSpecificConditionValidateByUid(uid);
 		// remove the specific conditions from the LDAP 
@@ -398,10 +435,11 @@ public class LdapUtils {
 	 * Add a specific condition in the ldap.
 	 * @param uid
 	 * @throws LdapUserNotFoundException
+	 * @throws LdapWriteException 
 	 */
 	public void addSpecificConditionByUidAndSpecificConditionKey(final String uid, 
 			 			final String specificConditionKey)  
-			 			throws LdapUserNotFoundException {
+			 			throws LdapUserNotFoundException, LdapWriteException {
 		final List<String> termsOfuse = getUserTermsOfUseByUid(uid);
 		
 		if (termsOfuse != null) {
@@ -419,10 +457,11 @@ public class LdapUtils {
 	 * @param uid
 	 * @param specificConditionKey
 	 * @throws LdapUserNotFoundException
+	 * @throws LdapWriteException 
 	 */
 	public void removeSpecificConditionByUidAndSpecificConditionKey(final String uid, 
 								final String specificConditionKey) 
-								throws LdapUserNotFoundException {
+								throws LdapUserNotFoundException, LdapWriteException {
 		final List<String> termsOfuse = getUserTermsOfUseByUid(uid);
 		
 		if (termsOfuse != null) {
@@ -945,4 +984,19 @@ public class LdapUtils {
 		l.add(e);
 		return l;
 	}	
+
+	public static String join(Iterable<?> elements, CharSequence separator) {
+		if (elements == null) return "";
+
+		StringBuilder sb = null;
+
+		for (Object s : elements) {
+			if (sb == null)
+				sb = new StringBuilder();
+			else
+				sb.append(separator);
+			sb.append(s);			
+		}
+		return sb == null ? "" : sb.toString();
+	}
 }

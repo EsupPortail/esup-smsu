@@ -19,6 +19,7 @@ import org.esupportail.smsu.business.purge.PeriodicPurge;
 import org.esupportail.smsu.business.purge.PurgePendingMember;
 import org.esupportail.smsu.dao.DaoService;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
+import org.esupportail.smsu.exceptions.ldap.LdapWriteException;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.services.scheduler.SchedulerUtils;
 import org.esupportail.smsu.services.smtp.SmtpServiceUtils;
@@ -114,6 +115,8 @@ public class TestServlet extends HttpServlet {
 			
 		} catch (LdapUserNotFoundException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (LdapWriteException e) {
 			e.printStackTrace();
 		}
     }

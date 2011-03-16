@@ -31,6 +31,7 @@ import org.esupportail.smsu.exceptions.CreateMessageException;
 import org.esupportail.smsu.exceptions.UnknownIdentifierApplicationException;
 import org.esupportail.smsu.exceptions.UnknownIdentifierMessageException;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
+import org.esupportail.smsu.exceptions.ldap.LdapWriteException;
 import org.esupportail.smsu.web.beans.MailToSend;
 import org.esupportail.smsu.web.beans.UIMessage;
 import org.esupportail.smsu.web.beans.UIPerson;
@@ -442,8 +443,9 @@ public interface DomainService extends Serializable {
 	 * save or update the given member.
 	 * @param member
 	 * @throws LdapUserNotFoundException 
+	 * @throws LdapWriteException 
 	 */
-	void saveOrUpdateMember(final Member member) throws LdapUserNotFoundException;
+	void saveOrUpdateMember(final Member member) throws LdapUserNotFoundException, LdapWriteException;
 	
 	/**
 	 * test if the the code entered by the pending member is correct.
@@ -451,8 +453,9 @@ public interface DomainService extends Serializable {
 	 * @param member
 	 * @return a boolean that indicates if the member is accepted
 	 * @throws LdapUserNotFoundException 
+	 * @throws LdapWriteException 
 	 */
-	boolean validMember(Member member) throws LdapUserNotFoundException;
+	boolean validMember(Member member) throws LdapUserNotFoundException, LdapWriteException;
 
 
 	/**
