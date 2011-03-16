@@ -29,6 +29,7 @@ import org.esupportail.smsu.dao.beans.Template;
 import org.esupportail.smsu.domain.beans.mail.MailStatus;
 import org.esupportail.smsu.domain.beans.message.MessageStatus;
 import org.esupportail.smsu.exceptions.BackOfficeUnrichableException;
+import org.esupportail.smsu.exceptions.CreateMessageException;
 import org.esupportail.smsu.exceptions.InsufficientQuotaException;
 import org.esupportail.smsu.exceptions.UnknownIdentifierApplicationException;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
@@ -155,11 +156,12 @@ public class SendSmsManager  {
 	 * @param serviceId 
 	 * @param mailToSend 
 	 * @return a message.
+	 * @throws CreateMessageException 
 	 */
 	public Message createMessage(final List<UiRecipient> uiRecipients,
 			final String login, final String content, final String smsTemplate,
 			final String userGroup, final Integer serviceId,
-			final MailToSend mailToSend) {
+			final MailToSend mailToSend) throws CreateMessageException {
 		Service service = getService(serviceId);
 		Set<Recipient> recipients = getRecipients(uiRecipients, service);
 		BasicGroup groupRecipient = getGroupRecipient(uiRecipients);
@@ -203,10 +205,6 @@ public class SendSmsManager  {
 		try {
 			if (message.getStateAsEnum().equals(MessageStatus.NO_RECIPIENT_FOUND))
 				return null;
-			else if (message.getStateAsEnum().equals(MessageStatus.FO_NB_MAX_CUSTOMIZED_GROUP_ERROR))
-				return "SENDSMS.MESSAGE.SENDERGROUPNDMAXSMSERROR";
-			else if (message.getStateAsEnum().equals(MessageStatus.FO_QUOTA_ERROR))
-				return "SENDSMS.MESSAGE.SENDERGROUPQUOTAERROR";
 			else if (message.getStateAsEnum().equals(MessageStatus.WAITING_FOR_APPROVAL))
 				// envoi du mail
 				sendMailsToSupervisors(message.getSupervisors());	
@@ -458,8 +456,8 @@ public class SendSmsManager  {
 					}
 				}
 				message.getMail().setStateAsEnum(MailStatus.SENT);
-			} catch (LdapUserNotFoundException e1) {
-				logger.debug("Unable to find the user with id : [" + expUid + "]", e1);
+			} catch (CreateMessageException e) {
+				logger.error("discarding message with " + e + " (this should not happen, the message should have been checked first!)");
 				message.getMail().setStateAsEnum(MailStatus.ERROR);
 			} 
 	}
@@ -717,8 +715,9 @@ public class SendSmsManager  {
 
 	/**
 	 * @return the message workflow state.
+	 * @throws CreateMessageException 
 	 */
-	private MessageStatus getWorkflowState(final Integer nbRecipients, BasicGroup groupSender, BasicGroup groupRecipient) {
+	private MessageStatus getWorkflowState(final Integer nbRecipients, BasicGroup groupSender, BasicGroup groupRecipient) throws CreateMessageException {
 		if (logger.isDebugEnabled()) logger.debug("get workflow state");
 		if (logger.isDebugEnabled()) logger.debug("nbRecipients: " + nbRecipients);
 
@@ -727,9 +726,9 @@ public class SendSmsManager  {
 		if (nbRecipients.equals(0)) {
 			return MessageStatus.NO_RECIPIENT_FOUND;
 		} else if (!checkFrontOfficeQuota(nbRecipients, cGroup, groupSender)) {
-			return MessageStatus.FO_QUOTA_ERROR;
+			throw new CreateMessageException.GroupQuotaException();
 		} else if (!checkMaxSmsGroupQuota(nbRecipients, cGroup, groupSender)) {
-			return MessageStatus.FO_NB_MAX_CUSTOMIZED_GROUP_ERROR;
+			throw new CreateMessageException.GroupMaxSmsPerMessage();
 		} else if (nbRecipients >= nbMaxSmsBeforeSupervising || groupRecipient != null) {
 			return MessageStatus.WAITING_FOR_APPROVAL;
 		} else {
@@ -774,8 +773,8 @@ public class SendSmsManager  {
 			contentWithoutExpTags = customizer.customizeExpContent(message.getContent(), 
 					message.getGroupSender().getLabel(), senderUid);
 			if (logger.isDebugEnabled()) logger.debug("contentWithoutExpTags: " + contentWithoutExpTags);
-		} catch (LdapUserNotFoundException e1) {
-			logger.debug("Unable to find the user with id : [" + senderUid + "]", e1);
+		} catch (CreateMessageException e) {
+			logger.error("discarding message with error " + e + " (this should not happen, the message should have been checked first!)");
 		}
 
 		final List<CustomizedMessage> customizedMessageList = new ArrayList<CustomizedMessage>();

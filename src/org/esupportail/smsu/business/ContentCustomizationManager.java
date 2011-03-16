@@ -9,6 +9,8 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
+import org.esupportail.smsu.exceptions.CreateMessageException;
+import org.esupportail.smsu.exceptions.CreateMessageExceptionWrapper;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 
@@ -114,9 +116,9 @@ public class ContentCustomizationManager {
 	 * @param expGroupName
 	 * @param expUid
 	 * @return the content customized with the sender data.
-	 * @throws LdapUserNotFoundException 
+	 * @throws CreateMessageException
 	 */
-	public String customizeExpContent(String content, final String expGroupName, final String expUid) throws LdapUserNotFoundException {
+	public String customizeExpContent(String content, final String expGroupName, final String expUid) throws CreateMessageException {
 		Set<String> tags = extractExpTags(content);
 
 		for (String tag : tags) {
@@ -130,7 +132,7 @@ public class ContentCustomizationManager {
 			} catch (LdapUserNotFoundException e) {
 				String messageStr = "Unable to find the user with id : [" + expUid + "]";
 				logger.warn(messageStr, e);
-				throw new LdapUserNotFoundException(messageStr, e);
+				throw new CreateMessageException.Wrapper(messageStr, e);
 			}
 			if (tagRepl != null)
 				content = content.replaceAll("<" + tag + ">", tagRepl);

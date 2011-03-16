@@ -48,8 +48,8 @@ import org.esupportail.smsu.dao.beans.Template;
 
 import org.esupportail.smsu.domain.beans.User;
 import org.esupportail.smsu.domain.beans.VersionManager;
-import org.esupportail.smsu.domain.beans.message.MessageStatus;
 import org.esupportail.smsu.exceptions.BackOfficeUnrichableException;
+import org.esupportail.smsu.exceptions.CreateMessageException;
 import org.esupportail.smsu.exceptions.UnknownIdentifierApplicationException;
 import org.esupportail.smsu.exceptions.UnknownIdentifierMessageException;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
@@ -891,21 +891,16 @@ public class DomainServiceImpl implements DomainService, InitializingBean {
 	 * @param serviceId 
 	 * @param mail 
 	 * @return a message.
+	 * @throws CreateMessageException 
 	 * @see org.esupportail.smsu.domain.DomainService#composeMessage(...)
 	 */
 	public Message composeMessage(final List<UiRecipient> uiRecipients, final String login,
 			final String content, final String smsTemplate, final String userGroup,
-			final Integer serviceId, final MailToSend mail) {
+			final Integer serviceId, final MailToSend mail) throws CreateMessageException {
 		Message message = sendSmsManager.createMessage(uiRecipients, login, 
 				content, smsTemplate, userGroup, 
 				serviceId, mail);
-		
-		//the message is not saved if the front office quotas check failed.
-		if (!MessageStatus.FO_QUOTA_ERROR.equals(message.getStateAsEnum())
-				&& !MessageStatus.FO_NB_MAX_CUSTOMIZED_GROUP_ERROR.equals(message.getStateAsEnum())) {
-			daoService.addMessage(message);
-		}
-
+		daoService.addMessage(message);
 		return message;
 	}
 

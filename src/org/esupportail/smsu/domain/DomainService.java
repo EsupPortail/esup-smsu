@@ -27,6 +27,7 @@ import org.esupportail.smsu.dao.beans.Template;
 
 import org.esupportail.smsu.domain.beans.User;
 import org.esupportail.smsu.exceptions.BackOfficeUnrichableException;
+import org.esupportail.smsu.exceptions.CreateMessageException;
 import org.esupportail.smsu.exceptions.UnknownIdentifierApplicationException;
 import org.esupportail.smsu.exceptions.UnknownIdentifierMessageException;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
@@ -497,10 +498,11 @@ public interface DomainService extends Serializable {
 	 * @param serviceId 
 	 * @param mail 
 	 * @return the message
+	 * @throws CreateMessageException 
 	 */
 	Message composeMessage(List<UiRecipient> uiRecipients, 
 			String login, String content, String smsTemplate, String userGroup,
-			Integer serviceId, MailToSend mail);
+			Integer serviceId, MailToSend mail) throws CreateMessageException;
 	
 	/**
 	 * treat a message.

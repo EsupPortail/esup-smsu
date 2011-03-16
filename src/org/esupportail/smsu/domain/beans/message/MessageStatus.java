@@ -38,14 +38,6 @@ public enum MessageStatus {
 	 */
 	CANCEL,
 	/**
-	 * The message doesn't match the front office quota. 
-	 */
-	FO_QUOTA_ERROR,
-	/**
-	 * The message doesn't match the front office max sms for one sent. 
-	 */
-	FO_NB_MAX_CUSTOMIZED_GROUP_ERROR,
-	/**
 	 * no recipient found. 
 	 */
 	NO_RECIPIENT_FOUND

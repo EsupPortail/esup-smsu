@@ -182,10 +182,6 @@ public class MessageManager {
 			return "MSG.STATE.WS.QUOTA.ERROR";
 		case CANCEL:
 			return "MSG.STATE.CANCEL";
-		case FO_QUOTA_ERROR:
-			return "MSG.STATE.FO.QUOTA.ERROR";
-		case FO_NB_MAX_CUSTOMIZED_GROUP_ERROR:
-			return "MSG.STATE.CUSTOMIZED.GROUP.ERROR";
 		case NO_RECIPIENT_FOUND:
 			return "MSG.STATE.NO.RECIPIENT.FOUND";
 		}

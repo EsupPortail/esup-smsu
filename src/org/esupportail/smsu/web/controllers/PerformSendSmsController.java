@@ -11,6 +11,7 @@ import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.dao.beans.Message;
 import org.esupportail.smsu.domain.beans.User;
 import org.esupportail.smsu.domain.beans.message.MessageStatus;
+import org.esupportail.smsu.exceptions.CreateMessageException;
 import org.esupportail.smsu.services.smtp.SmtpServiceUtils;
 import org.esupportail.smsu.web.beans.MailToSend;
 import org.esupportail.smsu.web.beans.UiRecipient;
