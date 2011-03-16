@@ -2,6 +2,8 @@ package org.esupportail.smsu.web.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.faces.component.UISelectBoolean;
 import javax.faces.component.html.HtmlInputTextarea;
@@ -131,7 +133,7 @@ public class SendSMSController extends AbstractContextAwareController {
 	/**
 	 * rights list.
 	 */
-	private List<String> rights = new ArrayList<String>();
+	private Set<String> rights = new HashSet<String>();
 	
 	/**
 	 * the select item for sms templates.

@@ -139,7 +139,7 @@ public interface DomainService extends Serializable {
 	 * @param rights
 	 * @return 'true' if less one of rights belong fonctions.
 	 */
-	boolean checkRights(List<String> fonctions, List<String> rights);
+	boolean checkRights(List<String> fonctions, Set<String> rights);
 	
 	//////////////////////////////////////////////////////////////
 	// Message

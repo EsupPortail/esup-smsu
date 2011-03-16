@@ -4,9 +4,9 @@
  */
 package org.esupportail.smsu.web.controllers;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 import org.apache.myfaces.component.html.ext.HtmlPanelGroup;
 import org.esupportail.commons.services.logging.Logger;
@@ -90,7 +90,7 @@ public class MessagesController<DomaineService> extends AbstractContextAwareCont
 	/**
 	 * rights list.
 	 */
-	private List<String> rights = new ArrayList<String>();
+	private Set<String> rights = new HashSet<String>();
 
 	/**
 	 * The count of recipients destCount.
@@ -110,6 +110,7 @@ public class MessagesController<DomaineService> extends AbstractContextAwareCont
 	/**
 	 * A logger.
 	 */
+	@SuppressWarnings("unused")
 	private final Logger logger = new LoggerImpl(this.getClass());
 
 	//////////////////////////////////////////////////////////////
@@ -138,7 +139,6 @@ public class MessagesController<DomaineService> extends AbstractContextAwareCont
 		// rights to enter
 		this.rights.add(FonctionName.FCTN_SUIVI_ENVOIS_ETABL.name());
 		this.rights.add(FonctionName.FCTN_SUIVI_ENVOIS_UTIL.name());
-		logger.debug("pageAuthorized rights size est: " + rights.size());
 		return getDomainService().checkRights(currentUser.getFonctions(), this.rights);
 	}
 

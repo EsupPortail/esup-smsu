@@ -3,6 +3,7 @@ package org.esupportail.smsu.business;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.dao.DaoService;
@@ -145,12 +146,12 @@ public class SecurityManager {
 	 * @param fonctions: list of user fonctions
 	 * @param rights: list of required rights
 	 */
-	public boolean checkRights(final List<String> fonctions, final List<String> rights) {
+	public boolean checkRights(final List<String> fonctions, final Set<String> rights) {
 		logger.debug("users rights: " + join(fonctions, " "));
 		logger.debug("one the following rights is required: " + join(rights, " "));
 		for (String right : rights) {
 			if (fonctions.contains(right)) { 
-			    logger.debug("checkRights: user has right " + right);
+			    logger.debug("checkRights ok: user has right " + right);
 			    return true; 
 			}
 		}

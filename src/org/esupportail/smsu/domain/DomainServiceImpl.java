@@ -376,7 +376,7 @@ public class DomainServiceImpl implements DomainService, InitializingBean {
 	/**
 	 * @see org.esupportail.smsu.domain.DomainService#checkRights
 	 */
-	public boolean checkRights(final List<String> fonctions, final List<String> rights) {
+	public boolean checkRights(final List<String> fonctions, final Set<String> rights) {
 		return securityManager.checkRights(fonctions, rights);
 	}
 	//////////////////////////////////////////////////////////////
