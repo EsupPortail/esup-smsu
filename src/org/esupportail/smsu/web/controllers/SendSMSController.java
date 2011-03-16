@@ -552,6 +552,13 @@ public class SendSMSController extends AbstractContextAwareController {
 		return mailOtherRecipients;
 	}
 
+	public String[] getMailOtherRecipientsList() {
+		if (mailOtherRecipients.equals("")) 
+			return new String[] {};
+		else
+			return mailOtherRecipients.split(",");
+	}
+
 	/**
 	 * @param mailSubject the mailSubject to set
 	 */

@@ -45,6 +45,13 @@ public class MailToSend {
 		return mailOtherRecipients;
 	}
 
+	public String[] getMailOtherRecipientsList() {
+		if (mailOtherRecipients.equals("")) 
+			return new String[] {};
+		else
+			return mailOtherRecipients.split(",");
+	}
+
 	public void setMailOtherRecipients(final String mailOtherRecipients) {
 		this.mailOtherRecipients = mailOtherRecipients;
 	}

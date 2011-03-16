@@ -409,9 +409,7 @@ public class SendSmsManager  {
 			}
 		}
 
-		String[] otherRecipients = mailToSend.getMailOtherRecipients().split(",");
-		for (String otherAdresse : otherRecipients) {
-			if (!otherAdresse.equals("")) {
+		for (String otherAdresse : mailToSend.getMailOtherRecipientsList()) {
 				mailRecipient = daoService.getMailRecipientByAddress(otherAdresse);
 				if (mailRecipient == null) {
 					mailRecipient = new MailRecipient(null, otherAdresse, null);
@@ -420,7 +418,6 @@ public class SendSmsManager  {
 					logger.debug("Add mail recipient from other recipients: [" + otherAdresse + "]");
 				}
 				mailRecipients.add(mailRecipient);
-			}
 		}
 		if (mailRecipients.size() > 0) {
 			mail.setMailRecipients(mailRecipients);

@@ -52,11 +52,6 @@ public class PerformSendSmsController extends AbstractContextAwareController {
 	private Integer smsMaxSize;
 
 	/**
-	 * the return string, used for navigation.
-	 */
-	private String strReturn;
-
-	/**
 	 * the SmtpServiceUtils Bean.
 	 */
 	private SmtpServiceUtils smtpServiceUtils;
@@ -87,12 +82,10 @@ public class PerformSendSmsController extends AbstractContextAwareController {
 
 		// validate others mails
 		if (sendSMSController.getCheckbox().isSelected()) {
-			if (!sendSMSController.getMailOtherRecipients().equals("")) {
-				String retVal = validateOthersMails(sendSMSController.getMailOtherRecipients());
-				if (retVal != null) {
-					addErrorMessage(null, "SERVICE.FORMATMAIL.WRONG", retVal);
-					return null;
-				}
+			String badMail = validateOthersMails(sendSMSController.getMailOtherRecipientsList());
+			if (badMail != null) {
+				addErrorMessage(null, "SERVICE.FORMATMAIL.WRONG", badMail);
+				return null;
 			}  
 		}
 		// by default, a SMS is considered as a sent one.
@@ -113,14 +106,11 @@ public class PerformSendSmsController extends AbstractContextAwareController {
 		+ " " + sendSMSController.getSmsBody().getValue() 
 		+ " " + sendSMSController.getSmsSuffix();
 		content = content.trim();
-		strReturn = contentValidation(content);
 
-		if (strReturn != null) {
+		if (!contentValidation(content)) return null;
 
-			////////////////Recipients validation///////////////////
-			strReturn = recipientValidation();
+		if (!recipientValidation()) return null;
 
-			if (strReturn != null) {
 				// récupération du user
 				String login;
 				User currentUser = getCurrentUser();
@@ -160,25 +150,23 @@ public class PerformSendSmsController extends AbstractContextAwareController {
 					mail = new MailToSend(isMailToRecipient, contentMail, otherRecipients, mailSubject, mailTemplate);
 				}
 
-				message = getDomainService().composeMessage(uiRecipients, login, content,
-						smsTemplate, userGroup, serviceId, mail);
+				try {
+					message = getDomainService().composeMessage(uiRecipients, login, content,
+							smsTemplate, userGroup, serviceId, mail);
+				} catch (CreateMessageException e) {
+				    addFormattedError(null, e.toI18nString(getI18nService()));
+				    return null;
+				}
 
 				String errorMsgKey = getDomainService().treatMessage(message);
 				if (errorMsgKey != null) {
 				    addErrorMessage(null, errorMsgKey);
-				    strReturn = null;
-				} else {
-				    sendSMSController.setIsShowMsgsUsingMessageStatus(message.getStateAsEnum());
-				    strReturn = "envoiOK";
+				    return null;
 				}
-			}
-		}
 
-		if (strReturn != null) {
-			resetControllers();
-		}
-
-		return strReturn;
+				sendSMSController.setIsShowMsgsUsingMessageStatus(message.getStateAsEnum());
+				resetControllers();
+				return "envoiOK";
 	}
 
 	/**
@@ -205,55 +193,45 @@ public class PerformSendSmsController extends AbstractContextAwareController {
 	/**
 	 * Content validation.
 	 */
-	private String contentValidation(final String content) {
+	private Boolean contentValidation(final String content) {
 		Integer contentSize = content.length();
-		String ret;
 		logger.debug("taille de message : " + contentSize.toString());
 		logger.debug("message : " + content);
 		if (contentSize == 0) {
 			addErrorMessage(null, "SENDSMS.MESSAGE.EMPTYMESSAGE");
-			ret = null;	
+			return false;
+		} else if (contentSize > smsMaxSize) {
+			addErrorMessage(null, "SENDSMS.MESSAGE.MESSAGETOOLONG");
+			return false;
 		} else {
-			if (contentSize > smsMaxSize) {
-				addErrorMessage(null, "SENDSMS.MESSAGE.MESSAGETOOLONG");
-				ret = null;	
-			} else {
-				ret = "contentValidated";
-			}
+			return true;
 		}		
-		
-		return ret;
 	}
 
 	/**
 	 * recipient validation.
 	 */
-	private String recipientValidation() {
+	private Boolean recipientValidation() {
 		List<UiRecipient> uiRecipients = smsRecipientController.getRecipients();
-		String ret;
 		if (uiRecipients.isEmpty()) {
 			addErrorMessage(null, "SENDSMS.MESSAGE.RECIPIENTSMANDATORY");
-			ret = null;
+			return false;
 		}  else {
-			ret = "contentValidated"; 
+			return true;
 		}
-		return ret; 
 	}
 
 	/**
 	 * recipient validation.
 	 */
-	private String validateOthersMails(final String mails) {
-		String[] others = mails.split(",");
-		for (String mail : others) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("mail validateOthersMails is :" + mail);
+	private String validateOthersMails(final String[] mails) {
+		for (String mail : mails) {
+			if (logger.isDebugEnabled()) logger.debug("mail validateOthersMails is :" + mail);
+
+			if (!smtpServiceUtils.checkInternetAdresses(mail)) {
+				logger.info("validateOthersMails: " + mail + " is invalid");
+				return mail;
 			}
-			final Boolean retVal = smtpServiceUtils.checkInternetAdresses(mail);
-			if (logger.isDebugEnabled()) {
-				logger.debug("retVal validateOthersMails is :" + retVal);
-			}
-			if (!retVal) { return mail; }
 		}
 		return null;
 	}
@@ -353,23 +331,6 @@ public class PerformSendSmsController extends AbstractContextAwareController {
 	 */
 	public Message getMessage() {
 		return message;
-	}
-
-	//////////////////////////////////////////////////////////////
-	// Getter and Setter of strReturn
-	//////////////////////////////////////////////////////////////
-	/**
-	 * @return strReturn
-	 */
-	public String getStrReturn() {
-		return strReturn;
-	}
-
-	/**
-	 * @param strReturn
-	 */
-	public void setStrReturn(final String strReturn) {
-		this.strReturn = strReturn;
 	}
 
 	//////////////////////////////////////////////////////////////
