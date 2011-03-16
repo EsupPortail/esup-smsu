@@ -182,17 +182,13 @@ public class SendSmsManager  {
 	}
 
 	private Set<Person> mayGetSupervisorsOrNull(Message message) {
-		if (logger.isDebugEnabled()) logger.debug("get supervisors");
-		Set<Person> supervisors;
-		//	message.getGroupRecipient() != null | 
 		if (MessageStatus.WAITING_FOR_APPROVAL.equals(message.getStateAsEnum())) {
 			logger.debug("Supervisors needed");
-			supervisors = getSupervisors(message);
+			return getSupervisors(message);
 		} else {
 			logger.debug("No supervisors needed");
-			supervisors = null;
+			return null;
 		}
-		return supervisors;
 	}
 
 	/**
@@ -250,14 +246,12 @@ public class SendSmsManager  {
 			if (logger.isDebugEnabled()) {
 				logger.debug("Start managment of message with id : " + message.getId());
 			}
-			// customized all messages
-			final List<CustomizedMessage> customizedMessageList = getCutomizedMessages(message);
 			// get the associated customized group
 			final String groupLabel = message.getGroupSender().getLabel();
 			final CustomizedGroup cGroup = getRecurciveCustomizedGroupByLabel(groupLabel);
 
 			// send the customized messages
-			for (CustomizedMessage customizedMessage : customizedMessageList) {
+			for (CustomizedMessage customizedMessage : getCutomizedMessages(message)) {
 				sendCustomizedMessages(customizedMessage);
 				cGroup.setConsumedSms(cGroup.getConsumedSms() + 1);
 				daoService.updateCustomizedGroup(cGroup);
@@ -296,12 +290,14 @@ public class SendSmsManager  {
 		if (supervisors == null) return;
 		logger.debug("supervisors not null");
 
-		final List<String> toList = new LinkedList<String>();
 		final List<String> uids = new LinkedList<String>();
 		for (Person supervisor : supervisors) {
 			uids.add(supervisor.getLogin());
 		}
-		for (LdapUser ldapUser : ldapUtils.getUsersByUids(uids)) {
+		List <LdapUser> ldapUsers = ldapUtils.getUsersByUids(uids);
+
+		final List<String> toList = new LinkedList<String>();
+		for (LdapUser ldapUser : ldapUsers) {
 			if (logger.isDebugEnabled()) {
 				logger.debug("supervisor login is :" + ldapUser.getId());
 			}
@@ -625,7 +621,19 @@ public class SendSmsManager  {
 			logger.debug("Search users for subgroup [" + currentGroup.getName()
 				     + "] [" + currentGroup.getId() + "]");
 		}
-		final List<PortalGroupHierarchy> childs = groupHierarchy.getSubHierarchies();
+
+		List<LdapUser> members = getMembersNonRecursive(currentGroup, serviceKey);
+
+		List<PortalGroupHierarchy> childs = groupHierarchy.getSubHierarchies();
+		if (childs != null) {
+			for (PortalGroupHierarchy child : childs)
+				members = mergeUserLists(members, getMembers(child, serviceKey));
+		}
+
+		return members;
+	}
+
+	private List<LdapUser> getMembersNonRecursive(final PortalGroup currentGroup, String serviceKey) {
 		List<LdapUser> members = new LinkedList<LdapUser>();
 		//get the corresponding ldap group to extract members
 
@@ -646,21 +654,6 @@ public class SendSmsManager  {
 		} catch (Throwable e) {
 			logger.debug(e.getMessage());
 		}
-
-		Boolean isGroupLeaf = true;
-		if (childs != null) {
-			isGroupLeaf = false;
-		}
-		if (!isGroupLeaf) {
-			for (PortalGroupHierarchy child : childs) {
-				List<LdapUser> subMembers = getMembers(child, serviceKey);
-				if (logger.isDebugEnabled()) {
-					logger.debug("Merge members for group " + child.getGroup().getName());
-				}
-				members = mergeUserLists(members, subMembers);
-			}
-		}
-
 		return members;
 	}
 
