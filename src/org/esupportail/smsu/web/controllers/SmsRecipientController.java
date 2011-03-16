@@ -232,16 +232,12 @@ public class SmsRecipientController extends AbstractContextAwareController {
 
 		if (recipientType.equals("t1")) {
 			groupPanelGrid.setRendered(true);
+		} else if (recipientType.equals("t2")) {
+			ldapRequestPanelGrid.setRendered(true);
+		} else if (recipientType.equals("t3")) {
+			ldapSearchPanelGrid.setRendered(true);
 		} else {
-			if (recipientType.equals("t2")) {
-				ldapRequestPanelGrid.setRendered(true);
-			} else {
-				if (recipientType.equals("t3")) {
-					ldapSearchPanelGrid.setRendered(true);
-				} else {
-					phoneNumberListPanelGrid.setRendered(true);
-				}
-			}
+			phoneNumberListPanelGrid.setRendered(true);
 		}
 	}
 
@@ -278,20 +274,13 @@ public class SmsRecipientController extends AbstractContextAwareController {
 		if (!destTypeOptions.isEmpty()) {
 			if (destTypeOptions.get(0).getValue().equals("t1")) {
 				groupPanelGrid.setRendered(true);
-			} else {
-				if (destTypeOptions.get(0).getValue().equals("t2")) {
-					ldapRequestPanelGrid.setRendered(true);
-				} else {
-					if (destTypeOptions.get(0).getValue().equals("t3")) {
-						ldapSearchPanelGrid.setRendered(true);
-					} else {
-						if (destTypeOptions.get(0).getValue().equals("t4")) {
-							phoneNumberListPanelGrid.setRendered(true);
-						} 
-					}
-				}
-			}
-		
+			} else if (destTypeOptions.get(0).getValue().equals("t2")) {
+				ldapRequestPanelGrid.setRendered(true);
+			} else if (destTypeOptions.get(0).getValue().equals("t3")) {
+				ldapSearchPanelGrid.setRendered(true);
+			} else if (destTypeOptions.get(0).getValue().equals("t4")) {
+				phoneNumberListPanelGrid.setRendered(true);
+			} 
 		}
 	}
 
