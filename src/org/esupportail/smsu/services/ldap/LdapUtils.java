@@ -180,15 +180,8 @@ public class LdapUtils {
 	 * @throws LdapUserNotFoundException if the user is not found in the ldap 
 	 */
 	public void setUserPagerByUid(final String uid, final String pagerValue) throws LdapUserNotFoundException {
-		final LdapUser ldapUser = getLdapUserByUserUid(uid);
-		// flush all paramter to update only specified attributes
-		ldapUser.getAttributes().clear();
-		// create pager attribute
-		final List<String> pagerValueList = new LinkedList<String>();
-		pagerValueList.add(pagerValue);
-		ldapUser.getAttributes().put(userPagerAttribute, pagerValueList);
-		// update the user
-		writeableLdapUserService.updateLdapUser(ldapUser);
+		setOrClearLdapAttributeByUidAndName(uid, userPagerAttribute, pagerValue);
+
 	}
 	
 	/**
@@ -209,12 +202,7 @@ public class LdapUtils {
 	private void setUserTermsOfUse(final String uid, 
 			final List<String> termsOfUseValue) 
 			throws LdapUserNotFoundException {
-		final LdapUser ldapUser = getLdapUserByUserUid(uid);
-		// flush all paramter to update only specified attributes
-		ldapUser.getAttributes().clear();
-		ldapUser.getAttributes().put(userTermsOfUseAttribute, termsOfUseValue);
-		// update the user
-		writeableLdapUserService.updateLdapUser(ldapUser);
+		setOrClearLdapAttributeByUidAndName(uid, userTermsOfUseAttribute, termsOfUseValue);
 	}
 	
 	
@@ -237,13 +225,32 @@ public class LdapUtils {
 	 */
 	private void clearLdapAttributeByUidAndName(final String uid, final String name) 
 					throws LdapUserNotFoundException {
+		setOrClearLdapAttributeByUidAndName(uid, name, (List<String>) null);
+	}
+	
+	
+	/**
+	 * Set or clear a user specified attribute. 
+	 * @param uid
+	 * @param name
+	 * @param value
+	 * @throws LdapUserNotFoundException
+	 */
+	private void setOrClearLdapAttributeByUidAndName(final String uid, final String name, final List<String> value) 
+					throws LdapUserNotFoundException {
 		final LdapUser ldapUser = getLdapUserByUserUid(uid);
+		// flush all paramter to update only specified attribute
 		ldapUser.getAttributes().clear();
-		ldapUser.getAttributes().put(name, null);
+		ldapUser.getAttributes().put(name, value);
 		writeableLdapUserService.updateLdapUser(ldapUser);
 	}
 	
-		
+	private void setOrClearLdapAttributeByUidAndName(final String uid, final String name, String value) 
+					throws LdapUserNotFoundException {
+		List<String> l = value != null ? singletonList(value) : null;
+		setOrClearLdapAttributeByUidAndName(uid, name, l);
+	}
+	
 	/**
 	 * Get the ldap user list of the specified group.
 	 * @param LdapGroupId
@@ -933,5 +940,9 @@ public class LdapUtils {
 		this.smsuLdapPersonAttributeDaoImpl = smsuLdapPersonAttributeDaoImpl;
 	}
 
-	
+	private <A> LinkedList<A> singletonList(A e) {
+		final LinkedList<A> l = new LinkedList<A>();
+		l.add(e);
+		return l;
+	}	
 }
