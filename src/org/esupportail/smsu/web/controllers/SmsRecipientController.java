@@ -339,6 +339,8 @@ public class SmsRecipientController extends AbstractContextAwareController {
 	private TreeNodeBase getChildrenNodes(final PortalGroupHierarchy groupHierarchy) {
 		String groupDescription = groupHierarchy.getGroup().getName();
 		String groupIdentifer = groupHierarchy.getGroup().getId();
+		if (logger.isDebugEnabled())
+		    logger.debug("group hierarchy has:" + groupIdentifer + ": " + groupDescription);
 		List<PortalGroupHierarchy> childs = groupHierarchy.getSubHierarchies(); 
 		
 		Boolean isGroupLeaf = true;
