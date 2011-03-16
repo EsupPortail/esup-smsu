@@ -234,22 +234,20 @@ public class SendSmsManager  {
 
 	/**
 	 * @param message
-	 * @return the treatment result
+	 * @return null or an error message (key into i18n properties)
 	 * @throws BackOfficeUnrichableException 
 	 * @throws LdapUserNotFoundException 
 	 * @throws UnknownIdentifierApplicationException 
 	 * @throws InsufficientQuotaException 
 	 */
-	public String treatMessage(final Message message)
-	throws BackOfficeUnrichableException, LdapUserNotFoundException,
-	UnknownIdentifierApplicationException, InsufficientQuotaException {
+	public String treatMessage(final Message message) {
 		try {
 			if (message.getStateAsEnum().equals(MessageStatus.NO_RECIPIENT_FOUND))
-				return "NORECIPIENTFOUND";
+				return null;
 			if (message.getStateAsEnum().equals(MessageStatus.FO_NB_MAX_CUSTOMIZED_GROUP_ERROR))
-				return "FONBMAXFORCUSTOMIZEDGROUPERROR";
+				return "SENDSMS.MESSAGE.SENDERGROUPNDMAXSMSERROR";
 			if (message.getStateAsEnum().equals(MessageStatus.FO_QUOTA_ERROR))
-				return "FOQUOTAKO";
+				return "SENDSMS.MESSAGE.SENDERGROUPQUOTAERROR";
 			if (!message.getStateAsEnum().equals(MessageStatus.WAITING_FOR_APPROVAL)) {
 
 							/////check the quotas with the back office/////
@@ -278,20 +276,23 @@ public class SendSmsManager  {
 							}
 
 						}	
-						return "TRAITEMENTOK";
+						return null;
 		} catch (UnknownIdentifierApplicationException e) {
 			message.setStateAsEnum(MessageStatus.WS_ERROR);
 			daoService.updateMessage(message);
-			throw e;
+			logger.error("Application unknown", e);
+			return "WS.ERROR.APPLICATION";
 		} catch (InsufficientQuotaException e) {
 			message.setStateAsEnum(MessageStatus.WS_QUOTA_ERROR);
 			daoService.updateMessage(message);
-			throw e;	
+			logger.error("Quota error", e);
+			return "WS.ERROR.QUOTA";	
 		} catch (BackOfficeUnrichableException e) {
 			message.setStateAsEnum(MessageStatus.WS_ERROR);
 			daoService.updateMessage(message);
-			throw e;
-		} 
+			logger.error("Unable connect to the back office", e);
+			return "WS.ERROR.MESSAGE";
+		}
 	}
 
 	/**

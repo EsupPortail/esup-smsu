@@ -27,7 +27,6 @@ import org.esupportail.smsu.dao.beans.Template;
 
 import org.esupportail.smsu.domain.beans.User;
 import org.esupportail.smsu.exceptions.BackOfficeUnrichableException;
-import org.esupportail.smsu.exceptions.InsufficientQuotaException;
 import org.esupportail.smsu.exceptions.UnknownIdentifierApplicationException;
 import org.esupportail.smsu.exceptions.UnknownIdentifierMessageException;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
@@ -507,11 +506,8 @@ public interface DomainService extends Serializable {
 	 * treat a message.
 	 * @param message 
 	 * @return the message
-	 * @throws BackOfficeUnrichableException 
-	 * @throws LdapUserNotFoundException 
 	 */
-	String treatMessage(Message message) throws BackOfficeUnrichableException, LdapUserNotFoundException,
-	UnknownIdentifierApplicationException, InsufficientQuotaException;
+	String treatMessage(Message message);
 	
 	//////////////////////////////////////////////////////////////
 	// Service

@@ -49,7 +49,6 @@ import org.esupportail.smsu.dao.beans.Template;
 import org.esupportail.smsu.domain.beans.User;
 import org.esupportail.smsu.domain.beans.VersionManager;
 import org.esupportail.smsu.exceptions.BackOfficeUnrichableException;
-import org.esupportail.smsu.exceptions.InsufficientQuotaException;
 import org.esupportail.smsu.exceptions.UnknownIdentifierApplicationException;
 import org.esupportail.smsu.exceptions.UnknownIdentifierMessageException;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
@@ -911,9 +910,7 @@ public class DomainServiceImpl implements DomainService, InitializingBean {
 	 * @throws LdapUserNotFoundException 
 	 * @see org.esupportail.smsu.domain.DomainService#treatMessage(org.esupportail.smsu.dao.beans.Message)
 	 */
-	public String treatMessage(final Message message)
-	throws BackOfficeUnrichableException, LdapUserNotFoundException,
-	UnknownIdentifierApplicationException, InsufficientQuotaException {
+	public String treatMessage(final Message message) {
 		String strReturn = sendSmsManager.treatMessage(message);
 		return strReturn;
 	}

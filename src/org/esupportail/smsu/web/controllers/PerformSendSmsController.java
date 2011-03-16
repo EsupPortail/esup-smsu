@@ -11,10 +11,6 @@ import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.dao.beans.Message;
 import org.esupportail.smsu.domain.beans.User;
 import org.esupportail.smsu.domain.beans.message.MessageStatus;
-import org.esupportail.smsu.exceptions.BackOfficeUnrichableException;
-import org.esupportail.smsu.exceptions.InsufficientQuotaException;
-import org.esupportail.smsu.exceptions.UnknownIdentifierApplicationException;
-import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
 import org.esupportail.smsu.services.smtp.SmtpServiceUtils;
 import org.esupportail.smsu.web.beans.MailToSend;
 import org.esupportail.smsu.web.beans.UiRecipient;
@@ -167,34 +163,13 @@ public class PerformSendSmsController extends AbstractContextAwareController {
 				message = getDomainService().composeMessage(uiRecipients, login, content,
 						smsTemplate, userGroup, serviceId, mail);
 
-				try {
-
-					String sendResult = getDomainService().treatMessage(message);
-					if (sendResult.equals("FOQUOTAKO")) {
-						addErrorMessage(null, "SENDSMS.MESSAGE.SENDERGROUPQUOTAERROR");
-						strReturn = null;
-					} else if (sendResult.equals("FONBMAXFORCUSTOMIZEDGROUPERROR")) {
-						addErrorMessage(null, "SENDSMS.MESSAGE.SENDERGROUPNDMAXSMSERROR");
-						strReturn = null;
-					} else {
-						sendSMSController.setIsShowMsgsUsingMessageStatus(message.getStateAsEnum());
-						strReturn = "envoiOK";
-					}
-				} catch (UnknownIdentifierApplicationException e) {
-					logger.error("Application unknown", e);
-					addErrorMessage(null, "WS.ERROR.APPLICATION");
-					strReturn = null;
-				} catch (InsufficientQuotaException e) {
-					logger.error("Quota error", e);
-					addErrorMessage(null, "WS.ERROR.QUOTA");
-					strReturn = null;
-				} catch (BackOfficeUnrichableException e) {
-					logger.error("Unable connect to the back office", e);
-					addErrorMessage(null, "WS.ERROR.MESSAGE");
-					strReturn = null;
-				} catch (LdapUserNotFoundException e1) {
-					addErrorMessage(null, "SENDSMS.MESSAGE.LDAPUSERNOTFOUND");
-					strReturn = null;
+				String errorMsgKey = getDomainService().treatMessage(message);
+				if (errorMsgKey != null) {
+				    addErrorMessage(null, errorMsgKey);
+				    strReturn = null;
+				} else {
+				    sendSMSController.setIsShowMsgsUsingMessageStatus(message.getStateAsEnum());
+				    strReturn = "envoiOK";
 				}
 			}
 		}
