@@ -328,6 +328,11 @@ public interface DaoService extends Serializable {
 	void addRecipient(Recipient recipient);
 	
 	/**
+	 * @param recipient
+	 */
+	void updateRecipient(Recipient recipient);
+	
+	/**
 	 * Delete mail recipient orphan.
 	 */
 	void deleteOrphanRecipient();

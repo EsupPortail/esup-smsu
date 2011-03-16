@@ -550,12 +550,7 @@ public class SendSmsManager  {
 			if (!uiRecipient.getClass().equals(GroupRecipient.class)) {
 
 				// check if the recipient is already in the database. 
-				Recipient recipient = daoService.getRecipientByPhone(uiRecipient.getPhone());
-
-				if (recipient == null) {	
-					recipient = new Recipient(null, uiRecipient.getPhone(), uiRecipient.getLogin());
-					daoService.addRecipient(recipient);
-				}
+				Recipient recipient = getOrCreateRecipient(uiRecipient.getPhone(), uiRecipient.getLogin());
 				recipients.add(recipient);
 			} else {
 				String serviceKey = service != null ? service.getKey() : null;
@@ -571,13 +566,8 @@ public class SendSmsManager  {
 				//users are added to the recipient list.
 				for (LdapUser ldapUser : filteredUsers) {
 					String phone = ldapUser.getAttribute(userPagerAttribute);
-
-					Recipient recipient = daoService.getRecipientByPhone(phone);
-					if (recipient == null) {	
-						recipient = new Recipient(null, phone,
-								ldapUser.getId());
-						daoService.addRecipient(recipient);
-					}
+					String login = ldapUser.getId();
+					Recipient recipient = getOrCreateRecipient(phone, login);
 					recipients.add(recipient);
 				}
 
@@ -585,6 +575,24 @@ public class SendSmsManager  {
 		}
 
 		return recipients;
+	}
+
+	private Recipient getOrCreateRecipient(String phone, String login) {
+		// check if the recipient is already in the database. 
+		Recipient recipient = daoService.getRecipientByPhone(phone);
+
+		if (recipient == null) {	
+			recipient = new Recipient(null, phone, login);
+			daoService.addRecipient(recipient);
+		} else {			
+			// the phone number may already exist, but the associated login may be NULL (or maybe old?)
+			// we must ensure current login is associated to the phone number
+			if (login != null) {
+				recipient.setLogin(login);
+				daoService.updateRecipient(recipient);
+			}
+		}
+		return recipient;
 	}
 
 	/**

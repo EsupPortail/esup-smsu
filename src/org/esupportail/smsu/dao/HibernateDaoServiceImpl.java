@@ -737,6 +737,13 @@ public class HibernateDaoServiceImpl extends AbstractJdbcJndiHibernateDaoService
 	public void addRecipient(final Recipient recipient) {
 		addObject(recipient);
 	}
+
+	/**
+	 * @see org.esupportail.smsu.dao.DaoService#updateRecipient(org.esupportail.smsu.dao.beans.Recipient)
+	 */
+	public void updateRecipient(final Recipient recipient) {
+		updateObject(recipient);
+	}
 	
 	
 	/* (non-Javadoc)
