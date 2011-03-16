@@ -301,9 +301,7 @@ public class SendSmsManager  {
 		for (Person supervisor : supervisors) {
 			uids.add(supervisor.getLogin());
 		}
-		final List<LdapUser> ldapUsers = new LinkedList<LdapUser>();
-		ldapUsers.addAll(ldapUtils.getUsersByUids(uids));
-		for (LdapUser ldapUser : ldapUsers) {
+		for (LdapUser ldapUser : ldapUtils.getUsersByUids(uids)) {
 			if (logger.isDebugEnabled()) {
 				logger.debug("supervisor login is :" + ldapUser.getId());
 			}
@@ -377,7 +375,6 @@ public class SendSmsManager  {
 
 		//Mail recipients
 		final Set<MailRecipient> mailRecipients = new HashSet<MailRecipient>();
-		MailRecipient mailRecipient = new MailRecipient();
 		if (mailToSend.getIsMailToRecipients()) {
 			final Set<Recipient> recipients = message.getRecipients();
 
@@ -386,14 +383,13 @@ public class SendSmsManager  {
 			for (Recipient recipient : recipients) {
 				uids.add(recipient.getLogin());
 			}
-			List <LdapUser> ldapUsers = new LinkedList<LdapUser>();
-			ldapUsers = ldapUtils.getUsersByUids(uids);
+			List <LdapUser> ldapUsers = ldapUtils.getUsersByUids(uids);
 
 			for (LdapUser ldapUser : ldapUsers) {
 
 				String login = ldapUser.getId();
 				String addresse = ldapUser.getAttribute(userEmailAttribute);
-				mailRecipient = daoService.getMailRecipientByAddress(addresse);
+				MailRecipient mailRecipient = daoService.getMailRecipientByAddress(addresse);
 				if (mailRecipient == null) {
 					mailRecipient = new MailRecipient(null, addresse, login);
 				} else {
@@ -410,7 +406,7 @@ public class SendSmsManager  {
 		}
 
 		for (String otherAdresse : mailToSend.getMailOtherRecipientsList()) {
-				mailRecipient = daoService.getMailRecipientByAddress(otherAdresse);
+				MailRecipient mailRecipient = daoService.getMailRecipientByAddress(otherAdresse);
 				if (mailRecipient == null) {
 					mailRecipient = new MailRecipient(null, otherAdresse, null);
 				}
@@ -432,13 +428,13 @@ public class SendSmsManager  {
 	 */
 	public void sendMails(final Message message) {
 
-		final List<String> toList = new LinkedList<String>();
 		final Mail mail = message.getMail();
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("sendMails");
 		}
-		if (mail != null) {
+		if (mail == null) return;
+
 			if (logger.isDebugEnabled()) {
 				logger.debug("sendMails mail not null");
 			}
@@ -460,25 +456,17 @@ public class SendSmsManager  {
 					//the recipient uid
 					final String destUid = recipient.getLogin();
 					//the message is customized with user informations
-					String customizedContentMail = null;
-
-					customizedContentMail = customizer.customizeDestContent(
+					String customizedContentMail = customizer.customizeDestContent(
 							contentWithoutExpTags, destUid);
 					if (logger.isDebugEnabled()) {
 						logger.debug("sendMails customizedContentMail: " 
 								+ customizedContentMail);
 					}
 
-					String mailToAdd = recipient.getAddress();
-					if (logger.isDebugEnabled()) {
-						logger.debug("Mail sent to : " 
-								+ mailToAdd);
-					}
-					if (mailToAdd != null ) {
-						toList.add(mailToAdd);
-						smtpServiceUtils.sendMessage(toList, null, 
-								mailSubject, customizedContentMail);
-						toList.clear();
+					String mailAddress = recipient.getAddress();
+					if (mailAddress != null) {
+						logger.debug("Mail sent to : " + mailAddress);
+						smtpServiceUtils.sendOneMessage(mailAddress, mailSubject, customizedContentMail);
 					}
 				}
 				message.getMail().setStateAsEnum(MailStatus.SENT);
@@ -486,7 +474,6 @@ public class SendSmsManager  {
 				logger.debug("Unable to find the user with id : [" + expUid + "]", e1);
 				message.getMail().setStateAsEnum(MailStatus.ERROR);
 			} 
-		}
 	}
 
 	/**
@@ -563,7 +550,6 @@ public class SendSmsManager  {
 	private Set<Recipient> getRecipients(final List<UiRecipient> uiRecipients, final Service service) {
 
 		Set<Recipient> recipients = new HashSet<Recipient>();
-		Recipient recipient;
 
 		// determines all the recipients.
 		for (UiRecipient uiRecipient : uiRecipients) {
@@ -572,7 +558,7 @@ public class SendSmsManager  {
 			if (!uiRecipient.getClass().equals(GroupRecipient.class)) {
 
 				// check if the recipient is already in the database. 
-				recipient = daoService.getRecipientByPhone(uiRecipient.getPhone());
+				Recipient recipient = daoService.getRecipientByPhone(uiRecipient.getPhone());
 
 				if (recipient == null) {	
 					recipient = new Recipient(null, uiRecipient.getPhone(), uiRecipient.getLogin());
@@ -584,10 +570,8 @@ public class SendSmsManager  {
 				}
 
 			} else {
-				String serviceKey = null;
-				if (service != null) {
-					serviceKey = service.getKey();
-				}
+				String serviceKey = service != null ? service.getKey() : null;
+
 				// Group users are search from the portal.
 				String groupName = uiRecipient.getDisplayName();
 				List<LdapUser> groupUsers = getUsersByGroup(groupName,serviceKey);
@@ -598,7 +582,7 @@ public class SendSmsManager  {
 					String phone;
 					phone = ldapUser.getAttribute(userPagerAttribute);
 
-					recipient = daoService.getRecipientByPhone(phone);
+					Recipient recipient = daoService.getRecipientByPhone(phone);
 					if (recipient == null) {	
 						recipient = new Recipient(null, phone,
 								ldapUser.getId());
@@ -1029,11 +1013,10 @@ public class SendSmsManager  {
 	 * @return the service.
 	 */
 	private Service getService(final Integer id) {
-		Service service = null;
-		if (id != null) {
-			service = daoService.getServiceById(id);
-		}
-		return service;
+		if (id != null)
+			return daoService.getServiceById(id);
+		else
+			return null;
 	}
 
 	///////////////////////////////////

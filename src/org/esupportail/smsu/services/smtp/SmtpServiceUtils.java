@@ -26,7 +26,13 @@ public class SmtpServiceUtils {
 	 */
 	private SmtpService smtpService;
 
-	
+
+	public void sendOneMessage(final String toAdress,
+				   final String subject,
+				   final String textBody) {
+		sendMessage(singletonList(toAdress), null, subject, textBody);
+	}
+
 	public void sendMessage(final List<String> toAdresses,
 							final List<String> copyAdresses,
 							final String subject,
@@ -131,5 +137,10 @@ public class SmtpServiceUtils {
 		this.smtpService = smtpService;
 	}
 	
-	
+
+	private <A> LinkedList<A> singletonList(A e) {
+		final LinkedList<A> l = new LinkedList<A>();
+		l.add(e);
+		return l;
+	}
 }
