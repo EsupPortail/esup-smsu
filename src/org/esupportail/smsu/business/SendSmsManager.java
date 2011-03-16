@@ -251,7 +251,7 @@ public class SendSmsManager  {
 			final CustomizedGroup cGroup = getRecurciveCustomizedGroupByLabel(groupLabel);
 
 			// send the customized messages
-			for (CustomizedMessage customizedMessage : getCutomizedMessages(message)) {
+			for (CustomizedMessage customizedMessage : getCustomizedMessages(message)) {
 				sendCustomizedMessages(customizedMessage);
 				cGroup.setConsumedSms(cGroup.getConsumedSms() + 1);
 				daoService.updateCustomizedGroup(cGroup);
@@ -774,59 +774,47 @@ public class SendSmsManager  {
 	 * @param message
 	 * @return
 	 */
-	private List<CustomizedMessage> getCutomizedMessages(final Message message) {
-		final List<CustomizedMessage> customizedMessageList = new ArrayList<CustomizedMessage>();
+	private List<CustomizedMessage> getCustomizedMessages(final Message message) {
 		final Set<Recipient> recipients = message.getRecipients();
-		//the account label
-		final String labelAccount = message.getUserAccountLabel();
-		//the group id and label
-		final Integer bgrId = message.getGroupSender().getId();
-		final String expGroupName = message.getGroupSender().getLabel();
-		//the service id
-		final Integer svcId;
-		if (message.getService() != null) {
-			svcId = message.getService().getId();
-		} else {
-			svcId = null;
-		}
-		//the message id
-		final Integer msgId = message.getId();
-		//the sender id, name and phone
-		final Integer perId = message.getSender().getId();
-		final String expUid = message.getSender().getLogin();
-		//the original content
-		final String originalContent = message.getContent();
+		final String senderUid = message.getSender().getLogin();
+
+		String contentWithoutExpTags = null;
 		try {
-			final String contentWithoutExpTags = customizer.customizeExpContent(originalContent, 
-					expGroupName, expUid );
-			if (logger.isDebugEnabled()) {
-				logger.debug(contentWithoutExpTags);
-			}
-			for (Recipient recipient : recipients) {
-				//the phone number
-				final String smsPhone = recipient.getPhone();
-				//the recipient uid
-				final String destUid = recipient.getLogin();
-				//the message is customized with user informations
-				String msgContent = customizer.customizeDestContent(contentWithoutExpTags, destUid);
-				if (msgContent.length() > smsMaxSize) {
-					msgContent = msgContent.substring(0, smsMaxSize);
-				}
-				// create the final message with all data needed to send it
-				final CustomizedMessage customizedMessage = new CustomizedMessage();
-				customizedMessage.setMessageId(msgId);
-				customizedMessage.setSenderId(perId);
-				customizedMessage.setGroupSenderId(bgrId);
-				customizedMessage.setServiceId(svcId);
-				customizedMessage.setRecipiendPhoneNumber(smsPhone);
-				customizedMessage.setUserAccountLabel(labelAccount);
-				customizedMessage.setMessage(msgContent);
-				customizedMessageList.add(customizedMessage);
-			}
+			contentWithoutExpTags = customizer.customizeExpContent(message.getContent(), 
+					message.getGroupSender().getLabel(), senderUid);
+			if (logger.isDebugEnabled()) logger.debug("contentWithoutExpTags: " + contentWithoutExpTags);
 		} catch (LdapUserNotFoundException e1) {
-			logger.debug("Unable to find the user with id : [" + expUid + "]", e1);
-		} 
+			logger.debug("Unable to find the user with id : [" + senderUid + "]", e1);
+		}
+
+		final List<CustomizedMessage> customizedMessageList = new ArrayList<CustomizedMessage>();
+		if (contentWithoutExpTags != null) {
+		    for (Recipient recipient : recipients) {
+			CustomizedMessage c = getCustomizedMessage(message, contentWithoutExpTags, recipient);
+			customizedMessageList.add(c);
+		    }
+		}
 		return customizedMessageList;
+	}
+
+	private CustomizedMessage getCustomizedMessage(final Message message,
+			final String contentWithoutExpTags, Recipient recipient) {
+		//the message is customized with user informations
+		String msgContent = customizer.customizeDestContent(contentWithoutExpTags, recipient.getLogin());
+		if (msgContent.length() > smsMaxSize) {
+			msgContent = msgContent.substring(0, smsMaxSize);
+		}
+		// create the final message with all data needed to send it
+		final CustomizedMessage customizedMessage = new CustomizedMessage();
+		customizedMessage.setMessageId(message.getId());
+		customizedMessage.setSenderId(message.getSender().getId());
+		customizedMessage.setGroupSenderId(message.getGroupSender().getId());
+		customizedMessage.setServiceId(message.getService() != null ? message.getService().getId() : null);
+		customizedMessage.setUserAccountLabel(message.getUserAccountLabel());
+
+		customizedMessage.setRecipiendPhoneNumber(recipient.getPhone());
+		customizedMessage.setMessage(msgContent);
+		return customizedMessage;
 	}
 
 	/**
