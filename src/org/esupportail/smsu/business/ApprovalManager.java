@@ -2,7 +2,10 @@ package org.esupportail.smsu.business;
 
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.esupportail.commons.services.ldap.LdapUser;
 import org.esupportail.commons.services.logging.Logger;
@@ -15,7 +18,6 @@ import org.esupportail.smsu.domain.beans.message.MessageStatus;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.web.beans.UIMessage;
-
 
 
 /**
@@ -35,7 +37,7 @@ public class ApprovalManager {
 	private DaoService daoService;
 
 	/**
-	 * ldap service.
+	 * {@link LdapUtils}.
 	 */
 	private LdapUtils ldapUtils;
 
@@ -58,7 +60,7 @@ public class ApprovalManager {
 	// Constructeur
 	//////////////////////////////////////////////////////////////
 	/**
-	 * constructor.
+	 * Bean constructor.
 	 */
 	public ApprovalManager() {
 		super();
@@ -69,82 +71,80 @@ public class ApprovalManager {
 	//////////////////////////////////////////////////////////////
 	// Principal methods
 	//////////////////////////////////////////////////////////////
+	
 	/**
 	 * @param idUser
 	 * @return the UI messages.
 	 */
 	public List<UIMessage> getApprovalUIMessages(final String idUser) {
+		List<Message> messages = getApprovalMessagesASupervisorCanApprove(idUser);
+
+		Map<String, LdapUser> ldapUserByUid = getLdapUserByUid(userLabels(messages));
+
 		List<UIMessage> uimessages = new ArrayList<UIMessage>();
-		List<Message> messages = daoService.getApprovalMessages();
-
-		List<String> displayNameList = new ArrayList<String>();
-		List<LdapUser> ldapUserList = new ArrayList<LdapUser>();
-
-		if (!messages.isEmpty()) {
-			Person user = daoService.getPersonByLogin(idUser);
-			for (Message mess : messages) {
-				if (!displayNameList.contains(mess.getUserUserLabel())) {
-					displayNameList.add(mess.getUserUserLabel());
-				}
-			}
-
-			ldapUserList = ldapUtils.getUsersByUids(displayNameList);
-
-
-			for (Message mess : messages) {
-
-				// Retrieve supervisors
-				if (mess.getSupervisors().contains(user)) { 
-
-					String displayName = NONE;
-
-					// 1 - Retrieve displayName
-					Boolean testVal = true;
-					LdapUser ldapUser;
-					int i = 0;
-
-					while ((i < ldapUserList.size()) && testVal) {
-						ldapUser = ldapUserList.get(i);
-						logger.debug("ldapUser.getId is: " + ldapUser.getId());
-						logger.debug("mess.getUserUserLabel is: " + mess.getUserUserLabel());
-						if (ldapUser.getId().equals(mess.getUserUserLabel())) {
-							displayName = ldapUser.getAttribute(displayNameAttributeAsString);
-							logger.debug("displayName is: " + displayName);
-							testVal = false;
-						}
-						i++;
-					}
-
-
-					if (displayName.equals(NONE)) {
-						displayName = mess.getUserUserLabel();
-					} else {
-						displayName = displayName + "  (" + mess.getUserUserLabel() + ")"; 
-					}
-					
-					String groupName = NONE;
-					BasicGroup recipientGroup = mess.getGroupRecipient();
-					if (recipientGroup != null) {
-						String groupLabel = recipientGroup.getLabel();
-						//getUserGroupLabel();
-
-						try {
-							groupName = ldapUtils.getUserDisplayNameByUserUid(groupLabel);
-						} catch (LdapUserNotFoundException e) {
-
-							groupName = ldapUtils.getGroupNameByUid(groupLabel);
-							if (groupName == null) {
-								groupName = groupLabel;
-							}	
-						} 
-					}
-					
-					// add UI message to list
-					uimessages.add(new UIMessage(displayName, groupName, mess));
-				}    
-			}
+		for (Message mess : messages) {
+			String displayName = retreiveNiceDisplayName(ldapUserByUid, mess.getUserUserLabel());					
+			String groupName = retreiveNiceGroupName(mess.getGroupRecipient());					
+			uimessages.add(new UIMessage(displayName, groupName, mess));
 		}
 		return uimessages;
+	}
+
+	private LinkedHashSet<String> userLabels(List<Message> messages) {
+		LinkedHashSet<String> l = new LinkedHashSet<String>();	       		
+		for (Message mess : messages)
+			l.add(mess.getUserUserLabel());
+		return l;
+	}
+
+	private Map<String, LdapUser> getLdapUserByUid(Iterable<String> uids) {
+		Map<String, LdapUser> ldapUserByUid = new TreeMap<String, LdapUser>();
+		for (LdapUser u : ldapUtils.getUsersByUids(uids))
+		    ldapUserByUid.put(u.getId(), u);
+		return ldapUserByUid;
+	}
+
+	private String retreiveNiceDisplayName(Map<String, LdapUser> ldapUserByUid, String userLabel) {
+		logger.debug("mess.getUserUserLabel is: " + userLabel);
+		
+		LdapUser ldapUser = ldapUserByUid.get(userLabel);
+		if (ldapUser != null) {
+			String displayName = ldapUser.getAttribute(displayNameAttributeAsString);
+			logger.debug("displayName is: " + displayName);
+			return displayName + "  (" + userLabel + ")"; 
+		} else {
+			return userLabel;
+		}
+	}
+
+	private List<Message> getApprovalMessagesASupervisorCanApprove(String idUser) {
+		Person user = daoService.getPersonByLogin(idUser);
+		List<Message> messages = new ArrayList<Message>();
+		for (Message mess : daoService.getApprovalMessages())
+			if (mess.getSupervisors().contains(user))
+				messages.add(mess);
+		return messages;
+	}
+
+	private String retreiveNiceGroupName(BasicGroup recipientGroup) {
+		return recipientGroup != null ?
+			retreiveNiceGroupName(recipientGroup.getLabel()) : NONE;
+	}
+
+	private String retreiveNiceGroupName(String groupLabel) {
+		String groupName = NONE;
+
+			try {
+				groupName = ldapUtils.getUserDisplayNameByUserUid(groupLabel);
+			} catch (LdapUserNotFoundException e) {
+
+				groupName = ldapUtils.getGroupNameByUid(groupLabel);
+				if (groupName == null) {
+					groupName = groupLabel;
+				}	
+			} 
+
+		return groupName;
 	}
 
 	/**
@@ -209,8 +209,6 @@ public class ApprovalManager {
 			final String displayNameAttributeAsString) {
 		this.displayNameAttributeAsString = displayNameAttributeAsString;
 	}
-
-
 
 	/**
 	 * @return the displayNameAttributeAsString

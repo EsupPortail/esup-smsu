@@ -2,13 +2,17 @@ package org.esupportail.smsu.business;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.esupportail.commons.services.i18n.I18nService;
 import org.esupportail.commons.services.ldap.LdapUser;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.dao.DaoService;
+import org.esupportail.smsu.dao.beans.Mail;
 import org.esupportail.smsu.dao.beans.Message;
 import org.esupportail.smsu.domain.beans.mail.MailStatus;
 import org.esupportail.smsu.domain.beans.message.MessageStatus;
@@ -47,12 +51,12 @@ public class MessageManager {
 	 * displayName.
 	 */
 	private String displayNameAttributeAsString;
-	
+
 	/**
 	 * Log4j logger.
 	 */
 	private final Logger logger = new LoggerImpl(getClass());
-	
+
 	//////////////////////////////////////////////////////////////
 	// Constructeur
 	//////////////////////////////////////////////////////////////
@@ -62,104 +66,78 @@ public class MessageManager {
 	public MessageManager() {
 		super();
 	}
-	
+
+
+
 	//////////////////////////////////////////////////////////////
 	// Principal methods
 	//////////////////////////////////////////////////////////////
 	
 	/**
-	 * @return the messages.
 	 * @param[userGroupId, userAccountId, userServiceId, userTemplateId, userUserId, beginDate, endDate]
+	 * @return the UI messages.
 	 */
 	public List<UIMessage> getMessages(final Integer userGroupId, final Integer userAccountId, 
 			final Integer userServiceId, final Integer userTemplateId, final Integer userUserId, 
 			final Date beginDate, final Date endDate) {
 		
-		List<UIMessage> uimessages = new ArrayList<UIMessage>();
 		List<Message> messages = daoService.getMessages(userGroupId, userAccountId, userServiceId, 
 								 userTemplateId, userUserId, beginDate, endDate);
 		
-		List<String> displayNameList = new ArrayList<String>();
-		List<LdapUser> ldapUserList = new ArrayList<LdapUser>();
-		
-		
-		if (messages != null) {
-			for (Message mess : messages) {
-				if (!displayNameList.contains(mess.getUserUserLabel())) {
-					displayNameList.add(mess.getUserUserLabel());
-				}
-			}
+		Map<String, LdapUser> ldapUserByUid = getLdapUserByUid(userLabels(messages));
 
-			if (!displayNameList.isEmpty()) {
-				ldapUserList = ldapUtils.getUsersByUids(displayNameList);
-			}
-
-			for (Message mess : messages) {
-				String displayName = NONE;
-				String stateMessage;
-				String stateMail = NONE;
-				String groupName;
-				String groupId;
-				
-				// 1 - Retrieve displayName
-				Boolean testVal = true;
-				LdapUser ldapUser;
-				int i = 0;
-
-				while ((i < ldapUserList.size()) && testVal) {
-					ldapUser = ldapUserList.get(i);
-					logger.debug("ldapUser.getId is: " + ldapUser.getId());
-					logger.debug("mess.getUserUserLabel is: " + mess.getUserUserLabel());
-					if (ldapUser.getId().equals(mess.getUserUserLabel())) {
-						displayName = ldapUser.getAttribute(displayNameAttributeAsString);
-						logger.debug("displayName is: " + displayName);
-						testVal = false;
-					}
-					i++;
-				}
-
-
-				if (displayName.equals(NONE)) {
-					displayName = mess.getUserUserLabel();
-				} else {
-					displayName = displayName + "  (" + mess.getUserUserLabel() + ")"; 
-				}
-
-				MessageStatus messageStatus = mess.getStateAsEnum();
-				if (logger.isDebugEnabled()) {
-					logger.debug("mess.getStateAsEnum : " + messageStatus);
-				}				
-				stateMessage = messageStatusI18nMessage(messageStatus);
-
-				if (logger.isDebugEnabled()) {
-					logger.debug("mess.getMail : " + mess.getMail());
-				}				
-				if (mess.getMail() != null) {
-					MailStatus mailStatus = mess.getMail().getStateAsEnum();
-					if (logger.isDebugEnabled()) {
-						logger.debug("mess.getMail.getStateAsEnum : " + mailStatus);
-					}
-					stateMail = mailStatusI18nMessage(mailStatus);
-				}
-				
-				
-				groupId = mess.getUserGroupLabel();
-				
-				try {
-					groupName = ldapUtils.getUserDisplayNameByUserUid(groupId);
-				} catch (LdapUserNotFoundException e) {
-					
-					groupName = ldapUtils.getGroupNameByUid(groupId);
-					if (groupName == null) {
-						
-						groupName = groupId;
-					}	
-				}
-				uimessages.add(new UIMessage(stateMessage, stateMail, displayName, groupName, mess));
-			}
+		List<UIMessage> uimessages = new ArrayList<UIMessage>();
+		for (Message mess : messages) {
+			String displayName = retreiveNiceDisplayName(ldapUserByUid, mess.getUserUserLabel());
+			String groupName = retreiveNiceGroupName(mess.getUserGroupLabel());					
+			String stateMessage = messageStatusI18nMessage(mess.getStateAsEnum());
+			String stateMail = mailStatusI18nMessage(mess.getMail());
+			uimessages.add(new UIMessage(stateMessage, stateMail, displayName, groupName, mess));
 		}
+		return uimessages;
+	}
 
-		 return uimessages;
+	private LinkedHashSet<String> userLabels(List<Message> messages) {
+		LinkedHashSet<String> l = new LinkedHashSet<String>();	       		
+		for (Message mess : messages)
+			l.add(mess.getUserUserLabel());
+		return l;
+	}
+
+	private Map<String, LdapUser> getLdapUserByUid(Iterable<String> uids) {
+		Map<String, LdapUser> ldapUserByUid = new TreeMap<String, LdapUser>();
+		for (LdapUser u : ldapUtils.getUsersByUids(uids))
+		    ldapUserByUid.put(u.getId(), u);
+		return ldapUserByUid;
+	}
+
+	private String retreiveNiceDisplayName(Map<String, LdapUser> ldapUserByUid, String userLabel) {
+		logger.debug("mess.getUserUserLabel is: " + userLabel);
+		
+		LdapUser ldapUser = ldapUserByUid.get(userLabel);
+		if (ldapUser != null) {
+			String displayName = ldapUser.getAttribute(displayNameAttributeAsString);
+			logger.debug("displayName is: " + displayName);
+			return displayName + "  (" + userLabel + ")"; 
+		} else {
+			return userLabel;
+		}
+	}
+
+	private String retreiveNiceGroupName(String groupLabel) {
+		String groupName = NONE;
+
+			try {
+				groupName = ldapUtils.getUserDisplayNameByUserUid(groupLabel);
+			} catch (LdapUserNotFoundException e) {
+
+				groupName = ldapUtils.getGroupNameByUid(groupLabel);
+				if (groupName == null) {
+					groupName = groupLabel;
+				}	
+			} 
+
+		return groupName;
 	}
 
 	private String i18nMessageKeyToMessage(String i18nKey) {
@@ -167,11 +145,21 @@ public class MessageManager {
 	}
 
 	private String messageStatusI18nMessage(MessageStatus messageStatus) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("mess.getStateAsEnum : " + messageStatus);
+		}				
 		String i18nKey = messageStatusI18nMessageKey(messageStatus);
 		return i18nKey != null ? i18nMessageKeyToMessage(i18nKey) : NONE;
 	}
 
+	private String mailStatusI18nMessage(Mail mail) {
+		return mail != null ? mailStatusI18nMessage(mail.getStateAsEnum()) : NONE;
+	}
+
 	private String mailStatusI18nMessage(MailStatus mailStatus) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("mess.getMail.getStateAsEnum : " + mailStatus);
+		}
 		String i18nKey = mailStatusI18nMessageKey(mailStatus);
 		return i18nKey != null ? i18nMessageKeyToMessage(i18nKey) : NONE;
 	}
@@ -223,9 +211,10 @@ public class MessageManager {
 	public Message getMessage(final Integer messageId) {
 		return daoService.getMessageById(messageId);
 	}
-	////////////////////////////
-	// Setter of daoService
-	////////////////////////////
+
+	///////////////////////////////////////
+	//  setter for spring object daoService
+	//////////////////////////////////////	
 	/**
 	 * @param daoService the daoService to set
 	 */
@@ -233,9 +222,9 @@ public class MessageManager {
 		this.daoService = daoService;
 	}
 
-	////////////////////////////
-	// Setter of ldapUtils
-	////////////////////////////
+	//////////////////////////////////////////////////////////////
+	// Setter of spring object ldapUtils
+	//////////////////////////////////////////////////////////////
 	/**
 	 * @param ldapUtils
 	 */
