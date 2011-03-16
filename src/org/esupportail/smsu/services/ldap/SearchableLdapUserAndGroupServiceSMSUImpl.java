@@ -279,7 +279,7 @@ public class SearchableLdapUserAndGroupServiceSMSUImpl extends SearchableLdapUse
 	 * @param uids
 	 * @return a list of mails
 	 */
-	public List<LdapUser> getUsersByUids(final List<String> uids) {
+	public List<LdapUser> getUsersByUids(final Iterable<String> uids) {
 		final OrFilter filter = new OrFilter();
 		for (String uid : uids) {
 			filter.or(new EqualsFilter(userIdAttribute, uid));

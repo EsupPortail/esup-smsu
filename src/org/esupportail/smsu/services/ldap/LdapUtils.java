@@ -763,7 +763,7 @@ public class LdapUtils {
 	 * @param uids
 	 * @return a list of LDAP user from a list of uids.
 	 */
-	public List<LdapUser> getUsersByUids(final List<String> uids) {
+	public List<LdapUser> getUsersByUids(final Iterable<String> uids) {
 		return ldapUserAndGroupService.getUsersByUids(uids);
 	}
 	
