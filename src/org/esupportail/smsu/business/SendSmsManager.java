@@ -244,10 +244,13 @@ public class SendSmsManager  {
 	throws BackOfficeUnrichableException, LdapUserNotFoundException,
 	UnknownIdentifierApplicationException, InsufficientQuotaException {
 		try {
-			if (!message.getStateAsEnum().equals(MessageStatus.NO_RECIPIENT_FOUND)) {
-				if (!message.getStateAsEnum().equals(MessageStatus.FO_NB_MAX_CUSTOMIZED_GROUP_ERROR)) {
-					if (!message.getStateAsEnum().equals(MessageStatus.FO_QUOTA_ERROR)) {
-						if (!message.getStateAsEnum().equals(MessageStatus.WAITING_FOR_APPROVAL)) {
+			if (message.getStateAsEnum().equals(MessageStatus.NO_RECIPIENT_FOUND))
+				return "NORECIPIENTFOUND";
+			if (message.getStateAsEnum().equals(MessageStatus.FO_NB_MAX_CUSTOMIZED_GROUP_ERROR))
+				return "FONBMAXFORCUSTOMIZEDGROUPERROR";
+			if (message.getStateAsEnum().equals(MessageStatus.FO_QUOTA_ERROR))
+				return "FOQUOTAKO";
+			if (!message.getStateAsEnum().equals(MessageStatus.WAITING_FOR_APPROVAL)) {
 
 							/////check the quotas with the back office/////
 							Integer nbToSend = message.getRecipients().size();
@@ -276,12 +279,6 @@ public class SendSmsManager  {
 
 						}	
 						return "TRAITEMENTOK";
-					}
-					return "FOQUOTAKO";
-				}
-				return "FONBMAXFORCUSTOMIZEDGROUPERROR";
-			}
-			return "NORECIPIENTFOUND";
 		} catch (UnknownIdentifierApplicationException e) {
 			message.setStateAsEnum(MessageStatus.WS_ERROR);
 			daoService.updateMessage(message);
