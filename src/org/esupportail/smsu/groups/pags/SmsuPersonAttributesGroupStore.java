@@ -100,7 +100,7 @@ public class SmsuPersonAttributesGroupStore {
 		/*
 		 *added by xphp8691 
 		 */
-		public List getTestGroups() {
+		public List<TestGroup> getTestGroups() {
 			return this.testGroups;
 		}
 	}

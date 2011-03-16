@@ -66,7 +66,7 @@ public class MessagePaginator extends ListPaginator<UIMessage> {
 	  */
 	 @Override
 	 protected List<UIMessage> getData() {
-		 List<UIMessage> data = new LinkedList();
+		 List<UIMessage> data = new LinkedList<UIMessage>();
 		 if (logger.isDebugEnabled()) {
 			 logger.debug("userUserId : " + userUserId);
 		 }

@@ -218,7 +218,7 @@ public class MemberManager {
 	 * @throws LdapUserNotFoundException
 	 */
 	private List<String> getAvailablePhoneNumbers(final String userIdentifier) throws LdapUserNotFoundException {
-		List<String> phoneNumbers = new ArrayList();
+		List<String> phoneNumbers = new ArrayList<String>();
 		List<String> values;
 		for (String attribute : this.phoneAttribute) {
 			if (logger.isDebugEnabled()) {
