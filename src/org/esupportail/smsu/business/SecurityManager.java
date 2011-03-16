@@ -146,14 +146,31 @@ public class SecurityManager {
 	 * @param rights: list of required rights
 	 */
 	public boolean checkRights(final List<String> fonctions, final List<String> rights) {
-		logger.debug("rights list size in checkRights method is: " + rights.size());
+		logger.debug("users rights: " + join(fonctions, " "));
+		logger.debug("one the following rights is required: " + join(rights, " "));
 		for (String right : rights) {
-			logger.debug("right in checkRights method is: " + right);
-			if (fonctions.contains(right)) { return true; }
+			if (fonctions.contains(right)) { 
+			    logger.debug("checkRights: user has right " + right);
+			    return true; 
+			}
 		}
 		return false;
 	}
 
+	public static String join(Iterable<String> elements, CharSequence separator) {
+		if (elements == null) return "";
+
+		StringBuilder sb = null;
+
+		for (String s : elements) {
+			if (sb == null)
+				sb = new StringBuilder();
+			else
+				sb.append(separator);
+			sb.append(s);			
+		}
+		return sb == null ? "" : sb.toString();
+	}
 
 	////////////////////////////////////////
 	//  setter for spring object daoService
