@@ -601,9 +601,8 @@ public class SendSmsManager  {
 		//get all users from the group hierarchy
 		List<LdapUser> members = getMembers(groupHierarchy, serviceKey);
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("Number of ldap users found : " + members.size());
-		}
+		logger.info("Found " + members.size() + " ldap users in group " + groupName);
+
 		return members;
 	}
 
