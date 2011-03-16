@@ -72,9 +72,8 @@
 </t:panelGroup>
 
 
-<t:panelGroup colspan="2">
+<t:panelGroup colspan="2" rendered="#{not empty usersSearchController.ldapUsers}">
 	<e:dataTable var="recipient" value="#{usersSearchController.ldapUsers}"
-		rendered="#{not empty usersSearchController.ldapUsers}"
 		id="recipientSearchList" rowIndexVar="variable">
 		<t:column>
 			<f:facet name="header">
@@ -92,10 +91,9 @@
 	</e:dataTable>
 </t:panelGroup>
 
-<t:panelGroup colspan="2">
+<t:panelGroup colspan="2" rendered="#{not empty usersSearchController.ldapRequestUsers}">
 	<e:dataTable var="listRecipient"
 		value="#{usersSearchController.ldapRequestUsers}"
-		rendered="#{not empty usersSearchController.ldapRequestUsers}"
 		id="listRecipientSearchList" rowIndexVar="variable">
 		<t:column>
 			<f:facet name="header">
