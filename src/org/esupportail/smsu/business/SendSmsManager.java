@@ -162,9 +162,9 @@ public class SendSmsManager  {
 			final MailToSend mailToSend) {
 		Service service = getService(serviceId);
 		Set<Recipient> recipients = getRecipients(uiRecipients, service);
-				
-		if (logger.isDebugEnabled()) logger.debug("get recipient group");
 		BasicGroup groupRecipient = getGroupRecipient(uiRecipients);
+		BasicGroup groupSender = getGroupSender(userGroup);
+		MessageStatus messageStatus = getWorkflowState(recipients.size(), groupSender, groupRecipient);
 				
 		Message message = new Message();
 		message.setContent(content);
@@ -172,23 +172,17 @@ public class SendSmsManager  {
 		message.setSender(getSender(login));
 		message.setAccount(getAccount(userGroup));
 		message.setService(service);
-		message.setGroupSender(getGroupSender(userGroup));
+		message.setGroupSender(groupSender);
 		message.setRecipients(recipients);
-		message.setGroupRecipient(groupRecipient);
-				
-		if (logger.isDebugEnabled()) logger.debug("get workflow state");
-		message.setStateAsEnum(getWorkflowState(message));
-				
-		if (logger.isDebugEnabled()) {
-			logger.debug("get supervisors");
-		}
-		message.setSupervisors(mayGetSupervisorsOrNull(message));
-				
+		message.setGroupRecipient(groupRecipient);			
+		message.setStateAsEnum(messageStatus);				
+		message.setSupervisors(mayGetSupervisorsOrNull(message));				
 		if (mailToSend != null) message.setMail(getMail(message, mailToSend));
 		return message;
 	}
 
 	private Set<Person> mayGetSupervisorsOrNull(Message message) {
+		if (logger.isDebugEnabled()) logger.debug("get supervisors");
 		Set<Person> supervisors;
 		//	message.getGroupRecipient() != null | 
 		if (MessageStatus.WAITING_FOR_APPROVAL.equals(message.getStateAsEnum())) {
@@ -805,15 +799,14 @@ public class SendSmsManager  {
 	}
 
 	/**
-	 * @param message
 	 * @return the message workflow state.
 	 */
-	private MessageStatus getWorkflowState(final Message message) {
-		final Integer nbRecipients = message.getRecipients().size();
+	private MessageStatus getWorkflowState(final Integer nbRecipients, BasicGroup groupSender, BasicGroup groupRecipient) {
+		if (logger.isDebugEnabled()) logger.debug("get workflow state");
 		if (logger.isDebugEnabled()) {
 			logger.debug(nbRecipients.toString());
 		}
-		final String groupLabel = message.getGroupSender().getLabel();
+		final String groupLabel = groupSender.getLabel();
 		if (logger.isDebugEnabled()) {
 			logger.debug("sender group label : " + groupLabel);
 		}
@@ -821,7 +814,7 @@ public class SendSmsManager  {
 		if (logger.isDebugEnabled()) {
 			logger.debug("checkFrontOfficeQuota");
 		}
-		final Boolean foQuota = checkFrontOfficeQuota(message, cGroup);
+		final Boolean foQuota = checkFrontOfficeQuota(nbRecipients, cGroup, groupSender);
 		if (logger.isDebugEnabled()) {
 			logger.debug("checkFrontOfficeQuota result : " + foQuota.toString());
 		}
@@ -830,12 +823,12 @@ public class SendSmsManager  {
 		} else if (!foQuota) {
 			return MessageStatus.FO_QUOTA_ERROR;
 		}
-		final Boolean foNbMax = checkMaxSmsGroupQuota(message, cGroup);
+		final Boolean foNbMax = checkMaxSmsGroupQuota(nbRecipients, cGroup, groupSender);
 		if (!foNbMax) {
 			return MessageStatus.FO_NB_MAX_CUSTOMIZED_GROUP_ERROR;
-		} else if (message.getRecipients().size() >= nbMaxSmsBeforeSupervising) {
+		} else if (nbRecipients >= nbMaxSmsBeforeSupervising) {
 			return MessageStatus.WAITING_FOR_APPROVAL;
-		} else if (message.getGroupRecipient() != null) {
+		} else if (groupRecipient != null) {
 			return MessageStatus.WAITING_FOR_APPROVAL;
 		} else {
 			return MessageStatus.IN_PROGRESS;
@@ -847,6 +840,8 @@ public class SendSmsManager  {
 	 * @return the recipient group, or null.
 	 */
 	private BasicGroup getGroupRecipient(final List<UiRecipient> uiRecipients) {
+		if (logger.isDebugEnabled()) logger.debug("get recipient group");
+
 		for (UiRecipient uiRecipient : uiRecipients) {
 			if (uiRecipient.getClass().equals(GroupRecipient.class)) {
 				String label = uiRecipient.getDisplayName();
@@ -952,16 +947,15 @@ public class SendSmsManager  {
 
 	}
 
-	private Boolean checkMaxSmsGroupQuota(final Message message, final CustomizedGroup cGroup) {
+	private Boolean checkMaxSmsGroupQuota(final Integer nbToSend, final CustomizedGroup cGroup, final BasicGroup groupSender) {
 		Boolean quotaOK = false;
 		final Long quotaOrder = cGroup.getQuotaOrder();
-		final Integer nbToSend = message.getRecipients().size();
 		if (nbToSend <= quotaOrder) {
 			quotaOK = true;
 		} else {
 			final String mess = 
 			    "Erreur de nombre maximum de sms par envoi pour le groupe d'envoi [" + 
-			    message.getGroupSender().getLabel() + 
+			    groupSender.getLabel() + 
 			    "] et groupe associ� [" + cGroup.getLabel() + 
 			    "]. Essai d'envoi de " + nbToSend + " message(s), nombre max par envoi = " + quotaOrder;
 			logger.warn(mess);
@@ -970,17 +964,14 @@ public class SendSmsManager  {
 	}
 
 	/**
-	 * @param message
-	 * @param cGroup
 	 * @return true if the quota is OK
 	 */
-	private Boolean checkFrontOfficeQuota(final Message message, final CustomizedGroup cGroup) {
-		final Integer nbToSend = message.getRecipients().size();
+	private Boolean checkFrontOfficeQuota(final Integer nbToSend, final CustomizedGroup cGroup, final BasicGroup groupSender) {
 
 		if (logger.isDebugEnabled()) {
 			final String mess = 
 			    "V�rification du quota front office pour le groupe d'envoi [" + 
-			    message.getGroupSender().getLabel() + 
+			    groupSender.getLabel() + 
 			    "] et groupe associ� [" + cGroup.getLabel() + 
 			    "]. Essai d'envoi de " + nbToSend + " message(s), quota = " + cGroup.getQuotaSms() + 
 			    " , consomm� = " + cGroup.getConsumedSms();
@@ -990,7 +981,7 @@ public class SendSmsManager  {
 			return true;
 		} else {
 			final String mess = 
-			    "Erreur de quota pour le groupe d'envoi [" + message.getGroupSender().getLabel() + 
+			    "Erreur de quota pour le groupe d'envoi [" + groupSender.getLabel() + 
 			    "] et groupe associ� [" + cGroup.getLabel() + "]. Essai d'envoi de " + nbToSend + 
 			    " message(s), quota = " + cGroup.getQuotaSms() + " , consomm� = " + cGroup.getConsumedSms();
 			logger.warn(mess);
