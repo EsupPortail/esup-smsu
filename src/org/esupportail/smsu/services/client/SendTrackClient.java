@@ -37,24 +37,20 @@ public class SendTrackClient  {
 		try {
 			
 			if (logger.isDebugEnabled()) {
-				final StringBuilder sb = new StringBuilder(200);
-				sb.append("Calling web service getTrackInfo with parameter : \n");
-				sb.append(" - messsage id : ").append(msgId);
-				logger.debug(sb.toString());
+				logger.debug("Calling web service getTrackInfo with parameter : \n" + 
+					     " - messsage id : " + msgId);
 			}
 			
 			final TrackInfos trackInfos = sendTrack.getTrackInfos(msgId);
 			
 			if (logger.isDebugEnabled()) {
-				final StringBuilder sb = new StringBuilder(200);
-				sb.append("Receiving web service response from getTrackInfo, object TrackInfos : \n");
-				sb.append(" - Nb sms sent : ").append(trackInfos.getNbSentSMS()).append("\n");
-				sb.append(" - Nb sms in progress : ").append(trackInfos.getNbProgressSMS()).append("\n");
-				sb.append(" - Nb of recipient : ").append(trackInfos.getNbDestTotal()).append("\n");
-				sb.append(" - Nb of sms in error : ").append(trackInfos.getNbErrorSMS()).append("\n");
-				sb.append(" - Nb of sms in black list : ").append(trackInfos.getNbDestBlackList()).append("\n");
-				sb.append(" - List of phone number in error : ").append(trackInfos.getListNumErreur()).append("\n");
-				logger.debug(sb.toString());
+				logger.debug("Receiving web service response from getTrackInfo, object TrackInfos : \n" + 
+					     " - Nb sms sent : " + trackInfos.getNbSentSMS() + "\n" + 
+					     " - Nb sms in progress : " + trackInfos.getNbProgressSMS() + "\n" + 
+					     " - Nb of recipient : " + trackInfos.getNbDestTotal() + "\n" + 
+					     " - Nb of sms in error : " + trackInfos.getNbErrorSMS() + "\n" + 
+					     " - Nb of sms in black list : " + trackInfos.getNbDestBlackList() + "\n" + 
+					     " - List of phone number in error : " + trackInfos.getListNumErreur() + "\n");
 			}
 			return trackInfos;
 		} catch (UnknownIdentifierApplicationException e1) {

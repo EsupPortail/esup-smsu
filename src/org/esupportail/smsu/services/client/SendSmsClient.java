@@ -37,11 +37,9 @@ public class SendSmsClient  {
 	throws UnknownIdentifierApplicationException, 
 	InsufficientQuotaException {
 		if (logger.isDebugEnabled()) {
-			final StringBuilder sb = new StringBuilder(200);
-			sb.append("isQuotaOK method client send with parameters : ");
-			sb.append(" - nbDest = ").append(nbDest);
-			sb.append(" - labelAccount = ").append(labelAccount);
-			logger.debug(sb.toString());
+			logger.debug("isQuotaOK method client send with parameters : " + 
+				     " - nbDest = " + nbDest + 
+				     " - labelAccount = " + labelAccount);
 		}
 		final boolean retVal = sendSms.isQuotaOk(nbDest, labelAccount);
 		return retVal;
@@ -57,16 +55,14 @@ public class SendSmsClient  {
 			final String smsPhone, final String labelAccount, 
 			final String msgContent) {
 		if (logger.isDebugEnabled()) {
-			final StringBuilder sb = new StringBuilder(200);
-			sb.append("SendSms client message : ");
-			sb.append(" - message id = ").append(msgId);
-			sb.append(" - sender id = ").append(perId);
-			sb.append(" - group sender id = ").append(bgrId);
-			sb.append(" - service id = ").append(svcId);
-			sb.append(" - recipient phone number = ").append(smsPhone);
-			sb.append(" - user label account = ").append(labelAccount);
-			sb.append(" - message = ").append(msgContent);
-			logger.debug(sb.toString());
+			logger.debug("SendSms client message : " + 
+				     " - message id = " + msgId + 
+				     " - sender id = " + perId + 
+				     " - group sender id = " + bgrId + 
+				     " - service id = " + svcId + 
+				     " - recipient phone number = " + smsPhone + 
+				     " - user label account = " + labelAccount + 
+				     " - message = " + msgContent);
 		}
 		sendSms.sendSMS(msgId, perId, bgrId, svcId, smsPhone, labelAccount, msgContent);
 		

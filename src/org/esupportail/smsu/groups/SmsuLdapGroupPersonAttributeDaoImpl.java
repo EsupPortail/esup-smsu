@@ -60,12 +60,9 @@ public class SmsuLdapGroupPersonAttributeDaoImpl {
      */
     @Override
 	public String toString() {
-    	StringBuffer sb = new StringBuffer();
-    	sb.append(getClass().getName());
-    	sb.append(" portalAttribute=").append(this.portalAttribute);
-    	sb.append(" ldapAttribute=").append(this.ldapAttribute);
-    	
-    	return sb.toString();
+	    return getClass().getName() + 
+		    " portalAttribute=" + this.portalAttribute + 
+		    " ldapAttribute=" + this.ldapAttribute;
     }
 
 }

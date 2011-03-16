@@ -27,18 +27,14 @@ public class PurgePendingMemberJob extends AbstractQuartzJob {
 	protected void executeJob(final ApplicationContext applicationContext) {
 		
 		if (logger.isDebugEnabled()) {
-			final StringBuilder sb = new StringBuilder(100);
-			sb.append("Launching Quartz task PurgePendingMemberJob now");
-			logger.debug(sb.toString());
+			logger.debug("Launching Quartz task PurgePendingMemberJob now");
 		}
 		
 		final PurgePendingMember purgePendingMember = (PurgePendingMember) applicationContext.getBean(PURGE_PENDING_MEMBER_BEAN_NAME);
 		purgePendingMember.purgePendingMember();
 		
 		if (logger.isDebugEnabled()) {
-			final StringBuilder sb = new StringBuilder(100);
-			sb.append("End of Quartz task PurgePendingMemberJob");
-			logger.debug(sb.toString());
+			logger.debug("End of Quartz task PurgePendingMemberJob");
 		}
 	}
 

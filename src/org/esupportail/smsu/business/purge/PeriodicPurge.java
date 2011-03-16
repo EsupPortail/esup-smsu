@@ -58,75 +58,51 @@ public class PeriodicPurge {
 	private void purgeWithSeniorityDate(final Date seniorityDate) {
 
 		if (logger.isDebugEnabled()) {
-			final StringBuilder sb = new StringBuilder(200);
-			sb.append("Launching periodic purge with parameter : \n");
-			sb.append(" - seniority date : ").append(seniorityDate);
-			logger.debug(sb.toString());
+			logger.debug("Launching periodic purge with parameter : \n" + " - seniority date : " + seniorityDate);
 		}
 
 		if (logger.isTraceEnabled()) {
-			final StringBuilder sb = new StringBuilder(200);
-			sb.append("Start the message purge");
-			logger.trace(sb.toString());
+			logger.trace("Start the message purge");
 		}
 
 		daoService.deleteMessageOlderThan(seniorityDate);
 
 		if (logger.isTraceEnabled()) {
-			final StringBuilder sb = new StringBuilder(200);
-			sb.append("End of the message purge\n");
-			sb.append("Start the orphan mail purge");
-			logger.trace(sb.toString());
+			logger.trace("End of the message purge\n" + "Start the orphan mail purge");
 		}
 
 		daoService.deleteOrphanMail();
 
 		if (logger.isTraceEnabled()) {
-			final StringBuilder sb = new StringBuilder(200);
-			sb.append("End of the orphan mail purge\n");
-			sb.append("Start the orphan recipient purge");
-			logger.trace(sb.toString());
+			logger.trace("End of the orphan mail purge\n" + "Start the orphan recipient purge");
 		}
 
 		daoService.deleteOrphanRecipient();
 
 		if (logger.isTraceEnabled()) {
-			final StringBuilder sb = new StringBuilder(200);
-			sb.append("End of the orphan recipient purge\n");
-			sb.append("Start the orphan mail recipient purge");
-			logger.trace(sb.toString());
+			logger.trace("End of the orphan recipient purge\n" + "Start the orphan mail recipient purge");
 		}
 
 		daoService.deleteOrphanMailRecipient();
 
 		if (logger.isTraceEnabled()) {
-			final StringBuilder sb = new StringBuilder(200);
-			sb.append("End of the orphan mail recipient purge\n");
-			sb.append("Start the orphan person purge");
-			logger.trace(sb.toString());
+			logger.trace("End of the orphan mail recipient purge\n" + "Start the orphan person purge");
 		}
 
 		daoService.deleteOrphanPerson();
 		
 		if (logger.isTraceEnabled()) {
-			final StringBuilder sb = new StringBuilder(200);
-			sb.append("End of the orphan person purge\n");
-			sb.append("Start the orphan basic group purge");
-			logger.trace(sb.toString());
+			logger.trace("End of the orphan person purge\n" + "Start the orphan basic group purge");
 		}
 
 		daoService.deleteOrphanBasicGroup();
 		
 		if (logger.isTraceEnabled()) {
-			final StringBuilder sb = new StringBuilder(200);
-			sb.append("End of the orphan basic group purge\n");
-			logger.trace(sb.toString());
+			logger.trace("End of the orphan basic group purge\n");
 		}
 		
 		if (logger.isDebugEnabled()) {
-			final StringBuilder sb = new StringBuilder(200);
-			sb.append("End of periodic purge");
-			logger.debug(sb.toString());
+			logger.debug("End of periodic purge");
 		}
 	}
 	

@@ -98,9 +98,8 @@ public class PreferencesController extends AbstractContextAwareController {
 				FacesContext.getCurrentInstance().getApplication().getSupportedLocales();
 			while (iter.hasNext()) {
 				Locale locale = iter.next();
-				StringBuffer buf = new StringBuffer(locale.getLanguage());
-				buf.append(" - ").append(locale.getDisplayLanguage(locale));
-				localeItems.add(new SelectItem(locale, buf.toString()));
+				String s = locale.getLanguage() + " - " + locale.getDisplayLanguage(locale);
+				localeItems.add(new SelectItem(locale, s));
 			}
 		}
 		return localeItems;

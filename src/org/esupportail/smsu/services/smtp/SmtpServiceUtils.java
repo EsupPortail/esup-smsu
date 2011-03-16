@@ -87,9 +87,7 @@ public class SmtpServiceUtils {
 					final InternetAddress internetAddress = new InternetAddress(adress);
 					internetAdressesList.add(internetAddress);
 				} catch (AddressException e) {
-					final StringBuilder sb = new StringBuilder(100);
-					sb.append(adress).append(" is not a valid email adress, message won't be sent to it");
-					logger.warn(sb.toString());
+					logger.warn(adress + " is not a valid email adress, message won't be sent to it");
 				}
 			}
 		}
@@ -115,9 +113,7 @@ public class SmtpServiceUtils {
 				retVal = true;
 				}
 			} catch (AddressException e) {
-				final StringBuilder sb = new StringBuilder(100);
-				sb.append(adresse).append(" is not a valid email adress, message won't be sent to it");
-				logger.warn(sb.toString());
+				logger.warn(adresse + " is not a valid email adress, message won't be sent to it");
 			}
 
 		}

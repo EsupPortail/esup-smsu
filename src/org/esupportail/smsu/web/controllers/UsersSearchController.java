@@ -205,11 +205,7 @@ public class UsersSearchController extends AbstractContextAwareController {
 				try {
 					list = ldapUtils.searchLdapUsersByFilter(this.ldapFilter);
 				} catch (LdapException  e) {
-					final StringBuffer buff = new StringBuffer();
-					buff.append("Erreur lors de l'exécution de la requete : [");
-					buff.append(this.ldapFilter);
-					buff.append("]");
-					logger.error(buff.toString(), e);
+					logger.error("Erreur lors de l'exécution de la requete : [" + this.ldapFilter + "]", e);
 					addErrorMessage(null, "SENDSMS.MESSAGE.LDAPREQUESTERROR");
 				}
 				String displayName;

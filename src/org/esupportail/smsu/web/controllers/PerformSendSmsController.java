@@ -206,24 +206,15 @@ public class PerformSendSmsController extends AbstractContextAwareController {
 						}
 					}
 				} catch (UnknownIdentifierApplicationException e) {
-					final StringBuilder message1 = new StringBuilder();
-					message1.append("Application unknown");
-					final String messageStr = message1.toString();
-					logger.error(messageStr, e);
+					logger.error("Application unknown", e);
 					addErrorMessage(null, "WS.ERROR.APPLICATION");
 					strReturn = null;
 				} catch (InsufficientQuotaException e) {
-					final StringBuilder message1 = new StringBuilder();
-					message1.append("Quota error");
-					final String messageStr = message1.toString();
-					logger.error(messageStr, e);
+					logger.error("Quota error", e);
 					addErrorMessage(null, "WS.ERROR.QUOTA");
 					strReturn = null;
 				} catch (BackOfficeUnrichableException e) {
-					final StringBuilder message1 = new StringBuilder();
-					message1.append("Unable connect to the back office");
-					final String messageStr = message1.toString();
-					logger.error(messageStr, e);
+					logger.error("Unable connect to the back office", e);
 					addErrorMessage(null, "WS.ERROR.MESSAGE");
 					strReturn = null;
 				} catch (LdapUserNotFoundException e1) {

@@ -37,9 +37,7 @@ public class ListPhoneNumbersInBlackListClient {
 	 */
 	public Set<String> getListPhoneNumbersInBlackList() {
 		if (logger.isDebugEnabled()) {
-			final StringBuilder sb = new StringBuilder(200);
-			sb.append("getListPhoneNumbersInBlackList method client send ");
-			logger.debug(sb.toString());
+			logger.debug("getListPhoneNumbersInBlackList method client send ");
 		}
 		final Set<String> retVal = listPhoneNumbers.getListPhoneNumbersInBlackList();
 		

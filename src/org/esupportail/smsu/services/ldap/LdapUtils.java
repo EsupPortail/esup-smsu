@@ -100,11 +100,8 @@ public class LdapUtils {
 		try {
 			ldapUser = ldapUserAndGroupService.getLdapUser(ldapUserUid);
 		} catch (UserNotFoundException e) {
-			final StringBuilder message = new StringBuilder();
-			message.append("Unable to find the user with id : [");
-			message.append(ldapUserUid);
-			message.append("]");
-			final String messageStr = message.toString();
+			final String messageStr = 
+			    "Unable to find the user with id : [" + ldapUserUid + "]";
 			logger.debug(messageStr, e);
 			throw new LdapUserNotFoundException(messageStr, e);
 		}
@@ -277,11 +274,7 @@ public class LdapUtils {
 		try {
 			ldapGroup = ldapUserAndGroupService.getLdapGroup(ldapGroupId);
 		} catch (GroupNotFoundException e) {
-			final StringBuilder message = new StringBuilder();
-			message.append("Unable to find the group with id : [");
-			message.append(ldapGroupId);
-			message.append("]");
-			final String messageStr = message.toString();
+			final String messageStr = "Unable to find the group with id : [" + ldapGroupId + "]";
 			logger.warn(messageStr, e);
 			throw new LdapGroupNotFoundException(messageStr, e);
 		}
@@ -567,12 +560,7 @@ public class LdapUtils {
 		List<String> parentGroupIds = new ArrayList<String>();
 		for (PortalGroup group : containingGroups)  {
 			if (logger.isDebugEnabled()) {
-				final StringBuilder message = new StringBuilder();
-				message.append("Parent group : [");
-				message.append(group.getName());
-				message.append("] found");
-				final String messageStr = message.toString();
-				logger.debug(messageStr);
+				logger.debug("Parent group : [" + group.getName() + "] found");
 			}
 			parentGroupIds.add(group.getId());
 		}
@@ -744,11 +732,7 @@ public class LdapUtils {
 		try {
 			attributes = ldapUserAndGroupService.getLdapAttributesByUidAndName(uid, name);
 		} catch (LdapUserNotFoundException e) {
-			final StringBuilder message = new StringBuilder();
-			message.append("Unable to find the user with id : [");
-			message.append(uid);
-			message.append("]");
-			final String messageStr = message.toString();
+			final String messageStr = "Unable to find the user with id : [" + uid + "]";
 			throw new LdapUserNotFoundException(messageStr, e);
 		}
 		return attributes;

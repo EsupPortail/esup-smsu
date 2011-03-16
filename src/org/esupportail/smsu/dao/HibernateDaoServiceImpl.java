@@ -376,44 +376,42 @@ public class HibernateDaoServiceImpl extends AbstractJdbcJndiHibernateDaoService
 		final Session currentSession = getCurrentSession();
 		
 		// delete Supervisor sender
-		final StringBuilder deleteSupervisorSenderRequest = new StringBuilder(200);
-		deleteSupervisorSenderRequest.append("delete from SupervisorSender ");
-		deleteSupervisorSenderRequest.append(" where Msg.id in ( select Id from Message where Date < :date )");
+		final String deleteSupervisorSenderRequest =
+		    "delete from SupervisorSender " + 
+		    " where Msg.id in ( select Id from Message where Date < :date )";
 		
 		final Query querySupervisorSender = currentSession.createQuery(
-				deleteSupervisorSenderRequest.toString());
+				deleteSupervisorSenderRequest);
 		
 		querySupervisorSender.setTimestamp("date", date);
 		
 		final int deletedSupervisorSender = querySupervisorSender.executeUpdate();
 		
 		// delete to recipient
-		final StringBuilder deleteToRecipientRequest = new StringBuilder(200);
-		deleteToRecipientRequest.append("delete from ToRecipient ");
-		deleteToRecipientRequest.append(" where Msg.id in ( select Id from Message where Date < :date )");
+		final String deleteToRecipientRequest =
+		    "delete from ToRecipient " + 
+		    " where Msg.id in ( select Id from Message where Date < :date )";
 		
-		final Query queryDeleteToRecipient = currentSession.createQuery(deleteToRecipientRequest.toString());
+		final Query queryDeleteToRecipient = currentSession.createQuery(deleteToRecipientRequest);
 		queryDeleteToRecipient.setTimestamp("date", date);
 		
 		final int deletedToRecipient = queryDeleteToRecipient.executeUpdate();
 
 		// delete message
-		final StringBuilder deleteMessageRequest = new StringBuilder(200);
-		deleteMessageRequest.append("delete from Message as mess ");
-		deleteMessageRequest.append(" where mess.Date < :date");
+		final String deleteMessageRequest =
+		    "delete from Message as mess " + 
+		    " where mess.Date < :date";
 		
-		final Query queryDeleteMessage = currentSession.createQuery(deleteMessageRequest.toString());
+		final Query queryDeleteMessage = currentSession.createQuery(deleteMessageRequest);
 		queryDeleteMessage.setTimestamp("date", date);
 		
 		final int deletedMessage = queryDeleteMessage.executeUpdate();
 		
 		if (logger.isTraceEnabled()) {
-			final StringBuilder sb = new StringBuilder(200);
-			sb.append("Deleted items from deleteMessageOlderThan : \n");
-			sb.append(" - Supervisor_Sender : ").append(deletedSupervisorSender).append("\n");
-			sb.append(" - To_Recipient : ").append(deletedToRecipient).append("\n");
-			sb.append(" - Message : ").append(deletedMessage);
-			logger.trace(sb.toString());
+			logger.trace("Deleted items from deleteMessageOlderThan : \n" + 
+				     " - Supervisor_Sender : " + deletedSupervisorSender + "\n" +
+				     " - To_Recipient : " + deletedToRecipient + "\n" +
+				     " - Message : " + deletedMessage);
 		}
 		
 	}
@@ -474,22 +472,19 @@ public class HibernateDaoServiceImpl extends AbstractJdbcJndiHibernateDaoService
 
 		final Session currentSession = getCurrentSession();
 
-		final StringBuilder deleteBasicGroupRequest = new StringBuilder(200);
-		deleteBasicGroupRequest.append("delete from BasicGroup ");
-		deleteBasicGroupRequest.append(" where Id not in " 
-				+ "( select GroupSender.Id from Message where GroupSender.Id is not null )");
-		deleteBasicGroupRequest.append("   and Id not in " 
-				+ "( select GroupRecipient.Id from Message where GroupRecipient.Id is not null )");
+		final String deleteBasicGroupRequest =
+		    "delete from BasicGroup " + " where Id not in " + 
+		    "( select GroupSender.Id from Message where GroupSender.Id is not null )" + 
+		    "   and Id not in " +
+		    "( select GroupRecipient.Id from Message where GroupRecipient.Id is not null )";
 		
-		final Query queryRecipient = currentSession.createQuery(deleteBasicGroupRequest.toString());
+		final Query queryRecipient = currentSession.createQuery(deleteBasicGroupRequest);
 
 		final int deletedBasicGroup = queryRecipient.executeUpdate();
 
 		if (logger.isTraceEnabled()) {
-			final StringBuilder sb = new StringBuilder(200);
-			sb.append("Deleted items from deleteOrphanBasicGroup : \n");
-			sb.append(" - Basic group : ").append(deletedBasicGroup);
-			logger.trace(sb.toString());
+			logger.trace("Deleted items from deleteOrphanBasicGroup : \n" + 
+				  " - Basic group : " + deletedBasicGroup);
 		}
 
 	}
@@ -580,24 +575,22 @@ public class HibernateDaoServiceImpl extends AbstractJdbcJndiHibernateDaoService
 	public void deleteOrphanPerson() {
 		final Session currentSession = getCurrentSession();
 		
-		final StringBuilder deletePersonRequest = new StringBuilder(200);
-		deletePersonRequest.append("delete from Person ");
-		deletePersonRequest.append(" where Id not in " 
-				+ "( select Supervisor.Id from SupervisorSender where Supervisor.Id is not null )");
-		deletePersonRequest.append("   and Id not in " 
-				+ "( select Sender.Id from Message where Sender.Id is not null )");
-		deletePersonRequest.append("   and Id not in " 
-				+ "( select person.Id from Supervisor where person.Id  is not null )");
+		final String deletePersonRequest =
+		    "delete from Person " + 
+		    " where Id not in " +
+		    "( select Supervisor.Id from SupervisorSender where Supervisor.Id is not null )" +
+		    "   and Id not in " +
+		    "( select Sender.Id from Message where Sender.Id is not null )" +
+		    "   and Id not in " + 
+		    "( select person.Id from Supervisor where person.Id  is not null )";
 		
-		final Query queryRecipient = currentSession.createQuery(deletePersonRequest.toString());
+		final Query queryRecipient = currentSession.createQuery(deletePersonRequest);
 		
 		final int deletedPerson = queryRecipient.executeUpdate();
 		
 		if (logger.isTraceEnabled()) {
-			final StringBuilder sb = new StringBuilder(200);
-			sb.append("Deleted items from deleteOrphanPerson : \n");
-			sb.append(" - Person : ").append(deletedPerson);
-			logger.trace(sb.toString());
+			logger.trace("Deleted items from deleteOrphanPerson : \n" + 
+				     " - Person : " + deletedPerson);
 		}
 	}
 
@@ -752,20 +745,18 @@ public class HibernateDaoServiceImpl extends AbstractJdbcJndiHibernateDaoService
 	public void deleteOrphanRecipient() {
 		final Session currentSession = getCurrentSession();
 		
-		final StringBuilder deleteRecipientRequest = new StringBuilder(200);
-		deleteRecipientRequest.append("delete from Recipient ");
-		deleteRecipientRequest.append(" where Id not in " 
-				+ "( select Rcp.Id from ToRecipient where Rcp.Id is not null)");
+		final String deleteRecipientRequest =
+		    "delete from Recipient " + 
+		    " where Id not in " 
+		    + "( select Rcp.Id from ToRecipient where Rcp.Id is not null)";
 		
-		final Query queryRecipient = currentSession.createQuery(deleteRecipientRequest.toString());
+		final Query queryRecipient = currentSession.createQuery(deleteRecipientRequest);
 		
 		final int deletedRecipient = queryRecipient.executeUpdate();
 		
 		if (logger.isTraceEnabled()) {
-			final StringBuilder sb = new StringBuilder(200);
-			sb.append("Deleted items from deleteOrphanRecipient : \n");
-			sb.append(" - Recipient : ").append(deletedRecipient);
-			logger.trace(sb.toString());
+			logger.trace("Deleted items from deleteOrphanRecipient : \n" + 
+				     " - Recipient : " + deletedRecipient);
 		}
 	}
 
@@ -928,10 +919,9 @@ public class HibernateDaoServiceImpl extends AbstractJdbcJndiHibernateDaoService
 	public int deletePendingMemberOlderThan(final Date date) {
 		final Session currentSession = getCurrentSession();
 		
-		final StringBuilder hql = new StringBuilder(200);
-		hql.append("delete from PendingMember as pm where pm.DateSubscription < :date");
+		final String hql = "delete from PendingMember as pm where pm.DateSubscription < :date";
 		
-		final Query query = currentSession.createQuery(hql.toString());
+		final Query query = currentSession.createQuery(hql);
 		query.setTimestamp("date", date);
 		
 		final int nbPendingMemberDeleted = query.executeUpdate();
@@ -1040,31 +1030,29 @@ public class HibernateDaoServiceImpl extends AbstractJdbcJndiHibernateDaoService
 		final Session currentSession = getCurrentSession();
 		
 		// delete To mail recipient
-		final StringBuilder deleteToMailRecipientRequest = new StringBuilder(200);
-		deleteToMailRecipientRequest.append("delete from ToMailRecipient ");
-		deleteToMailRecipientRequest.append(" where Mail.Id not in " 
-				+ "( select Mail.Id from Message where Mail.Id is not null)");
+		final String deleteToMailRecipientRequest = 
+		    "delete from ToMailRecipient " + 
+		    " where Mail.Id not in " + 
+		    "( select Mail.Id from Message where Mail.Id is not null)";
 		
-		final Query queryToMailRecipient = currentSession.createQuery(deleteToMailRecipientRequest.toString());
+		final Query queryToMailRecipient = currentSession.createQuery(deleteToMailRecipientRequest);
 		
 		final int deletedToMailRecipient = queryToMailRecipient.executeUpdate();
 		
 		
 		// delete Supervisor sender
-		final StringBuilder deleteMailRequest = new StringBuilder(200);
-		deleteMailRequest.append("delete from Mail ");
-		deleteMailRequest.append(" where Id not in ( select Mail.Id from Message where Mail.Id is not null)");
+		final String deleteMailRequest = 
+		    "delete from Mail " + 
+		    " where Id not in ( select Mail.Id from Message where Mail.Id is not null)";
 		
-		final Query querySupervisorSender = currentSession.createQuery(deleteMailRequest.toString());
+		final Query querySupervisorSender = currentSession.createQuery(deleteMailRequest);
 		
 		final int deletedMail = querySupervisorSender.executeUpdate();
 		
 		if (logger.isTraceEnabled()) {
-			final StringBuilder sb = new StringBuilder(200);
-			sb.append("Deleted items from deleteOrphanMail : \n");
-			sb.append(" - To mail recipient : ").append(deletedToMailRecipient).append("\n");
-			sb.append(" - Mail : ").append(deletedMail);
-			logger.trace(sb.toString());
+			logger.trace("Deleted items from deleteOrphanMail : \n" + 
+				     " - To mail recipient : " + deletedToMailRecipient + "\n" + 
+				     " - Mail : " + deletedMail);
 		}
 	}
 	
@@ -1079,20 +1067,18 @@ public class HibernateDaoServiceImpl extends AbstractJdbcJndiHibernateDaoService
 	public void deleteOrphanMailRecipient() {
 		final Session currentSession = getCurrentSession();
 		
-		final StringBuilder deleteMailRecipientRequest = new StringBuilder(200);
-		deleteMailRecipientRequest.append("delete from MailRecipient ");
-		deleteMailRecipientRequest.append(" where Id not in " 
-				+ "( select MailRecipient.Id from ToMailRecipient where MailRecipient.Id is not null)");
+		final String deleteMailRecipientRequest =
+		    "delete from MailRecipient " + 
+		    " where Id not in " + 
+		    "( select MailRecipient.Id from ToMailRecipient where MailRecipient.Id is not null)";
 		
-		final Query queryMailRecipient = currentSession.createQuery(deleteMailRecipientRequest.toString());
+		final Query queryMailRecipient = currentSession.createQuery(deleteMailRecipientRequest);
 		
 		final int deletedMailRecipient = queryMailRecipient.executeUpdate();
 		
 		if (logger.isTraceEnabled()) {
-			final StringBuilder sb = new StringBuilder(200);
-			sb.append("Deleted items from deleteOrphanMailRecipient : \n");
-			sb.append(" - Mail Recipient : ").append(deletedMailRecipient);
-			logger.trace(sb.toString());
+			logger.trace("Deleted items from deleteOrphanMailRecipient : \n" + 
+				     " - Mail Recipient : " + deletedMailRecipient);
 		}
 	}
 	

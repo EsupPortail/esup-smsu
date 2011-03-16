@@ -262,9 +262,7 @@ public class SendSmsManager  {
 							} else {
 								// message is ready to be sent to the back office
 								if (logger.isDebugEnabled()) {
-									final StringBuilder sb = new StringBuilder(100);
-									sb.append("Setting to state WAINTING_FOR_SENDING message with ID (standard message case) : ").append(message.getId());
-									logger.debug(sb.toString());
+									logger.debug("Setting to state WAINTING_FOR_SENDING message with ID (standard message case) : " + message.getId());
 								}
 								message.setStateAsEnum(MessageStatus.WAITING_FOR_SENDING);
 								daoService.updateMessage(message);
@@ -326,9 +324,7 @@ public class SendSmsManager  {
 			} else {
 				// message is ready to be sent to the back office
 				if (logger.isDebugEnabled()) {
-					final StringBuilder sb = new StringBuilder(100);
-					sb.append("Setting to state WAINTING_FOR_SENDING message with ID (approval message case) : ").append(message.getId());
-					logger.debug(sb.toString());
+					logger.debug("Setting to state WAINTING_FOR_SENDING message with ID (approval message case) : " + message.getId());
 				}
 				message.setStateAsEnum(MessageStatus.WAITING_FOR_SENDING);
 				daoService.updateMessage(message);
@@ -358,17 +354,12 @@ public class SendSmsManager  {
 		final List<Message> messageList = daoService.getMessagesByState(MessageStatus.WAITING_FOR_SENDING);
 
 		if (logger.isDebugEnabled()) {
-			final StringBuilder sb = new StringBuilder(100);
-			sb.append("Found ").append(messageList.size());
-			sb.append(" message(s) to send to the back office");
-			logger.debug(sb.toString());
+			logger.debug("Found " + messageList.size() + " message(s) to send to the back office");
 		}
 
 		for (Message message : messageList) {
 			if (logger.isDebugEnabled()) {
-				final StringBuilder sb = new StringBuilder(100);
-				sb.append("Start managment of message with id : ").append(message.getId());
-				logger.debug(sb.toString());
+				logger.debug("Start managment of message with id : " + message.getId());
 			}
 			// customized all messages
 			final List<CustomizedMessage> customizedMessageList = getCutomizedMessages(message);
@@ -394,9 +385,7 @@ public class SendSmsManager  {
 			daoService.updateMessage(message);
 
 			if (logger.isDebugEnabled()) {
-				final StringBuilder sb = new StringBuilder(100);
-				sb.append("End of managment of message with id : ").append(message.getId());
-				logger.debug(sb.toString());
+				logger.debug("End of managment of message with id : " + message.getId());
 			}
 
 		}
@@ -585,11 +574,7 @@ public class SendSmsManager  {
 				}
 				message.getMail().setStateAsEnum(MailStatus.SENT);
 			} catch (LdapUserNotFoundException e1) {
-				final StringBuilder exMessage = new StringBuilder();
-				exMessage.append("Unable to find the user with id : [");
-				exMessage.append(expUid);
-				exMessage.append("]");
-				logger.debug(exMessage.toString(), e1);
+				logger.debug("Unable to find the user with id : [" + expUid + "]", e1);
 				message.getMail().setStateAsEnum(MailStatus.ERROR);
 			} 
 		}
@@ -607,21 +592,13 @@ public class SendSmsManager  {
 			CustomizedGroup customizedGroup = getSupervisorCustomizedGroupByLabel(label);
 			if (customizedGroup != null) {
 				if (logger.isDebugEnabled()) {
-					final StringBuffer buff = new StringBuffer(100);
-					buff.append("Supervisor found from group : [");
-					buff.append(customizedGroup.getLabel());
-					buff.append("]");
-					logger.debug(buff.toString());
+					logger.debug("Supervisor found from group : [" + customizedGroup.getLabel() + "]");
 				}
 				
 				supervisors.addAll(customizedGroup.getSupervisors());
 			} else {
 				if (logger.isDebugEnabled()) {
-					final StringBuffer buff = new StringBuffer(100);
-					buff.append("No supervisor found from groups. Use the default supervisor : [");
-					buff.append(defaultSupervisorLogin);
-					buff.append("]");
-					logger.debug(buff.toString());
+					logger.debug("No supervisor found from groups. Use the default supervisor : [" + defaultSupervisorLogin + "]");
 				}
 				Person admin = daoService.getPersonByLogin(defaultSupervisorLogin);
 				if (admin == null) {
@@ -631,11 +608,7 @@ public class SendSmsManager  {
 			}
 		} else {
 			if (logger.isDebugEnabled()) {
-				final StringBuffer buff = new StringBuffer(100);
-				buff.append("Supervisor needed without a group. Use the default supervisor : [");
-				buff.append(defaultSupervisorLogin);
-				buff.append("]");
-				logger.debug(buff.toString());
+				logger.debug("Supervisor needed without a group. Use the default supervisor : [" + defaultSupervisorLogin + "]");
 			}
 			Person admin = daoService.getPersonByLogin(defaultSupervisorLogin);
 			if (admin == null) {
@@ -653,23 +626,13 @@ public class SendSmsManager  {
 	 */
 	private CustomizedGroup getSupervisorCustomizedGroupByLabel(final String groupLabel) {
 		if (logger.isDebugEnabled()) {
-			final StringBuffer buff = new StringBuffer(100);
-			buff.append("getSupervisorCustomizedGroupByLabel for group [");
-			buff.append(groupLabel);
-			buff.append("]");
-			final String message = buff.toString();
-			logger.debug(message);
+			logger.debug("getSupervisorCustomizedGroupByLabel for group [" + groupLabel + "]");
 		}
 		CustomizedGroup customizedGroup = getRecurciveCustomizedGroupByLabel(groupLabel);	
 		if (customizedGroup != null) {
 			if (customizedGroup.getSupervisors().isEmpty()) {
 				if (logger.isDebugEnabled()) {
-					final StringBuffer buff = new StringBuffer(100);
-					buff.append("Customized group without supervisor found : [");
-					buff.append(customizedGroup.getLabel());
-					buff.append("]");
-					final String message = buff.toString();
-					logger.debug(message);
+					logger.debug("Customized group without supervisor found : [" + customizedGroup.getLabel() + "]");
 				}
 				String portalGroupId = customizedGroup.getLabel();
 				String parentGroup = ldapUtils.getParentGroupIdByGroupId(portalGroupId);
@@ -752,12 +715,7 @@ public class SendSmsManager  {
 	 */
 	public List<LdapUser> getUsersByGroup(final String groupName, String serviceKey) {
 		if (logger.isDebugEnabled()) {
-			final StringBuilder info = new StringBuilder(50);
-			info.append("Search users for group [");
-			info.append(groupName);
-			info.append("]");
-			final String message = info.toString();
-			logger.debug(message);
+			logger.debug("Search users for group [" + groupName + "]");
 		}
 		//get the recipient group hierarchy
 		PortalGroupHierarchy groupHierarchy = ldapUtils.getPortalGroupHierarchyByGroupName(groupName);
@@ -765,11 +723,7 @@ public class SendSmsManager  {
 		List<LdapUser> members = getMembers(groupHierarchy, serviceKey);
 
 		if (logger.isDebugEnabled()) {
-			final StringBuilder res = new StringBuilder(50);
-			res.append("Number of ldap users found : ");
-			res.append(members.size());
-			final String message = res.toString();
-			logger.debug(message);
+			logger.debug("Number of ldap users found : " + members.size());
 		}
 		return members;
 	}
@@ -783,14 +737,8 @@ public class SendSmsManager  {
 	private List<LdapUser> getMembers(final PortalGroupHierarchy groupHierarchy, String serviceKey) {
 		final PortalGroup currentGroup = groupHierarchy.getGroup();
 		if (logger.isDebugEnabled()) {
-			final StringBuilder info = new StringBuilder(50);
-			info.append("Search users for subgroup [");
-			info.append(currentGroup.getName());
-			info.append("] [");
-			info.append(currentGroup.getId());
-			info.append("]");
-			final String message = info.toString();
-			logger.debug(message);
+			logger.debug("Search users for subgroup [" + currentGroup.getName()
+				     + "] [" + currentGroup.getId() + "]");
 		}
 		final List<PortalGroupHierarchy> childs = groupHierarchy.getSubHierarchies();
 		List<LdapUser> members = new LinkedList<LdapUser>();
@@ -856,12 +804,7 @@ public class SendSmsManager  {
 	 */
 	private List<LdapUser> filterUsers(final List<LdapUser> users, final String service) {
 		if (logger.isDebugEnabled()) {
-			final StringBuilder info = new StringBuilder(50);
-			info.append("Filtering users for service [");
-			info.append(service);
-			info.append("]");
-			final String message = info.toString();
-			logger.debug(message);
+			logger.debug("Filtering users for service [" + service + "]");
 		}
 		List<LdapUser> filteredUsers = new ArrayList<LdapUser>();
 
@@ -888,11 +831,7 @@ public class SendSmsManager  {
 			}
 		}
 		if (logger.isDebugEnabled()) {
-			final StringBuilder res = new StringBuilder(50);
-			res.append("Number of filtered users : ");
-			res.append(filteredUsers.size());
-			final String message = res.toString();
-			logger.debug(message);
+			logger.debug("Number of filtered users : " + filteredUsers.size());
 		}
 		return filteredUsers;
 	}
@@ -1035,11 +974,7 @@ public class SendSmsManager  {
 				customizedMessageList.add(customizedMessage);
 			}
 		} catch (LdapUserNotFoundException e1) {
-			final StringBuilder exMessage = new StringBuilder();
-			exMessage.append("Unable to find the user with id : [");
-			exMessage.append(expUid);
-			exMessage.append("]");
-			logger.debug(exMessage.toString(), e1);
+			logger.debug("Unable to find the user with id : [" + expUid + "]", e1);
 		} 
 		return customizedMessageList;
 	}
@@ -1057,16 +992,14 @@ public class SendSmsManager  {
 		final String userLabelAccount = customizedMessage.getUserAccountLabel();
 		final String message = customizedMessage.getMessage();
 		if (logger.isDebugEnabled()) {
-			final StringBuilder sb = new StringBuilder(200);
-			sb.append("Sending to back office message with : ");
-			sb.append(" - message id = ").append(messageId);
-			sb.append(" - sender id = ").append(senderId);
-			sb.append(" - group sender id = ").append(groupSenderId);
-			sb.append(" - service id = ").append(serviceId);
-			sb.append(" - recipient phone number = ").append(recipiendPhoneNumber);
-			sb.append(" - user label account = ").append(userLabelAccount);
-			sb.append(" - message = ").append(message);
-			logger.debug(sb.toString());
+			logger.debug("Sending to back office message with : " + 
+				     " - message id = " + messageId + 
+				     " - sender id = " + senderId + 
+				     " - group sender id = " + groupSenderId + 
+				     " - service id = " + serviceId + 
+				     " - recipient phone number = " + recipiendPhoneNumber + 
+				     " - user label account = " + userLabelAccount + 
+				     " - message = " + message);
 		}
 		// send the message to the back office
 
@@ -1082,16 +1015,11 @@ public class SendSmsManager  {
 		if (nbToSend <= quotaOrder) {
 			quotaOK = true;
 		} else {
-			final StringBuffer buff = new StringBuffer();
-			buff.append("Erreur de nombre maximum de sms par envoi pour le groupe d'envoi [");
-			buff.append(message.getGroupSender().getLabel());
-			buff.append("] et groupe associ� [");
-			buff.append(cGroup.getLabel());
-			buff.append("]. Essai d'envoi de ");
-			buff.append(nbToSend);
-			buff.append(" message(s), nombre max par envoi = ");
-			buff.append(quotaOrder);
-			final String mess = buff.toString();
+			final String mess = 
+			    "Erreur de nombre maximum de sms par envoi pour le groupe d'envoi [" + 
+			    message.getGroupSender().getLabel() + 
+			    "] et groupe associ� [" + cGroup.getLabel() + 
+			    "]. Essai d'envoi de " + nbToSend + " message(s), nombre max par envoi = " + quotaOrder;
 			logger.warn(mess);
 		}
 		return quotaOK;
@@ -1110,35 +1038,21 @@ public class SendSmsManager  {
 		final Integer nbToSend = message.getRecipients().size();
 
 		if (logger.isDebugEnabled()) {
-			final StringBuffer buff = new StringBuffer();
-			buff.append("V�rification du quota front office pour le groupe d'envoi [");
-			buff.append(message.getGroupSender().getLabel());
-			buff.append("] et groupe associ� [");
-			buff.append(cGroup.getLabel());
-			buff.append("]. Essai d'envoi de ");
-			buff.append(nbToSend);
-			buff.append(" message(s), quota = ");
-			buff.append(quotaSms);
-			buff.append(" , consomm� = ");
-			buff.append(consumedSms);
-			final String mess = buff.toString();
+			final String mess = 
+			    "V�rification du quota front office pour le groupe d'envoi [" + 
+			    message.getGroupSender().getLabel() + 
+			    "] et groupe associ� [" + cGroup.getLabel() + 
+			    "]. Essai d'envoi de " + nbToSend + " message(s), quota = " + quotaSms + 
+			    " , consomm� = " + consumedSms;
 			logger.warn(mess);
 		}
 		if (consumedSms + nbToSend <= quotaSms) {
 			quotaOk = true;
 		} else {
-			final StringBuffer buff = new StringBuffer();
-			buff.append("Erreur de quota pour le groupe d'envoi [");
-			buff.append(message.getGroupSender().getLabel());
-			buff.append("] et groupe associ� [");
-			buff.append(cGroup.getLabel());
-			buff.append("]. Essai d'envoi de ");
-			buff.append(nbToSend);
-			buff.append(" message(s), quota = ");
-			buff.append(quotaSms);
-			buff.append(" , consomm� = ");
-			buff.append(consumedSms);
-			final String mess = buff.toString();
+			final String mess = 
+			    "Erreur de quota pour le groupe d'envoi [" + message.getGroupSender().getLabel() + 
+			    "] et groupe associ� [" + cGroup.getLabel() + "]. Essai d'envoi de " + nbToSend + 
+			    " message(s), quota = " + quotaSms + " , consomm� = " + consumedSms;
 			logger.warn(mess);
 		}
 
@@ -1171,10 +1085,7 @@ public class SendSmsManager  {
 		} catch (InsufficientQuotaException e) {
 			throw new InsufficientQuotaException(e.getMessage());
 		} catch (Exception e) {
-			final StringBuilder exMessage = new StringBuilder(50);
-			exMessage.append("Unable to connect to the back office : ");
-			final String messageStr = exMessage.toString();
-			logger.error(messageStr, e);
+			logger.error("Unable to connect to the back office : ", e);
 			throw new BackOfficeUnrichableException();
 		}
 	}
@@ -1216,12 +1127,7 @@ public class SendSmsManager  {
 	 */
 	private CustomizedGroup getRecurciveCustomizedGroupByLabel(final String portalGroupId) {
 		if (logger.isDebugEnabled()) {
-			final StringBuffer buff = new StringBuffer(50);
-			buff.append("Search the cutomised group associated to the group : [");
-			buff.append(portalGroupId);
-			buff.append("]");
-			final String message = buff.toString();
-			logger.debug(message);
+			logger.debug("Search the cutomised group associated to the group : [" + portalGroupId + "]");
 		}
 		//search the customized group from the data base
 		CustomizedGroup groupSender = daoService.getCustomizedGroupByLabel(portalGroupId);

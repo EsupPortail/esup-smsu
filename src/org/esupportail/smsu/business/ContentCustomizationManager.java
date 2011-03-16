@@ -233,19 +233,11 @@ public class ContentCustomizationManager {
 						try {
 							destLastName = ldapUtils.getUserLastNameByUid(destUid);
 						} catch (LdapUserNotFoundException e) {
-							final StringBuilder message = new StringBuilder();
-							message.append("Recipient name not found for user with id : [");
-							message.append(destUid);
-							message.append("]");
-							final String messageStr = message.toString();
-							logger.warn(messageStr, e);
+							logger.warn("Recipient name not found for user with id : [" + destUid + "]", e);
 							destLastName = defaultNotFoundData;
 						}
 					} else {
-						final StringBuilder message = new StringBuilder();
-						message.append("Recipient has no ID default data used");
-						final String messageStr = message.toString();
-						logger.debug(messageStr);
+						logger.debug("Recipient has no ID default data used");
 						destLastName = defaultNotFoundData;
 					}
 					cutomizedContent = cutomizedContent.replaceAll(tag, destLastName);
@@ -256,19 +248,11 @@ public class ContentCustomizationManager {
 						try {
 							destFirstName = ldapUtils.getUserFirstNameByUid(destUid);
 						} catch (LdapUserNotFoundException e) {
-							final StringBuilder message = new StringBuilder();
-							message.append("Recipient first name not found for user with id : [");
-							message.append(destUid);
-							message.append("]");
-							final String messageStr = message.toString();
-							logger.warn(messageStr, e);
+							logger.warn("Recipient first name not found for user with id : [" + destUid + "]", e);
 							destFirstName = defaultNotFoundData;
 						}
 					} else {
-						final StringBuilder message = new StringBuilder();
-						message.append("Recipient has no ID default data used");
-						final String messageStr = message.toString();
-						logger.debug(messageStr);
+						logger.debug("Recipient has no ID default data used");
 						destFirstName = defaultNotFoundData;
 					}
 					cutomizedContent = cutomizedContent.replaceAll(tag, destFirstName);
@@ -286,19 +270,11 @@ public class ContentCustomizationManager {
 								customAttribut = values.get(0);
 							}
 						} catch (LdapUserNotFoundException e) {
-							final StringBuilder message = new StringBuilder();
-							message.append("Recipient custom data not found for user with id : [");
-							message.append(destUid);
-							message.append("]");
-							final String messageStr = message.toString();
-							logger.debug(messageStr, e);
+							logger.debug("Recipient custom data not found for user with id : [" + destUid + "]", e);
 							customAttribut = defaultNotFoundData;
 						}
 					} else {
-						final StringBuilder message = new StringBuilder();
-						message.append("Recipient has no ID default data used");
-						final String messageStr = message.toString();
-						logger.debug(messageStr);
+						logger.debug("Recipient has no ID default data used");
 						customAttribut = defaultNotFoundData;
 					}
 					cutomizedContent = cutomizedContent.replaceAll(tag, customAttribut);
@@ -372,11 +348,7 @@ public class ContentCustomizationManager {
 						cutomizedContent = cutomizedContent.replaceAll(tag, customAttribut);
 					}
 				} catch (LdapUserNotFoundException e) {
-					final StringBuilder message = new StringBuilder();
-					message.append("Unable to find the user with id : [");
-					message.append(expUid);
-					message.append("]");
-					final String messageStr = message.toString();
+					String messageStr = "Unable to find the user with id : [" + expUid + "]";
 					logger.debug(messageStr, e);
 					throw new LdapUserNotFoundException(messageStr, e);
 				}

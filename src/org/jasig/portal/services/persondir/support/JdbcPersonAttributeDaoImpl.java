@@ -161,12 +161,10 @@ public class JdbcPersonAttributeDaoImpl extends AbstractDefaultQueryPersonAttrib
     }
     
     public String toString() {
-    	StringBuffer sb = new StringBuffer();
-    	sb.append("JdbcPersonAttributeDaoImpl ");
-    	sb.append("query=").append(this.query);
-    	sb.append(" queryAttributes=").append(this.queryAttributes);
-    	sb.append(" attributeMappings=").append(this.attributeMappings);
-    	return sb.toString();
+    	return "JdbcPersonAttributeDaoImpl " + 
+	    "query=" + this.query + 
+	    " queryAttributes=" + this.queryAttributes + 
+	    " attributeMappings=" + this.attributeMappings;
     }
 
     /**
@@ -262,10 +260,7 @@ public class JdbcPersonAttributeDaoImpl extends AbstractDefaultQueryPersonAttrib
         
         
         public String toString() {
-        	StringBuffer sb = new StringBuffer();
-        	sb.append(this.getClass().getName());
-        	sb.append(" SQL=[").append(super.getSql()).append("]");
-        	return sb.toString();
+        	return this.getClass().getName() + " SQL=[" + super.getSql() + "]";
         }
     }
 }

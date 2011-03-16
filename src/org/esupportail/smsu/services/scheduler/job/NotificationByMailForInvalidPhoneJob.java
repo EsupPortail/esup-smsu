@@ -23,18 +23,14 @@ public class NotificationByMailForInvalidPhoneJob extends AbstractQuartzJob {
 	protected void executeJob(final ApplicationContext applicationContext) {
 		
 		if (logger.isDebugEnabled()) {
-			final StringBuilder sb = new StringBuilder(100);
-			sb.append("Launching Quartz task NotificationByMailForInvalidPhoneJob now");
-			logger.debug(sb.toString());
+			logger.debug("Launching Quartz task NotificationByMailForInvalidPhoneJob now");
 		}
 		
 		final NotificationByMailForInvalidPhoneManager notifForInvalidPhone = (NotificationByMailForInvalidPhoneManager) applicationContext.getBean("notificationByMailForInvalidPhoneManager");
 		notifForInvalidPhone.sendMails();
 		
 		if (logger.isDebugEnabled()) {
-			final StringBuilder sb = new StringBuilder(100);
-			sb.append("End of Quartz task NotificationByMailForInvalidPhoneJob");
-			logger.debug(sb.toString());
+			logger.debug("End of Quartz task NotificationByMailForInvalidPhoneJob");
 		}
 	}
 

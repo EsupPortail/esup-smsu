@@ -28,18 +28,14 @@ public class PeriodicPurgeJob extends AbstractQuartzJob {
 	@Override
 	protected void executeJob(final ApplicationContext applicationContext) {
 		if (logger.isDebugEnabled()) {
-			final StringBuilder sb = new StringBuilder(100);
-			sb.append("Launching Quartz task PeriodicPurgeJob now");
-			logger.debug(sb.toString());
+			logger.debug("Launching Quartz task PeriodicPurgeJob now");
 		}
 		
 		final PeriodicPurge periodicPurge = (PeriodicPurge) applicationContext.getBean(PERIODIC_PURGE_BEAN_NAME);
 		periodicPurge.purge();
 		
 		if (logger.isDebugEnabled()) {
-			final StringBuilder sb = new StringBuilder(100);
-			sb.append("End of Quartz task PeriodicPurgeJob");
-			logger.debug(sb.toString());
+			logger.debug("End of Quartz task PeriodicPurgeJob");
 		}
 
 	}

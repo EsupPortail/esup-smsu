@@ -34,10 +34,7 @@ public class NotificationPhoneNumberInBlackListClient {
 	 */
 	public boolean isPhoneNumberInBlackList(final String phoneNumber) {
 		if (logger.isDebugEnabled()) {
-			final StringBuilder sb = new StringBuilder(200);
-			sb.append("isPhoneNumberInBlackList method client send with parameter : ");
-			sb.append(" - phoneNumber = ").append(phoneNumber);
-			logger.debug(sb.toString());
+			logger.debug("isPhoneNumberInBlackList method client send with parameter : " + " - phoneNumber = " + phoneNumber);
 		}
 		final boolean retVal = notificationPhoneNumber.isPhoneNumberInBlackList(phoneNumber);
 		

@@ -56,19 +56,15 @@ public class PurgePendingMember {
 	private void purgePendingMemberOlderThan(final Date date) {
 		
 		if (logger.isDebugEnabled()) {
-			final StringBuilder sb = new StringBuilder(200);
-			sb.append("Starting purge of pending member table with parameter : \n");
-			sb.append(" - date : ").append(date);
-			logger.debug(sb.toString());
+			logger.debug("Starting purge of pending member table with parameter : \n" + 
+				     " - date : " + date);
 		}
 		
 		final int nbSmsDeleted = daoService.deletePendingMemberOlderThan(date);
 		
 		if (logger.isDebugEnabled()) {
-			final StringBuilder sb = new StringBuilder(200);
-			sb.append("End purge of pending member table, result : \n");
-			sb.append(" - number of pending member deleted : ").append(nbSmsDeleted);
-			logger.debug(sb.toString());
+			logger.debug("End purge of pending member table, result : \n" +
+				     " - number of pending member deleted : " + nbSmsDeleted);
 		}
 	}
 	

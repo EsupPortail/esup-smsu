@@ -203,12 +203,7 @@ public class SearchableLdapUserAndGroupServiceSMSUImpl extends SearchableLdapUse
 			final LdapUser ldapUser = userServiceTmp.getLdapUser(uid);
 			retVal = ldapUser.getAttributes(name);
 		} catch (UserNotFoundException e) {
-			final StringBuilder message = new StringBuilder();
-			message.append("Unable to find the user with id : [");
-			message.append(uid);
-			message.append("]");
-			final String messageStr = message.toString();
-			throw new LdapUserNotFoundException(messageStr, e);
+			throw new LdapUserNotFoundException("Unable to find the user with id : [" + uid + "]", e);
 		}
 		return retVal;
 	}
@@ -274,11 +269,7 @@ public class SearchableLdapUserAndGroupServiceSMSUImpl extends SearchableLdapUse
 		filter.and(orFilter);		
 		final String filterAsStr = filter.encode();
 		if (logger.isDebugEnabled()) {
-			final StringBuilder infofltr = new StringBuilder(50);
-			infofltr.append("LDAP filter applied : ");
-			infofltr.append(filterAsStr);
-			final String messageftr = infofltr.toString();
-			logger.debug(messageftr);
+			logger.debug("LDAP filter applied : " + filterAsStr);
 		}
 		final List<LdapUser> retVal = getLdapUsersFromFilter(filterAsStr);
 		return retVal;
@@ -295,11 +286,7 @@ public class SearchableLdapUserAndGroupServiceSMSUImpl extends SearchableLdapUse
 		}
 		final String filterAsStr = filter.encode();
 		if (logger.isDebugEnabled()) {
-			final StringBuilder infofltr = new StringBuilder(50);
-			infofltr.append("LDAP filter applied : ");
-			infofltr.append(filterAsStr);
-			final String messageftr = infofltr.toString();
-			logger.debug(messageftr);
+			logger.debug("LDAP filter applied : " + filterAsStr);
 		}
 		final List<LdapUser> retVal = getLdapUsersFromFilter(filterAsStr);
 		return retVal;
@@ -331,11 +318,7 @@ public class SearchableLdapUserAndGroupServiceSMSUImpl extends SearchableLdapUse
 	public List<LdapUser> getConditionFriendlyLdapUsersFromToken(final String token, 
 			final String cgKeyName, final String service) {
 		if (logger.isDebugEnabled()) {
-			final StringBuilder info = new StringBuilder(50);
-			info.append("getConditionFriendlyLdapUsersFromToken : ");
-			info.append(token);
-			final String message = info.toString();
-			logger.debug(message);
+			logger.debug("getConditionFriendlyLdapUsersFromToken : " + token);
 		}
 		final String[] tokenList = token.split("\\p{Blank}");
 
@@ -356,11 +339,7 @@ public class SearchableLdapUserAndGroupServiceSMSUImpl extends SearchableLdapUse
 
 		final String filterAsStr = filter.encode();
 		if (logger.isDebugEnabled()) {
-			final StringBuilder infofltr = new StringBuilder(50);
-			infofltr.append("LDAP filter applied : ");
-			infofltr.append(filterAsStr);
-			final String messageftr = infofltr.toString();
-			logger.debug(messageftr);
+			logger.debug("LDAP filter applied : " + filterAsStr);
 		}
 		final List<LdapUser> retVal = getLdapUsersFromFilter(filterAsStr);
 		return retVal;
