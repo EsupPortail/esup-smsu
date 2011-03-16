@@ -129,6 +129,15 @@
 	<%--	</e:form>--%>
 </t:panelGroup>
 
+<t:panelGroup 
+	binding="#{smsRecipientController.manyPhoneNumbersListPanelGrid}" colspan="2">
+	<e:inputTextarea id="manyPhoneNumbers"
+		value="#{smsRecipientController.manyPhoneNumbersToAdd}" />
+
+	<e:commandButton value="Ajouter"
+		action="#{smsRecipientController.addManyPhoneNumbers}" />
+</t:panelGroup>
+
 <t:panelGroup colspan="2">
 	<%--	<e:form id="formRecipients">--%>
 	<e:dataTable id="recipients" var="recipients"
