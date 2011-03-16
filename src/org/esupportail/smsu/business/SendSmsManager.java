@@ -803,32 +803,17 @@ public class SendSmsManager  {
 	 */
 	private MessageStatus getWorkflowState(final Integer nbRecipients, BasicGroup groupSender, BasicGroup groupRecipient) {
 		if (logger.isDebugEnabled()) logger.debug("get workflow state");
-		if (logger.isDebugEnabled()) {
-			logger.debug(nbRecipients.toString());
-		}
-		final String groupLabel = groupSender.getLabel();
-		if (logger.isDebugEnabled()) {
-			logger.debug("sender group label : " + groupLabel);
-		}
-		final CustomizedGroup cGroup = getRecurciveCustomizedGroupByLabel(groupLabel);
-		if (logger.isDebugEnabled()) {
-			logger.debug("checkFrontOfficeQuota");
-		}
-		final Boolean foQuota = checkFrontOfficeQuota(nbRecipients, cGroup, groupSender);
-		if (logger.isDebugEnabled()) {
-			logger.debug("checkFrontOfficeQuota result : " + foQuota.toString());
-		}
+		if (logger.isDebugEnabled()) logger.debug("nbRecipients: " + nbRecipients);
+
+		final CustomizedGroup cGroup = getRecurciveCustomizedGroupByLabel(groupSender.getLabel());
+
 		if (nbRecipients.equals(0)) {
 			return MessageStatus.NO_RECIPIENT_FOUND;
-		} else if (!foQuota) {
+		} else if (!checkFrontOfficeQuota(nbRecipients, cGroup, groupSender)) {
 			return MessageStatus.FO_QUOTA_ERROR;
-		}
-		final Boolean foNbMax = checkMaxSmsGroupQuota(nbRecipients, cGroup, groupSender);
-		if (!foNbMax) {
+		} else if (!checkMaxSmsGroupQuota(nbRecipients, cGroup, groupSender)) {
 			return MessageStatus.FO_NB_MAX_CUSTOMIZED_GROUP_ERROR;
-		} else if (nbRecipients >= nbMaxSmsBeforeSupervising) {
-			return MessageStatus.WAITING_FOR_APPROVAL;
-		} else if (groupRecipient != null) {
+		} else if (nbRecipients >= nbMaxSmsBeforeSupervising || groupRecipient != null) {
 			return MessageStatus.WAITING_FOR_APPROVAL;
 		} else {
 			return MessageStatus.IN_PROGRESS;
@@ -948,10 +933,9 @@ public class SendSmsManager  {
 	}
 
 	private Boolean checkMaxSmsGroupQuota(final Integer nbToSend, final CustomizedGroup cGroup, final BasicGroup groupSender) {
-		Boolean quotaOK = false;
 		final Long quotaOrder = cGroup.getQuotaOrder();
 		if (nbToSend <= quotaOrder) {
-			quotaOK = true;
+			return true;
 		} else {
 			final String mess = 
 			    "Erreur de nombre maximum de sms par envoi pour le groupe d'envoi [" + 
@@ -959,8 +943,8 @@ public class SendSmsManager  {
 			    "] et groupe associ� [" + cGroup.getLabel() + 
 			    "]. Essai d'envoi de " + nbToSend + " message(s), nombre max par envoi = " + quotaOrder;
 			logger.warn(mess);
+			return false;
 		}
-		return quotaOK;
 	}
 
 	/**
@@ -978,6 +962,7 @@ public class SendSmsManager  {
 			logger.warn(mess);
 		}
 		if (cGroup.checkQuotaSms(nbToSend)) {
+			logger.debug("checkFrontOfficeQuota : ok");
 			return true;
 		} else {
 			final String mess = 
