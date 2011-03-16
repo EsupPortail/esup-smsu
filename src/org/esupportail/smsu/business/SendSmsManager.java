@@ -810,7 +810,7 @@ public class SendSmsManager  {
 		customizedMessage.setSenderId(message.getSender().getId());
 		customizedMessage.setGroupSenderId(message.getGroupSender().getId());
 		customizedMessage.setServiceId(message.getService() != null ? message.getService().getId() : null);
-		customizedMessage.setUserAccountLabel(message.getUserAccountLabel());
+		customizedMessage.setUserAccountLabel(message.getAccount().getLabel());
 
 		customizedMessage.setRecipiendPhoneNumber(recipient.getPhone());
 		customizedMessage.setMessage(msgContent);
@@ -895,7 +895,7 @@ public class SendSmsManager  {
 	InsufficientQuotaException {
 		/////check the quotas with the back office/////
 		Integer nbToSend = message.getRecipients().size();
-		String accountLabel = message.getUserAccountLabel();
+		String accountLabel = message.getAccount().getLabel();
 		checkBackOfficeQuotas(nbToSend, accountLabel);
 	}
 

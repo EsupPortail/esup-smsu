@@ -500,27 +500,4 @@ public class Message  implements Serializable {
 		+ "], state=[" + state +  "]]";
 	}
 
-	//////////////////////////////////////////////////////////////
-	// Getter of userGroupLabel
-	//////////////////////////////////////////////////////////////
-	/**
-	 * @return the userGroupLabel
-	 */
-	public String getUserGroupLabel() {
-		return groupSender.getLabel();
-		
-	}
-
-	//////////////////////////////////////////////////////////////
-	// Getter of userAccountLabel
-	//////////////////////////////////////////////////////////////
-
-	/**
-	 * @return the userAccountLabel
-	 */
-	public String getUserAccountLabel() {
-		return account.getLabel();
-
-	}
-	
 }
