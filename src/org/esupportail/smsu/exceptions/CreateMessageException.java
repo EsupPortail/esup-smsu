@@ -59,4 +59,55 @@ public abstract class CreateMessageException extends Exception {
 
 	}
 
+	static public class UnknownCustomizedTag extends CreateMessageException {
+
+		private static final long serialVersionUID = 6792087453400066168L;
+	
+		final private String tag;
+		
+		public UnknownCustomizedTag(final String tag) {
+			this.tag = tag;
+		}
+		
+		public String getTag() {
+			return tag;
+		}
+	
+		public String toString() {
+			return "unknown tag <" + tag + ">";
+		}
+
+		public String toI18nString(I18nService i18nService) {
+			return i18nService.getString("SENDSMS.MESSAGE.UNKNOWNCUSTOMIZEDTAG",
+						     i18nService.getDefaultLocale(), tag);
+		}
+
+	}
+
+	static public class CustomizedTagValueNotFound extends CreateMessageException {
+
+		private static final long serialVersionUID = 6792087453400066168L;
+	
+		final private String tag;
+		
+		public CustomizedTagValueNotFound(final String tag) {
+			this.tag = tag;
+		}
+		
+		public String getTag() {
+			return tag;
+		}
+	
+		public String toString() {
+			return "tag <" + tag + "> has no value";
+		}
+
+		public String toI18nString(I18nService i18nService) {
+			return i18nService.getString("SENDSMS.MESSAGE.CUSTOMIZEDTAGVALUENOTFOUND",
+						     i18nService.getDefaultLocale(), tag);
+		}
+
+	}
+
+
 }

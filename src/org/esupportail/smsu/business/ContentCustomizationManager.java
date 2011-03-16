@@ -11,6 +11,8 @@ import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.exceptions.CreateMessageException;
 import org.esupportail.smsu.exceptions.CreateMessageExceptionWrapper;
+import org.esupportail.smsu.exceptions.UnknownCustomizedTag;
+import org.esupportail.smsu.exceptions.CustomizedTagValueNotFound;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 
@@ -100,6 +102,8 @@ public class ContentCustomizationManager {
 				}
 			} catch (LdapUserNotFoundException e) {
 				logger.info("<" + tag + "> not found for user with id : [" + destUid + "]", e);
+			} catch (UnknownCustomizedTag e) {
+				logger.warn("Keeping unknown tag " + e.getTag() + " unchanged");
 			}
 			if (tagRepl == null) {
 			    logger.info("using default data for <" + tag + ">");
@@ -136,13 +140,15 @@ public class ContentCustomizationManager {
 			}
 			if (tagRepl != null)
 				content = content.replaceAll("<" + tag + ">", tagRepl);
+			else
+				throw new CustomizedTagValueNotFound(tag);
 		}
 
 		logger.debug("customized content :" + content);
 		return content;
 	}
 
-	private String computeTagValue(String tag, String uid) throws LdapUserNotFoundException {
+	private String computeTagValue(String tag, String uid) throws LdapUserNotFoundException, UnknownCustomizedTag {
 		String v;
 		
 		if (tag.equals("DEST_NOM") || tag.equals("EXP_NOM")) {
@@ -159,8 +165,7 @@ public class ContentCustomizationManager {
 			if (!ldapAttribut.equals("")) {
 				v = ldapAttribute(uid, ldapAttribut);
 			} else {
-				logger.warn("Keeping unknown tag " + tag + " unchanged");
-				v = null;
+				throw new UnknownCustomizedTag(tag);
 			}
 		}
 		return v;
@@ -191,7 +196,7 @@ public class ContentCustomizationManager {
 
 	private String ldapAttribute(String uid, String ldapAttribut) throws LdapUserNotFoundException {
 		List<String> values = ldapUtils.getLdapAttributesByUidAndName(uid, ldapAttribut);
-		return values.isEmpty() ? "" : values.get(0);
+		return values.isEmpty() ? null : values.get(0);
 	}
 
 	//////////////////////////////////////////////////////////////

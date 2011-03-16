@@ -167,11 +167,15 @@ public class SendSmsManager  {
 		BasicGroup groupRecipient = getGroupRecipient(uiRecipients);
 		BasicGroup groupSender = getGroupSender(userGroup);
 		MessageStatus messageStatus = getWorkflowState(recipients.size(), groupSender, groupRecipient);
+		Person sender = getSender(login);
+
+		// test if customizeExpContent raises a CreateMessageException
+		customizer.customizeExpContent(content, groupSender.getLabel(), sender.getLogin());
 				
 		Message message = new Message();
 		message.setContent(content);
 		if (smsTemplate != null) message.setTemplate(getMessageTemplate(smsTemplate));
-		message.setSender(getSender(login));
+		message.setSender(sender);
 		message.setAccount(getAccount(userGroup));
 		message.setService(service);
 		message.setGroupSender(groupSender);
