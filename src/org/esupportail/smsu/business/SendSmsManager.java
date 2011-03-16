@@ -761,36 +761,26 @@ public class SendSmsManager  {
 	 * @return the filtered list of users
 	 */
 	private List<LdapUser> filterUsers(final List<LdapUser> users, final String service) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Filtering users for service [" + service + "]");
-		}
+		if (logger.isDebugEnabled()) logger.debug("Filtering users for service [" + service + "]");
 		List<LdapUser> filteredUsers = new ArrayList<LdapUser>();
 
 		for (LdapUser user : users) {
 			List<String> userTermsOfUse = user.getAttributes(userTermsOfUseAttribute);
 			if (userTermsOfUse.contains(cgKeyName)) {
 				if (service != null) {
-					if (logger.isDebugEnabled()) {
-						logger.debug("Service filter activated");
-					}
+					if (logger.isDebugEnabled()) logger.debug("Service filter activated");
 					if (userTermsOfUse.contains(service)) {
 						filteredUsers.add(user);
 					}
 				} else {
-					if (logger.isDebugEnabled()) {
-						logger.debug("No service filter");
-					}
+					if (logger.isDebugEnabled()) logger.debug("No service filter");
 					filteredUsers.add(user);
 				}
 			} else {
-				if (logger.isDebugEnabled()) {
-					logger.debug("CG not validated, user : " + user.getId());
-				}
+				if (logger.isDebugEnabled()) logger.debug("CG not validated, user : " + user.getId());
 			}
 		}
-		if (logger.isDebugEnabled()) {
-			logger.debug("Number of filtered users : " + filteredUsers.size());
-		}
+		if (logger.isDebugEnabled()) logger.debug("Number of filtered users : " + filteredUsers.size());
 		return filteredUsers;
 	}
 
