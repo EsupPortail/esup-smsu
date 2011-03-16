@@ -304,12 +304,12 @@ public class SmsRecipientController extends AbstractContextAwareController {
 				destTypeOptions.add(option);
 			}
 			if (currentUser.getFonctions().contains(FonctionName.FCTN_SMS_ENVOI_GROUPES.name())) {
-		option = new SelectItem("t1", this.getI18nService().getString("SENDSMS.LABEL.USERGROUP"));
-		destTypeOptions.add(option);
+				option = new SelectItem("t1", this.getI18nService().getString("SENDSMS.LABEL.USERGROUP"));
+				destTypeOptions.add(option);
 			}
 			if (currentUser.getFonctions().contains(FonctionName.FCTN_SMS_REQ_LDAP_ADH.name())) {
-		option = new SelectItem("t2", this.getI18nService().getString("SENDSMS.LABEL.LDAP"));
-		destTypeOptions.add(option);
+				option = new SelectItem("t2", this.getI18nService().getString("SENDSMS.LABEL.LDAP"));
+				destTypeOptions.add(option);
 			}			
 		}
 	}
