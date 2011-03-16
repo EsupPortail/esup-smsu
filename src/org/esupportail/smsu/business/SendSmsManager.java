@@ -373,7 +373,14 @@ public class SendSmsManager  {
 		//Mail state
 		mail.setStateAsEnum(MailStatus.WAITING);
 
-		//Mail recipients
+		final Set<MailRecipient> mailRecipients = getMailRecipients(message, mailToSend);
+		if (mailRecipients.size() == 0) return null;
+		
+		mail.setMailRecipients(mailRecipients);
+		return mail;
+	}
+
+	private Set<MailRecipient> getMailRecipients(final Message message, final MailToSend mailToSend) {
 		final Set<MailRecipient> mailRecipients = new HashSet<MailRecipient>();
 		if (mailToSend.getIsMailToRecipients()) {
 			final Set<Recipient> recipients = message.getRecipients();
@@ -415,12 +422,7 @@ public class SendSmsManager  {
 				}
 				mailRecipients.add(mailRecipient);
 		}
-		if (mailRecipients.size() > 0) {
-			mail.setMailRecipients(mailRecipients);
-		} else {
-			mail = null;
-		}
-		return mail;
+		return mailRecipients;
 	}
 
 	/**
