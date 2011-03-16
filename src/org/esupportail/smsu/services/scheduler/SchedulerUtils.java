@@ -37,7 +37,7 @@ public class SchedulerUtils {
 					     " - groupName : " + groupName + "\n");
 			}
 			
-			scheduler.triggerJobWithVolatileTrigger(jobName, groupName);
+			scheduler.triggerJob(jobName, groupName);
 			
 			if (logger.isDebugEnabled()) {
 				logger.debug("Job successfully launched");

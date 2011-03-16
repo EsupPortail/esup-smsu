@@ -89,7 +89,6 @@ public class SendSmsManager  {
 	/**
 	 * Used to launch task.
 	 */
-	@SuppressWarnings("unused")
 	private SchedulerUtils schedulerUtils;
 
 	/**
@@ -262,9 +261,9 @@ public class SendSmsManager  {
 								}
 								message.setStateAsEnum(MessageStatus.WAITING_FOR_SENDING);
 								daoService.updateMessage(message);
-								// launch the task witch manage the sms sending
-								// not used anymore
-								// schedulerUtils.launchSuperviseSmsSending();
+
+								// launch ASAP the task witch manage the sms sending
+								schedulerUtils.launchSuperviseSmsSending();
 
 						} else {
 							// envoi du mail
@@ -318,10 +317,9 @@ public class SendSmsManager  {
 				}
 				message.setStateAsEnum(MessageStatus.WAITING_FOR_SENDING);
 				daoService.updateMessage(message);
-				// launch the task witch manage the sms sending
 
-				// not used anymore
-				//schedulerUtils.launchSuperviseSmsSending();
+				// launch ASAP the task witch manage the sms sending
+				schedulerUtils.launchSuperviseSmsSending();
 
 		} catch (UnknownIdentifierApplicationException e) {
 			message.setStateAsEnum(MessageStatus.WS_ERROR);
