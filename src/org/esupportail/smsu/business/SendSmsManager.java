@@ -856,8 +856,7 @@ public class SendSmsManager  {
 		}
 		final String groupLabel = message.getGroupSender().getLabel();
 		if (logger.isDebugEnabled()) {
-			logger.debug("sender group label : ");
-			logger.debug(groupLabel);
+			logger.debug("sender group label : " + groupLabel);
 		}
 		final CustomizedGroup cGroup = getRecurciveCustomizedGroupByLabel(groupLabel);
 		if (logger.isDebugEnabled()) {
@@ -865,26 +864,23 @@ public class SendSmsManager  {
 		}
 		final Boolean foQuota = checkFrontOfficeQuota(message, cGroup);
 		if (logger.isDebugEnabled()) {
-			logger.debug("checkFrontOfficeQuota result :");
-			logger.debug(foQuota.toString());
+			logger.debug("checkFrontOfficeQuota result : " + foQuota.toString());
 		}
 		if (nbRecipients.equals(0)) {
-			return 	MessageStatus.NO_RECIPIENT_FOUND;
-		}
-		if (!foQuota) {
+			return MessageStatus.NO_RECIPIENT_FOUND;
+		} else if (!foQuota) {
 			return MessageStatus.FO_QUOTA_ERROR;
 		}
 		final Boolean foNbMax = checkMaxSmsGroupQuota(message, cGroup);
 		if (!foNbMax) {
 			return MessageStatus.FO_NB_MAX_CUSTOMIZED_GROUP_ERROR;
-		}
-		if (message.getRecipients().size() >= nbMaxSmsBeforeSupervising) {
+		} else if (message.getRecipients().size() >= nbMaxSmsBeforeSupervising) {
 			return MessageStatus.WAITING_FOR_APPROVAL;
-		}
-		if (message.getGroupRecipient() != null) {
+		} else if (message.getGroupRecipient() != null) {
 			return MessageStatus.WAITING_FOR_APPROVAL;
+		} else {
+			return MessageStatus.IN_PROGRESS;
 		}
-		return MessageStatus.IN_PROGRESS;
 	}
 
 	/**
