@@ -702,8 +702,7 @@ public class DomainServiceImpl implements DomainService, InitializingBean {
 	 * @see org.esupportail.smsu.domain.DomainService#getMember(java.lang.String)
 	 */
 	public Member getMember(final String userIdentifier) throws LdapUserNotFoundException {
-		final Member member = memberManager.getMember(userIdentifier);
-		return member;
+		return memberManager.getMember(userIdentifier);
 	}
 
 	/**
@@ -736,24 +735,21 @@ public class DomainServiceImpl implements DomainService, InitializingBean {
 	 * @see org.esupportail.smsu.domain.DomainService#validMember(org.esupportail.smsu.business.beans.Member)
 	 */
 	public boolean validMember(final Member member) throws LdapUserNotFoundException {
-		boolean result = memberManager.valid(member);
-		return result;
+		return memberManager.valid(member);
 	}
 
 	/**
 	 * @see org.esupportail.smsu.domain.DomainService#getAllServices()
 	 */
 	public List<Service> getAllServices() {
-		final List<Service> allServices = serviceManager.getAllServices();
-		return allServices;
+		return serviceManager.getAllServices();
 	}
 
 	/**
 	 * @return all the services in the format used for display.
 	 */
 	public List<UIService> getAllUIServices() {
-		final List<UIService> allUiServices = serviceManager.getAllUIServices();
-		return allUiServices;
+		return serviceManager.getAllUIServices();
 	}
 
 	//////////////////////////////////////////////////////////////
@@ -919,8 +915,7 @@ public class DomainServiceImpl implements DomainService, InitializingBean {
 	 * @see org.esupportail.smsu.domain.DomainService#treatMessage(org.esupportail.smsu.dao.beans.Message)
 	 */
 	public String treatMessage(final Message message) {
-		String strReturn = sendSmsManager.treatMessage(message);
-		return strReturn;
+		return sendSmsManager.treatMessage(message);
 	}
 
 	//////////////////////////////////////////////////////////////
@@ -930,16 +925,14 @@ public class DomainServiceImpl implements DomainService, InitializingBean {
 	 * @see org.esupportail.smsu.domain.DomainService#getAllRoles()
 	 */
 	public List<UIRole> getAllRoles(final List<Integer> idRoles) {
-		List<UIRole> allRoles = roleManager.getAllRoles(idRoles);
-		return allRoles;
+		return roleManager.getAllRoles(idRoles);
 	}
 
 	/**
 	 * @see org.esupportail.smsu.domain.DomainService#getAllRoles()
 	 */
 	public List<UIRole> getAllRoles() {
-		List<UIRole> allRoles = roleManager.getAllRoles();
-		return allRoles;
+		return roleManager.getAllRoles();
 	}
 	
 	public void saveRole(final UIRole role, final List<String> selectedValues) {
@@ -965,8 +958,7 @@ public class DomainServiceImpl implements DomainService, InitializingBean {
 	 * @see org.esupportail.smsu.domain.DomainService#getAllRoles()
 	 */
 	public List<Fonction> getAllFonctions() {
-		final List<Fonction> allFonctions = fonctionManager.getAllFonctions();
-		return allFonctions;
+		return fonctionManager.getAllFonctions();
 	}
 
 	/**
