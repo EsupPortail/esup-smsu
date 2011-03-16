@@ -33,7 +33,7 @@ public class SendSmsClient  {
 	/**
 	 * @return the Quota check.
 	 */
-	public  Boolean isQuotaOk(final Integer nbDest, final String labelAccount) 
+	public void mayCreateAccountCheckQuotaOk(final Integer nbDest, final String labelAccount) 
 	throws UnknownIdentifierApplicationException, 
 	InsufficientQuotaException {
 		if (logger.isDebugEnabled()) {
@@ -41,7 +41,7 @@ public class SendSmsClient  {
 				     " - nbDest = " + nbDest + 
 				     " - labelAccount = " + labelAccount);
 		}
-		return sendSms.isQuotaOk(nbDest, labelAccount);
+		sendSms.mayCreateAccountCheckQuotaOk(nbDest, labelAccount);
 	}
 	
 	

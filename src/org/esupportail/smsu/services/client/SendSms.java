@@ -18,10 +18,14 @@ public interface SendSms extends Serializable {
 	/**
 	 * @param nbDest 
 	 * @param labelAccount 
-	 * @return the Quota check.
 	 * @throws UnknownIdentifierApplicationException 
 	 * @throws InsufficientQuotaException 
 	 */
+	void mayCreateAccountCheckQuotaOk(Integer nbDest, String labelAccount)
+	throws UnknownIdentifierApplicationException, 
+	InsufficientQuotaException;
+
+	@Deprecated
 	Boolean isQuotaOk(Integer nbDest, String labelAccount)
 	throws UnknownIdentifierApplicationException, 
 	InsufficientQuotaException;

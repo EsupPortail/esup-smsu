@@ -253,14 +253,8 @@ public class SendSmsManager  {
 							Integer nbToSend = message.getRecipients().size();
 							String accountLabel = message.getUserAccountLabel();
 
-							Boolean quotasOk = checkBackOfficeQuotas(nbToSend, accountLabel);
+							checkBackOfficeQuotas(nbToSend, accountLabel);
 
-							////the quotas are good, the SMS can be sent.
-							if (!quotasOk) {
-								message.setStateAsEnum(MessageStatus.WS_QUOTA_ERROR);
-								daoService.updateMessage(message);
-								return "BOQUOTAKO";
-							} else {
 								// message is ready to be sent to the back office
 								if (logger.isDebugEnabled()) {
 									logger.debug("Setting to state WAINTING_FOR_SENDING message with ID (standard message case) : " + message.getId());
@@ -270,7 +264,6 @@ public class SendSmsManager  {
 								// launch the task witch manage the sms sending
 								// not used anymore
 								// schedulerUtils.launchSuperviseSmsSending();
-							}
 
 						} else {
 							// envoi du mail
@@ -316,13 +309,8 @@ public class SendSmsManager  {
 			Integer nbToSend = message.getRecipients().size();
 			String accountLabel = message.getUserAccountLabel();
 
-			Boolean quotasOk = checkBackOfficeQuotas(nbToSend, accountLabel);
+			checkBackOfficeQuotas(nbToSend, accountLabel);
 
-			////the quotas are good, the SMS can be sent.
-			if (!quotasOk) {
-				message.setStateAsEnum(MessageStatus.WS_QUOTA_ERROR);
-				daoService.updateMessage(message);
-			} else {
 				// message is ready to be sent to the back office
 				if (logger.isDebugEnabled()) {
 					logger.debug("Setting to state WAINTING_FOR_SENDING message with ID (approval message case) : " + message.getId());
@@ -333,7 +321,6 @@ public class SendSmsManager  {
 
 				// not used anymore
 				//schedulerUtils.launchSuperviseSmsSending();
-			}
 
 		} catch (UnknownIdentifierApplicationException e) {
 			message.setStateAsEnum(MessageStatus.WS_ERROR);
@@ -1057,7 +1044,7 @@ public class SendSmsManager  {
 	/**
 	 * @return quotasOk
 	 */ 
-	private Boolean checkBackOfficeQuotas(final Integer nbToSend, final String accountLabel) 
+	private void checkBackOfficeQuotas(final Integer nbToSend, final String accountLabel) 
 	throws BackOfficeUnrichableException, UnknownIdentifierApplicationException,
 	InsufficientQuotaException {
 		try {
@@ -1067,14 +1054,11 @@ public class SendSmsManager  {
 						+ "accountLabel = " + accountLabel);
 			}
 
-			Boolean quotasOk = sendSmsClient.isQuotaOk(nbToSend, 
-					accountLabel);
+			sendSmsClient.mayCreateAccountCheckQuotaOk(nbToSend, accountLabel);
 
 			if (logger.isDebugEnabled()) {
-				logger.debug("Receive Boolean object response of WS SendSms : " + quotasOk); 
+				logger.debug("checkQuotaOk: quota is ok to send all our messages"); 
 			}
-
-			return quotasOk;
 
 		} catch (UnknownIdentifierApplicationException e) {
 			throw new UnknownIdentifierApplicationException(e.getMessage());
