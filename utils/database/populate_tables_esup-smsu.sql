@@ -3,6 +3,7 @@
 /*==============================================================*/
 
 /*  Ajout des fonctions */
+/*  must be in sync with FonctionName.java */
 INSERT INTO fonction VALUES(1,"FCTN_SMS_ENVOI_ADH");
 INSERT INTO fonction VALUES(2,"FCTN_SMS_ENVOI_GROUPES");
 INSERT INTO fonction VALUES(3,"FCTN_SMS_ENVOI_NUM_TEL");

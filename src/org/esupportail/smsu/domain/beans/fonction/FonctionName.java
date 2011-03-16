@@ -5,6 +5,8 @@ package org.esupportail.smsu.domain.beans.fonction;
  * @author hbcp0056
  *
  */
+
+/* must be in sync with populate_tables_esup-smsu.sql */
 public enum FonctionName {
 	// Send SMS
 	FCTN_SMS_ENVOI_ADH,	
