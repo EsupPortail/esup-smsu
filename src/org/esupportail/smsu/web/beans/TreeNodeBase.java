@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.myfaces.custom.tree2.TreeNode;
 
+@SuppressWarnings("serial")
 public class TreeNodeBase implements TreeNode {
 
 	String description;
@@ -16,6 +17,7 @@ public class TreeNodeBase implements TreeNode {
 		return getChildren().size();
 	}
 
+	@SuppressWarnings("unchecked")
 	public List getChildren() {
 		// TODO Auto-generated method stub
 		return null;

@@ -34,6 +34,7 @@ public class UIMessage extends Message  {
 	/**
 	 * Log4j logger.
 	 */
+	@SuppressWarnings("unused")
 	private final Logger logger = new LoggerImpl(getClass());
 	
 	/**

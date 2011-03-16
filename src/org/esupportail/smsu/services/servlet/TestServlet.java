@@ -123,8 +123,10 @@ public class TestServlet extends HttpServlet {
     	
     	final String add1 = "karine.chevalier@orange-ftgroup.com";
     	final String add11 = "mathieu1.janvier@orange-ftgroup.com";
-    	final String add2 = "christophe.pinel@orange-ftgroup.com";
-    	final String add21 = "rlaoues1.ext@orange-ftgroup.com";
+    	@SuppressWarnings("unused")
+		final String add2 = "christophe.pinel@orange-ftgroup.com";
+    	@SuppressWarnings("unused")
+		final String add21 = "rlaoues1.ext@orange-ftgroup.com";
     	final String add22 = "truc truc truc";
     	final List<String> toList = new LinkedList<String>();
     	toList.add(add1);

@@ -793,6 +793,7 @@ public class LdapUtils {
 	 * @param ldapGroup
 	 * @return the string id list of a ldap group. 
 	 */
+	@SuppressWarnings("unchecked")
 	public List<LdapUser> getMembers(final GroupDefinition gd, String cgPropertyName, String serviceKey) {
 		if (logger.isDebugEnabled()) {
 			logger.debug("getMembers.start");

@@ -13,6 +13,7 @@ import org.esupportail.commons.services.logging.LoggerImpl;
 import org.jasig.portal.services.persondir.support.MultivaluedPersonAttributeUtils;
 
 
+@SuppressWarnings("unchecked")
 public class SmsuLdapPersonAttributeDaoImpl {
 
     /**
@@ -30,6 +31,7 @@ public class SmsuLdapPersonAttributeDaoImpl {
      */
     private Set userAttributes = Collections.EMPTY_SET;
 
+	@SuppressWarnings("unused")
 	private final Logger logger = new LoggerImpl(getClass());
     /*
      * @see org.jasig.portal.services.persondir.support.IPersonAttributeDao#getPossibleUserAttributeNames()

@@ -8,6 +8,7 @@ import org.esupportail.commons.services.logging.LoggerImpl;
  *
  */
 public class TestConnexionClient {
+	@SuppressWarnings("unused")
 	private static final String BEAN_NAME = "remoteTestConnexion";
 	
 	private TestConnexion remoteService;

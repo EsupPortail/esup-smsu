@@ -10,6 +10,7 @@ import org.esupportail.commons.services.logging.LoggerImpl;
 import org.jasig.portal.groups.pags.IPersonAttributesConfiguration;
 import org.jasig.portal.groups.pags.IPersonTester;
 
+@SuppressWarnings("unchecked")
 public class SmsuPersonAttributesGroupStore {
 
 	private Map groupDefinitions;

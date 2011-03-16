@@ -88,6 +88,7 @@ public class SendSmsManager  {
 	/**
 	 * Used to launch task.
 	 */
+	@SuppressWarnings("unused")
 	private SchedulerUtils schedulerUtils;
 
 	/**
