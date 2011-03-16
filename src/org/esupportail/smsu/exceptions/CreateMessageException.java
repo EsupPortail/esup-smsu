@@ -109,5 +109,25 @@ public abstract class CreateMessageException extends Exception {
 
 	}
 
+	static public class EmptyGroup extends CreateMessageException {
+		
+		private static final long serialVersionUID = 8476880753507079446L;
+
+		final private String groupName;
+		
+		public EmptyGroup(final String groupName) {
+			this.groupName = groupName;
+		}
+	
+		public String toString() {
+			return "group " + groupName + " is empty";
+		}
+
+		public String toI18nString(I18nService i18nService) {
+			return i18nService.getString("SENDSMS.MESSAGE.EMPTYGROUP",
+						     i18nService.getDefaultLocale(), groupName);
+		}
+
+	}
 
 }

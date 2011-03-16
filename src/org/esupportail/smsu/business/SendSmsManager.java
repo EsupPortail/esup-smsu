@@ -32,6 +32,7 @@ import org.esupportail.smsu.exceptions.BackOfficeUnrichableException;
 import org.esupportail.smsu.exceptions.CreateMessageException;
 import org.esupportail.smsu.exceptions.InsufficientQuotaException;
 import org.esupportail.smsu.exceptions.UnknownIdentifierApplicationException;
+import org.esupportail.smsu.exceptions.CreateMessageException.EmptyGroup;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
 import org.esupportail.smsu.groups.pags.SmsuPersonAttributesGroupStore;
 import org.esupportail.smsu.groups.pags.SmsuPersonAttributesGroupStore.GroupDefinition;
@@ -536,8 +537,9 @@ public class SendSmsManager  {
 	/**
 	 * @param uiRecipients
 	 * @return the recipients list.
+	 * @throws EmptyGroup 
 	 */
-	private Set<Recipient> getRecipients(final List<UiRecipient> uiRecipients, final Service service) {
+	private Set<Recipient> getRecipients(final List<UiRecipient> uiRecipients, final Service service) throws EmptyGroup {
 
 		Set<Recipient> recipients = new HashSet<Recipient>();
 
@@ -563,6 +565,9 @@ public class SendSmsManager  {
 				List<LdapUser> groupUsers = getUsersByGroup(groupName,serviceKey);
 				// users are filtered to keep only service compliant ones.
 				List<LdapUser> filteredUsers = filterUsers(groupUsers, serviceKey);
+				if (filteredUsers.isEmpty())
+					throw new CreateMessageException.EmptyGroup(groupName);
+					
 				//users are added to the recipient list.
 				for (LdapUser ldapUser : filteredUsers) {
 					String phone = ldapUser.getAttribute(userPagerAttribute);
