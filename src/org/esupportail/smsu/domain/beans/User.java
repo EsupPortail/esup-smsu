@@ -88,7 +88,23 @@ public class User implements Serializable {
 	@Override
 	public String toString() {
 		return "User#" + hashCode() + "[id=[" + id + "], displayName=[" + displayName 
-		+ "], admin=[" + admin + "], language=[" + language + "]]";
+		    + "], admin=[" + admin + "], language=[" + language
+		    + "], fonctions=[" + join(fonctions, ",") + "], roles=[" + join(roles, ",") + "]]";
+	}
+
+	public static String join(Iterable<?> elements, CharSequence separator) {
+		if (elements == null) return "";
+
+		StringBuilder sb = null;
+
+		for (Object s : elements) {
+			if (sb == null)
+				sb = new StringBuilder();
+			else
+				sb.append(separator);
+			sb.append(s);			
+		}
+		return sb == null ? "" : sb.toString();
 	}
 
 	/**
