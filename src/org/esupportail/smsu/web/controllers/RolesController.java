@@ -196,58 +196,9 @@ public class RolesController extends AbstractContextAwareController {
 				UIFonction uifct = new UIFonction();
 				uifct.setId(fct.getId().toString());
 				
-				if (fct.getName().trim().equals("FCTN_SMS_ENVOI_ADH")) {
-					uifct.setName(getI18nService().getString("MSG.FCTN_SMS_ENVOI_ADH", 
-							getI18nService().getDefaultLocale()));
-					logger.debug("ici 4");
-				} else if (fct.getName().trim().equals("FCTN_SMS_ENVOI_GROUPES")) {
-					uifct.setName(getI18nService().getString("MSG.FCTN_SMS_ENVOI_GROUPES", 
-							getI18nService().getDefaultLocale()));
-				} else if (fct.getName().trim().equals("FCTN_SMS_ENVOI_NUM_TEL")) {
-					uifct.setName(getI18nService().getString("MSG.FCTN_SMS_ENVOI_NUM_TEL", 
-							getI18nService().getDefaultLocale()));
-				} else if (fct.getName().trim().equals("FCTN_SMS_ENVOI_SERVICE_CP")) {
-					uifct.setName(getI18nService().getString("MSG.FCTN_SMS_ENVOI_SERVICE_CP", 
-							getI18nService().getDefaultLocale()));
-				} else if (fct.getName().trim().equals("FCTN_SMS_REQ_LDAP_ADH")) {
-					uifct.setName(getI18nService().getString("MSG.FCTN_SMS_REQ_LDAP_ADH", 
-							getI18nService().getDefaultLocale()));
-				} else if (fct.getName().trim().equals("FCTN_SMS_AJOUT_MAIL")) {
-					uifct.setName(getI18nService().getString("MSG.FCTN_SMS_AJOUT_MAIL", 
-							getI18nService().getDefaultLocale()));
-				} else if (fct.getName().trim().equals("FCTN_GESTIONS_RESPONSABLES")) {
-					uifct.setName(getI18nService().getString("MSG.FCTN_GESTIONS_RESPONSABLES", 
-							getI18nService().getDefaultLocale()));
-				} else if (fct.getName().trim().equals("FCTN_GESTION_ROLES_CRUD")) {
-					uifct.setName(getI18nService().getString("MSG.FCTN_GESTION_ROLES_CRUD", 
-							getI18nService().getDefaultLocale()));
-				} else if (fct.getName().trim().equals("FCTN_GESTION_ROLES_AFFECT")) {
-					uifct.setName(getI18nService().getString("MSG.FCTN_GESTION_ROLES_AFFECT", 
-							getI18nService().getDefaultLocale()));
-				} else if (fct.getName().trim().equals("FCTN_GESTION_MODELES")) {
-					uifct.setName(getI18nService().getString("MSG.FCTN_GESTION_MODELES", 
-							getI18nService().getDefaultLocale()));
-				} else if (fct.getName().trim().equals("FCTN_GESTION_SERVICES_CP")) {
-					uifct.setName(getI18nService().getString("MSG.FCTN_GESTION_SERVICES_CP", 
-							getI18nService().getDefaultLocale()));
-				} else if (fct.getName().trim().equals("FCTN_GESTION_QUOTAS")) {
-					uifct.setName(getI18nService().getString("MSG.FCTN_GESTION_QUOTAS", 
-							getI18nService().getDefaultLocale()));
-				} else if (fct.getName().trim().equals("FCTN_SUIVI_ENVOIS_UTIL")) {
-					uifct.setName(getI18nService().getString("MSG.FCTN_SUIVI_ENVOIS_UTIL", 
-							getI18nService().getDefaultLocale()));
-				} else if (fct.getName().trim().equals("FCTN_SUIVI_ENVOIS_ETABL")) {
-					uifct.setName(getI18nService().getString("MSG.FCTN_SUIVI_ENVOIS_ETABL", 
-							getI18nService().getDefaultLocale()));
-				} else if (fct.getName().trim().equals("FCTN_GESTION_GROUPE")) {
-					uifct.setName(getI18nService().getString("MSG.FCTN_GESTION_GROUPE", 
-							getI18nService().getDefaultLocale()));
-				} else if (fct.getName().trim().equals("FCTN_APPROBATION_ENVOI")) {
-					uifct.setName(getI18nService().getString("MSG.FCTN_APPROBATION_ENVOI", 
-							getI18nService().getDefaultLocale()));
-				} 
-			
-				logger.debug("ici 5");
+				String msg = getI18nService().getString("MSG." + fct.getName().trim(), 
+									getI18nService().getDefaultLocale());
+				uifct.setName(msg);
 				this.allBundleFonctions.add(uifct);
 				logger.debug("ici 6");
 			}
