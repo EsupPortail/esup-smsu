@@ -173,36 +173,15 @@ public class PerformSendSmsController extends AbstractContextAwareController {
 					if (sendResult.equals("FOQUOTAKO")) {
 						addErrorMessage(null, "SENDSMS.MESSAGE.SENDERGROUPQUOTAERROR");
 						strReturn = null;
+					} else if (sendResult.equals("FONBMAXFORCUSTOMIZEDGROUPERROR")) {
+						addErrorMessage(null, "SENDSMS.MESSAGE.SENDERGROUPNDMAXSMSERROR");
+						strReturn = null;
+					} else if (sendResult.equals("BOQUOTAKO")) {
+						addErrorMessage(null, "SERVICE.CLIENT.QUOTAERROR");
+						strReturn = null;
 					} else {
-						if (sendResult.equals("FONBMAXFORCUSTOMIZEDGROUPERROR")) {
-							addErrorMessage(null, "SENDSMS.MESSAGE.SENDERGROUPNDMAXSMSERROR");
-							strReturn = null;
-						} else {
-							if (sendResult.equals("BOQUOTAKO")) {
-								addErrorMessage(null, "SERVICE.CLIENT.QUOTAERROR");
-								strReturn = null;
-							} else {
-								if ((message.getStateAsEnum() == MessageStatus.WAITING_FOR_SENDING)
-										|| (message.getStateAsEnum() == MessageStatus.SENT)) {
-									sendSMSController.setIsShowMsgSending(true);
-									sendSMSController.setIsShowMsgWainting(false);
-									sendSMSController.setIsShowMsgNoRecipientFound(false);
-								} else {
-									if (message.getStateAsEnum() == MessageStatus.WAITING_FOR_APPROVAL) {
-										sendSMSController.setIsShowMsgSending(false);
-										sendSMSController.setIsShowMsgWainting(true);
-										sendSMSController.setIsShowMsgNoRecipientFound(false);
-									} else {
-										if (message.getStateAsEnum() == MessageStatus.NO_RECIPIENT_FOUND) {
-											sendSMSController.setIsShowMsgSending(false);
-											sendSMSController.setIsShowMsgWainting(false);
-											sendSMSController.setIsShowMsgNoRecipientFound(true);
-										}	
-									}
-								}
-								strReturn = "envoiOK";
-							}
-						}
+						sendSMSController.setIsShowMsgsUsingMessageStatus(message.getStateAsEnum());
+						strReturn = "envoiOK";
 					}
 				} catch (UnknownIdentifierApplicationException e) {
 					logger.error("Application unknown", e);

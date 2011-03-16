@@ -17,6 +17,7 @@ import org.esupportail.smsu.dao.beans.Template;
 import org.esupportail.smsu.domain.DomainService;
 import org.esupportail.smsu.domain.beans.User;
 import org.esupportail.smsu.domain.beans.fonction.FonctionName;
+import org.esupportail.smsu.domain.beans.message.MessageStatus;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.services.ldap.beans.UserGroup;
 
@@ -293,6 +294,13 @@ public class SendSMSController extends AbstractContextAwareController {
 			smsBody.setValue("");
 			smsSuffix = "";
 		}
+	}
+
+	public void setIsShowMsgsUsingMessageStatus(MessageStatus state) {
+		setIsShowMsgSending(state == MessageStatus.WAITING_FOR_SENDING || 
+				    state == MessageStatus.SENT);
+		setIsShowMsgWainting(state == MessageStatus.WAITING_FOR_APPROVAL);
+		setIsShowMsgNoRecipientFound(state == MessageStatus.NO_RECIPIENT_FOUND);
 	}
 	
 	/**
