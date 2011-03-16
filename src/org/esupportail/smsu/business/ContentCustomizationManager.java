@@ -1,7 +1,8 @@
 package org.esupportail.smsu.business;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,51 +17,6 @@ import org.esupportail.smsu.services.ldap.LdapUtils;
  *
  */
 public class ContentCustomizationManager {
-
-	/**
-	 * tag start.
-	 */
-	private static final String CS_START_TAG = "<";
-
-	/**
-	 * tag end.
-	 */
-	private static final String CS_END_TAG = ">";
-
-	/**
-	 * sender name tag.
-	 */
-	private static final String CS_EXP_NOM_TAG = CS_START_TAG + "EXP_NOM" + CS_END_TAG;
-
-	/**
-	 * sender phone tag.
-	 */
-	private static final String CS_EXP_TEL_RAPPEL_TAG = CS_START_TAG + "EXP_TEL_RAPPEL" + CS_END_TAG;
-
-	/**
-	 * sender group tag.
-	 */
-	private static final String CS_EXP_GROUP_NOM_TAG = CS_START_TAG + "EXP_GROUPE_NOM" + CS_END_TAG;
-
-	/**
-	 * recipient last name tag.
-	 */
-	private static final String CS_DEST_NOM_TAG = CS_START_TAG + "DEST_NOM" + CS_END_TAG;
-
-	/**
-	 * recipient name tag.
-	 */
-	private static final String CS_DEST_PRENOM_TAG = CS_START_TAG + "DEST_PRENOM" + CS_END_TAG;
-
-	/**
-	 * ldap recipient start tag.
-	 */
-	private static final String CS_DEST_LDAP_STARTING_TAG = CS_START_TAG + "DEST_LDAP_";
-
-	/**
-	 * ldap sender start tag.  
-	 */
-	private static final String CS_EXP_LDAP_STARTING_TAG = CS_START_TAG + "EXP_LDAP_";
 
 	/**
 	 * LDAP utils.
@@ -94,17 +50,12 @@ public class ContentCustomizationManager {
 	 * @param content
 	 * @return the list of sender tags found in the content.
 	 */
-	private List<String> extractExpTags(final String content) {
-		List<String> tagList = new ArrayList<String>();
-		Pattern tagPattern = Pattern.compile("<EXP[a-zA-Z_]+>");
-		Matcher matcher = tagPattern.matcher(content);
-
-		while (matcher.find()) {
-			if (!tagList.contains(matcher.group())) {
-				logger.debug("New Exp tag found : " + matcher.group());
-				tagList.add(matcher.group());
-			}
-		}
+	private Set<String> extractExpTags(final String content) {
+		Pattern tagPattern = Pattern.compile("<(EXP_[a-zA-Z_]+)>");	
+		Set<String> tagList = findUniqueMatches1(tagPattern, content);
+		
+		for (String tag : tagList)
+			logger.debug("New Exp tag found : " + tag);
 
 		return tagList;
 	}
@@ -113,103 +64,21 @@ public class ContentCustomizationManager {
 	 * @param content
 	 * @return the list of recipient tags found in the content.
 	 */
-	private List<String> extractDestTags(final String content) {
-		List<String> tagList = new ArrayList<String>();
-		Pattern tagPattern = Pattern.compile("<DEST[a-zA-Z_]+>");
-		Matcher matcher = tagPattern.matcher(content);
-
-		while (matcher.find()) {
-			if (!tagList.contains(matcher.group())) {
-				logger.debug("New Dest tag found : " + matcher.group());
-				tagList.add(matcher.group());
-			}
-		}
+	private Set<String> extractDestTags(final String content) {
+		Pattern tagPattern = Pattern.compile("<(DEST_[a-zA-Z_]+)>");
+		Set<String> tagList = findUniqueMatches1(tagPattern, content);
+		
+		for (String tag : tagList)
+			logger.debug("New Dest tag found : " + tag);
 
 		return tagList;
 	}
-
-	/**
-	 * @param tag
-	 * @return true if the tag is a sender first name tag.
-	 */
-	Boolean isExpNomTag(final String tag) {
-		if (tag.equals(CS_EXP_NOM_TAG)) {
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	 * @param tag
-	 * @return true if the tag is a sender group tag.
-	 */
-	Boolean isExpGroupNomTag(final String tag) {
-		if (tag.equals(CS_EXP_GROUP_NOM_TAG)) {
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	 * @param tag
-	 * @return true if the tag is a recipient last name tag.
-	 */
-	Boolean isDestNomTag(final String tag) {
-		if (tag.equals(CS_DEST_NOM_TAG)) {
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	 * @param tag
-	 * @return true if the tag is a recipient first name tag.
-	 */
-	Boolean isDestPrenomTag(final String tag) {
-		if (tag.equals(CS_DEST_PRENOM_TAG)) {
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	 * @param tag
-	 * @return true if the tag is a sender phone tag.
-	 */
-	Boolean isExpTelRappelTag(final String tag) {
-		if (tag.equals(CS_EXP_TEL_RAPPEL_TAG)) {
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	 * @param tag
-	 * @return true if the tag is a recipient ldap tag. 
-	 */
-	Boolean isDestLdapTag(final String tag) {
-		if (tag.contains(CS_DEST_LDAP_STARTING_TAG)) {
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	 * @param tag
-	 * @return true if the tag is a sender ldap tag.
-	 */
-	Boolean isExpLdapTag(final String tag) {
-		if (tag.contains(CS_EXP_LDAP_STARTING_TAG)) {
-			return true;
-		}
-
-		return false;
+	
+	private Set<String> findUniqueMatches1(Pattern regex, String s) {
+		Set<String> set = new TreeSet<String>();
+		Matcher matcher = regex.matcher(s);
+		while (matcher.find()) set.add(matcher.group(1));
+		return set;
 	}
 
 	/**
@@ -217,73 +86,27 @@ public class ContentCustomizationManager {
 	 * @param destUid
 	 * @return the content customized with the recipient data.
 	 */
-	public String customizeDestContent(final String content,
-			final String destUid) {
-		String cutomizedContent = content;
-		List<String> tags = extractDestTags(content);
-		String destLastName;
-		String destFirstName;
-		String customAttribut;
+	public String customizeDestContent(String content, final String destUid) {
 
-		if (!tags.isEmpty()) {
-			for (String tag : tags) {
-
-				if (isDestNomTag(tag)) {
-					if (destUid != null) {
-						try {
-							destLastName = ldapUtils.getUserLastNameByUid(destUid);
-						} catch (LdapUserNotFoundException e) {
-							logger.warn("Recipient name not found for user with id : [" + destUid + "]", e);
-							destLastName = defaultNotFoundData;
-						}
-					} else {
-						logger.debug("Recipient has no ID default data used");
-						destLastName = defaultNotFoundData;
-					}
-					cutomizedContent = cutomizedContent.replaceAll(tag, destLastName);
+		for (String tag : extractDestTags(content)) {
+			String tagRepl = null;
+			try {
+				if (destUid == null) {
+					logger.info("Recipient has no ID default");
+				} else {
+					tagRepl = computeTagValue(tag, destUid);
 				}
-
-				if (isDestPrenomTag(tag)) {
-					if (destUid != null) {
-						try {
-							destFirstName = ldapUtils.getUserFirstNameByUid(destUid);
-						} catch (LdapUserNotFoundException e) {
-							logger.warn("Recipient first name not found for user with id : [" + destUid + "]", e);
-							destFirstName = defaultNotFoundData;
-						}
-					} else {
-						logger.debug("Recipient has no ID default data used");
-						destFirstName = defaultNotFoundData;
-					}
-					cutomizedContent = cutomizedContent.replaceAll(tag, destFirstName);
-				}
-
-				if (isDestLdapTag(tag)) {
-
-					String ldapAttribut = getLdapDestAttribut(tag);
-					if (destUid != null) {
-						try {
-							List<String> values = ldapUtils.getLdapAttributesByUidAndName(destUid,
-									ldapAttribut);
-							customAttribut = "";
-							if (!values.isEmpty()) {
-								customAttribut = values.get(0);
-							}
-						} catch (LdapUserNotFoundException e) {
-							logger.debug("Recipient custom data not found for user with id : [" + destUid + "]", e);
-							customAttribut = defaultNotFoundData;
-						}
-					} else {
-						logger.debug("Recipient has no ID default data used");
-						customAttribut = defaultNotFoundData;
-					}
-					cutomizedContent = cutomizedContent.replaceAll(tag, customAttribut);
-				}
+			} catch (LdapUserNotFoundException e) {
+				logger.info("<" + tag + "> not found for user with id : [" + destUid + "]", e);
 			}
+			if (tagRepl == null) {
+			    logger.info("using default data for <" + tag + ">");
+			    tagRepl = defaultNotFoundData;
+			}
+			content = content.replaceAll("<" + tag + ">", tagRepl);
 		}
-
-		logger.debug("customized content :" + cutomizedContent);
-		return cutomizedContent;
+		logger.debug("customized content :" + content);
+		return content;
 	}
 
 	/**
@@ -293,70 +116,80 @@ public class ContentCustomizationManager {
 	 * @return the content customized with the sender data.
 	 * @throws LdapUserNotFoundException 
 	 */
-	public String customizeExpContent(final String content,
-			final String expGroupName,
-			final String expUid) throws LdapUserNotFoundException {
-		String cutomizedContent = content;
-		List<String> tags = extractExpTags(content);
-		String customAttribut;
+	public String customizeExpContent(String content, final String expGroupName, final String expUid) throws LdapUserNotFoundException {
+		Set<String> tags = extractExpTags(content);
 
-		if (!tags.isEmpty()) {
-			for (String tag : tags) {
-				try {
-
-					if (isExpGroupNomTag(tag)) {
-						// a sending group can be a user name
-						String expGroupDisplayName = null;
-						try {
-							expGroupDisplayName = ldapUtils.getUserDisplayNameByUserUid(expGroupName);
-						} catch (LdapUserNotFoundException e) {
-							if (logger.isDebugEnabled()) {
-								logger.debug("User not found : " + expGroupName);
-							}
-							expGroupDisplayName = ldapUtils.getGroupNameByUid(expGroupName);
-							if (expGroupDisplayName == null) {
-								logger.debug("Group not found : " + expGroupName);
-								expGroupDisplayName = expGroupName;
-							}	
-						}
-						 
-						if (logger.isDebugEnabled()) {
-							logger.debug("Group name used :" + expGroupDisplayName);
-						}
-						cutomizedContent = cutomizedContent.replaceAll(tag, expGroupDisplayName);
-					}
-
-					if (isExpNomTag(tag)) {
-						String expName = ldapUtils.getUserLastNameByUid(expUid);
-						cutomizedContent = cutomizedContent.replaceAll(tag, expName);
-					}
-
-					if (isExpTelRappelTag(tag)) {
-						String expTel = ldapUtils.getUserPagerByUid(expUid);
-						cutomizedContent = cutomizedContent.replaceAll(tag, expTel);
-					}
-
-					if (isExpLdapTag(tag)) {
-						String ldapAttribut = getLdapExpAttribut(tag);
-						List<String> values = ldapUtils.getLdapAttributesByUidAndName(expUid,
-								ldapAttribut);
-						customAttribut = "";
-						if (!values.isEmpty()) {
-							customAttribut = values.get(0);
-						}
-
-						cutomizedContent = cutomizedContent.replaceAll(tag, customAttribut);
-					}
-				} catch (LdapUserNotFoundException e) {
-					String messageStr = "Unable to find the user with id : [" + expUid + "]";
-					logger.debug(messageStr, e);
-					throw new LdapUserNotFoundException(messageStr, e);
+		for (String tag : tags) {
+			String tagRepl;
+			try {
+				if (tag.equals("EXP_GROUPE_NOM")) {
+					tagRepl = expGroupName(expGroupName);
+				} else {
+					tagRepl = computeTagValue(tag, expUid);
 				}
+			} catch (LdapUserNotFoundException e) {
+				String messageStr = "Unable to find the user with id : [" + expUid + "]";
+				logger.warn(messageStr, e);
+				throw new LdapUserNotFoundException(messageStr, e);
 			}
+			if (tagRepl != null)
+				content = content.replaceAll("<" + tag + ">", tagRepl);
 		}
 
-		logger.debug("customized content :" + cutomizedContent);
-		return cutomizedContent;
+		logger.debug("customized content :" + content);
+		return content;
+	}
+
+	private String computeTagValue(String tag, String uid) throws LdapUserNotFoundException {
+		String v;
+		
+		if (tag.equals("DEST_NOM") || tag.equals("EXP_NOM")) {
+			v = ldapUtils.getUserLastNameByUid(uid);
+		} else if (tag.equals("DEST_PRENOM")) {
+			v = ldapUtils.getUserFirstNameByUid(uid);
+		} else if (tag.equals("EXP_TEL_RAPPEL")) {
+			v = ldapUtils.getUserPagerByUid(uid);
+		} else {
+			String ldapAttribut = StringUtils.substringAfter(tag, "DEST_LDAP_");
+			if (ldapAttribut.equals(""))
+				ldapAttribut = StringUtils.substringAfter(tag, "EXP_LDAP_");
+
+			if (!ldapAttribut.equals("")) {
+				v = ldapAttribute(uid, ldapAttribut);
+			} else {
+				logger.warn("Keeping unknown tag " + tag + " unchanged");
+				v = null;
+			}
+		}
+		return v;
+	}
+
+	private String expGroupName(final String expGroupName) {
+		// a sending group can be a user name
+		String groupName;
+		try {
+			groupName = ldapUtils.getUserDisplayNameByUserUid(expGroupName);
+		} catch (LdapUserNotFoundException e) {
+			if (logger.isDebugEnabled()) {
+				logger.debug("User not found : " + expGroupName);
+			}
+			groupName = ldapUtils.getGroupNameByUid(expGroupName);
+			if (groupName == null) {
+				logger.debug("Group not found : " + expGroupName);
+				groupName = expGroupName;
+			}	
+		}
+		 
+		if (logger.isDebugEnabled()) {
+			logger.debug("Group name used :" + groupName);
+		}
+
+		return groupName;
+	}
+
+	private String ldapAttribute(String uid, String ldapAttribut) throws LdapUserNotFoundException {
+		List<String> values = ldapUtils.getLdapAttributesByUidAndName(uid, ldapAttribut);
+		return values.isEmpty() ? "" : values.get(0);
 	}
 
 	//////////////////////////////////////////////////////////////
@@ -374,22 +207,6 @@ public class ContentCustomizationManager {
 	 */
 	public LdapUtils getLdapUtils() {
 		return ldapUtils;
-	}
-
-	/**
-	 * @param tag
-	 * @return the Recipient LDAP attribute to search.
-	 */
-	private String getLdapDestAttribut(final String tag) {
-		return StringUtils.substringBetween(tag, CS_DEST_LDAP_STARTING_TAG, CS_END_TAG);
-	}
-
-	/**
-	 * @param tag
-	 * @return the sender LDAP Attribute to search.
-	 */
-	private String getLdapExpAttribut(final String tag) {
-		return StringUtils.substringBetween(tag, CS_EXP_LDAP_STARTING_TAG, CS_END_TAG);
 	}
 
 	//////////////////////////////////////////////////////////////
