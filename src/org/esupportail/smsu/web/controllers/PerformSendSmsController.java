@@ -176,9 +176,6 @@ public class PerformSendSmsController extends AbstractContextAwareController {
 					} else if (sendResult.equals("FONBMAXFORCUSTOMIZEDGROUPERROR")) {
 						addErrorMessage(null, "SENDSMS.MESSAGE.SENDERGROUPNDMAXSMSERROR");
 						strReturn = null;
-					} else if (sendResult.equals("BOQUOTAKO")) {
-						addErrorMessage(null, "SERVICE.CLIENT.QUOTAERROR");
-						strReturn = null;
 					} else {
 						sendSMSController.setIsShowMsgsUsingMessageStatus(message.getStateAsEnum());
 						strReturn = "envoiOK";
