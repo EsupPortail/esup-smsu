@@ -137,8 +137,6 @@ public class NotificationByMailForInvalidPhoneManager {
     		String uid = list.get(0).getId();
     		String mail = getMail(uid);
 			    		if (mail != null) {
-			    		final List<String> toList = new LinkedList<String>();
-			        	toList.add(mail);
 			    		// 3 - Send mail
 			        	String subject = getI18nService().getString("MSG.SUBJECT.MAIL.TO.INVALIDPHONE", 
 			        					 getI18nService().getDefaultLocale());
@@ -146,12 +144,12 @@ public class NotificationByMailForInvalidPhoneManager {
 			    		String textBody = getI18nService().getString("MSG.TEXTBOX.MAIL.TO.INVALIDPHONE",
 			    					  getI18nService().getDefaultLocale(), phoneNumber);
 			        	
-			        	smtpServiceUtils.sendMessage(toList, null, subject, textBody);
+			        	smtpServiceUtils.sendOneMessage(mail, subject, textBody);
 			    		} else {
-			    		logger.debug("mail is null");	
+			    		logger.error("no mail for blacklisted uid " + uid + " with phone number " + phoneNumber);
 			    		}
     		} else {
-    		logger.debug("not user found for number phone: " + phoneNumber);
+    		logger.info("no user found for once-invalid-so-blacklisted phone number: " + phoneNumber);
     		}
 			}	
 	}
