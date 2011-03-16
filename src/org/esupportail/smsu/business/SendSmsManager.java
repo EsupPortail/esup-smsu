@@ -343,53 +343,43 @@ public class SendSmsManager  {
 	 */
 	private Mail getMail(final Message message, final MailToSend mailToSend) {
 
-
-		Mail mail = new Mail();
-
-		//Mail subject
 		String subject = mailToSend.getMailSubject();
-		if (logger.isDebugEnabled()) {
-			logger.debug("create the mail to store SUBJECT : " + subject);
-		}
-		mail.setSubject(subject);
+		logger.debug("create the mail to store SUBJECT : " + subject);
 
-		//Mail content
 		String content = mailToSend.getMailContent();
-		if (logger.isDebugEnabled()) {
-			logger.debug("create the mail to store CONTENT : " + content);
-		}
-		mail.setContent(content);
+		logger.debug("create the mail to store CONTENT : " + content);
 
-		//Mail template
-		String mailTemplate = mailToSend.getMailTemplate();
-		if (mailTemplate != null) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("create the mail to store TEMPLATE : " + mailTemplate);
-			}
-			Integer idTemplate = Integer.parseInt(mailTemplate);
-			Template template = daoService.getTemplateById(idTemplate);
+		Template template = null;
+		String idTemplate = mailToSend.getMailTemplate();
+		if (idTemplate != null) {
+			logger.debug("create the mail to store TEMPLATE : " + idTemplate);
+			template = daoService.getTemplateById(Integer.parseInt(idTemplate));
+		}
+
+		Set<MailRecipient> mailRecipients = getMailRecipients(message, mailToSend);
+
+		if (mailRecipients.size() == 0) {
+			return null;
+		} else {
+			Mail mail = new Mail();
+			mail.setSubject(subject);
+			mail.setContent(content);
 			mail.setTemplate(template);
+			mail.setStateAsEnum(MailStatus.WAITING);		
+			mail.setMailRecipients(mailRecipients);
+			return mail;
 		}
-		//Mail state
-		mail.setStateAsEnum(MailStatus.WAITING);
-
-		final Set<MailRecipient> mailRecipients = getMailRecipients(message, mailToSend);
-		if (mailRecipients.size() == 0) return null;
-		
-		mail.setMailRecipients(mailRecipients);
-		return mail;
 	}
 
 	private Set<MailRecipient> getMailRecipients(final Message message, final MailToSend mailToSend) {
 		final Set<MailRecipient> mailRecipients = new HashSet<MailRecipient>();
-		if (mailToSend.getIsMailToRecipients()) {
-			final Set<Recipient> recipients = message.getRecipients();
 
+		if (mailToSend.getIsMailToRecipients()) {
 			final List<String> uids = new LinkedList<String>();
-			// all the ldap information are get from one request 
-			for (Recipient recipient : recipients) {
+			for (Recipient recipient : message.getRecipients()) {
 				uids.add(recipient.getLogin());
 			}
+			// get all the ldap information in one request 
 			List <LdapUser> ldapUsers = ldapUtils.getUsersByUids(uids);
 
 			for (LdapUser ldapUser : ldapUsers) {
