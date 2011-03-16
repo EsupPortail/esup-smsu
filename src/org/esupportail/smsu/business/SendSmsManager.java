@@ -207,39 +207,16 @@ public class SendSmsManager  {
 		try {
 			if (message.getStateAsEnum().equals(MessageStatus.NO_RECIPIENT_FOUND))
 				return null;
-			if (message.getStateAsEnum().equals(MessageStatus.FO_NB_MAX_CUSTOMIZED_GROUP_ERROR))
+			else if (message.getStateAsEnum().equals(MessageStatus.FO_NB_MAX_CUSTOMIZED_GROUP_ERROR))
 				return "SENDSMS.MESSAGE.SENDERGROUPNDMAXSMSERROR";
-			if (message.getStateAsEnum().equals(MessageStatus.FO_QUOTA_ERROR))
+			else if (message.getStateAsEnum().equals(MessageStatus.FO_QUOTA_ERROR))
 				return "SENDSMS.MESSAGE.SENDERGROUPQUOTAERROR";
-			if (!message.getStateAsEnum().equals(MessageStatus.WAITING_FOR_APPROVAL)) {
-
-							/////check the quotas with the back office/////
-							Integer nbToSend = message.getRecipients().size();
-							String accountLabel = message.getUserAccountLabel();
-
-							checkBackOfficeQuotas(nbToSend, accountLabel);
-
-								// message is ready to be sent to the back office
-								if (logger.isDebugEnabled()) {
-									logger.debug("Setting to state WAINTING_FOR_SENDING message with ID (standard message case) : " + message.getId());
-								}
-								message.setStateAsEnum(MessageStatus.WAITING_FOR_SENDING);
-								daoService.updateMessage(message);
-
-								// launch ASAP the task witch manage the sms sending
-								schedulerUtils.launchSuperviseSmsSending();
-
-						} else {
-							// envoi du mail
-							if (message.getSupervisors() != null) {
-								if (logger.isDebugEnabled()) {
-									logger.debug("supervisors not null");
-								}
-								sendMailsToSupervisors(message.getSupervisors());	
-							}
-
-						}	
-						return null;
+			else if (message.getStateAsEnum().equals(MessageStatus.WAITING_FOR_APPROVAL))
+				// envoi du mail
+				sendMailsToSupervisors(message.getSupervisors());	
+			else 
+				maySendMessageInBackground(message);
+			return null;
 		} catch (UnknownIdentifierApplicationException e) {
 			message.setStateAsEnum(MessageStatus.WS_ERROR);
 			daoService.updateMessage(message);
@@ -256,42 +233,6 @@ public class SendSmsManager  {
 			logger.error("Unable connect to the back office", e);
 			return "WS.ERROR.MESSAGE";
 		}
-	}
-
-	/**
-	 * @param message
-	 * @return the treatment result
-	 * @throws BackOfficeUnrichableException 
-	 * @throws LdapUserNotFoundException 
-	 */
-	public void treatApprovalMessage(final Message message) {
-		try {
-			/////check the quotas with the back office/////
-			Integer nbToSend = message.getRecipients().size();
-			String accountLabel = message.getUserAccountLabel();
-
-			checkBackOfficeQuotas(nbToSend, accountLabel);
-
-				// message is ready to be sent to the back office
-				if (logger.isDebugEnabled()) {
-					logger.debug("Setting to state WAINTING_FOR_SENDING message with ID (approval message case) : " + message.getId());
-				}
-				message.setStateAsEnum(MessageStatus.WAITING_FOR_SENDING);
-				daoService.updateMessage(message);
-
-				// launch ASAP the task witch manage the sms sending
-				schedulerUtils.launchSuperviseSmsSending();
-
-		} catch (UnknownIdentifierApplicationException e) {
-			message.setStateAsEnum(MessageStatus.WS_ERROR);
-			daoService.updateMessage(message);
-		} catch (InsufficientQuotaException e) {
-			message.setStateAsEnum(MessageStatus.WS_QUOTA_ERROR);
-			daoService.updateMessage(message);		
-		} catch (BackOfficeUnrichableException e) {
-			message.setStateAsEnum(MessageStatus.WS_ERROR);
-			daoService.updateMessage(message);
-		} 
 	}
 
 	/**
@@ -352,6 +293,9 @@ public class SendSmsManager  {
 	 * @return
 	 */
 	private void sendMailsToSupervisors(final Set<Person> supervisors) {
+		if (supervisors == null) return;
+		logger.debug("supervisors not null");
+
 		final List<String> toList = new LinkedList<String>();
 		final List<String> uids = new LinkedList<String>();
 		for (Person supervisor : supervisors) {
@@ -377,6 +321,22 @@ public class SendSmsManager  {
 				getI18nService().getDefaultLocale());
 		smtpServiceUtils.sendMessage(toList, null, subject, textBody);
 	}
+
+
+	private void maySendMessageInBackground(final Message message) throws BackOfficeUnrichableException, UnknownIdentifierApplicationException, InsufficientQuotaException {
+		checkBackOfficeQuotas(message);
+
+		// message is ready to be sent to the back office
+		if (logger.isDebugEnabled()) {
+			logger.debug("Setting to state WAINTING_FOR_SENDING message with ID : " + message.getId());
+		}
+		message.setStateAsEnum(MessageStatus.WAITING_FOR_SENDING);
+		daoService.updateMessage(message);
+
+		// launch ASAP the task witch manage the sms sending
+		schedulerUtils.launchSuperviseSmsSending();
+	}
+
 
 	/**
 	 * @param message
@@ -976,6 +936,15 @@ public class SendSmsManager  {
 	/**
 	 * @return quotasOk
 	 */ 
+	private void checkBackOfficeQuotas(final Message message)
+	throws BackOfficeUnrichableException, UnknownIdentifierApplicationException,
+	InsufficientQuotaException {
+		/////check the quotas with the back office/////
+		Integer nbToSend = message.getRecipients().size();
+		String accountLabel = message.getUserAccountLabel();
+		checkBackOfficeQuotas(nbToSend, accountLabel);
+	}
+
 	private void checkBackOfficeQuotas(final Integer nbToSend, final String accountLabel) 
 	throws BackOfficeUnrichableException, UnknownIdentifierApplicationException,
 	InsufficientQuotaException {

@@ -164,7 +164,9 @@ public class ApprovalManager {
 	 */
 	public void treatUIMessage(final UIMessage uiMessage)	 {
 		Message message = daoService.getMessageById(uiMessage.getId());
-		sendSmsManager.treatApprovalMessage(message);
+		logger.debug("Message approved");
+		message.setStateAsEnum(MessageStatus.IN_PROGRESS);
+		sendSmsManager.treatMessage(message);
 
 	}
 
