@@ -180,6 +180,13 @@ public class CustomizedGroup implements Serializable {
 		this.quotaSms = quotaSms;
 	}
 
+	/**
+	 * Check whether the account is allowed to send nbSms
+	 */
+	public boolean checkQuotaSms(int nbToSend) {
+		long nbAvailable = getQuotaSms() - getConsumedSms(); 		
+		return nbAvailable >= nbToSend;
+	}
 
 
 	/**

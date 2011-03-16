@@ -1032,10 +1032,6 @@ public class SendSmsManager  {
 	 * @return true if the quota is OK
 	 */
 	private Boolean checkFrontOfficeQuota(final Message message, final CustomizedGroup cGroup) {
-		Boolean quotaOk = false;
-		final Long consumedSms = cGroup.getConsumedSms();
-
-		final Long quotaSms = cGroup.getQuotaSms();
 		final Integer nbToSend = message.getRecipients().size();
 
 		if (logger.isDebugEnabled()) {
@@ -1043,21 +1039,20 @@ public class SendSmsManager  {
 			    "V�rification du quota front office pour le groupe d'envoi [" + 
 			    message.getGroupSender().getLabel() + 
 			    "] et groupe associ� [" + cGroup.getLabel() + 
-			    "]. Essai d'envoi de " + nbToSend + " message(s), quota = " + quotaSms + 
-			    " , consomm� = " + consumedSms;
+			    "]. Essai d'envoi de " + nbToSend + " message(s), quota = " + cGroup.getQuotaSms() + 
+			    " , consomm� = " + cGroup.getConsumedSms();
 			logger.warn(mess);
 		}
-		if (consumedSms + nbToSend <= quotaSms) {
-			quotaOk = true;
+		if (cGroup.checkQuotaSms(nbToSend)) {
+			return true;
 		} else {
 			final String mess = 
 			    "Erreur de quota pour le groupe d'envoi [" + message.getGroupSender().getLabel() + 
 			    "] et groupe associ� [" + cGroup.getLabel() + "]. Essai d'envoi de " + nbToSend + 
-			    " message(s), quota = " + quotaSms + " , consomm� = " + consumedSms;
+			    " message(s), quota = " + cGroup.getQuotaSms() + " , consomm� = " + cGroup.getConsumedSms();
 			logger.warn(mess);
+			return false;
 		}
-
-		return quotaOk;
 	}
 	/**
 	 * @return quotasOk
