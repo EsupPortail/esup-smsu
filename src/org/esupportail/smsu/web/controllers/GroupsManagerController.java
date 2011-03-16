@@ -201,8 +201,7 @@ public class GroupsManagerController extends AbstractContextAwareController {
 	 */
 	private void initSelectRoleListItems() {
 		selectRoleListItems = new ArrayList<SelectItem>();
-		SelectItem option;
-		option = new SelectItem(0, "");
+		SelectItem option = new SelectItem(0, "");
 		selectRoleListItems.add(option);
 		
 		this.allRoles = getDomainService().getAllRoles();

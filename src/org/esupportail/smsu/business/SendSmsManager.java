@@ -552,11 +552,7 @@ public class SendSmsManager  {
 					recipient = new Recipient(null, uiRecipient.getPhone(), uiRecipient.getLogin());
 					daoService.addRecipient(recipient);
 				}
-				// the recipient is added.
-				if (!recipients.contains(recipient)) {
-					recipients.add(recipient);
-				}
-
+				recipients.add(recipient);
 			} else {
 				String serviceKey = service != null ? service.getKey() : null;
 
@@ -567,8 +563,7 @@ public class SendSmsManager  {
 				List<LdapUser> filteredUsers = filterUsers(groupUsers, serviceKey);
 				//users are added to the recipient list.
 				for (LdapUser ldapUser : filteredUsers) {
-					String phone;
-					phone = ldapUser.getAttribute(userPagerAttribute);
+					String phone = ldapUser.getAttribute(userPagerAttribute);
 
 					Recipient recipient = daoService.getRecipientByPhone(phone);
 					if (recipient == null) {	
@@ -576,11 +571,7 @@ public class SendSmsManager  {
 								ldapUser.getId());
 						daoService.addRecipient(recipient);
 					}
-					// the recipient is added to the list.
-					if (!recipients.contains(recipient)) {
-						recipients.add(recipient);
-					}
-
+					recipients.add(recipient);
 				}
 
 			}
