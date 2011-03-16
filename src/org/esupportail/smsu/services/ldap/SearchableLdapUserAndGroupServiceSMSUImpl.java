@@ -252,7 +252,10 @@ public class SearchableLdapUserAndGroupServiceSMSUImpl extends SearchableLdapUse
 	 */
 	public List<LdapUser> getConditionFriendlyLdapUsersFromUid(final List<String> uids,
 			final String cgKeyName, final String service) {
-		
+
+		// faster and needed since empty OrFilter() is true instead of false (https://jira.springsource.org/browse/LDAP-226)
+		if (uids.isEmpty()) return new LinkedList<LdapUser>();
+
 		final AndFilter filter = new AndFilter();
 		
 		//add the general condition, service and pager filter
