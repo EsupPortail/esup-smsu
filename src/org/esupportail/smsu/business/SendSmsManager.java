@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.esupportail.commons.services.database.DatabaseUtils;
 import org.esupportail.commons.services.i18n.I18nService;
 import org.esupportail.commons.services.ldap.LdapUser;
 import org.esupportail.commons.services.logging.Logger;
@@ -364,6 +365,10 @@ public class SendSmsManager  {
 
 			// update the message status in DB
 			message.setStateAsEnum(MessageStatus.SENT);
+
+			// force commit to database. do not allow rollback otherwise the message will be sent again!
+			DatabaseUtils.commit();
+			DatabaseUtils.begin();
 
 			//Deal with the emails
 			if (message.getMail() != null) {
