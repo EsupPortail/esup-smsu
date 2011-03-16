@@ -272,13 +272,14 @@ public class SmsRecipientController extends AbstractContextAwareController {
 		recipients = new ArrayList<UiRecipient>();
 		
 		if (!destTypeOptions.isEmpty()) {
-			if (destTypeOptions.get(0).getValue().equals("t1")) {
+			Object destType = destTypeOptions.get(0).getValue();
+			if (destType.equals("t1")) {
 				groupPanelGrid.setRendered(true);
-			} else if (destTypeOptions.get(0).getValue().equals("t2")) {
+			} else if (destType.equals("t2")) {
 				ldapRequestPanelGrid.setRendered(true);
-			} else if (destTypeOptions.get(0).getValue().equals("t3")) {
+			} else if (destType.equals("t3")) {
 				ldapSearchPanelGrid.setRendered(true);
-			} else if (destTypeOptions.get(0).getValue().equals("t4")) {
+			} else if (destType.equals("t4")) {
 				phoneNumberListPanelGrid.setRendered(true);
 			} 
 		}
