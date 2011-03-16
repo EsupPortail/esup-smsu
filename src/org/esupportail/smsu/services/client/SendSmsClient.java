@@ -41,8 +41,7 @@ public class SendSmsClient  {
 				     " - nbDest = " + nbDest + 
 				     " - labelAccount = " + labelAccount);
 		}
-		final boolean retVal = sendSms.isQuotaOk(nbDest, labelAccount);
-		return retVal;
+		return sendSms.isQuotaOk(nbDest, labelAccount);
 	}
 	
 	
