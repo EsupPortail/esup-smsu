@@ -1,9 +1,6 @@
 package org.esupportail.smsu.business;
 
 
-import java.util.Iterator;
-import java.util.Set;
-
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.dao.DaoService;
@@ -68,10 +65,7 @@ public class SendTrackManager {
 		logger.debug("WS blacklist : " + infos.getNbDestBlackList().toString());
 		logger.debug("WS error : " + infos.getNbErrorSMS().toString());
 		
-		Set<String> listnums = infos.getListNumErreur();
-		Iterator<String> iter = listnums.iterator();
-	    while (iter.hasNext()) {
-	    	String phone = (String) iter.next();
+		for (String phone : infos.getListNumErreur()) {
 	    	logger.debug("WS phone : " + phone);
 	    	}
 		logger.debug("WS getTrackInfos method end call");

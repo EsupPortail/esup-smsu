@@ -1,6 +1,5 @@
 package org.esupportail.smsu.business;
 
-import java.util.Iterator;
 import java.util.Set;
 
 import org.esupportail.commons.services.logging.Logger;
@@ -48,9 +47,8 @@ public class PhoneNumbersInBlackListManager {
 		 if (logger.isDebugEnabled()) {
 				final StringBuilder sb = new StringBuilder(500);
 				sb.append("Response for getListPhoneNumbersInBlackList request :");
-				Iterator<String> iter = retVal.iterator();
-				while (iter.hasNext()) {
-				sb.append(" - phone number in blacklist = ").append(iter.next());	
+				for (String nb : retVal) {
+				sb.append(" - phone number in blacklist = ").append(nb);	
 				}
 				logger.debug(sb.toString());
 			}

@@ -2,11 +2,7 @@ package org.esupportail.smsu.business;
 
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
-
-
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.dao.DaoService;
@@ -73,10 +69,7 @@ public class SecurityManager {
 			// 2 - Retrieve the role associate to the CustomizedGroup, So all these fonctions
 			if (grp != null) { 
 				logger.debug("group label in loadUserRightsByUsername method is: " + grp.getLabel());
-				Set<Fonction> fcts = grp.getRole().getFonctions();
-				Iterator<Fonction> iter = fcts.iterator();
-				while (iter.hasNext()) {
-					Fonction fct = (Fonction) iter.next();
+				for (Fonction fct : grp.getRole().getFonctions()) {
 					// 3 - add fonctions to "fonctions" ArrayList
 					if (!fonctions.contains(fct.getName())) {
 						logger.debug("parameter fct in addFonction method is: " + fct);

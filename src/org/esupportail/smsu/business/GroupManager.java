@@ -3,7 +3,6 @@ package org.esupportail.smsu.business;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -131,23 +130,21 @@ public class GroupManager {
 		newcustomizedGroup.setAccount(newaccount);
 		
 		// Manage Supervisors
-		Iterator<UIPerson> iter = persons.iterator();
 		
 			// 1 - add new persons in Person DataBase
-		while (iter.hasNext()) {
+		for (UIPerson uip : persons) {
 			Person per = new Person();
-			per.setLogin(iter.next().getLogin().trim());
+			per.setLogin(uip.getLogin().trim());
 			
 			if (daoService.getPersonByLogin(per.getLogin().trim()) == null) { 
 				daoService.addPerson(per); 
 			}
 		}
 			// 2 - add supervisors in SUPERVISOR Data Table
-		Iterator<UIPerson> iterSup = persons.iterator();
 		Set<Person> personsToAdd = new HashSet<Person>();
-		while (iterSup.hasNext()) {
+		for (UIPerson uip : persons) {
 			Person perSup = new Person();
-			perSup = daoService.getPersonByLogin(iterSup.next().getLogin().trim());
+			perSup = daoService.getPersonByLogin(uip.getLogin().trim());
 			personsToAdd.add(perSup);
 		    }
 		
@@ -185,23 +182,21 @@ public class GroupManager {
 		newcustomizedGroup.setAccount(newaccount);
 		
 		// Manage Supervisors
-		Iterator<UIPerson> iter = persons.iterator();
 		
 			// 1 - add new persons in Person DataBase
-		while (iter.hasNext()) {
+		for (UIPerson uip : persons) {
 			Person per = new Person();
-			per.setLogin(iter.next().getLogin().trim());
+			per.setLogin(uip.getLogin().trim());
 			
 			if (daoService.getPersonByLogin(per.getLogin().trim()) == null) { 
 				daoService.addPerson(per); 
 			}
 		}
 			// 2 - add supervisors in SUPERVISOR Data Table
-		Iterator<UIPerson> iterSup = persons.iterator();
 		Set<Person> personsToAdd = new HashSet<Person>();
-		while (iterSup.hasNext()) {
+		for (UIPerson uip : persons) {
 			Person perSup = new Person();
-			perSup = daoService.getPersonByLogin(iterSup.next().getLogin().trim());
+			perSup = daoService.getPersonByLogin(uip.getLogin().trim());
 			personsToAdd.add(perSup);
 		    }
 		
@@ -225,11 +220,8 @@ public class GroupManager {
 		CustomizedGroup customizedGroup = daoService.getCustomizedGroupById(id);
 		Set<Person> per = customizedGroup.getSupervisors();
 		
-		Iterator<Person> iter = per.iterator();
-		while (iter.hasNext()) {
+		for (Person pert : per) {
 			UIPerson uiper = new UIPerson();
-			Person pert = new Person();
-			pert = iter.next();
 			uiper.setId(pert.getId().toString());
 			uiper.setLogin(pert.getLogin());
 		    try { 

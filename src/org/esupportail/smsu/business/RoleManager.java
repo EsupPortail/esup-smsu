@@ -2,7 +2,6 @@ package org.esupportail.smsu.business;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -85,7 +84,7 @@ public class RoleManager {
 				isUpdateable = false;
 			}
 				
-			// Role de l'utilisateur connecté n'est pas supprimable ni modifiable
+			// Role de l'utilisateur connectï¿½ n'est pas supprimable ni modifiable
 			if (idRoles.contains(role.getId())) {
 				isDeletable = false;
 				isUpdateable = false;
@@ -160,9 +159,8 @@ public class RoleManager {
 		Set<Fonction> fonctions = new HashSet<Fonction>();
 		Integer fctId;
 		
-		Iterator<String> iter = selectedValues.iterator();
-		while (iter.hasNext()) {
-			fctId = (Integer) Integer.parseInt(iter.next());
+		for (String val : selectedValues) {
+			fctId = (Integer) Integer.parseInt(val);
 			fonctions.add(daoService.getFonctionById(fctId));
 		    }
 		newrole.setFonctions(fonctions);
@@ -188,9 +186,8 @@ public class RoleManager {
 		Set<Fonction> fonctions = new HashSet<Fonction>();
 		Integer fctId;
 		
-		Iterator<String> iter = selectedValues.iterator();
-		while (iter.hasNext()) {
-			fctId = (Integer) Integer.parseInt(iter.next());
+		for (String val : selectedValues) {
+			fctId = Integer.parseInt(val);
 			fonctions.add(daoService.getFonctionById(fctId));
 		    }
 		newrole.setFonctions(fonctions);
@@ -206,9 +203,7 @@ public class RoleManager {
 		Role newrole = new Role(role.getId(), role.getName());
 		List<String> selectedValues = new ArrayList<String>();
 		Set<Fonction> fonctions = daoService.getFctsByRole(newrole);
-		Iterator<Fonction> iter = fonctions.iterator();
-	    while (iter.hasNext()) {
-	      Fonction fct = (Fonction) iter.next();
+		for (Fonction fct : fonctions) {
 	      selectedValues.add(fct.getId().toString());
 	    }
 		return selectedValues;

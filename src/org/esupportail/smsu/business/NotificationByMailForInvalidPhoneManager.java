@@ -1,6 +1,5 @@
 package org.esupportail.smsu.business;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -76,15 +75,14 @@ public class NotificationByMailForInvalidPhoneManager {
 				final StringBuilder sb = new StringBuilder(500);
 				sb.append("Response for getListPhoneNumbersInBlackList request " 
 						+ "in NotificationByMailForInvalidPhoneManager: ");
-				Iterator<String> iter = retVal.iterator();
-				while (iter.hasNext()) {
-				sb.append(" - phone number in blacklist = ").append(iter.next());	
+				for (String nb : retVal) {
+				sb.append(" - phone number in blacklist = ").append(nb);	
 				}
 				logger.debug(sb.toString());
 			}
 		} catch (Exception e) {
 			if (logger.isDebugEnabled()) {
-				logger.debug("Problème de connextion Web Service !!!");
+				logger.debug("Problï¿½me de connextion Web Service !!!");
 			}
 		}
 		
