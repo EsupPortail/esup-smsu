@@ -73,7 +73,7 @@ public class ApprovalManager {
 	 * @param idUser
 	 * @return the UI messages.
 	 */
-	public List<UIMessage> getApprovalMessages(final String idUser) {
+	public List<UIMessage> getApprovalUIMessages(final String idUser) {
 		List<UIMessage> uimessages = new ArrayList<UIMessage>();
 		List<Message> messages = daoService.getApprovalMessages();
 

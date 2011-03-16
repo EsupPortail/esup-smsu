@@ -64,7 +64,7 @@ public class ApprovalPaginator extends ListPaginator<UIMessage> {
 	 */
 	@Override
 	protected List<UIMessage> getData() {
-		return domainService.getApprovalMessages(this.idUser);
+		return domainService.getApprovalUIMessages(this.idUser);
 		
 	}
 
