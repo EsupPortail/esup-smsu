@@ -1,7 +1,10 @@
 package org.esupportail.smsu.web.controllers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.faces.component.html.HtmlSelectOneMenu;
 import javax.faces.event.ValueChangeEvent;
@@ -44,24 +47,9 @@ public class SmsRecipientController extends AbstractContextAwareController {
 	private String recipientType;
 
 	/**
-	 * the group panel grid component.
+	 * the panel grid components.
 	 */
-	private HtmlPanelGroup groupPanelGrid;
-
-	/**
-	 * the ldap search panel grid component.
-	 */
-	private HtmlPanelGroup ldapSearchPanelGrid;
-
-	/**
-	 * the phone number ListPanelGridComponent.
-	 */
-	private HtmlPanelGroup phoneNumberListPanelGrid;
-
-	/**
-	 * The ldap panel grid component.
-	 */
-	private HtmlPanelGroup ldapRequestPanelGrid;
+	private Map<String, HtmlPanelGroup> panelGrid;
 
 	/**
 	 * the selected recipient group.
@@ -219,26 +207,13 @@ public class SmsRecipientController extends AbstractContextAwareController {
 	 * @param e 
 	 */
 	public void modifTypeDest(final ValueChangeEvent e) {
-
-		groupPanelGrid.setRendered(false);
-		ldapRequestPanelGrid.setRendered(false);
-		ldapSearchPanelGrid.setRendered(false);
-		phoneNumberListPanelGrid.setRendered(false);
 		
 		userSearchController.setLdapUsers(new ArrayList<UiRecipient>());
 		userSearchController.setLdapRequestUsers(new ArrayList<UiRecipient>());
 		userSearchController.setLdapValidUsers(new ArrayList<UiRecipient>());
 		this.setRecipientType((String) e.getNewValue());
 
-		if (recipientType.equals("t1")) {
-			groupPanelGrid.setRendered(true);
-		} else if (recipientType.equals("t2")) {
-			ldapRequestPanelGrid.setRendered(true);
-		} else if (recipientType.equals("t3")) {
-			ldapSearchPanelGrid.setRendered(true);
-		} else {
-			phoneNumberListPanelGrid.setRendered(true);
-		}
+		setActiveHtmlPanelGroup(recipientType);
 	}
 
 	/**
@@ -254,35 +229,25 @@ public class SmsRecipientController extends AbstractContextAwareController {
 	 */
 	public void init() {
 		initDestTypeOptions();
-		groupPanelGrid = new HtmlPanelGroup();
-		groupPanelGrid.setRendered(false);
+		panelGrid = new HashMap<String, HtmlPanelGroup>();
+		panelGrid.put("USERGROUP", new HtmlPanelGroup());
+		panelGrid.put("LDAP", new HtmlPanelGroup());
+		panelGrid.put("USERS", new HtmlPanelGroup());
+		panelGrid.put("PHONENUMBERS", new HtmlPanelGroup());
+		
 		treeModel = new TreeModelBase(getRootNode());
-
-		ldapSearchPanelGrid = new HtmlPanelGroup();
-		ldapSearchPanelGrid.setRendered(false);
-
-		phoneNumberListPanelGrid = new HtmlPanelGroup();
-		phoneNumberListPanelGrid.setRendered(false);
-
-		ldapRequestPanelGrid = new HtmlPanelGroup();
-		ldapRequestPanelGrid.setRendered(false);
 
 		userSearchController.setLdapUsers(new ArrayList<UiRecipient>());
 		
 		recipients = new ArrayList<UiRecipient>();
-		
-		if (!destTypeOptions.isEmpty()) {
-			Object destType = destTypeOptions.get(0).getValue();
-			if (destType.equals("t1")) {
-				groupPanelGrid.setRendered(true);
-			} else if (destType.equals("t2")) {
-				ldapRequestPanelGrid.setRendered(true);
-			} else if (destType.equals("t3")) {
-				ldapSearchPanelGrid.setRendered(true);
-			} else if (destType.equals("t4")) {
-				phoneNumberListPanelGrid.setRendered(true);
-			} 
-		}
+
+		String defaultDestType = !destTypeOptions.isEmpty() ? (String) destTypeOptions.get(0).getValue() : "";
+		setActiveHtmlPanelGroup(defaultDestType);
+	}
+
+	private void setActiveHtmlPanelGroup(String destType) {
+		for (Entry<String, HtmlPanelGroup> e : panelGrid.entrySet())
+			e.getValue().setRendered(destType.equals(e.getKey()));
 	}
 
 
@@ -297,19 +262,19 @@ public class SmsRecipientController extends AbstractContextAwareController {
 		
 		if (currentUser != null) {
 			if (currentUser.getFonctions().contains(FonctionName.FCTN_SMS_ENVOI_ADH.name())) {
-				option = new SelectItem("t3", this.getI18nService().getString("SENDSMS.LABEL.USERS"));
+				option = new SelectItem("USERS", this.getI18nService().getString("SENDSMS.LABEL.USERS"));
 				destTypeOptions.add(option);
 			}
 			if (currentUser.getFonctions().contains(FonctionName.FCTN_SMS_ENVOI_NUM_TEL.name())) {
-				option = new SelectItem("t4", this.getI18nService().getString("SENDSMS.LABEL.PHONENUMBERS"));
+				option = new SelectItem("PHONENUMBERS", this.getI18nService().getString("SENDSMS.LABEL.PHONENUMBERS"));
 				destTypeOptions.add(option);
 			}
 			if (currentUser.getFonctions().contains(FonctionName.FCTN_SMS_ENVOI_GROUPES.name())) {
-				option = new SelectItem("t1", this.getI18nService().getString("SENDSMS.LABEL.USERGROUP"));
+				option = new SelectItem("USERGROUP", this.getI18nService().getString("SENDSMS.LABEL.USERGROUP"));
 				destTypeOptions.add(option);
 			}
 			if (currentUser.getFonctions().contains(FonctionName.FCTN_SMS_REQ_LDAP_ADH.name())) {
-				option = new SelectItem("t2", this.getI18nService().getString("SENDSMS.LABEL.LDAP"));
+				option = new SelectItem("LDAP", this.getI18nService().getString("SENDSMS.LABEL.LDAP"));
 				destTypeOptions.add(option);
 			}			
 		}
@@ -381,14 +346,14 @@ public class SmsRecipientController extends AbstractContextAwareController {
 	 * @return groupPanelGrid
 	 */
 	public HtmlPanelGroup getGroupPanelGrid() {
-		return groupPanelGrid;
+		return panelGrid.get("USERGROUP");
 	}
 
 	/**
 	 * @param groupPanelGrid
 	 */
 	public void setGroupPanelGrid(final HtmlPanelGroup groupPanelGrid) {
-		this.groupPanelGrid = groupPanelGrid;
+		panelGrid.put("USERGROUP", groupPanelGrid);
 	}
 
 	//////////////////////////////////////////////////////////////
@@ -398,14 +363,14 @@ public class SmsRecipientController extends AbstractContextAwareController {
 	 * @return ldapSearchPanelGrid
 	 */
 	public HtmlPanelGroup getLdapSearchPanelGrid() {
-		return ldapSearchPanelGrid;
+		return panelGrid.get("USERS");
 	}
 
 	/**
 	 * @param ldapSearchPanelGrid
 	 */
 	public void setLdapSearchPanelGrid(final HtmlPanelGroup ldapSearchPanelGrid) {
-		this.ldapSearchPanelGrid = ldapSearchPanelGrid;
+		panelGrid.put("USERS", ldapSearchPanelGrid);
 	}
 
 	//////////////////////////////////////////////////////////////
@@ -415,14 +380,14 @@ public class SmsRecipientController extends AbstractContextAwareController {
 	 * @return phoneNumberListPanelGrid
 	 */
 	public HtmlPanelGroup getPhoneNumberListPanelGrid() {
-		return phoneNumberListPanelGrid;
+		return panelGrid.get("PHONENUMBERS");
 	}  
 
 	/**
 	 * @param phoneNumberListPanelGrid
 	 */
 	public void setPhoneNumberListPanelGrid(final HtmlPanelGroup phoneNumberListPanelGrid) {
-		this.phoneNumberListPanelGrid = phoneNumberListPanelGrid;
+		panelGrid.put("PHONENUMBERS", phoneNumberListPanelGrid);
 	}
 
 	//////////////////////////////////////////////////////////////
@@ -432,14 +397,14 @@ public class SmsRecipientController extends AbstractContextAwareController {
 	 * @return ldapRequestPanelGrid
 	 */
 	public HtmlPanelGroup getLdapRequestPanelGrid() {
-		return ldapRequestPanelGrid;
+		return panelGrid.get("LDAP");
 	}
 
 	/**
 	 * @param ldapRequestPanelGrid
 	 */
 	public void setLdapRequestPanelGrid(final HtmlPanelGroup ldapRequestPanelGrid) {
-		this.ldapRequestPanelGrid = ldapRequestPanelGrid;
+		panelGrid.put("LDAP", ldapRequestPanelGrid);
 	}
 
 	//////////////////////////////////////////////////////////////
