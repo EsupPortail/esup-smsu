@@ -868,11 +868,16 @@ public class LdapUtils {
 					}
 					// TODO : paramétrer le DN dans le service au lieu d'utiliser le paramétrage général du Ldap?
 					List<LdapGroup> ldapGroups = ldapUserAndGroupService.getLdapGroupsFromToken(filter.toString());
-					LdapGroup ldapGroup = ldapGroups.get(0);
-					List<String> uids = getMemberIds(ldapGroup);
-					List<LdapUser> usersToAdd = ldapUserAndGroupService.getConditionFriendlyLdapUsersFromUid(uids, cgKeyName, serviceKey);
-					//users.addAll(ldapUserAndGroupService.getMembers(ldapGroup));
-					users.addAll(usersToAdd);
+					if (ldapGroups.isEmpty()) {
+						logger.error("skipping LDAP group " + testValue + " which does not exist");
+					} else {
+						LdapGroup ldapGroup = ldapGroups.get(0);
+						List<String> uids = getMemberIds(ldapGroup);
+						List<LdapUser> usersToAdd = ldapUserAndGroupService.getConditionFriendlyLdapUsersFromUid(uids, cgKeyName, serviceKey);
+						if (logger.isDebugEnabled())
+							logger.debug("found " + uids.size() + " users in group " + testValue + " and " + usersToAdd.size() + " users having pager+CG");
+						users.addAll(usersToAdd);
+					}
 				} else {
 					final String attributeName = (String) smsuLdapPersonAttributeDaoImpl.getReverseAttributeMappings().get(portalAttributeName);
 					Filter filter = test.getLdapFilter(attributeName, testValue);

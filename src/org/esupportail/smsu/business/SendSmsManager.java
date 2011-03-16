@@ -634,7 +634,6 @@ public class SendSmsManager  {
 		List<LdapUser> members = new LinkedList<LdapUser>();
 		//get the corresponding ldap group to extract members
 
-		try {
 			String idFromPortal = currentGroup.getId();
 			String groupStoreId = StringUtils.split(idFromPortal,".")[1];
 			GroupDefinition gd = smsuPersonAttributesGroupStore.getGroupDefinition(groupStoreId);
@@ -648,9 +647,6 @@ public class SendSmsManager  {
 					logger.debug("No group definition found");
 				}
 			}
-		} catch (Throwable e) {
-			logger.debug(e.getMessage());
-		}
 		return members;
 	}
 
