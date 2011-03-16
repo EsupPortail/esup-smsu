@@ -36,22 +36,19 @@ public class SendTrackClient  {
 				throws UnknownIdentifierApplicationException, UnknownIdentifierMessageException {
 		try {
 			
-			if (logger.isDebugEnabled()) {
-				logger.debug("Calling web service getTrackInfo with parameter : \n" + 
+			logger.info("Calling web service getTrackInfo with parameter : \n" + 
 					     " - messsage id : " + msgId);
-			}
 			
 			final TrackInfos trackInfos = sendTrack.getTrackInfos(msgId);
 			
-			if (logger.isDebugEnabled()) {
-				logger.debug("Receiving web service response from getTrackInfo, object TrackInfos : \n" + 
+			logger.info("Receiving web service response from getTrackInfo, object TrackInfos : \n" + 
 					     " - Nb sms sent : " + trackInfos.getNbSentSMS() + "\n" + 
 					     " - Nb sms in progress : " + trackInfos.getNbProgressSMS() + "\n" + 
 					     " - Nb of recipient : " + trackInfos.getNbDestTotal() + "\n" + 
 					     " - Nb of sms in error : " + trackInfos.getNbErrorSMS() + "\n" + 
 					     " - Nb of sms in black list : " + trackInfos.getNbDestBlackList() + "\n" + 
 					     " - List of phone number in error : " + trackInfos.getListNumErreur() + "\n");
-			}
+
 			return trackInfos;
 		} catch (UnknownIdentifierApplicationException e1) {
 			  throw e1; 	

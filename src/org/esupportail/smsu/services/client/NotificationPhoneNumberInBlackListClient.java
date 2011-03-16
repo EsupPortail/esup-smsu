@@ -33,9 +33,8 @@ public class NotificationPhoneNumberInBlackListClient {
 	 * @return return true if the phone number is in the bl, false otherwise
 	 */
 	public boolean isPhoneNumberInBlackList(final String phoneNumber) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("isPhoneNumberInBlackList method client send with parameter : " + " - phoneNumber = " + phoneNumber);
-		}
+		logger.info("isPhoneNumberInBlackList method client send with parameter : " + " - phoneNumber = " + phoneNumber);
+
 		final boolean retVal = notificationPhoneNumber.isPhoneNumberInBlackList(phoneNumber);
 		
 		return retVal;

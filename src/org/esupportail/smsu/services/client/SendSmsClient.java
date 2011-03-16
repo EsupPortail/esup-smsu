@@ -36,11 +36,9 @@ public class SendSmsClient  {
 	public void mayCreateAccountCheckQuotaOk(final Integer nbDest, final String labelAccount) 
 	throws UnknownIdentifierApplicationException, 
 	InsufficientQuotaException {
-		if (logger.isDebugEnabled()) {
-			logger.debug("isQuotaOK method client send with parameters : " + 
+		logger.info("isQuotaOK method client send with parameters : " + 
 				     " - nbDest = " + nbDest + 
 				     " - labelAccount = " + labelAccount);
-		}
 		sendSms.mayCreateAccountCheckQuotaOk(nbDest, labelAccount);
 	}
 	
@@ -53,8 +51,7 @@ public class SendSmsClient  {
 			final Integer bgrId, final Integer svcId, 
 			final String smsPhone, final String labelAccount, 
 			final String msgContent) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("SendSms client message : " + 
+		logger.info("SendSms client message : " + 
 				     " - message id = " + msgId + 
 				     " - sender id = " + perId + 
 				     " - group sender id = " + bgrId + 
@@ -62,7 +59,6 @@ public class SendSmsClient  {
 				     " - recipient phone number = " + smsPhone + 
 				     " - user label account = " + labelAccount + 
 				     " - message = " + msgContent);
-		}
 		sendSms.sendSMS(msgId, perId, bgrId, svcId, smsPhone, labelAccount, msgContent);
 		
 	}

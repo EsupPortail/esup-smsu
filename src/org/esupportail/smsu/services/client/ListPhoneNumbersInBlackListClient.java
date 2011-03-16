@@ -36,9 +36,7 @@ public class ListPhoneNumbersInBlackListClient {
 	 * @return return true if the phone number is in the bl, false otherwise
 	 */
 	public Set<String> getListPhoneNumbersInBlackList() {
-		if (logger.isDebugEnabled()) {
-			logger.debug("getListPhoneNumbersInBlackList method client send ");
-		}
+		logger.info("getListPhoneNumbersInBlackList method client send ");
 		final Set<String> retVal = listPhoneNumbers.getListPhoneNumbersInBlackList();
 		
 		return retVal;
