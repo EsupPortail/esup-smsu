@@ -307,7 +307,7 @@ public class SmsRecipientController extends AbstractContextAwareController {
 				option = new SelectItem("PHONENUMBERS", this.getI18nService().getString("SENDSMS.LABEL.PHONENUMBERS"));
 				destTypeOptions.add(option);
 			}
-			if (currentUser.getFonctions().contains(FonctionName.FCTN_SMS_ENVOI_PLUSIEURS_NUM_TEL.name()) || true) {
+			if (currentUser.getFonctions().contains(FonctionName.FCTN_SMS_ENVOI_PLUSIEURS_NUM_TEL.name())) {
 				option = new SelectItem("MANYPHONENUMBERS", this.getI18nService().getString("SENDSMS.LABEL.MANYPHONENUMBERS"));
 				destTypeOptions.add(option);
 			}
