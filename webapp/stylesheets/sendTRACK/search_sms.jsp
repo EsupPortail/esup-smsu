@@ -204,7 +204,7 @@
 							<e:text
 								value="#{msgs['SMS.CENTER.VALUE']}" />
 						</f:facet>
-						<e:text value="#{message.userAccountLabel}" />
+						<e:text value="#{message.account.label}" />
 					</t:column>
 					
 					<t:column>
@@ -212,8 +212,8 @@
 							<e:text
 								value="#{msgs['SMS.SERVICE.VALUE']}" />
 						</f:facet>
-						<e:text value="#{message.userServiceLabel}" rendered ="#{not empty message.userServiceLabel}" />
-						<e:text value="#{msgs['SENDSMS.LABEL.NONE']}" rendered ="#{empty message.userServiceLabel}" />
+						<e:text value="#{message.service.name}" rendered ="#{not empty message.service}" />
+						<e:text value="#{msgs['SENDSMS.LABEL.NONE']}" rendered ="#{empty message.service}" />
 					</t:column>
 					
 				

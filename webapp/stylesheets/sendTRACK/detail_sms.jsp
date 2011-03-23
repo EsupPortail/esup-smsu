@@ -8,7 +8,7 @@
 	<e:text value="#{messagesController.message.content}" />
 		
 	<e:bold value="#{msgs['SMS.CENTER.VALUE']}"></e:bold>
-	<e:text value="#{messagesController.message.userAccountLabel}" />
+	<e:text value="#{messagesController.message.account.label}" />
 		
 	<e:bold value="#{msgs['SMS.DATE']}"></e:bold>
 	<e:text value="#{messagesController.message.date}" >
