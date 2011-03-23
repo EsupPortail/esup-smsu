@@ -10,9 +10,8 @@ import org.apache.commons.lang.StringUtils;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.exceptions.CreateMessageException;
-import org.esupportail.smsu.exceptions.CreateMessageExceptionWrapper;
-import org.esupportail.smsu.exceptions.UnknownCustomizedTag;
-import org.esupportail.smsu.exceptions.CustomizedTagValueNotFound;
+import org.esupportail.smsu.exceptions.CreateMessageException.UnknownCustomizedTag;
+import org.esupportail.smsu.exceptions.CreateMessageException.CustomizedTagValueNotFound;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 
