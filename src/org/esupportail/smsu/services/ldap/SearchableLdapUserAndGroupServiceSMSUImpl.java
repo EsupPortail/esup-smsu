@@ -253,9 +253,6 @@ public class SearchableLdapUserAndGroupServiceSMSUImpl extends SearchableLdapUse
 	public List<LdapUser> getConditionFriendlyLdapUsersFromUid(final List<String> uids,
 			final String cgKeyName, final String service) {
 
-		// faster and needed since empty OrFilter() is true instead of false (https://jira.springsource.org/browse/LDAP-226)
-		if (uids.isEmpty()) return new LinkedList<LdapUser>();
-
 		final AndFilter filter = new AndFilter();
 		
 		//add the general condition, service and pager filter
@@ -265,10 +262,9 @@ public class SearchableLdapUserAndGroupServiceSMSUImpl extends SearchableLdapUse
 			filter.and(new EqualsFilter(userTermsOfUseAttribute, service));
 		}
 		
-		final OrFilter orFilter = new OrFilter();
-		for (String uid : uids) {
-			orFilter.or(new EqualsFilter(userIdAttribute, uid));
-		}
+		final OrFilter orFilter = orFilterOnUids(uids);
+		if (orFilter == null) return new LinkedList<LdapUser>();
+
 		filter.and(orFilter);		
 		final String filterAsStr = filter.encode();
 		if (logger.isDebugEnabled()) {
@@ -277,16 +273,30 @@ public class SearchableLdapUserAndGroupServiceSMSUImpl extends SearchableLdapUse
 		final List<LdapUser> retVal = getLdapUsersFromFilter(filterAsStr);
 		return retVal;
 	}
+
+	boolean isEmpty(final Iterable <?> l) {
+		return !l.iterator().hasNext();
+	}
+
+	OrFilter orFilterOnUids(final Iterable<String> uids) {
+		// needed since empty OrFilter() is true instead of false (https://jira.springsource.org/browse/LDAP-226)
+		if (isEmpty(uids)) return null;
+
+		final OrFilter filter = new OrFilter();
+		for (String uid : uids) {
+			filter.or(new EqualsFilter(userIdAttribute, uid));
+		}
+		return filter;
+	}
 	
 	/**
 	 * @param uids
 	 * @return a list of mails
 	 */
 	public List<LdapUser> getUsersByUids(final Iterable<String> uids) {
-		final OrFilter filter = new OrFilter();
-		for (String uid : uids) {
-			filter.or(new EqualsFilter(userIdAttribute, uid));
-		}
+		final OrFilter filter = orFilterOnUids(uids);
+		if (filter == null) return new LinkedList<LdapUser>();
+
 		final String filterAsStr = filter.encode();
 		if (logger.isDebugEnabled()) {
 			logger.debug("LDAP filter applied : " + filterAsStr);
