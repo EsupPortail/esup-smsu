@@ -37,6 +37,12 @@
 				<entry key="supannEtuId">
 					<value>supannEtuId</value>
 				</entry>
+				<entry key="supannEntiteAffectation">
+					<value>supannEntiteAffectation</value>
+				</entry>
+				<entry key="supannEtuEtape">
+					<value>supannEtuEtape</value>
+				</entry>
 				<entry key="supannEmpId">
 					<value>supannEmpId</value>
 				</entry>
