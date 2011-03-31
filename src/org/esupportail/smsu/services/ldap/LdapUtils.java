@@ -604,7 +604,7 @@ public class LdapUtils {
 		List<String> parentGroupIds = new ArrayList<String>();
 		for (PortalGroup group : containingGroups)  {
 			if (logger.isDebugEnabled()) {
-				logger.debug("Parent group : [" + group.getName() + "] found");
+				logger.debug("Parent group of " + groupId + " : [" + group.getName() + "] found");
 			}
 			parentGroupIds.add(group.getId());
 		}
@@ -613,7 +613,8 @@ public class LdapUtils {
 			parentGroupId = parentGroupIds.get(0);
 		}
 		return parentGroupId;
-		} catch (Exception e) {
+		} catch (PortalErrorException e) {
+			logger.debug("discarded exception " + e, e);
 			List<PortalGroup> userGroups = portalService.getUserGroups(groupId);
 			PortalGroup rootGroup = portalService.getRootGroup();
 			Integer position = isPortalGroupInList(userGroups, rootGroup);
