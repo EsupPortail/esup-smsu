@@ -1,0 +1,179 @@
+From b6af4e019bdf6cc00309801fe17f317af111de92 Mon Sep 17 00:00:00 2001
+From: Pascal Rigaux <pascal.rigaux@univ-paris1.fr>
+Date: Mon, 24 Jan 2011 11:39:10 +0100
+Subject: [PATCH] TEST: configuration for automated tests
+
+---
+ esup-smsu/properties/cache/ehcache.xml             |    4 ++--
+ esup-smsu/properties/config.properties             |   16 ++++++++--------
+ .../properties/groups/PAGSGroupStoreConfig.xml     |   18 +++++++++++++++++-
+ .../utils/database/populate_tables_esup-smsu.sql   |    2 +-
+ esup-smsuapi/build.properties                      |   10 ++++------
+ esup-smsuapi/properties/config.properties          |   10 +++++-----
+ 6 files changed, 37 insertions(+), 23 deletions(-)
+
+diff --git a/esup-smsu/properties/cache/ehcache.xml b/esup-smsu/properties/cache/ehcache.xml
+index ea3e67c..bbda299 100644
+--- a/esup-smsu/properties/cache/ehcache.xml
++++ b/esup-smsu/properties/cache/ehcache.xml
+@@ -70,8 +70,8 @@
+     	name="org.esupportail.commons.services.ldap.CachingLdapEntityServiceImpl"
+     	maxElementsInMemory="1000" 
+     	eternal="false" 
+-    	timeToIdleSeconds="300"
+-    	timeToLiveSeconds="600" 
++    	timeToIdleSeconds="0"
++    	timeToLiveSeconds="0" 
+     	overflowToDisk="true" 
+     	/>
+ 
+diff --git a/esup-smsu/properties/config.properties b/esup-smsu/properties/config.properties
+index d569979..b8e607e 100644
+--- a/esup-smsu/properties/config.properties
++++ b/esup-smsu/properties/config.properties
+@@ -3,17 +3,17 @@
+ #########################################
+ # below is used by quartz
+ jdbc.driver = org.gjt.mm.mysql.Driver
+-hibernate.connection.jdbc.url=jdbc:mysql://[Nom_De_La_Machine_Mysql]:[Port_De_La_Machine_Mysql]/smsu
+-hibernate.connection.jdbc.username=[Login]
+-hibernate.connection.jdbc.password=[Mot_De_Passe]
++hibernate.connection.jdbc.url=jdbc:mysql://localhost/smsu
++hibernate.connection.jdbc.username=uportal
++hibernate.connection.jdbc.password=dfgdfg
+ 
+ hibernate.useJndi=false
+ 
+ #########################################
+ #  Web services                                                                                           #
+ #########################################
+-portail.ws.adress=http://[Nom_De_La_Machine_Front_Office]:[Port_Portail]/uPortal/services/UportalService
+-smsuapi.ws.address=https://[Nom_De_La_Machine_Back_Office]:[Port_WebService]/xfire
++portail.ws.adress=http://ent-test:8080/services/UportalService
++smsuapi.ws.address=https://localhost:8081/xfire
+ 
+ smsuapi.ws.trustStore=/usr/local/etc/esup-portail.keystore
+ smsuapi.ws.keyStore=/usr/local/etc/esup-portail.keystore
+@@ -23,7 +23,7 @@ smsuapi.ws.keyStorePassword=changeit
+ #########################################
+ #  LDAP                                                                                                          #
+ #########################################
+-ldap.url=ldap://[Nom_De_La_Machine_Ldap]:[Port_Ldap]
++ldap.url=ldap://ldap-test.univ-paris1.fr:389
+ ldap.userName=cn=sms,ou=admin,dc=univ-paris1,dc=fr
+ ldap.password=[Mot_De_Passe_Ldap]
+ ldap.connectTimeout=5000
+@@ -81,7 +81,7 @@ sms.defaultAccount=default_account
+ # CAS                                                                                                            #
+ #########################################
+ auth.portal.uidAttribute=uid
+-cas.url=https://[Nom_De_La_Machine_Cas]:[Port_Cas]/cas
++cas.url=https://cas-test.univ-paris1.fr/cas
+ 
+ #########################################
+ # SMTP                                                                                                          #
+@@ -114,4 +114,4 @@ quartz.scheduler.instanceName = SmsuClusteredScheduler
+ #########################################
+ # Misc                                                                                                           #
+ #########################################
+-init.firstAdministratorId=aaron
++init.firstAdministratorId=adminsmsutest
+diff --git a/esup-smsu/properties/groups/PAGSGroupStoreConfig.xml b/esup-smsu/properties/groups/PAGSGroupStoreConfig.xml
+index 88362ce..e5d2eed 100644
+--- a/esup-smsu/properties/groups/PAGSGroupStoreConfig.xml
++++ b/esup-smsu/properties/groups/PAGSGroupStoreConfig.xml
+@@ -102,4 +102,20 @@
+       </test-group>
+     </selection-test>
+   </group>
+-</Group-Store>
+\ No newline at end of file
++
++  <group>
++    <group-key>ldapgroups</group-key>
++    <group-name>Groupes LDAP</group-name>
++    <group-description>Groupes LDAP smsutest</group-description>
++    <selection-test>
++      <test-group>
++        <test>
++          <attribute-name>supannEntiteAffectation</attribute-name>
++          <tester-class>org.jasig.portal.groups.pags.testers.StringEqualsIgnoreCaseTester</tester-class>
++          <test-value>SMSUTEST</test-value>
++        </test>
++      </test-group>
++    </selection-test>
++  </group>
++
++</Group-Store>
+diff --git a/esup-smsu/utils/database/populate_tables_esup-smsu.sql b/esup-smsu/utils/database/populate_tables_esup-smsu.sql
+index aa03c50..c7a711e 100644
+--- a/esup-smsu/utils/database/populate_tables_esup-smsu.sql
++++ b/esup-smsu/utils/database/populate_tables_esup-smsu.sql
+@@ -46,6 +46,6 @@ INSERT INTO role_composition VALUES(1,16);
+ INSERT INTO account VALUES (1, "default_account");
+ 
+ /* Ajout du compte par defaut */
+-INSERT INTO customized_group VALUES (1, 1, 1, "admin", 1, 1, 1);
++INSERT INTO customized_group VALUES (1, 1, 1, "adminsmsutest", 1, 1, 1);
+ 
+ commit;
+\ No newline at end of file
+diff --git a/esup-smsuapi/build.properties b/esup-smsuapi/build.properties
+index a42666f..c388194 100644
+--- a/esup-smsuapi/build.properties
++++ b/esup-smsuapi/build.properties
+@@ -1,12 +1,10 @@
+ quick-start=true
+ tomcat.port=8081
+ tomcat.shutdown-port=8006
+-#tomcat.keystore=Y:/UPA001/Outils/PkiGeneration/ESUP-SMSU/keystoreServeur.jks
+-tomcat.keystore=N:/outils/ssl-cert/cas-server-keystore.jks
+-tomcat.keypass=smsukey
+-#tomcat.truststore=Y:/UPA001/Outils/PkiGeneration/ESUP-SMSU/esup-smsuapi-truststore.jks
+-tomcat.truststore=N:/outils/ssl-cert/cas-server-truststore.jks
+-tomcat.truststorePass=smsukey
++tomcat.keystore=/usr/local/etc/dhcp-pmf-scipre-211.keystore
++tomcat.keypass=changeit
++tomcat.truststore=/usr/local/etc/dhcp-pmf-scipre-211.keystore
++tomcat.truststorePass=changeit
+ 
+ #deploy.type=servlet
+ #deploy.home=c:/webapps/esup-smsu-api
+diff --git a/esup-smsuapi/properties/config.properties b/esup-smsuapi/properties/config.properties
+index c5a3efd..e452796 100644
+--- a/esup-smsuapi/properties/config.properties
++++ b/esup-smsuapi/properties/config.properties
+@@ -5,9 +5,9 @@ deploy.home=/home/prigaux/esup-smsu/esup-smsuapi/deploy
+ #########################################
+ # below is used by quartz
+ jdbc.driver = org.gjt.mm.mysql.Driver
+-hibernate.connection.jdbc.url=jdbc:mysql://[Nom_De_La_Machine_Mysql]:[Port_De_La_Machine_Mysql]/smsuapi
+-hibernate.connection.jdbc.username=[Login]
+-hibernate.connection.jdbc.password=[Mot_De_Passe]
++hibernate.connection.jdbc.url=jdbc:mysql://localhost/smsuapi
++hibernate.connection.jdbc.username=uportal
++hibernate.connection.jdbc.password=dfgdfg
+ 
+ hibernate.useJndi=false
+ 
+@@ -15,7 +15,7 @@ hibernate.useJndi=false
+ #  broker                                                                                                #
+ #########################################
+ sms.connector.name=olm
+-sms.connector.simulateSending=false
++sms.connector.simulateSending=true
+ 
+ #global.keystore=/usr/local/etc/dhcp-pmf-scipre-211.keystore
+ #global.truststore=/usr/local/etc/dhcp-pmf-scipre-211.keystore
+@@ -27,7 +27,7 @@ global.truststorePass=changeit
+ #########################################
+ #  CAS                                                                                                           #
+ #########################################
+-cas.url=https://[Nom_De_La_Machine_Cas]:[Port_Cas]/cas
++cas.url=https://cas-test.univ-paris1.fr:443/cas
+ 
+ #########################################
+ #  Purge                                                                                                          #
+-- 
+1.7.0.4
+
