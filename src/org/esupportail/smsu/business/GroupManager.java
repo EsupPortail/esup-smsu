@@ -110,12 +110,12 @@ public class GroupManager {
 		
 		// Manage CustomizedGroup Table fields
 		newcustomizedGroup.setLabel(customizedGroup.getLabel().trim());
-		if (customizedGroup.getQuotaSms() == null) { newcustomizedGroup.setQuotaSms(Long.parseLong("0"));
-		} else { newcustomizedGroup.setQuotaSms(customizedGroup.getQuotaSms());
-		} 
-		if (customizedGroup.getQuotaOrder() == null) { newcustomizedGroup.setQuotaOrder(Long.parseLong("0"));
-		} else { newcustomizedGroup.setQuotaOrder(customizedGroup.getQuotaOrder());	
-		} 
+		newcustomizedGroup.setQuotaSms(customizedGroup.getQuotaSms() != null ?
+					       customizedGroup.getQuotaSms() :
+					       Long.parseLong("0"));
+		newcustomizedGroup.setQuotaOrder(customizedGroup.getQuotaOrder() != null ?
+						 customizedGroup.getQuotaOrder() :
+						 Long.parseLong("0"));
 		newcustomizedGroup.setConsumedSms(Long.parseLong("0"));
 		
 		// Manage Role
