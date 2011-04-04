@@ -513,6 +513,12 @@ public interface DomainService extends Serializable {
 	 * @return the message
 	 */
 	String treatMessage(Message message);
+
+	/**
+	 * @param portalGroupId
+	 * @return the path to the parent customized group corresponding to a group
+	 */
+	String getRecursiveGroupPathByLabel(String portalGroupId);
 	
 	//////////////////////////////////////////////////////////////
 	// Service

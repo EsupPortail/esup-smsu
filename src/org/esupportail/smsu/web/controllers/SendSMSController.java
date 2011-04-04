@@ -1,9 +1,15 @@
 package org.esupportail.smsu.web.controllers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import javax.faces.component.UISelectBoolean;
 import javax.faces.component.html.HtmlInputTextarea;
@@ -401,23 +407,65 @@ public class SendSMSController extends AbstractContextAwareController {
 	 */
 	private void initUserGroupsOptions() {
 		userGroupsOptions = new ArrayList<SelectItem>();
-		SelectItem option;
 
 		try {
 			User user = getCurrentUser();
 			String uid = user.getId();
-			List<UserGroup> listUserGroups = ldapUtils.getUserGroupsByUid(uid);
 
-			option = new SelectItem(uid, user.getDisplayName());
-			userGroupsOptions.add(option);
-			
-			for (UserGroup group : listUserGroups) {
-				option = new SelectItem(group.getLdapId(), group.getLdapName());
-				userGroupsOptions.add(option);
+			// if the user has a personal customized group, add it
+			if (getDomainService().getCustomizedGroupByLabel(uid) != null)
+				userGroupsOptions.add(new SelectItem(uid, user.getDisplayName()));
+
+			Map<String, String> idToName = new HashMap<String, String>();
+			for (UserGroup group : ldapUtils.getUserGroupsByUid(uid))
+				idToName.put(group.getLdapId(), group.getLdapName());
+			for (String id : keepGroupLeaves(idToName.keySet())) {
+				userGroupsOptions.add(new SelectItem(id, idToName.get(id)));
 			}
 		} catch (Exception e) {
 			addErrorMessage(null, "SENDSMS.MESSAGE.INITUSERGROUPSERROR");
 		}
+	}
+
+	private List<String> keepGroupLeaves(Set<String> ids) {
+		logger.debug("keepGroupLeaves: given ids " + ids);
+
+		SortedMap<String, String> pathToId = new TreeMap<String, String>();
+		for (String id : ids) {
+			String path = getDomainService().getRecursiveGroupPathByLabel(id);
+			if (path != null) pathToId.put(path, id);
+		}
+		logger.debug("keepGroupLeaves: pathToId: " + pathToId);
+
+		List<String> keptIds = new LinkedList<String>();
+		for (String path : keepLeaves(pathToId.keySet().iterator()))
+			keptIds.add(pathToId.get(path));
+		logger.debug("keepGroupLeaves: keptIds: " + keptIds);
+		return keptIds;
+	}
+
+	/**
+	 * @param it iterator on a sorted collection of strings 
+	 * @return the strings without the prefix strings
+	 * 
+	 * example: { "a/b", "a", "c" } returns { "a/b", "c" }
+	 */
+	private List<String> keepLeaves(Iterator<String> it) {
+		List<String> keptIds = new LinkedList<String>();
+		String prev = null;
+		while (it.hasNext()) {
+			String current = it.next();
+			if (prev != null && prev.startsWith(current)) 
+				; // skip current
+			else if (prev == null || current.startsWith(prev))					
+				prev = current; // skip prev
+			else {
+				keptIds.add(prev);
+				prev = current;
+			}
+		}
+		if (prev != null) keptIds.add(prev);
+		return keptIds;
 	}
 
 	/**

@@ -916,6 +916,14 @@ public class DomainServiceImpl implements DomainService, InitializingBean {
 		return sendSmsManager.treatMessage(message);
 	}
 
+	/**
+	 * @param portalGroupId
+	 * @return the path to the parent customized group corresponding to a group
+	 */
+	public String getRecursiveGroupPathByLabel(String portalGroupId) {
+		return sendSmsManager.getRecursiveGroupPathByLabel(portalGroupId);
+	}
+
 	//////////////////////////////////////////////////////////////
 	// Role
 	//////////////////////////////////////////////////////////////

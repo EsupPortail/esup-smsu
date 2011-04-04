@@ -963,23 +963,44 @@ public class SendSmsManager  {
 	 * @return the customized group corresponding to a group
 	 */
 	private CustomizedGroup getRecurciveCustomizedGroupByLabel(String portalGroupId) {
+	    return getRecurciveCustomizedGroupAndPathByLabel(portalGroupId, null);
+	}
+
+	/**
+	 * @param portalGroupId
+	 * @return the path corresponding to a group if a customized group exists, otherwise return null
+	 */
+	public String getRecursiveGroupPathByLabel(String portalGroupId) {
+		StringBuilder path = new StringBuilder();
+		if (getRecurciveCustomizedGroupAndPathByLabel(portalGroupId, path) == null)
+			return null;
+		else
+			return path.toString();
+	}
+	
+	private CustomizedGroup getRecurciveCustomizedGroupAndPathByLabel(String portalGroupId, StringBuilder path) {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Search the customised group associated to the group : [" + portalGroupId + "]");
 		}
 
+		CustomizedGroup groupSender = null;
+
 		while (true) {
-		    //search the customized group from the data base
-		    CustomizedGroup groupSender = daoService.getCustomizedGroupByLabel(portalGroupId);
+		    if (path != null) path.insert(0, ".." + portalGroupId);
+		    if (groupSender == null)
+			    //search the customized group from the data base
+			    groupSender = daoService.getCustomizedGroupByLabel(portalGroupId);
 
-		    if (groupSender != null) return groupSender;
+		    if (groupSender != null && path == null) return groupSender;
+		    // if path != null, we must continue to compute the full path. 
 
-		    if (logger.isDebugEnabled())
+		    if (logger.isDebugEnabled() && groupSender == null)
 			logger.debug("Customized group not found : " + portalGroupId);
 
 		    // if a parent group is found, search the corresponding customized group
 		    String parentGroup = ldapUtils.getParentGroupIdByGroupId(portalGroupId);
 		    if (parentGroup == null || parentGroup.equals(portalGroupId))
-			return null;
+			return groupSender;
 		    portalGroupId = parentGroup;
 		}
 	}
