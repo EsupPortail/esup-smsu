@@ -31,12 +31,12 @@ public class SendSmsClient  {
 	
 	
 	/**
-	 * @return the Quota check.
+	 * check the quota.
 	 */
 	public void mayCreateAccountCheckQuotaOk(final Integer nbDest, final String labelAccount) 
 	throws UnknownIdentifierApplicationException, 
 	InsufficientQuotaException {
-		logger.info("isQuotaOK method client send with parameters : " + 
+		logger.info("mayCreateAccountCheckQuotaOk method client send with parameters : " + 
 				     " - nbDest = " + nbDest + 
 				     " - labelAccount = " + labelAccount);
 		sendSms.mayCreateAccountCheckQuotaOk(nbDest, labelAccount);

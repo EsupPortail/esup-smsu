@@ -906,7 +906,7 @@ public class SendSmsManager  {
 	InsufficientQuotaException {
 		try {
 			if (logger.isDebugEnabled()) {
-				logger.debug("Request for WS SendSms method isQuotaOk with parameters \n" 
+				logger.debug("Request for WS SendSms method mayCreateAccountCheckQuotaOk with parameters \n" 
 						+ "nbToSend = " + nbToSend + "\n" 
 						+ "accountLabel = " + accountLabel);
 			}
