@@ -134,7 +134,7 @@ all() {
     stop_selenium_server
 }
 
-known_commands="download_selenium|start_selenium_server|stop_selenium_server|init_db|start_smsu|stop_smsu|launch_test"
+known_commands="download_selenium|start_selenium_server|stop_selenium_server|init_db|start_smsu|stop_smsu|launch_test|start_smsuapi"
 
 usage() {
     echo "$0 [$known_commands]*"
