@@ -182,6 +182,11 @@ public class TestSend extends SeleneseTestCase {
 	}
 
 	//*******************************************************************************
+	private void expectedResponseTheMessageIsSending(String context) {
+		forbidResponse("Web Service error", context);
+		expectedResponse("The message is sending.", context);
+	}
+
 	private void basicQuotaChecks(String senderGroupNumber) {
 		resetConsumption(senderGroupNumber);
 		sendSMSByPhone(test_phone, "test");
@@ -189,7 +194,7 @@ public class TestSend extends SeleneseTestCase {
 
 		addQuota(senderGroupNumber, 1);
 		sendSMSByPhone(test_phone, "test");
-		expectedResponse("The message is sending", "quota has been raised");
+		expectedResponseTheMessageIsSending("quota has been raised");
 		sendSMSByPhone(test_phone, "test");
 		expectedResponse("Group quota error", "quota is 0");
 	}
@@ -200,9 +205,9 @@ public class TestSend extends SeleneseTestCase {
 		sendSMSByPhone(test_phone, "x" + biggestMessage);
 		expectedResponse("The message is too long", "too long message");
 		sendSMSByPhone(test_phone, biggestMessage);
-		expectedResponse("The message is sending", "max length message");
+		expectedResponseTheMessageIsSending("max length message");
 		sendSMSByPhone(user2smsutest_phone, biggestMessage.replace("0", "é"));
-		expectedResponse("The message is sending", "max length message with accents");
+		expectedResponseTheMessageIsSending("max length message with accents");
 	}
 	private void messageTags(String senderGroupNumber) {
 		addQuota(senderGroupNumber, 3);
@@ -210,10 +215,10 @@ public class TestSend extends SeleneseTestCase {
 		expectedResponse("The tag <EXP_XX> does not exist", "<EXP_*>");
 
 		sendSMSByUser("smsutest", 1, "test EXP_NOM:<EXP_NOM> EXP_GROUPE_NOM:<EXP_GROUPE_NOM>");
-		expectedResponse("The message is sending", "<EXP_*>");
+		expectedResponseTheMessageIsSending("<EXP_*>");
 
 		sendSMSByUser("smsutest", 1, "test DEST_NOM:<DEST_NOM> DEST_PRENOM:<DEST_PRENOM>");
-		expectedResponse("The message is sending", "<DEST_*>");
+		expectedResponseTheMessageIsSending("<DEST_*>");
 	}
 	void sendAdminTests() {
 		login("adminsmsutest");
