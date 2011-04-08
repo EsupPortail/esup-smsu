@@ -392,6 +392,8 @@ public class GroupsManagerController extends AbstractContextAwareController {
 		usersSearchController.setLdapUid(null);
 		persons = new ArrayList<UIPerson>();
 		this.group = new CustomizedGroup();
+		this.group.setQuotaSms(new Long(0));
+		this.group.setQuotaOrder(new Long(1));
 		this.account = new Account();
 		this.role = new UIRole();
 		
