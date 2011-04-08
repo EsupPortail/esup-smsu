@@ -207,7 +207,7 @@ public class SendSMSController extends AbstractContextAwareController {
 		this.rights.add(FonctionName.FCTN_SMS_ENVOI_ADH.toString());
 		this.rights.add(FonctionName.FCTN_SMS_ENVOI_GROUPES.toString());
 		this.rights.add(FonctionName.FCTN_SMS_ENVOI_NUM_TEL.toString());
-		this.rights.add(FonctionName.FCTN_SMS_ENVOI_PLUSIEURS_NUM_TEL.toString());
+		this.rights.add(FonctionName.FCTN_SMS_ENVOI_LISTE_NUM_TEL.toString());
 		this.rights.add(FonctionName.FCTN_SMS_REQ_LDAP_ADH.toString());
 		
 		return getDomainService().checkRights(currentUser.getFonctions(), this.rights);

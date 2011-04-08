@@ -92,7 +92,7 @@ public class SmsRecipientController extends AbstractContextAwareController {
 	/**
 	 * phone numbers to add.
 	 */
-	private String manyPhoneNumbersToAdd;
+	private String phoneNumbersListToAdd;
 
 	/**
 	 * the phone number validation pattern.
@@ -162,17 +162,17 @@ public class SmsRecipientController extends AbstractContextAwareController {
 	}
 
 	/**
-	 * add many phone numbers to the recipient list.
+	 * add phone numbers list to the recipient list.
 	 */
-	public void addManyPhoneNumbers() {
-		if (this.manyPhoneNumbersToAdd == null) return;
+	public void addPhoneNumbersList() {
+		if (this.phoneNumbersListToAdd == null) return;
 		
 		List<String> numbers = 
-			findAllMatches(Pattern.compile(phoneNumberPattern), this.manyPhoneNumbersToAdd);
+			findAllMatches(Pattern.compile(phoneNumberPattern), this.phoneNumbersListToAdd);
 
 		if (numbers.isEmpty()) {
-			logger.error("Error many phone numbers: no valid phone number found in ***\n" + manyPhoneNumbersToAdd + "\n***");
-			addErrorMessage(null, "SENDSMS.MESSAGE.MANYPHONENUMBERSERROR");
+			logger.error("Error phone numbers list: no valid phone number found in ***\n" + phoneNumbersListToAdd + "\n***");
+			addErrorMessage(null, "SENDSMS.MESSAGE.PHONENUMBERSLISTERROR");
 		}
 		for (String number : numbers) {
 			logger.warn("found phone number " + number);
@@ -271,7 +271,7 @@ public class SmsRecipientController extends AbstractContextAwareController {
 		panelGrid.put("LDAP", new HtmlPanelGroup());
 		panelGrid.put("USERS", new HtmlPanelGroup());
 		panelGrid.put("PHONENUMBERS", new HtmlPanelGroup());
-		panelGrid.put("MANYPHONENUMBERS", new HtmlPanelGroup());
+		panelGrid.put("PHONENUMBERSLIST", new HtmlPanelGroup());
 		
 		treeModel = new TreeModelBase(getRootNode());
 
@@ -307,8 +307,8 @@ public class SmsRecipientController extends AbstractContextAwareController {
 				option = new SelectItem("PHONENUMBERS", this.getI18nService().getString("SENDSMS.LABEL.PHONENUMBERS"));
 				destTypeOptions.add(option);
 			}
-			if (currentUser.getFonctions().contains(FonctionName.FCTN_SMS_ENVOI_PLUSIEURS_NUM_TEL.name())) {
-				option = new SelectItem("MANYPHONENUMBERS", this.getI18nService().getString("SENDSMS.LABEL.MANYPHONENUMBERS"));
+			if (currentUser.getFonctions().contains(FonctionName.FCTN_SMS_ENVOI_LISTE_NUM_TEL.name())) {
+				option = new SelectItem("PHONENUMBERSLIST", this.getI18nService().getString("SENDSMS.LABEL.PHONENUMBERSLIST"));
 				destTypeOptions.add(option);
 			}
 			if (currentUser.getFonctions().contains(FonctionName.FCTN_SMS_ENVOI_GROUPES.name())) {
@@ -436,20 +436,20 @@ public class SmsRecipientController extends AbstractContextAwareController {
 
 
 	//////////////////////////////////////////////////////////////
-	// Getter and Setter of manyPhoneNumbersListPanelGrid
+	// Getter and Setter of phoneNumbersListListPanelGrid
 	//////////////////////////////////////////////////////////////
 	/**
-	 * @return manyPhoneNumbersListPanelGrid
+	 * @return phoneNumbersListListPanelGrid
 	 */
-	public HtmlPanelGroup getManyPhoneNumbersListPanelGrid() {
-		return panelGrid.get("MANYPHONENUMBERS");
+	public HtmlPanelGroup getPhoneNumbersListListPanelGrid() {
+		return panelGrid.get("PHONENUMBERSLIST");
 	}  
 
 	/**
-	 * @param manyPhoneNumbersListPanelGrid
+	 * @param phoneNumbersListListPanelGrid
 	 */
-	public void setManyPhoneNumbersListPanelGrid(final HtmlPanelGroup manyPhoneNumbersListPanelGrid) {
-		panelGrid.put("MANYPHONENUMBERS", manyPhoneNumbersListPanelGrid);
+	public void setPhoneNumbersListListPanelGrid(final HtmlPanelGroup phoneNumbersListListPanelGrid) {
+		panelGrid.put("PHONENUMBERSLIST", phoneNumbersListListPanelGrid);
 	}
 
 	//////////////////////////////////////////////////////////////
@@ -581,20 +581,20 @@ public class SmsRecipientController extends AbstractContextAwareController {
 
 
 	//////////////////////////////////////////////////////////////
-	// Getter and Setter of manyPhoneNumbersToAdd
+	// Getter and Setter of phoneNumbersListToAdd
 	//////////////////////////////////////////////////////////////
 	/**
-	 * @param manyPhoneNumbersToAdd
+	 * @param phoneNumbersListToAdd
 	 */
-	public void setManyPhoneNumbersToAdd(final String manyPhoneNumbersToAdd) {
-		this.manyPhoneNumbersToAdd = manyPhoneNumbersToAdd;
+	public void setPhoneNumbersListToAdd(final String phoneNumbersListToAdd) {
+		this.phoneNumbersListToAdd = phoneNumbersListToAdd;
 	}
 
 	/**
-	 * @return manyPhoneNumbersToAdd
+	 * @return phoneNumbersListToAdd
 	 */
-	public String getManyPhoneNumbersToAdd() {
-		return manyPhoneNumbersToAdd;
+	public String getPhoneNumbersListToAdd() {
+		return phoneNumbersListToAdd;
 	}
 
 	/**

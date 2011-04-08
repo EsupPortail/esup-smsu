@@ -38,7 +38,7 @@ public enum FonctionName {
 	FCTN_GESTION_GROUPE,
 	// Approve SMS
 	FCTN_APPROBATION_ENVOI,
-	// Send many SMS tel. number
-	FCTN_SMS_ENVOI_PLUSIEURS_NUM_TEL,
+	// Send SMS list tel. number
+	FCTN_SMS_ENVOI_LISTE_NUM_TEL,
 	
 }

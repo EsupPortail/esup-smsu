@@ -130,12 +130,12 @@
 </t:panelGroup>
 
 <t:panelGroup 
-	binding="#{smsRecipientController.manyPhoneNumbersListPanelGrid}" colspan="2">
-	<e:inputTextarea id="manyPhoneNumbers"
-		value="#{smsRecipientController.manyPhoneNumbersToAdd}" />
+	binding="#{smsRecipientController.phoneNumbersListListPanelGrid}" colspan="2">
+	<e:inputTextarea id="phoneNumbersList"
+		value="#{smsRecipientController.phoneNumbersListToAdd}" />
 
 	<e:commandButton value="Ajouter"
-		action="#{smsRecipientController.addManyPhoneNumbers}" />
+		action="#{smsRecipientController.addPhoneNumbersList}" />
 </t:panelGroup>
 
 <t:panelGroup colspan="2">
