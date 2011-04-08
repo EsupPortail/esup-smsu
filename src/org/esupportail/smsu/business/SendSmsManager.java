@@ -1,6 +1,7 @@
 package org.esupportail.smsu.business;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -467,39 +468,45 @@ public class SendSmsManager  {
 	 * @return a supervisor list
 	 */
 	private Set<Person> getSupervisors(final Message message) {
-		Set<Person> supervisors = new HashSet<Person>();
+		Set<Person> r;
 
-		if (message.getGroupRecipient() != null) { 
-			String label = message.getGroupRecipient().getLabel();
-			CustomizedGroup customizedGroup = getSupervisorCustomizedGroupByLabel(label);
-			if (customizedGroup != null) {
-				if (logger.isDebugEnabled()) {
-					logger.debug("Supervisor found from group : [" + customizedGroup.getLabel() + "]");
-				}
-				
-				supervisors.addAll(customizedGroup.getSupervisors());
-			} else {
-				if (logger.isDebugEnabled()) {
-					logger.debug("No supervisor found from groups. Use the default supervisor : [" + defaultSupervisorLogin + "]");
-				}
-				Person admin = daoService.getPersonByLogin(defaultSupervisorLogin);
-				if (admin == null) {
-					admin = new Person(null, defaultSupervisorLogin);
-				}
-				supervisors.add(admin);
-			}
-		} else {
-			if (logger.isDebugEnabled()) {
-				logger.debug("Supervisor needed without a group. Use the default supervisor : [" + defaultSupervisorLogin + "]");
-			}
-			Person admin = daoService.getPersonByLogin(defaultSupervisorLogin);
-			if (admin == null) {
-				admin = new Person(null, defaultSupervisorLogin);
-			}
-			supervisors.add(admin);
+		r = getSupervisorsByGroup(message.getGroupRecipient(), "destination");
+		if (r != null) return r;
+
+		r = getSupervisorsByGroup(message.getGroupSender(), "sender");
+		if (r != null) return r;
+
+		logger.debug("Supervisor needed without a group. Using the default supervisor : [" + defaultSupervisorLogin + "]");
+		return Collections.singleton(defaultSupervisor());
+	}
+
+	private Person defaultSupervisor() {
+		Person admin = daoService.getPersonByLogin(defaultSupervisorLogin);
+		if (admin == null) {
+			admin = new Person(null, defaultSupervisorLogin);
 		}
+		return admin;
+	}
 
-		return supervisors;
+	private Set<Person> getSupervisorsByGroup(final BasicGroup group, String groupKind) {
+		if (group == null) return null;
+
+		CustomizedGroup cGroup = getSupervisorCustomizedGroupByGroup(group);
+
+		if (logger.isDebugEnabled()) {
+			if (cGroup != null)
+				logger.debug("Supervisor found from " + groupKind + " group : [" + cGroup.getLabel() + "]");
+			else
+				logger.debug("No supervisor found from " + groupKind + " group.");
+		}
+		if (cGroup != null) 
+			return new HashSet<Person>(cGroup.getSupervisors()); // nb: we need to copy the set to avoid "Found shared references to a collection" Hibernate exception
+		else
+			return null;
+	}
+
+	private CustomizedGroup getSupervisorCustomizedGroupByGroup(final BasicGroup group) {
+		return getSupervisorCustomizedGroupByLabel(group.getLabel());
 	}
 
 	/**
@@ -730,9 +737,7 @@ public class SendSmsManager  {
 			return MessageStatus.NO_RECIPIENT_FOUND;
 		} else if (!checkFrontOfficeQuota(nbRecipients, cGroup, groupSender)) {
 			throw new CreateMessageException.GroupQuotaException();
-		} else if (!checkMaxSmsGroupQuota(nbRecipients, cGroup, groupSender)) {
-			throw new CreateMessageException.GroupMaxSmsPerMessage();
-		} else if (groupRecipient != null) {
+		} else if (groupRecipient != null || !checkMaxSmsGroupQuota(nbRecipients, cGroup, groupSender)) {
 			return MessageStatus.WAITING_FOR_APPROVAL;
 		} else {
 			return MessageStatus.IN_PROGRESS;

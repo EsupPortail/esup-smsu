@@ -28,9 +28,12 @@ public class TestSend extends SeleneseTestCase {
 		selenium.waitForPageToLoad(timeout);
 	}
 
-	void clickAndWaitIfPresent(String locator) {
-		if (selenium.isElementPresent(locator))
+	boolean clickAndWaitIfPresent(String locator) {
+		if (selenium.isElementPresent(locator)) {
 			clickAndWait(locator);
+			return true;
+		} else
+			return false;
 	}
 
 	String inputLocatorByValue(String valueString) {
@@ -274,7 +277,7 @@ public class TestSend extends SeleneseTestCase {
 			else throw new AssertionError("user1smsutest should not be allowed to enter " + typ);
 		}
 		sendSMSByUser("smsutest", 2, "test moderation");
-		expectedResponse("The number of recipients exceeds the maximum number of recipients authorized for the sending group", "many recipients");
+		expectedResponse("The message is sending for approval", "many recipients");
 	}
 
 	void searchSMS_checkFirstRow(String expectedState, String expectedContent) {
@@ -293,10 +296,16 @@ public class TestSend extends SeleneseTestCase {
 		expectedResponse(expectedContent, "detail page of sent message");
 	}
 
+	void cancelAllMessagesToApprove() {
+		clickAndWait("navigationForm:approbationEnvoi");
+		while (clickAndWaitIfPresent("approvalForm:data:0:cancel"));	
+	}
+
 	void createAndTestUser2smsutest() {
 		login("adminsmsutest");
 		createGroup_user2smsutest_with_roleUserAndGroup();
 		createGroup_pags();
+		cancelAllMessagesToApprove();
 
 		login("user2smsutest");
 		clickAndWait("navigationForm:envoiSMS");

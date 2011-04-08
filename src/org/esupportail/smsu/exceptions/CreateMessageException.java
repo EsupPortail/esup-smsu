@@ -29,21 +29,6 @@ public abstract class CreateMessageException extends Exception {
 		}
 	}
 
-	static public class GroupMaxSmsPerMessage extends CreateMessageException {
-	
-		private static final long serialVersionUID = 2515164261120013750L;
-
-		public String toString() {
-			return "CreateMessageException.GroupMaxSmsPerMessage";
-		}
-
-		public String toI18nString(I18nService i18nService) {
-			return i18nService.getString("SENDSMS.MESSAGE.SENDERGROUPNDMAXSMSERROR",
-						     i18nService.getDefaultLocale());
-		}
-
-	}
-
 	static public class GroupQuotaException extends CreateMessageException {
 	
 		private static final long serialVersionUID = -6132084495675709441L;
