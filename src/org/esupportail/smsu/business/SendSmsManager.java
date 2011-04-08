@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.lang.reflect.UndeclaredThrowableException;
 
 import org.apache.commons.lang.StringUtils;
 import org.esupportail.commons.services.database.DatabaseUtils;
@@ -225,7 +226,6 @@ public class SendSmsManager  {
 		} catch (BackOfficeUnrichableException e) {
 			message.setStateAsEnum(MessageStatus.WS_ERROR);
 			daoService.updateMessage(message);
-			logger.error("Unable connect to the back office", e);
 			return "WS.ERROR.MESSAGE";
 		}
 	}
@@ -917,8 +917,8 @@ public class SendSmsManager  {
 			throw new UnknownIdentifierApplicationException(e.getMessage());
 		} catch (InsufficientQuotaException e) {
 			throw new InsufficientQuotaException(e.getMessage());
-		} catch (Exception e) {
-			logger.error("Unable to connect to the back office : ", e);
+		} catch (UndeclaredThrowableException e) {
+			logger.error("Unable to connect to the back office : ", e.getCause());
 			throw new BackOfficeUnrichableException();
 		}
 	}
