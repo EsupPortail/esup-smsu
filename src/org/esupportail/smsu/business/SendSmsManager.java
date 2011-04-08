@@ -69,11 +69,6 @@ public class SendSmsManager  {
 	private SendSmsClient sendSmsClient;
 
 	/**
-	 * the max SMS number before the message has to be validated.
-	 */
-	private Integer nbMaxSmsBeforeSupervising;
-
-	/**
 	 * the default Supervisor login when the max SMS number is reach.
 	 */
 	private String defaultSupervisorLogin;
@@ -737,7 +732,7 @@ public class SendSmsManager  {
 			throw new CreateMessageException.GroupQuotaException();
 		} else if (!checkMaxSmsGroupQuota(nbRecipients, cGroup, groupSender)) {
 			throw new CreateMessageException.GroupMaxSmsPerMessage();
-		} else if (nbRecipients >= nbMaxSmsBeforeSupervising || groupRecipient != null) {
+		} else if (groupRecipient != null) {
 			return MessageStatus.WAITING_FOR_APPROVAL;
 		} else {
 			return MessageStatus.IN_PROGRESS;
@@ -1120,23 +1115,6 @@ public class SendSmsManager  {
 	 */
 	public void setDaoService(final DaoService daoService) {
 		this.daoService = daoService;
-	}
-
-	//////////////////////////////////////////////////////////////
-	// Getter and Setter of nbMaxSmsBeforeSupervising
-	//////////////////////////////////////////////////////////////
-	/**
-	 * @return nbMaxSmsBeforeSupervising
-	 */
-	public Integer getNbMaxSmsBeforeSupervising() {
-		return nbMaxSmsBeforeSupervising;
-	}
-
-	/**
-	 * @param nbMaxSmsBeforeSupervising
-	 */
-	public void setNbMaxSmsBeforeSupervising(final Integer nbMaxSmsBeforeSupervising) {
-		this.nbMaxSmsBeforeSupervising = nbMaxSmsBeforeSupervising;
 	}
 
 	//////////////////////////////////////////////////////////////

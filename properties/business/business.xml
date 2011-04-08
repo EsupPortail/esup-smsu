@@ -46,7 +46,6 @@
 		<property name="daoService" ref="daoService" />
 		<property name="customizer" ref="customizer" />
 		<property name="sendSmsClient" ref="sendSmsClient" />
-		<property name="nbMaxSmsBeforeSupervising" value="${sms.nbMaxSmsBeforeSupervising}"/>
 		<property name="defaultSupervisorLogin" value="${sms.defaultSupervisorLogin}"/>
 		<property name="schedulerUtils" ref="schedulerUtils"/>
 		<property name="ldapUtils" ref="ldapUtils"/>
