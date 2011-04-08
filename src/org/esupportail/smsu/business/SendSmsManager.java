@@ -515,23 +515,19 @@ public class SendSmsManager  {
 		if (logger.isDebugEnabled()) {
 			logger.debug("getSupervisorCustomizedGroupByLabel for group [" + groupLabel + "]");
 		}
-		CustomizedGroup customizedGroup = getRecurciveCustomizedGroupByLabel(groupLabel);	
-		if (customizedGroup != null) {
-			if (customizedGroup.getSupervisors().isEmpty()) {
-				if (logger.isDebugEnabled()) {
-					logger.debug("Customized group without supervisor found : [" + customizedGroup.getLabel() + "]");
-				}
-				String portalGroupId = customizedGroup.getLabel();
-				String parentGroup = ldapUtils.getParentGroupIdByGroupId(portalGroupId);
-				if (parentGroup != null) {
-					customizedGroup = getRecurciveCustomizedGroupByLabel(parentGroup);
-				} else {
-					// if no parent group is found, a null customized group is returned. 
-					customizedGroup = null;
-				}
-			}
+		CustomizedGroup cGroup = getRecurciveCustomizedGroupByLabel(groupLabel);	
+		if (cGroup == null) 
+			return null;
+		else if (!cGroup.getSupervisors().isEmpty())
+			return cGroup;
+		else {
+			if (logger.isDebugEnabled())
+				logger.debug("Customized group without supervisor found : [" + cGroup.getLabel() + "]");
+			
+			String parentGroup = getSafeParentGroupIdByGroupId(cGroup.getLabel());
+			if (parentGroup == null) return null;
+			return getSupervisorCustomizedGroupByLabel(parentGroup);
 		}
-		return customizedGroup;
 	}
 
 	/**
@@ -998,13 +994,19 @@ public class SendSmsManager  {
 			logger.debug("Customized group not found : " + portalGroupId);
 
 		    // if a parent group is found, search the corresponding customized group
-		    String parentGroup = ldapUtils.getParentGroupIdByGroupId(portalGroupId);
-		    if (parentGroup == null || parentGroup.equals(portalGroupId))
-			return groupSender;
+		    String parentGroup = getSafeParentGroupIdByGroupId(portalGroupId);
+		    if (parentGroup == null) return groupSender;
 		    portalGroupId = parentGroup;
 		}
 	}
 
+	private String getSafeParentGroupIdByGroupId(String portalGroupId) {
+		String parentGroup = ldapUtils.getParentGroupIdByGroupId(portalGroupId);
+		if (parentGroup == null || parentGroup.equals(portalGroupId))
+			return null;
+		else
+			return parentGroup;
+	}
 
 	/**
 	 * @param id
