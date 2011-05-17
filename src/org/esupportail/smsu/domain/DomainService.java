@@ -465,6 +465,8 @@ public interface DomainService extends Serializable {
 	 */
 	boolean isPhoneNumberInBlackList(String phoneNumber);
 	
+        String checkWhySmsuapiFailed(Throwable cause);
+
 	
     //////////////////////////////////////////////////////////////
 	// Used by Date methods in MessagesController

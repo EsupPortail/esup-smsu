@@ -2,6 +2,7 @@ package org.esupportail.smsu.web.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.lang.reflect.UndeclaredThrowableException;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -128,8 +129,9 @@ public class MembershipController extends AbstractContextAwareController {
 				if (retVal) {
 				addErrorMessage("formMembership:phoneNumber", "ADHESION.MESSAGE.PHONEINBLACKLIST");
 				}
-		} catch (Exception e){
-				addErrorMessage("formMembership:phoneNumber", "ADHESION.MESSAGE.WSERROR");
+		} catch (UndeclaredThrowableException e) {
+			String msg = getDomainService().checkWhySmsuapiFailed(e.getCause());
+			addErrorMessage("formMembership:phoneNumber", msg != null ? msg : "ADHESION.MESSAGE.WSERROR");
 		}
 		}
 	}

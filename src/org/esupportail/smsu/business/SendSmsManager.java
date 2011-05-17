@@ -918,9 +918,21 @@ public class SendSmsManager  {
 		} catch (InsufficientQuotaException e) {
 			throw new InsufficientQuotaException(e.getMessage());
 		} catch (UndeclaredThrowableException e) {
-			logger.error("Unable to connect to the back office : ", e.getCause());
-			throw new BackOfficeUnrichableException();
+			String msg = checkWhySmsuapiFailed(e.getCause());
+			throw new BackOfficeUnrichableException(msg);
 		}
+	}
+
+	public String checkWhySmsuapiFailed(Throwable cause) {
+		String[] mustBeSetList = { "javax.net.ssl.keyStore", "javax.net.ssl.keyStorePassword" };
+		for (String mustBeSet : mustBeSetList)
+			if (System.getProperty(mustBeSet) == null) {
+				String msg = "configuration issue: " + mustBeSet + " must be set (usually in CATALINA_OPTS in env.sh)";
+				logger.error(msg);
+				return msg;
+			}
+		logger.error("Unable to connect to smsuapi back office : " + cause);
+		return null;
 	}
 
 	/**

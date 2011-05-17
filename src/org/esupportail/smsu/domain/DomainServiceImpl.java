@@ -723,6 +723,11 @@ public class DomainServiceImpl implements DomainService, InitializingBean {
 		
 		return retVal;
 	}
+
+	public String checkWhySmsuapiFailed(Throwable cause) {
+		return sendSmsManager.checkWhySmsuapiFailed(cause);
+	}
+
 	/** 
 	 * @throws LdapUserNotFoundException 
 	 * @throws LdapWriteException 
