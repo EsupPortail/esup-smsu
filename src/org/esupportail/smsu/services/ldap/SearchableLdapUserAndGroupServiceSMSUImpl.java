@@ -14,6 +14,7 @@ import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
 import org.springframework.ldap.LdapTemplate;
 import org.springframework.ldap.support.filter.AndFilter;
 import org.springframework.ldap.support.filter.EqualsFilter;
+import org.springframework.ldap.support.filter.Filter;
 import org.springframework.ldap.support.filter.OrFilter;
 import org.springframework.ldap.support.filter.WhitespaceWildcardsFilter;
 import org.springframework.util.StringUtils;
@@ -214,16 +215,32 @@ public class SearchableLdapUserAndGroupServiceSMSUImpl extends SearchableLdapUse
 	 * @param token
 	 */
 	public List<LdapUser> getLdapUsersFromToken(final String token) {
-		final String[] tokenList = token.split("\\p{Blank}");
-		
 		final AndFilter filter = new AndFilter();
-		for (String tok : tokenList) {
-			if (tok.length() > 0) {
+		andTokenFilter(filter, token);			
+		return searchWithFilter(filter);
+	}
+
+	private void andTokenFilter(final AndFilter filter, final String token) {
+		for (String tok : token.split("\\p{Blank}")) {
+			if (tok.length() > 0)
 				filter.and(new WhitespaceWildcardsFilter(searchAttribute, tok));
-			}
 		}
-				
+	}
+
+	private void andPagerAndConditionsAndService(final AndFilter filter,
+			final String cgKeyName, final String service) {
+		filter.and(new WhitespaceWildcardsFilter(userPagerAttribute, " "));
+		filter.and(new EqualsFilter(userTermsOfUseAttribute, cgKeyName));
+		if (service != null) {
+			filter.and(new EqualsFilter(userTermsOfUseAttribute, service));
+		}
+	}
+	
+	private List<LdapUser> searchWithFilter(final Filter filter) {
 		final String filterAsStr = filter.encode();
+		if (logger.isDebugEnabled()) {
+			logger.debug("LDAP filter applied : " + filterAsStr);
+		}
 		final List<LdapUser> retVal = getLdapUsersFromFilter(filterAsStr);
 		return retVal;
 	}
@@ -236,12 +253,9 @@ public class SearchableLdapUserAndGroupServiceSMSUImpl extends SearchableLdapUse
 		final AndFilter filter = new AndFilter();
 		
 		//add the pager filter
-		filter.and(new WhitespaceWildcardsFilter(userPagerAttribute, token));
-		
+		filter.and(new WhitespaceWildcardsFilter(userPagerAttribute, token));	
 				
-		final String filterAsStr = filter.encode();
-		final List<LdapUser> retVal = getLdapUsersFromFilter(filterAsStr);
-		return retVal;
+		return searchWithFilter(filter);
 	}
 	
 	/**
@@ -256,22 +270,13 @@ public class SearchableLdapUserAndGroupServiceSMSUImpl extends SearchableLdapUse
 		final AndFilter filter = new AndFilter();
 		
 		//add the general condition, service and pager filter
-		filter.and(new WhitespaceWildcardsFilter(userPagerAttribute, " "));
-		filter.and(new EqualsFilter(userTermsOfUseAttribute, cgKeyName));
-		if (service != null) {
-			filter.and(new EqualsFilter(userTermsOfUseAttribute, service));
-		}
+		andPagerAndConditionsAndService(filter, cgKeyName, service);
 		
 		final OrFilter orFilter = orFilterOnUids(uids);
 		if (orFilter == null) return new LinkedList<LdapUser>();
 
 		filter.and(orFilter);		
-		final String filterAsStr = filter.encode();
-		if (logger.isDebugEnabled()) {
-			logger.debug("LDAP filter applied : " + filterAsStr);
-		}
-		final List<LdapUser> retVal = getLdapUsersFromFilter(filterAsStr);
-		return retVal;
+		return searchWithFilter(filter);
 	}
 
 	boolean isEmpty(final Iterable <?> l) {
@@ -295,14 +300,10 @@ public class SearchableLdapUserAndGroupServiceSMSUImpl extends SearchableLdapUse
 	 */
 	public List<LdapUser> getUsersByUids(final Iterable<String> uids) {
 		final OrFilter filter = orFilterOnUids(uids);
-		if (filter == null) return new LinkedList<LdapUser>();
-
-		final String filterAsStr = filter.encode();
-		if (logger.isDebugEnabled()) {
-			logger.debug("LDAP filter applied : " + filterAsStr);
-		}
-		final List<LdapUser> retVal = getLdapUsersFromFilter(filterAsStr);
-		return retVal;
+		if (filter == null) 
+		    return new LinkedList<LdapUser>();
+		else
+		    return searchWithFilter(filter);
 	}
 	
 	/**
@@ -333,29 +334,11 @@ public class SearchableLdapUserAndGroupServiceSMSUImpl extends SearchableLdapUse
 		if (logger.isDebugEnabled()) {
 			logger.debug("getConditionFriendlyLdapUsersFromToken : " + token);
 		}
-		final String[] tokenList = token.split("\\p{Blank}");
-
 		final AndFilter filter = new AndFilter();
+		andPagerAndConditionsAndService(filter, cgKeyName, service);
+		andTokenFilter(filter, token);
 
-		//add the general condition, service and pager filter
-		filter.and(new WhitespaceWildcardsFilter(userPagerAttribute, " "));
-		filter.and(new EqualsFilter(userTermsOfUseAttribute, cgKeyName));
-		if (service != null) {
-			filter.and(new EqualsFilter(userTermsOfUseAttribute, service));
-		}
-
-		for (String tok : tokenList) {
-			if (tok.length() > 0) {		
-				filter.and(new WhitespaceWildcardsFilter(searchAttribute, tok));
-			}
-		}
-
-		final String filterAsStr = filter.encode();
-		if (logger.isDebugEnabled()) {
-			logger.debug("LDAP filter applied : " + filterAsStr);
-		}
-		final List<LdapUser> retVal = getLdapUsersFromFilter(filterAsStr);
-		return retVal;
+		return searchWithFilter(filter);
 	}
 	
 	/**
