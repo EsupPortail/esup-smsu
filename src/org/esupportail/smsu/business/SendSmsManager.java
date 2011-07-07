@@ -819,11 +819,11 @@ public class SendSmsManager  {
 			return true;
 		} else {
 			final String mess = 
-			    "Erreur de nombre maximum de sms par envoi pour le groupe d'envoi [" + 
+			    "Message necessite approbation : nombre maximum de sms par envoi pour le groupe d'envoi [" + 
 			    groupSender.getLabel() + 
 			    "] et groupe associ� [" + cGroup.getLabel() + 
 			    "]. Essai d'envoi de " + nbToSend + " message(s), nombre max par envoi = " + quotaOrder;
-			logger.warn(mess);
+			logger.info(mess);
 			return false;
 		}
 	}
