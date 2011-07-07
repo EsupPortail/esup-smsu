@@ -53,7 +53,6 @@
 		<property name="smsMaxSize" value="${sms.maxLength}"/>
 		<property name="defaultAccount" value="${sms.defaultAccount}"/>
 		<property name="userEmailAttribute" value="${ldap.emailAttribute}"/>
-		<property name="cgKeyName" value="${ldap.key.cg}"/>
 		<property name="smsuPersonAttributesGroupStore" ref="personAttributesGroupStore" />
 		<property name="userTermsOfUseAttribute" value="${ldap.termsOfUseAttribute}" />
 	</bean>

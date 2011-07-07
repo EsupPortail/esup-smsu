@@ -362,6 +362,21 @@ public class LdapUtils {
 		
 		return retVal;
 	}
+
+	public boolean isGeneralAndSpecificConditionValidate(final LdapUser user, final String specificConditionKey) {
+		final List<String> termsOfUse = user.getAttributes(userTermsOfUseAttribute);
+
+		if (!termsOfUse.contains(cgKeyName)) {
+			if (logger.isDebugEnabled()) logger.debug("CG not validated, user : " + user.getId());
+			return false;
+		} else if (specificConditionKey != null) {
+			if (logger.isDebugEnabled()) logger.debug("Service filter activated");
+			return termsOfUse.contains(specificConditionKey);
+		} else {
+			if (logger.isDebugEnabled()) logger.debug("No service filter");
+			return true;
+		}
+	}
 	
 	
 	/**

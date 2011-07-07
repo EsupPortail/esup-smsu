@@ -110,11 +110,6 @@ public class SendSmsManager  {
 	 */
 	private String userEmailAttribute;
 
-	/**
-	 * The key used to represent the CG in the ldap (up1terms).
-	 */
-	private String cgKeyName;
-
 	private SmsuPersonAttributesGroupStore smsuPersonAttributesGroupStore;
 
 	/**
@@ -679,20 +674,7 @@ public class SendSmsManager  {
 		List<LdapUser> filteredUsers = new ArrayList<LdapUser>();
 
 		for (LdapUser user : users) {
-			List<String> userTermsOfUse = user.getAttributes(userTermsOfUseAttribute);
-			if (userTermsOfUse.contains(cgKeyName)) {
-				if (service != null) {
-					if (logger.isDebugEnabled()) logger.debug("Service filter activated");
-					if (userTermsOfUse.contains(service)) {
-						filteredUsers.add(user);
-					}
-				} else {
-					if (logger.isDebugEnabled()) logger.debug("No service filter");
-					filteredUsers.add(user);
-				}
-			} else {
-				if (logger.isDebugEnabled()) logger.debug("CG not validated, user : " + user.getId());
-			}
+			if (ldapUtils.isGeneralAndSpecificConditionValidate(user, service)) filteredUsers.add(user);
 		}
 		if (logger.isDebugEnabled()) logger.debug("Number of filtered users : " + filteredUsers.size());
 		return filteredUsers;
@@ -1178,20 +1160,6 @@ public class SendSmsManager  {
 
 	public SmsuPersonAttributesGroupStore getSmsuPersonAttributesGroupStore() {
 		return smsuPersonAttributesGroupStore;
-	}
-
-	/**
-	 * @return the cg Key Name
-	 */
-	public String getCgKeyName() {
-		return cgKeyName;
-	}
-
-	/**
-	 * @param cgKeyName
-	 */
-	public void setCgKeyName(final String cgKeyName) {
-		this.cgKeyName = cgKeyName;
 	}
 
 	/**
