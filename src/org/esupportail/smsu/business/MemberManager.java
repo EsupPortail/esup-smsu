@@ -178,6 +178,31 @@ public class MemberManager {
 
 	}
 
+	private void sendCodeBySMSAndAddPendingMember(final Member member) {
+		String code = generateValidationCode();
+		// send the code to this member
+		sendCodeBySMS(code, member.getPhoneNumber());
+		// store the new member in the database
+		daoService.saveOrUpdatePendingMember(member.getLogin(), code);
+	}
+
+	private boolean savePhoneNumber(final Member member) throws LdapUserNotFoundException, LdapWriteException {
+		String login = member.getLogin();
+		String wanted = member.getPhoneNumber();
+		String previous = ldapUtils.getUserPagerByUid(login);
+		boolean hasChanged = previous == null || !previous.equals(wanted);
+
+		if (hasChanged) {
+			// save the new phone number
+			logger.info("replacing " + login + " phone number in LDAP: new:" + wanted + " old:" + previous);
+			ldapUtils.setUserPagerByUid(login, 
+						    wanted.equals("") ? null : wanted);
+		} else {
+			logger.info("keeping " + login + " phone number unchanged in LDAP (" + wanted + ")");
+		}
+		return hasChanged;
+	}
+
 	///////////////////////////////////////
 	// Public method
 	//////////////////////////////////////
@@ -304,50 +329,27 @@ public class MemberManager {
 			logger.debug("Save a member ");
 		}
 
+		boolean numberPhoneChanged = savePhoneNumber(member);
+
 		String memberLogin = member.getLogin();
+		List<String> memberValidCP = member.getValidCP();
 		boolean validCG = member.getValidCG();
 		if (validCG) {
-			// save the phone number in LDAP
-			boolean isMemberInProgress = false;
-			String memberPhoneNumber = member.getPhoneNumber();
-			final String previousNumberPhone = ldapUtils.getUserPagerByUid(memberLogin);
-			if ((previousNumberPhone == null) || (!previousNumberPhone.equals(memberPhoneNumber))) {
-				if (isActivateValidation()) {
-					String code = generateValidationCode();
-					// send the code to this member
-					sendCodeBySMS(code, memberPhoneNumber);
-					// store the new member in the database
-					daoService.saveOrUpdatePendingMember(memberLogin, code);
-					isMemberInProgress = true;
-				}
-				// save the new phone number
-				logger.info("replacing " + memberLogin + " phone number in LDAP: new:" + memberPhoneNumber + " old:" + previousNumberPhone);
-				ldapUtils.setUserPagerByUid(memberLogin, memberPhoneNumber);
-			} else {
-				logger.info("keeping " + memberLogin + " phone number unchanged in LDAP (" + memberPhoneNumber + ")");
+			if (numberPhoneChanged && isActivateValidation()) {
+				sendCodeBySMSAndAddPendingMember(member);
+				// do not store the validated CG for now, it will be done once validated
+				validCG = false;
 			}
-
-			// save in LDAP
-			List<String> memberValidCP = member.getValidCP();
-			ldapUtils.setUserTermsOfUse(memberLogin, !isMemberInProgress, memberValidCP);
 		} else {
-			// remove smsu data from the LDAP
-			ldapUtils.setUserTermsOfUse(memberLogin, false, null);
-			boolean isMemberInProgress = false;
-			if (isActivateValidation()) {
-				isMemberInProgress = daoService.isPendingMember(memberLogin);
-				if (isMemberInProgress) {
-					validCG = true;
-				}
-			} else {
-				isMemberInProgress = false;
-			}
-			if (isMemberInProgress) {
-				ldapUtils.clearUserPager(memberLogin);
+			// also remove subscriptions to services
+			memberValidCP = null;
+			if (isActivateValidation() && daoService.isPendingMember(memberLogin)) {
+				// user asks to unsubscribe after asking to subscribe
 				daoService.deletePendingMember(memberLogin);
 			}
 		}	
-
+		// save in LDAP
+		ldapUtils.setUserTermsOfUse(memberLogin, validCG, memberValidCP);
 	}
 
 	/**
