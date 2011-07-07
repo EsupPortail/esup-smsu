@@ -807,10 +807,7 @@ public class LdapUtils {
 				}
 			}
 			if (andFilter != null) {
-				andFilter.and(new EqualsFilter(userTermsOfUseAttribute,cgKeyName));
-				if (serviceKey != null) {
-					andFilter.and(new EqualsFilter(userTermsOfUseAttribute ,serviceKey));
-				}
+				ldapUserAndGroupService.andPagerAndConditionsAndService(andFilter, cgKeyName, serviceKey);
 
 				if (orFilter == null) {
 					orFilter = new OrFilter();

@@ -227,7 +227,7 @@ public class SearchableLdapUserAndGroupServiceSMSUImpl extends SearchableLdapUse
 		}
 	}
 
-	private void andPagerAndConditionsAndService(final AndFilter filter,
+	public void andPagerAndConditionsAndService(final AndFilter filter,
 			final String cgKeyName, final String service) {
 		filter.and(new WhitespaceWildcardsFilter(userPagerAttribute, " "));
 		filter.and(new EqualsFilter(userTermsOfUseAttribute, cgKeyName));
