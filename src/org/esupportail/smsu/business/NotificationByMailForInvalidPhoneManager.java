@@ -1,6 +1,5 @@
 package org.esupportail.smsu.business;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
