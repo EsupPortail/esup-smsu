@@ -178,8 +178,7 @@ public class LdapUtils {
 	 * @return
 	 */
 	private List<String> getUserTermsOfUseByUid(final String uid) throws LdapUserNotFoundException {
-		final List<String> retVal = ldapUserAndGroupService.getUserTermsOfUse(uid);
-		return retVal;
+		return ldapUserAndGroupService.getLdapAttributesByUidAndName(uid, userTermsOfUseAttribute);
 	}
 	
 	/**

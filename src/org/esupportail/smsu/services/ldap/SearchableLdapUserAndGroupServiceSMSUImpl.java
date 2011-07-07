@@ -153,18 +153,6 @@ public class SearchableLdapUserAndGroupServiceSMSUImpl extends SearchableLdapUse
 	/**
 	 * 
 	 * @param uid
-	 * @return
-	 */
-	public List<String> getUserTermsOfUse(final String uid) throws LdapUserNotFoundException {
-		final List<String> termsOfUse = getLdapAttributesByUidAndName(uid, userTermsOfUseAttribute);
-		return termsOfUse;
-	}
-	
-	
-	
-	/**
-	 * 
-	 * @param uid
 	 * @param name
 	 * @return
 	 */
