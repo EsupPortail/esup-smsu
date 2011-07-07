@@ -27,6 +27,10 @@ public class TestSend extends SeleneseTestCase {
 		selenium.click(s);
 		selenium.waitForPageToLoad(timeout);
 	}
+	void selectAndWait(String selectLocator, String optionLocator) {
+		selenium.select(selectLocator, optionLocator);
+		selenium.waitForPageToLoad(timeout);
+	}
 
 	boolean clickAndWaitIfPresent(String locator) {
 		if (selenium.isElementPresent(locator)) {
@@ -58,12 +62,12 @@ public class TestSend extends SeleneseTestCase {
 		selenium.type("username", username);
 		selenium.type("password", password);
 		clickAndWait("submit");
+		current_login = username;
 	}
 
 	void sendSMSByPhone(String phone, String body) {
 		clickAndWait("navigationForm:envoiSMS");
-		selenium.select("formGeneral:selectTypeRecipient", "label=Phones");
-		selenium.waitForPageToLoad(timeout);
+		selectAndWait("formGeneral:selectTypeRecipient", "label=Phones");
 		selenium.type("formGeneral:phoneNumber", phone);
 		clickAndWait(inputLocatorByValue("Ajouter"));
 		selenium.type("formGeneral:SMSbody", body);
@@ -72,9 +76,10 @@ public class TestSend extends SeleneseTestCase {
 
 	void sendSMSByUser(String user, int nbMatches, String body) {
 		clickAndWait("navigationForm:envoiSMS");
+
 		selenium.select("formGeneral:selectTypeRecipient", "label=Users");
-		//below is not done since "Users" is the default
-		//selenium.waitForPageToLoad(timeout);
+		//no waitForPageToLoad since "Users" is the default
+
 		selenium.type("formGeneral:ldapUid", user);
 		clickAndWait(inputLocatorByValue("Search"));
 
@@ -87,8 +92,7 @@ public class TestSend extends SeleneseTestCase {
 
 	void sendSMSByGroup(String[] pagsLocators, String body) {
 		clickAndWait("navigationForm:envoiSMS");
-		selenium.select("formGeneral:selectTypeRecipient", "label=User Group");
-		selenium.waitForPageToLoad(timeout);
+		selectAndWait("formGeneral:selectTypeRecipient", "label=User Group");
 		for (String locator : pagsLocators) clickAndWait(locator);
 		selenium.type("formGeneral:SMSbody", body);
 		clickAndWait("formGeneral:sendSMSButton");
