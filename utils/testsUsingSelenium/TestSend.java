@@ -238,13 +238,13 @@ public class TestSend extends SeleneseTestCase {
 	private void basicQuotaChecks(String senderGroupNumber) {
 		resetConsumption(senderGroupNumber);
 		sendSMSByPhone(test_phone, "test");
-		expectedResponse("Group quota error", "quota has been reset");
+		expectedResponse("Quota error for group", "quota has been reset");
 
 		addQuota(senderGroupNumber, 1);
 		sendSMSByPhone(test_phone, "test");
 		expectedResponseTheMessageIsSending("quota has been raised");
 		sendSMSByPhone(test_phone, "test");
-		expectedResponse("Group quota error", "quota is 0");
+		expectedResponse("Quota error for group", "quota is 0");
 	}
 	private void longMessageChecks(String senderGroupNumber) {
 		assertTrue(biggestMessage.length() == maxLengthMessage);

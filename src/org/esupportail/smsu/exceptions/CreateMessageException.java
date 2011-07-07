@@ -33,13 +33,19 @@ public abstract class CreateMessageException extends Exception {
 	
 		private static final long serialVersionUID = -6132084495675709441L;
 
+		private String groupName;
+
+		public GroupQuotaException(String groupName) {
+			this.groupName = groupName;
+		}
+
 		public String toString() {
-			return "CreateMessageException.GroupQuotaException";
+			return "CreateMessageException.GroupQuotaException(" + groupName + ")";
 		}
 
 		public String toI18nString(I18nService i18nService) {
 			return i18nService.getString("SENDSMS.MESSAGE.SENDERGROUPQUOTAERROR", 
-						     i18nService.getDefaultLocale());
+						     i18nService.getDefaultLocale(), groupName);
 		}
 
 	}

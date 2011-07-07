@@ -704,9 +704,9 @@ public class SendSmsManager  {
 
 		if (nbRecipients.equals(0)) {
 			return MessageStatus.NO_RECIPIENT_FOUND;
-		} else if (!checkFrontOfficeQuota(nbRecipients, cGroup, groupSender)) {
-			throw new CreateMessageException.GroupQuotaException();
-		} else if (groupRecipient != null || !checkMaxSmsGroupQuota(nbRecipients, cGroup, groupSender)) {
+		}
+		checkFrontOfficeQuota(nbRecipients, cGroup, groupSender);
+		if (groupRecipient != null || !checkMaxSmsGroupQuota(nbRecipients, cGroup, groupSender)) {
 			return MessageStatus.WAITING_FOR_APPROVAL;
 		} else {
 			return MessageStatus.IN_PROGRESS;
@@ -828,10 +828,8 @@ public class SendSmsManager  {
 		}
 	}
 
-	/**
-	 * @return true if the quota is OK
-	 */
-	private Boolean checkFrontOfficeQuota(final Integer nbToSend, final CustomizedGroup cGroup, final BasicGroup groupSender) {
+	private void checkFrontOfficeQuota(final Integer nbToSend, final CustomizedGroup cGroup, final BasicGroup groupSender)
+	    throws CreateMessageException.GroupQuotaException {
 
 		if (logger.isDebugEnabled()) {
 			final String mess = 
@@ -844,14 +842,13 @@ public class SendSmsManager  {
 		}
 		if (cGroup.checkQuotaSms(nbToSend)) {
 			logger.debug("checkFrontOfficeQuota : ok");
-			return true;
 		} else {
 			final String mess = 
 			    "Erreur de quota pour le groupe d'envoi [" + groupSender.getLabel() + 
 			    "] et groupe associ� [" + cGroup.getLabel() + "]. Essai d'envoi de " + nbToSend + 
 			    " message(s), quota = " + cGroup.getQuotaSms() + " , consomm� = " + cGroup.getConsumedSms();
 			logger.warn(mess);
-			return false;
+			throw new CreateMessageException.GroupQuotaException(cGroup.getLabel());
 		}
 	}
 	/**
