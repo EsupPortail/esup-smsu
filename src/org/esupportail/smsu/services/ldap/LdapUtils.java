@@ -803,15 +803,15 @@ public class LdapUtils {
 							andFilter = new AndFilter();
 						}
 						andFilter.and(filter);
-						andFilter.and(new EqualsFilter(userTermsOfUseAttribute,cgKeyName));
-
-						if (serviceKey != null) {
-							andFilter.and(new EqualsFilter(userTermsOfUseAttribute ,serviceKey));
-						}
 					}
 				}
 			}
 			if (andFilter != null) {
+				andFilter.and(new EqualsFilter(userTermsOfUseAttribute,cgKeyName));
+				if (serviceKey != null) {
+					andFilter.and(new EqualsFilter(userTermsOfUseAttribute ,serviceKey));
+				}
+
 				if (orFilter == null) {
 					orFilter = new OrFilter();
 				}
