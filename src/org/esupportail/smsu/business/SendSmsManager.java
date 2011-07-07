@@ -292,10 +292,8 @@ public class SendSmsManager  {
 				toList.add(mail);
 			}
 		}
-		String subject = getI18nService().getString("MSG.SUBJECT.MAIL.TO.APPROVAL", 
-				getI18nService().getDefaultLocale());
-		String textBody = getI18nService().getString("MSG.TEXTBOX.MAIL.TO.APPROVAL", 
-				getI18nService().getDefaultLocale());
+		String subject = getI18nString("MSG.SUBJECT.MAIL.TO.APPROVAL");
+		String textBody = getI18nString("MSG.TEXTBOX.MAIL.TO.APPROVAL");
 		smtpServiceUtils.sendMessage(toList, null, subject, textBody);
 	}
 
@@ -1000,6 +998,10 @@ public class SendSmsManager  {
 			return daoService.getServiceById(id);
 		else
 			return null;
+	}
+
+	private String getI18nString(String key) {
+		return i18nService.getString(key, i18nService.getDefaultLocale());
 	}
 
 	///////////////////////////////////
