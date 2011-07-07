@@ -816,10 +816,8 @@ public class LdapUtils {
 			}
 		}
 		if (orFilter != null) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("getMember : executed filter for person attribute search : " + orFilter.toString());
-			}
-			users.addAll(ldapUserAndGroupService.getLdapUsersFromFilter(orFilter.toString()));
+			logger.debug("getMember : person attribute search");
+			users.addAll(ldapUserAndGroupService.searchWithFilter(orFilter));
 		}
 		if (logger.isDebugEnabled()) {
 			logger.debug("getMembers.end");

@@ -236,7 +236,7 @@ public class SearchableLdapUserAndGroupServiceSMSUImpl extends SearchableLdapUse
 		}
 	}
 	
-	private List<LdapUser> searchWithFilter(final Filter filter) {
+	public List<LdapUser> searchWithFilter(final Filter filter) {
 		final String filterAsStr = filter.encode();
 		if (logger.isDebugEnabled()) {
 			logger.debug("LDAP filter applied : " + filterAsStr);
