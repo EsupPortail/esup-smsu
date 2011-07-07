@@ -154,14 +154,9 @@ public class PerformSendSmsController extends AbstractContextAwareController {
 				try {
 					message = getDomainService().composeMessage(uiRecipients, login, content,
 							smsTemplate, userGroup, serviceId, mail);
+					getDomainService().treatMessage(message);
 				} catch (CreateMessageException e) {
 				    addFormattedError(null, e.toI18nString(getI18nService()));
-				    return null;
-				}
-
-				String errorMsgKey = getDomainService().treatMessage(message);
-				if (errorMsgKey != null) {
-				    addErrorMessage(null, errorMsgKey);
 				    return null;
 				}
 

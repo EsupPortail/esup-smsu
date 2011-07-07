@@ -29,8 +29,34 @@ public abstract class CreateMessageException extends Exception {
 		}
 	}
 
-	static public class GroupQuotaException extends CreateMessageException {
+	static public abstract class WebService extends CreateMessageException.Wrapper {
+		private static final long serialVersionUID = 1L;
+
+		abstract public String i18nKey();
+		
+		public WebService(Exception e) { super(null, e); }
+
+		public String toI18nString(I18nService i18nService) {
+			return i18nService.getString(i18nKey(),
+						     i18nService.getDefaultLocale());
+		}
+	}
 	
+	static public class WebServiceUnknownApplication extends CreateMessageException.WebService {
+		public WebServiceUnknownApplication(Exception e) { super(e); }
+		public String i18nKey() { return "WS.ERROR.APPLICATION"; }
+	}
+	static public class WebServiceInsufficientQuota extends CreateMessageException.WebService {
+		public WebServiceInsufficientQuota(Exception e) { super(e); }
+		public String i18nKey() { return "WS.ERROR.QUOTA"; }
+	}
+	static public class BackOfficeUnreachable extends CreateMessageException.WebService {
+		public BackOfficeUnreachable(Exception e) { super(e); }
+		public String i18nKey() { return "WS.ERROR.MESSAGE"; }
+	}
+
+	static public class GroupQuotaException extends CreateMessageException {
+
 		private static final long serialVersionUID = -6132084495675709441L;
 
 		private String groupName;

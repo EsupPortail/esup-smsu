@@ -182,35 +182,31 @@ public class SendSmsManager  {
 	/**
 	 * @param message
 	 * @return null or an error message (key into i18n properties)
-	 * @throws BackOfficeUnrichableException 
-	 * @throws LdapUserNotFoundException 
-	 * @throws UnknownIdentifierApplicationException 
-	 * @throws InsufficientQuotaException 
+	 * @throws CreateMessageException.WebService
 	 */
-	public String treatMessage(final Message message) {
+	public void treatMessage(final Message message) throws CreateMessageException.WebService {
 		try {
 			if (message.getStateAsEnum().equals(MessageStatus.NO_RECIPIENT_FOUND))
-				return null;
+				;
 			else if (message.getStateAsEnum().equals(MessageStatus.WAITING_FOR_APPROVAL))
 				// envoi du mail
 				sendMailsToSupervisors(message.getSupervisors());	
 			else 
 				maySendMessageInBackground(message);
-			return null;
 		} catch (UnknownIdentifierApplicationException e) {
 			message.setStateAsEnum(MessageStatus.WS_ERROR);
 			daoService.updateMessage(message);
 			logger.error("Application unknown", e);
-			return "WS.ERROR.APPLICATION";
+			throw new CreateMessageException.WebServiceUnknownApplication(e);
 		} catch (InsufficientQuotaException e) {
 			message.setStateAsEnum(MessageStatus.WS_QUOTA_ERROR);
 			daoService.updateMessage(message);
 			logger.error("Quota error", e);
-			return "WS.ERROR.QUOTA";	
+			throw new CreateMessageException.WebServiceInsufficientQuota(e);
 		} catch (BackOfficeUnrichableException e) {
 			message.setStateAsEnum(MessageStatus.WS_ERROR);
 			daoService.updateMessage(message);
-			return "WS.ERROR.MESSAGE";
+			throw new CreateMessageException.BackOfficeUnreachable(e);
 		}
 	}
 

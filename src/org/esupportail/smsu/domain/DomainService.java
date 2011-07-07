@@ -26,7 +26,6 @@ import org.esupportail.smsu.dao.beans.Service;
 import org.esupportail.smsu.dao.beans.Template;
 
 import org.esupportail.smsu.domain.beans.User;
-import org.esupportail.smsu.exceptions.BackOfficeUnrichableException;
 import org.esupportail.smsu.exceptions.CreateMessageException;
 import org.esupportail.smsu.exceptions.UnknownIdentifierApplicationException;
 import org.esupportail.smsu.exceptions.UnknownIdentifierMessageException;
@@ -184,11 +183,9 @@ public interface DomainService extends Serializable {
 	/**
 	 * treat a message.
 	 * @param message 
-	 * @return the message
-	 * @throws BackOfficeUnrichableException 
-	 * @throws LdapUserNotFoundException 
+	 * @throws CreateMessageException 
 	 */
-	void treatUIMessage(UIMessage uimessage);
+	void treatUIMessage(UIMessage uimessage) throws CreateMessageException.WebService;
 
 	//////////////////////////////////////////////////////////////
 	// Group
@@ -512,9 +509,8 @@ public interface DomainService extends Serializable {
 	/**
 	 * treat a message.
 	 * @param message 
-	 * @return the message
 	 */
-	String treatMessage(Message message);
+	void treatMessage(Message message) throws CreateMessageException.WebService;
 
 	/**
 	 * @param portalGroupId

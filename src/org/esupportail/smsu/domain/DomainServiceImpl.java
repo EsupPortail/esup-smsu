@@ -48,7 +48,6 @@ import org.esupportail.smsu.dao.beans.Template;
 
 import org.esupportail.smsu.domain.beans.User;
 import org.esupportail.smsu.domain.beans.VersionManager;
-import org.esupportail.smsu.exceptions.BackOfficeUnrichableException;
 import org.esupportail.smsu.exceptions.CreateMessageException;
 import org.esupportail.smsu.exceptions.UnknownIdentifierApplicationException;
 import org.esupportail.smsu.exceptions.UnknownIdentifierMessageException;
@@ -454,11 +453,10 @@ public class DomainServiceImpl implements DomainService, InitializingBean {
 	}
 
 	/**
-	 * @throws BackOfficeUnrichableException 
-	 * @throws LdapUserNotFoundException 
+	 * @throws CreateMessageException 
 	 * @see org.esupportail.smsu.domain.DomainService#treatMessage(org.esupportail.smsu.dao.beans.Message)
 	 */
-	public void treatUIMessage(final UIMessage uimessage) {
+	public void treatUIMessage(final UIMessage uimessage) throws CreateMessageException.WebService {
 		approvalManager.treatUIMessage(uimessage);
 		
 	}
@@ -913,12 +911,11 @@ public class DomainServiceImpl implements DomainService, InitializingBean {
 	}
 
 	/**
-	 * @throws BackOfficeUnrichableException 
-	 * @throws LdapUserNotFoundException 
+	 * @throws CreateMessageException
 	 * @see org.esupportail.smsu.domain.DomainService#treatMessage(org.esupportail.smsu.dao.beans.Message)
 	 */
-	public String treatMessage(final Message message) {
-		return sendSmsManager.treatMessage(message);
+	public void treatMessage(final Message message) throws CreateMessageException.WebService {
+		sendSmsManager.treatMessage(message);
 	}
 
 	/**

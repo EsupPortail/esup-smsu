@@ -15,6 +15,7 @@ import org.esupportail.smsu.dao.beans.BasicGroup;
 import org.esupportail.smsu.dao.beans.Message;
 import org.esupportail.smsu.dao.beans.Person;
 import org.esupportail.smsu.domain.beans.message.MessageStatus;
+import org.esupportail.smsu.exceptions.CreateMessageException;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.web.beans.UIMessage;
@@ -161,8 +162,9 @@ public class ApprovalManager {
 	/**
 	 * Treat the UI message.
 	 * @param uiMessage
+	 * @throws CreateMessageException.WebService
 	 */
-	public void treatUIMessage(final UIMessage uiMessage)	 {
+	public void treatUIMessage(final UIMessage uiMessage) throws CreateMessageException.WebService {
 		Message message = daoService.getMessageById(uiMessage.getId());
 		logger.debug("Message approved");
 		message.setStateAsEnum(MessageStatus.IN_PROGRESS);

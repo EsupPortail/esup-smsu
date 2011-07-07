@@ -2,6 +2,7 @@ package org.esupportail.smsu.web.controllers;
 
 import org.esupportail.smsu.domain.beans.User;
 import org.esupportail.smsu.domain.beans.fonction.FonctionName;
+import org.esupportail.smsu.exceptions.CreateMessageException;
 import org.esupportail.smsu.web.beans.ApprovalPaginator;
 import org.esupportail.smsu.web.beans.UIMessage;
 
@@ -104,9 +105,15 @@ public class ApprovalController extends AbstractContextAwareController {
 	 * @return A String
 	 */
 	public String validate()  {
-		getDomainService().treatUIMessage(message);
-		reset();
-		return "navigationApproveSMS";
+		try {
+			getDomainService().treatUIMessage(message);
+			reset();
+			return "navigationApproveSMS";
+		} catch (CreateMessageException e) {
+			addFormattedError(null, e.toI18nString(getI18nService()));
+			return null;
+		}
+
 	}
 	
 	/**
