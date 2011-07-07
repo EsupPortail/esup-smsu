@@ -59,7 +59,6 @@
 					<h:panelGroup>
 						<e:inputText id="phoneNumber"
 							value="#{membershipController.member.phoneNumber}" maxlength="10"
-							required="true"
 							validator="#{membershipController.validatePhoneNumber}" />
 						<e:message for="phoneNumber" />
 					</h:panelGroup>

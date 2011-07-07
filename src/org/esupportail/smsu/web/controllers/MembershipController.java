@@ -143,6 +143,10 @@ public class MembershipController extends AbstractContextAwareController {
 	 * @throws LdapWriteException 
 	 */
 	public String save() throws LdapUserNotFoundException, LdapWriteException {
+		if (member.getValidCG() && member.getPhoneNumber().equals("")) {
+		    addErrorMessage("formMembership:phoneNumber", "ADHESION.ERROR.PHONEREQUIRED");
+		    return null;
+		}
 		if (logger.isDebugEnabled()) {
 			logger.debug("Save data of a member");
 		}
