@@ -326,8 +326,7 @@ public class LdapUtils {
 	 * @throws LdapUserNotFoundException
 	 */
 	public boolean isGeneralConditionValidateByUid(final String uid) throws LdapUserNotFoundException {
-		boolean retVal = isSpecificConditionValidateByUidAndSpecificConditionKey(uid, cgKeyName);
-		return retVal;
+		return checkGeneralAndSpecificConditionValidate(getUserTermsOfUseByUid(uid), null, uid);
 	}
 	
 	
@@ -340,34 +339,15 @@ public class LdapUtils {
 	public void addGeneralConditionByUid(final String uid) throws LdapUserNotFoundException, LdapWriteException {
 		setUserTermsOfUse(uid, true, getSpecificConditionValidateByUid(uid));
 	}
-	
-	/**
-	 * test if the specific condition is in the ldap.
-	 * @param uid
-	 * @return
-	 * @throws LdapUserNotFoundException
-	 */
-	public boolean isSpecificConditionValidateByUidAndSpecificConditionKey(final String uid, 
-						final String specificConditionKey) 
-						throws LdapUserNotFoundException {
-		boolean retVal = false;
-		final List<String> termsOfuse = getUserTermsOfUseByUid(uid);
-		if (termsOfuse != null) {
-			for (String termOfUse : termsOfuse) {
-				if (specificConditionKey.equalsIgnoreCase(termOfUse)) {
-					retVal = true;
-				}
-			}
-		}
-		
-		return retVal;
-	}
 
 	public boolean isGeneralAndSpecificConditionValidate(final LdapUser user, final String specificConditionKey) {
 		final List<String> termsOfUse = user.getAttributes(userTermsOfUseAttribute);
+		return checkGeneralAndSpecificConditionValidate(termsOfUse, specificConditionKey, user.getId());
+	}
 
+	private boolean checkGeneralAndSpecificConditionValidate(final List<String> termsOfUse, String specificConditionKey, String uidForLog) {
 		if (!termsOfUse.contains(cgKeyName)) {
-			if (logger.isDebugEnabled()) logger.debug("CG not validated, user : " + user.getId());
+			if (logger.isDebugEnabled()) logger.debug("CG not validated, user : " + uidForLog);
 			return false;
 		} else if (specificConditionKey != null) {
 			if (logger.isDebugEnabled()) logger.debug("Service filter activated");
