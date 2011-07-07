@@ -35,7 +35,6 @@ import org.esupportail.smsu.exceptions.CreateMessageException;
 import org.esupportail.smsu.exceptions.InsufficientQuotaException;
 import org.esupportail.smsu.exceptions.UnknownIdentifierApplicationException;
 import org.esupportail.smsu.exceptions.CreateMessageException.EmptyGroup;
-import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
 import org.esupportail.smsu.groups.pags.SmsuPersonAttributesGroupStore;
 import org.esupportail.smsu.groups.pags.SmsuPersonAttributesGroupStore.GroupDefinition;
 import org.esupportail.smsu.services.client.SendSmsClient;
