@@ -173,9 +173,10 @@ public class SmsRecipientController extends AbstractContextAwareController {
 		if (numbers.isEmpty()) {
 			logger.error("Error phone numbers list: no valid phone number found in ***\n" + phoneNumbersListToAdd + "\n***");
 			addErrorMessage(null, "SENDSMS.MESSAGE.PHONENUMBERSLISTERROR");
+		} else {
+			logger.info("found phone numbers " + User.join(numbers, " "));
 		}
 		for (String number : numbers) {
-			logger.warn("found phone number " + number);
 			UiRecipient recToAdd = new PhoneNumberRecipient(number, number, null, number);
 			if (!this.recipients.contains(recToAdd)) {
 				this.recipients.add(recToAdd);
