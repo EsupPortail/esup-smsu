@@ -156,7 +156,6 @@ public class LdapUtils {
 	/**
 	 * Get the pager user from the ldap.
 	 * @param uid
-	 * @param name
 	 * @return
 	 */
 	public String getUserPagerByUid(final String uid) throws LdapUserNotFoundException {
