@@ -93,6 +93,7 @@ userPassword: {SSHA}VGrSgeHEuX21ubaPrgghgafdGrkVadjC
 dn: uid=user2smsutest,ou=people,dc=univ-paris1,dc=fr
 pager: 0701010101
 up1TermsOfUse: {SMSU}CG
+up1TermsOfUse: {SMSU}service1 de test
 uid: user2smsutest
 supannAliasLogin: user2smsutest
 homeDirectory: /home/user2smsutest

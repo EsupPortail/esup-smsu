@@ -12,6 +12,7 @@ public class TestSend extends SeleneseTestCase {
 	String user1smsutest_phone = "0601010101";
 	String user2smsutest_phone = "0701010101";
 	String defaultPassword = "dfgdfg";
+	String testService = "service1 de test";
 
 	String openPagsTree = "tree:0:t2";
 	String pagsLocator = "//span[text()='Groupes LDAP']";
@@ -82,11 +83,16 @@ public class TestSend extends SeleneseTestCase {
 	}
 
 	void sendSMSByUser(String user, int nbMatches, String body) {
+		sendSMSByUser(user, nbMatches, body, null);
+	}
+
+	void sendSMSByUser(String user, int nbMatches, String body, String service) {
 		clickAndWait("navigationForm:envoiSMS");
 
 		selenium.select("formGeneral:selectTypeRecipient", "label=Users");
 		//no waitForPageToLoad since "Users" is the default
 
+		if (service != null) selectAndWait("formGeneral:selectService", service);
 		selenium.type("formGeneral:ldapUid", user);
 		clickAndWait(inputLocatorByValue("Search"));
 
@@ -97,9 +103,10 @@ public class TestSend extends SeleneseTestCase {
 		clickAndWait("formGeneral:sendSMSButton");
 	}
 
-	void sendSMSByGroup(String[] pagsLocators, String body) {
+	void sendSMSByGroup(String[] pagsLocators, String body, String service) {
 		clickAndWait("navigationForm:envoiSMS");
 		selectAndWait("formGeneral:selectTypeRecipient", "label=User Group");
+		if (service != null) selectAndWait("formGeneral:selectService", service);
 		for (String locator : pagsLocators) clickAndWait(locator);
 		selenium.type("formGeneral:SMSbody", body);
 		clickAndWait("formGeneral:sendSMSButton");
@@ -112,6 +119,10 @@ public class TestSend extends SeleneseTestCase {
 	void navigationForm_gestionGroupes() {
 		ensureLogin("adminsmsutest");
 		clickAndWait("navigationForm:gestionGroupes");
+	}
+	void navigationForm_gestionServicesCP() {
+		ensureLogin("adminsmsutest");
+		clickAndWait("navigationForm:gestionServicesCP");
 	}
 
 	boolean clickDeleteRoleOrGroup(String name) {
@@ -210,6 +221,14 @@ public class TestSend extends SeleneseTestCase {
 		trueOrFail(expectedValue.equals(value), "expected " + expectedValue + ", got " + value);
 	}
 
+	void createServiceCP(String serviceName, String serviceKey) {
+		navigationForm_gestionServicesCP();
+		clickAndWait("createServiceForm:createPage");
+		selenium.type("createModifyServiceForm:serviceName", serviceName);
+		selenium.type("createModifyServiceForm:serviceKey", serviceKey);
+		clickAndWait("createModifyServiceForm:save");
+	}
+
 	//*******************************************************************************
 	private void expectedResponseTheMessageIsSending(String context) {
 		forbidResponse("Web Service error", context);
@@ -254,6 +273,17 @@ public class TestSend extends SeleneseTestCase {
 		basicQuotaChecks("0");
 		longMessageChecks("0");
 		messageTags("0");
+	}
+
+	void checkAdhesion(String user, String[] services) {
+		ensureLogin(user);
+		clickAndWait("navigationForm:adhesion");
+		trueOrFail(selenium.isChecked("formMembership:validGeneralConditions"), 
+			   user + " validGeneralConditions");
+		for (String service : services) {
+			trueOrFail(selenium.isChecked("//*[@id='formMembership:validParticularConditions']//input[@value='" + testService + "']"),
+				   user + " " + service);
+		}
 	}
 
 	//*******************************************************************************
@@ -326,7 +356,7 @@ public class TestSend extends SeleneseTestCase {
 		while (clickAndWaitIfPresent("approvalForm:data:0:cancel"));	
 	}
 
-	void createAndTestUser2smsutest() {
+	void createAndTestUser2smsutest(String service) {
 		createGroup_user2smsutest_with_roleUserAndGroup();
 		createGroup_pags();
 		cancelAllMessagesToApprove();
@@ -338,8 +368,8 @@ public class TestSend extends SeleneseTestCase {
 				; // ok
 			else throw new AssertionError("user2smsutest should not be allowed to enter " + typ);
 		}
-		String testMsg = "testWithApproval-" + Math.random();
-		sendSMSByGroup(new String[] { "formGeneral:" + openPagsTree, pagsLocator }, testMsg);
+		String testMsg = "testWithApproval" + (service == null ? "" : service) + "-" + Math.random();
+		sendSMSByGroup(new String[] { "formGeneral:" + openPagsTree, pagsLocator }, testMsg, service);
 		expectedResponse("The message is sending for approval", "group send with moderation");
 		searchSMS_checkFirstRow("In approval", testMsg);
 
@@ -354,8 +384,15 @@ public class TestSend extends SeleneseTestCase {
 	}
 
 	public void testSend() throws Exception {
+		createServiceCP(testService, testService);
+		// by default, user2smsutest should have CG + testService (cf test-ldap-users.ldif)
+		checkAdhesion("user2smsutest", new String[] { testService });
+
 		sendAdminTests();
 		createAndTestUser1smsutest();
-		createAndTestUser2smsutest();
+		createAndTestUser2smsutest(null);
+
+		sendSMSByUser("smsutest", 1, "test service", testService);
+		createAndTestUser2smsutest(testService);
 	}
 }

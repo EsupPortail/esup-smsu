@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
+import org.apache.commons.lang.StringUtils;
 import org.esupportail.commons.exceptions.UserNotFoundException;
 import org.esupportail.commons.services.ldap.LdapException;
 import org.esupportail.commons.services.ldap.LdapGroup;
@@ -67,7 +71,11 @@ public class LdapUtils {
 	 * The attribute terms of use in the ldap.
 	 */
 	private String userTermsOfUseAttribute;
-	
+
+	/**
+	 * http://www.cru.fr/documentation/supann/2009/etiquetageattributs
+	 */
+	private String userTermsOfUseAttributeEtiquetteSMSU;
 	
 	/**
 	 * The key used to represent the CG in the ldap (up1terms).
@@ -180,6 +188,10 @@ public class LdapUtils {
 	private List<String> getUserTermsOfUseByUid(final String uid) throws LdapUserNotFoundException {
 		return ldapUserAndGroupService.getLdapAttributesByUidAndName(uid, userTermsOfUseAttribute);
 	}
+
+	private String completeCgKeyName() {
+		return mayAddEtiquette(cgKeyName);
+	}
 	
 	/**
 	 * Used to set the pager attribute of a specified user.
@@ -217,7 +229,7 @@ public class LdapUtils {
 		List<String> values = new LinkedList<String>();
 		if (validateGeneralCondition) values.add(cgKeyName);
 		if (specificConditions != null) values.addAll(specificConditions);
-		setOrClearLdapAttributeByUidAndName(uid, userTermsOfUseAttribute, values);
+		setOrClearLdapAttributeByUidAndName(uid, userTermsOfUseAttribute, userTermsOfUseAttributeEtiquetteSMSU, values);
 	}
 	
 	
@@ -230,27 +242,58 @@ public class LdapUtils {
 	 */
 	private void clearLdapAttributeByUidAndName(final String uid, final String name) 
 					throws LdapUserNotFoundException, LdapWriteException {
-		setOrClearLdapAttributeByUidAndName(uid, name, (List<String>) null);
+		setOrClearLdapAttributeByUidAndName(uid, name, null);
 	}
 	
 	
 	/**
-	 * Set or clear a user specified attribute. 
+	 * Set or clear a user specified attribute.
+	 * It handles the attribute etiquette: 
+	 * - it keeps unmodified attribute values without this etiquette
+	 * - it prefixes the values with this etiquette
 	 * @param uid
 	 * @param name
+	 * @param etiquette
 	 * @param value
 	 * @throws LdapUserNotFoundException
 	 * @throws LdapWriteException 
 	 */
-	private void setOrClearLdapAttributeByUidAndName(final String uid, final String name, final List<String> value) 
+	private void setOrClearLdapAttributeByUidAndName(final String uid, final String name, final String etiquette, final List<String> value) 
 					throws LdapUserNotFoundException, LdapWriteException {
 		final LdapUser ldapUser = getLdapUserByUserUid(uid);
-		// flush all paramter to update only specified attribute
+		List<String> currentValues = ldapUser.getAttributes().get(name);
+		List<String> allValues = computeAttributeValues(currentValues, etiquette, value);
+		// flush all parameter to update only specified attribute
 		ldapUser.getAttributes().clear();
-		ldapUser.getAttributes().put(name, value);
+		ldapUser.getAttributes().put(name, allValues);
 		writeableLdapUserService.updateLdapUser(ldapUser);
 
-		checkAttributeWriteByUidAndNameSucceeded(uid, name, value);
+		checkAttributeWriteByUidAndNameSucceeded(uid, name, allValues);
+	}
+
+	private List<String> computeAttributeValues(List<String> currentValues,	final String etiquette, final List<String> wantedValues) {
+		if (StringUtils.isEmpty(etiquette))
+			return wantedValues;
+
+		Set<String> set = new TreeSet<String>();
+		if (currentValues != null) {
+		    for (String s : currentValues)
+			if (!s.startsWith(etiquette)) set.add(s);
+		}
+		for (String v : wantedValues) 
+			set.add(mayAddPrefix(etiquette, v));
+		return new ArrayList<String>(set);
+	}
+
+	private String mayAddPrefix(String prefix, String s) {
+		return prefix == null || s.startsWith(prefix) ? s : prefix + s;
+	}
+
+	/**
+	 * Ensure the service key is prefixed with the etiquette
+	 */
+	private String mayAddEtiquette(String service) {
+		return service == null ? service : mayAddPrefix(userTermsOfUseAttributeEtiquetteSMSU, service);
 	}
 
 	/**
@@ -280,7 +323,7 @@ public class LdapUtils {
 	private void setOrClearLdapAttributeByUidAndName(final String uid, final String name, String value) 
 					throws LdapUserNotFoundException, LdapWriteException {
 		List<String> l = value != null ? singletonList(value) : null;
-		setOrClearLdapAttributeByUidAndName(uid, name, l);
+		setOrClearLdapAttributeByUidAndName(uid, name, null, l);
 	}
 	
 	/**
@@ -345,12 +388,12 @@ public class LdapUtils {
 	}
 
 	private boolean checkGeneralAndSpecificConditionValidate(final List<String> termsOfUse, String specificConditionKey, String uidForLog) {
-		if (!termsOfUse.contains(cgKeyName)) {
+		if (!termsOfUse.contains(completeCgKeyName())) {
 			if (logger.isDebugEnabled()) logger.debug("CG not validated, user : " + uidForLog);
 			return false;
 		} else if (specificConditionKey != null) {
 			if (logger.isDebugEnabled()) logger.debug("Service filter activated");
-			return termsOfUse.contains(specificConditionKey);
+			return termsOfUse.contains(mayAddEtiquette(specificConditionKey));
 		} else {
 			if (logger.isDebugEnabled()) logger.debug("No service filter");
 			return true;
@@ -366,10 +409,15 @@ public class LdapUtils {
 	 */
 	public List<String> getSpecificConditionsValidateByUid(final String uid) 
 	throws LdapUserNotFoundException {
-		List<String> termsOfuse = getUserTermsOfUseByUid(uid);
-		if (termsOfuse != null) {
-			termsOfuse.remove(cgKeyName);
-		}	
+		List<String> termsOfuse = new LinkedList<String>();
+
+		String etiquette = userTermsOfUseAttributeEtiquetteSMSU;
+		if (etiquette == null) etiquette = "";
+
+		for (String s : getUserTermsOfUseByUid(uid)) {
+			if (!s.equals(completeCgKeyName()) && s.startsWith(etiquette))
+				termsOfuse.add(s.substring(etiquette.length()));
+		}
 		return termsOfuse;
 	}
 	
@@ -408,9 +456,8 @@ public class LdapUtils {
 	 * @return a list of users
 	 */
 	public List<LdapUser> searchConditionFriendlyLdapUsersByToken(final String token, final String service) {
-		final List<LdapUser> userList = ldapUserAndGroupService.getConditionFriendlyLdapUsersFromToken(
-										token, cgKeyName, service);
-		return userList;
+		return ldapUserAndGroupService.getConditionFriendlyLdapUsersFromToken(
+			token, completeCgKeyName(), mayAddEtiquette(service));
 	}
 
 	/**
@@ -419,9 +466,8 @@ public class LdapUtils {
 	 * @return a list of users
 	 */
 	public List<LdapUser> getConditionFriendlyLdapUsersFromUid(final List<String> uids, final String service) {
-		final List<LdapUser> userList = ldapUserAndGroupService.getConditionFriendlyLdapUsersFromUid(
-										uids, cgKeyName, service);
-		return userList;
+		return ldapUserAndGroupService.getConditionFriendlyLdapUsersFromUid(
+			uids, completeCgKeyName(), mayAddEtiquette(service));
 	}
 
 	
@@ -740,6 +786,7 @@ public class LdapUtils {
 		if (logger.isDebugEnabled()) {
 			logger.debug("getMembers.start");
 		}
+		serviceKey = mayAddEtiquette(serviceKey);
 		final List<LdapUser> users = new LinkedList<LdapUser>();
 		final List<TestGroup> tgs = gd.getTestGroups();
 		final String groupPortalParameter = smsuLdapGroupPersonAttributeDaoImpl.getPortalAttribute();
@@ -769,7 +816,7 @@ public class LdapUtils {
 					} else {
 						LdapGroup ldapGroup = ldapGroups.get(0);
 						List<String> uids = getMemberIds(ldapGroup);
-						List<LdapUser> usersToAdd = ldapUserAndGroupService.getConditionFriendlyLdapUsersFromUid(uids, cgKeyName, serviceKey);
+						List<LdapUser> usersToAdd = ldapUserAndGroupService.getConditionFriendlyLdapUsersFromUid(uids, completeCgKeyName(), serviceKey);
 						if (logger.isDebugEnabled())
 							logger.debug("found " + uids.size() + " users in group " + testValue + " and " + usersToAdd.size() + " users having pager+CG");
 						users.addAll(usersToAdd);
@@ -786,7 +833,7 @@ public class LdapUtils {
 				}
 			}
 			if (andFilter != null) {
-				ldapUserAndGroupService.andPagerAndConditionsAndService(andFilter, cgKeyName, serviceKey);
+				ldapUserAndGroupService.andPagerAndConditionsAndService(andFilter, completeCgKeyName(), serviceKey);
 
 				if (orFilter == null) {
 					orFilter = new OrFilter();
@@ -847,6 +894,14 @@ public class LdapUtils {
 	 */
 	public void setUserTermsOfUseAttribute(final String userTermsOfUseAttribute) {
 		this.userTermsOfUseAttribute = userTermsOfUseAttribute;
+	}
+	
+	/**
+	 * Standard setter used by spring.
+	 * @param userTermsOfUseAttributeEtiquetteSMSU
+	 */
+	public void setUserTermsOfUseAttributeEtiquetteSMSU(final String userTermsOfUseAttributeEtiquetteSMSU) {
+		this.userTermsOfUseAttributeEtiquetteSMSU = userTermsOfUseAttributeEtiquetteSMSU;
 	}
 	
 	/**

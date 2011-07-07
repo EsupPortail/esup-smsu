@@ -211,6 +211,7 @@
 		<property name="portalService" ref="portalService"/>
 		<property name="userPagerAttribute" value="${ldap.pagerAttribute}"/>
 		<property name="userTermsOfUseAttribute" value="${ldap.termsOfUseAttribute}"/>
+		<property name="userTermsOfUseAttributeEtiquetteSMSU" value="${ldap.termsOfUseAttributeEtiquetteSMSU}"/>
 		<property name="cgKeyName" value="${ldap.key.cg}"/>
 		<property name="smsuLdapPersonAttributeDaoImpl" ref="uPortalLdapAttributeSource" />
 		<property name="smsuLdapGroupPersonAttributeDaoImpl" ref="esupPortailLdapGroupAttributeSource" />
