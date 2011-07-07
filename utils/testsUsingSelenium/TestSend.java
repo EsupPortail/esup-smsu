@@ -18,6 +18,9 @@ public class TestSend extends SeleneseTestCase {
 
 	String timeout = "30000";
 
+	String current_login = null;
+
+
 	public void setUp() throws Exception {
 		setUp(baseURL, "*chrome");
 	}
@@ -49,8 +52,12 @@ public class TestSend extends SeleneseTestCase {
 		clickAndWaitIfPresent("navigationForm:login");		
 		clickAndWaitIfPresent("navigationForm:logout");
 		//selenium.deleteAllVisibleCookies();
+		current_login = null;
 	}
 
+	void ensureLogin(String username) {
+		if (!username.equals(current_login)) login(username);
+	}
 	void login(String username) {
 		login(username, defaultPassword);
 	}
@@ -98,15 +105,33 @@ public class TestSend extends SeleneseTestCase {
 		clickAndWait("formGeneral:sendSMSButton");
 	}
 
-	void deleteRole(String roleNumber) {
+	void navigationForm_gestionRoles() {
+		ensureLogin("adminsmsutest");
 		clickAndWait("navigationForm:gestionRoles");
-		clickAndWait("rolesForm:data:" + roleNumber + ":delete");
 	}
-	void mayDeleteRole(String roleNumber) {
-		try { deleteRole(roleNumber); } catch (SeleniumException e) { }
+	void navigationForm_gestionGroupes() {
+		ensureLogin("adminsmsutest");
+		clickAndWait("navigationForm:gestionGroupes");
+	}
+
+	boolean clickDeleteRoleOrGroup(String name) {
+		String tr = "//span[text()='" + name + "']/ancestor::tr";
+		String deleteButton = "//input[contains(@id, ':delete')]";
+		if (clickAndWaitIfPresent(tr + deleteButton))
+			return true;
+		else {
+			trueOrFail(!selenium.isElementPresent(tr),
+				   "expected " + name + " to have a delete button");
+			return false;
+		}
+	}
+
+	boolean mayDeleteRole(String name) {
+		navigationForm_gestionRoles();
+		return clickDeleteRoleOrGroup(name);
 	}
 	void createRole(String name, int[] fonctions) {
-		clickAndWait("navigationForm:gestionRoles");
+		navigationForm_gestionRoles();
 		clickAndWait(inputLocatorByValue("Create role"));
 		selenium.type("//input[contains(@name,':Name')]", name);
 		for (int fonction : fonctions)
@@ -114,16 +139,13 @@ public class TestSend extends SeleneseTestCase {
 		clickAndWait(inputLocatorByValue("Save"));
 	}
 
-	void deleteGroup(String groupNumber) {
-		clickAndWait("navigationForm:gestionGroupes");
-		clickAndWait("groupsForm:data:" + groupNumber + ":delete");
-	}
-	void mayDeleteGroup(String groupNumber) {
-		try { deleteGroup(groupNumber); } catch (SeleniumException e) { }
+	boolean mayDeleteGroup(String name) {
+		navigationForm_gestionGroupes();
+		return clickDeleteRoleOrGroup(name);
 	}
 
 	void startCreateGroup() {
-		clickAndWait("navigationForm:gestionGroupes");
+		navigationForm_gestionGroupes();
 		clickAndWait(inputLocatorByValue("Create group"));
 	}
 
@@ -153,12 +175,12 @@ public class TestSend extends SeleneseTestCase {
 		forbidResponse("An error occurred", "group creation");
 	}   
 	void resetConsumption(String groupNumber) {
-		clickAndWait("navigationForm:gestionGroupes");
+		navigationForm_gestionGroupes();
 		clickAndWait("groupsForm:data:0:detailPage");
 		clickAndWait(inputLocatorByValue("Reset consumption"));
 	}
 	void addQuota(String groupNumber, int quotaAdd) {
-		clickAndWait("navigationForm:gestionGroupes");
+		navigationForm_gestionGroupes();
 		clickAndWait("groupsForm:data:" + groupNumber + ":detailPage");
 		selenium.type("groupForm:quotaAdd", "" + quotaAdd);
 		clickAndWait(inputLocatorByValue("Save"));
@@ -228,7 +250,7 @@ public class TestSend extends SeleneseTestCase {
 		expectedResponseTheMessageIsSending("<DEST_*>");
 	}
 	void sendAdminTests() {
-		login("adminsmsutest");
+		ensureLogin("adminsmsutest");
 		basicQuotaChecks("0");
 		longMessageChecks("0");
 		messageTags("0");
@@ -237,7 +259,7 @@ public class TestSend extends SeleneseTestCase {
 	//*******************************************************************************
 	
 	void create_roleUserOnly() {
-		mayDeleteRole("0");
+		mayDeleteRole("roleUserOnly");
 		createRole("roleUserOnly", new int[] { 1 });
 		forbidResponse("An error occurred", "roleUserOnly creation");
 		createRole("roleUserOnly", new int[] { 1 });
@@ -245,19 +267,19 @@ public class TestSend extends SeleneseTestCase {
 	}
 
 	void create_roleUserAndGroup() {
-		mayDeleteRole("0");
+		mayDeleteRole("roleUserAndGroup");
 		createRole("roleUserAndGroup", new int[] { 1, 2, 12 });
 		forbidResponse("An error occurred", "roleUserAndGroup creation");
 	}
 	
 	void createGroup_user1smsutest_with_roleUserOnly() {
-		mayDeleteGroup("1");
+		mayDeleteGroup("User1 Smsutest");
 		create_roleUserOnly();
 		createGroup("user1smsutest", new String[] { "Admin Smsutest" }, "roleUserOnly", 999999, 1);
 	}
 
 	void createGroup_user2smsutest_with_roleUserAndGroup() {
-		mayDeleteGroup("1");
+		mayDeleteGroup("User2 Smsutest");
 		create_roleUserAndGroup();
 		createGroup("user2smsutest", new String[] { "Admin Smsutest" }, "roleUserAndGroup", 999999, 2);
 	}
@@ -269,10 +291,9 @@ public class TestSend extends SeleneseTestCase {
 	}
 
 	void createAndTestUser1smsutest() {
-		login("adminsmsutest");
 		createGroup_user1smsutest_with_roleUserOnly();
 
-		login("user1smsutest");
+		ensureLogin("user1smsutest");
 		adhesion(user1smsutest_phone);
 		clickAndWait("navigationForm:envoiSMS");
 		for (String typ : selenium.getSelectOptions("formGeneral:selectTypeRecipient")) {
@@ -306,12 +327,11 @@ public class TestSend extends SeleneseTestCase {
 	}
 
 	void createAndTestUser2smsutest() {
-		login("adminsmsutest");
 		createGroup_user2smsutest_with_roleUserAndGroup();
 		createGroup_pags();
 		cancelAllMessagesToApprove();
 
-		login("user2smsutest");
+		ensureLogin("user2smsutest");
 		clickAndWait("navigationForm:envoiSMS");
 		for (String typ : selenium.getSelectOptions("formGeneral:selectTypeRecipient")) {
 			if (typ.equals("Users") || typ.equals("User Group"))
@@ -323,13 +343,13 @@ public class TestSend extends SeleneseTestCase {
 		expectedResponse("The message is sending for approval", "group send with moderation");
 		searchSMS_checkFirstRow("In approval", testMsg);
 
-		login("adminsmsutest");
+		ensureLogin("adminsmsutest");
 		clickAndWait("navigationForm:approbationEnvoi");
 		forbidResponse("An error occurred", "approbationEnvoi");
 		clickAndWait("approvalForm:data:0:validate");
 		expectedResponse("No messages to approve", "all messages validated");
 
-		login("user2smsutest");
+		ensureLogin("user2smsutest");
 		searchSMS_checkFirstRow("Sent", testMsg);
 	}
 
