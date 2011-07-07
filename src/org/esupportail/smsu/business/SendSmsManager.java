@@ -111,11 +111,6 @@ public class SendSmsManager  {
 	private String userEmailAttribute;
 
 	private SmsuPersonAttributesGroupStore smsuPersonAttributesGroupStore;
-
-	/**
-	 * attribut used to get user's services
-	 */
-	private String userTermsOfUseAttribute;
 	
 	/**
 	 * Log4j logger.
@@ -637,7 +632,7 @@ public class SendSmsManager  {
 				if (logger.isDebugEnabled()) {
 					logger.debug("search members");
 				}
-				members = ldapUtils.getMembers(gd, userTermsOfUseAttribute, serviceKey);
+				members = ldapUtils.getMembers(gd, serviceKey);
 			} else {
 				if (logger.isDebugEnabled()) {
 					logger.debug("No group definition found");
@@ -1161,13 +1156,5 @@ public class SendSmsManager  {
 	public SmsuPersonAttributesGroupStore getSmsuPersonAttributesGroupStore() {
 		return smsuPersonAttributesGroupStore;
 	}
-
-	/**
-	 * @param userTermsOfUseAttribute to set
-	 */
-	public void setUserTermsOfUseAttribute(final String userTermsOfUseAttribute) {
-		this.userTermsOfUseAttribute = userTermsOfUseAttribute;
-	}
-
 
 }

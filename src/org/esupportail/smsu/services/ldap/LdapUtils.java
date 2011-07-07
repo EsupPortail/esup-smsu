@@ -752,17 +752,12 @@ public class LdapUtils {
 	}
 	
 	/**
+	 * @param gd
 	 * @param serviceKey 
-	 * @param cgKeyName2 
-	 * @param string 
-	 * @param serviceKey 
-	 * @param serviceKey2 
-	 * @param cgKeyName2 
-	 * @param ldapGroup
 	 * @return the string id list of a ldap group. 
 	 */
 	@SuppressWarnings("unchecked")
-	public List<LdapUser> getMembers(final GroupDefinition gd, String cgPropertyName, String serviceKey) {
+	public List<LdapUser> getMembers(final GroupDefinition gd, String serviceKey) {
 		if (logger.isDebugEnabled()) {
 			logger.debug("getMembers.start");
 		}
@@ -808,10 +803,10 @@ public class LdapUtils {
 							andFilter = new AndFilter();
 						}
 						andFilter.and(filter);
-						andFilter.and(new EqualsFilter(cgPropertyName,cgKeyName));
+						andFilter.and(new EqualsFilter(userTermsOfUseAttribute,cgKeyName));
 
 						if (serviceKey != null) {
-							andFilter.and(new EqualsFilter(cgPropertyName ,serviceKey));
+							andFilter.and(new EqualsFilter(userTermsOfUseAttribute ,serviceKey));
 						}
 					}
 				}
