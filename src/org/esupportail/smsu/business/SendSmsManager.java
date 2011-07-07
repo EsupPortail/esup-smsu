@@ -893,6 +893,12 @@ public class SendSmsManager  {
 				logger.error(msg);
 				return msg;
 			}
+		{
+			org.esupportail.smsu.services.ssl.InspectKeyStore inspect = new org.esupportail.smsu.services.ssl.InspectKeyStore();
+			inspect.inspectTrustStore();
+			inspect.inspectPrivateKeyStore();
+		}
+
 		logger.error("Unable to connect to smsuapi back office : " + cause);
 		return null;
 	}
