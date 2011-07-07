@@ -110,7 +110,7 @@ public class TestServlet extends HttpServlet {
     		ldapUtils.addGeneralConditionByUid("aaron");
     		ldapUtils.addGeneralConditionByUid("aaron");
     		ldapUtils.isGeneralConditionValidateByUid("aaron");
-    		ldapUtils.removeGeneralConditionByUid("aaron");
+    		ldapUtils.setUserTermsOfUse("aaron", false, null);
     		ldapUtils.isGeneralConditionValidateByUid("aaron");
 			
 		} catch (LdapUserNotFoundException e) {

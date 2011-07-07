@@ -324,20 +324,12 @@ public class MemberManager {
 				ldapUtils.setUserPagerByUid(memberLogin, memberPhoneNumber);
 			} 
 
-			// save the General condition in LDAP when the member is not pending
-			if (!isMemberInProgress) {
-				ldapUtils.addGeneralConditionByUid(memberLogin);
-			} else {
-				ldapUtils.removeGeneralConditionByUid(memberLogin);
-			}
-
-			// save the specific condition in LDAP
+			// save in LDAP
 			List<String> memberValidCP = member.getValidCP();
-			ldapUtils.updateAllSpecificConditionByUid(memberLogin, memberValidCP);
+			ldapUtils.setUserTermsOfUse(memberLogin, !isMemberInProgress, memberValidCP);
 		} else {
 			// remove smsu data from the LDAP
-			ldapUtils.removeGeneralConditionByUid(memberLogin);
-			ldapUtils.removeAllSpecificConditionByUid(memberLogin);
+			ldapUtils.setUserTermsOfUse(memberLogin, false, null);
 			boolean isMemberInProgress = false;
 			if (isActivateValidation()) {
 				isMemberInProgress = daoService.isPendingMember(memberLogin);

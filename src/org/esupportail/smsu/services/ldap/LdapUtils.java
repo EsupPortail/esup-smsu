@@ -199,26 +199,18 @@ public class LdapUtils {
 	/**
 	 * used to set the terms of use of a specified user.
 	 * @param uid
+	 * @param validateGeneralCondition
 	 * @param termsOfUseValue
 	 * @throws LdapUserNotFoundException if the user is not found in the ldap
 	 * @throws LdapWriteException 
 	 */
-	private void setUserTermsOfUse(final String uid, 
-			final List<String> termsOfUseValue) 
+	public void setUserTermsOfUse(final String uid, final boolean validateGeneralCondition,
+			final List<String> specificConditions) 
 			throws LdapUserNotFoundException, LdapWriteException {
-		setOrClearLdapAttributeByUidAndName(uid, userTermsOfUseAttribute, termsOfUseValue);
-	}
-	
-	
-
-	/**
-	 * Clear the term of use attribute for the specified user.
-	 * @param uid
-	 * @throws LdapUserNotFoundException
-	 * @throws LdapWriteException 
-	 */
-	private void clearUserTermsOfUse(final String uid) throws LdapUserNotFoundException, LdapWriteException {
-		clearLdapAttributeByUidAndName(uid, userTermsOfUseAttribute);
+		List<String> values = new LinkedList<String>();
+		if (validateGeneralCondition) values.add(cgKeyName);
+		if (specificConditions != null) values.addAll(specificConditions);
+		setOrClearLdapAttributeByUidAndName(uid, userTermsOfUseAttribute, values);
 	}
 	
 	
@@ -338,17 +330,7 @@ public class LdapUtils {
 	 * @throws LdapWriteException 
 	 */
 	public void addGeneralConditionByUid(final String uid) throws LdapUserNotFoundException, LdapWriteException {
-		addSpecificConditionByUidAndSpecificConditionKey(uid, cgKeyName);
-	}
-	
-	/**
-	 * Remove the general condition flag in the ldap.
-	 * @param uid
-	 * @throws LdapUserNotFoundException
-	 * @throws LdapWriteException 
-	 */
-	public void removeGeneralConditionByUid(final String uid) throws LdapUserNotFoundException, LdapWriteException {
-		removeSpecificConditionByUidAndSpecificConditionKey(uid, cgKeyName);
+		setUserTermsOfUse(uid, true, getSpecificConditionValidateByUid(uid));
 	}
 	
 	/**
@@ -387,90 +369,6 @@ public class LdapUtils {
 			termsOfuse.remove(cgKeyName);
 		}	
 		return termsOfuse;
-	}
-	
-
-	/**
-	 * Update the list of specific conditions for the given user.
-	 * @param uid
-	 * @param newListSP
-	 * @throws LdapUserNotFoundException 
-	 * @throws LdapWriteException 
-	 */
-	public void updateAllSpecificConditionByUid(final String uid,
-			final List<String> newListSP) throws LdapUserNotFoundException, LdapWriteException {
-		// retrieve the list of specific conditions stored in the LDAP
-		final List<String> originalTermsOfuse = getSpecificConditionValidateByUid(uid);
-		// add the new specific conditions not already stored in the LDAP
-		for (String newSP : newListSP) {
-			if (!originalTermsOfuse.contains(newSP)) {
-				addSpecificConditionByUidAndSpecificConditionKey(uid, newSP);
-			}
-		}
-		// remove the specific conditions from the LDAP that are not anymore in the list of the user
-		for (String oldSP : originalTermsOfuse) {
-			if (!newListSP.contains(oldSP)) {
-				removeSpecificConditionByUidAndSpecificConditionKey(uid, oldSP);
-			}
-		}
-	}
-	
-	/**
-	 * Remove the list of specific conditions for the given user.
-	 * @param uid
-	 * @throws LdapUserNotFoundException 
-	 * @throws LdapWriteException 
-	 */
-	public void removeAllSpecificConditionByUid(final String uid) throws LdapUserNotFoundException, LdapWriteException {
-		// retrieve the list of specific conditions stored in the LDAP
-		final List<String> originalTermsOfuse = getSpecificConditionValidateByUid(uid);
-		// remove the specific conditions from the LDAP 
-		for (String oldSP : originalTermsOfuse) {
-			removeSpecificConditionByUidAndSpecificConditionKey(uid, oldSP);
-		}
-	}
-
-	
-	/**
-	 * Add a specific condition in the ldap.
-	 * @param uid
-	 * @throws LdapUserNotFoundException
-	 * @throws LdapWriteException 
-	 */
-	public void addSpecificConditionByUidAndSpecificConditionKey(final String uid, 
-			 			final String specificConditionKey)  
-			 			throws LdapUserNotFoundException, LdapWriteException {
-		final List<String> termsOfuse = getUserTermsOfUseByUid(uid);
-		
-		if (termsOfuse != null) {
-			if (!termsOfuse.contains(specificConditionKey)) {
-				termsOfuse.add(specificConditionKey);
-				clearUserTermsOfUse(uid);
-				setUserTermsOfUse(uid, termsOfuse);
-			}
-		}
-	}
-	
-	
-	/**
-	 * Remove a specific condition in the ldap.
-	 * @param uid
-	 * @param specificConditionKey
-	 * @throws LdapUserNotFoundException
-	 * @throws LdapWriteException 
-	 */
-	public void removeSpecificConditionByUidAndSpecificConditionKey(final String uid, 
-								final String specificConditionKey) 
-								throws LdapUserNotFoundException, LdapWriteException {
-		final List<String> termsOfuse = getUserTermsOfUseByUid(uid);
-		
-		if (termsOfuse != null) {
-			if (termsOfuse.contains(specificConditionKey)) {
-				termsOfuse.remove(specificConditionKey);
-				clearUserTermsOfUse(uid);
-				setUserTermsOfUse(uid, termsOfuse);
-			}
-		}
 	}
 	
 	/**
