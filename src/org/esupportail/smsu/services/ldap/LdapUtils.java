@@ -783,7 +783,7 @@ public class LdapUtils {
 					if (logger.isDebugEnabled()) {
 						logger.debug("Search group with filter : " + filter.toString());
 					}
-					// TODO : paramétrer le DN dans le service au lieu d'utiliser le paramétrage général du Ldap?
+					// TODO : parametrer le DN dans le service au lieu d'utiliser le parametrage general du Ldap?
 					List<LdapGroup> ldapGroups = ldapUserAndGroupService.getLdapGroupsFromToken(filter.toString());
 					if (ldapGroups.isEmpty()) {
 						logger.error("skipping LDAP group " + testValue + " which does not exist");
