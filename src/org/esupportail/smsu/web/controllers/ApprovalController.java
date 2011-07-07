@@ -71,13 +71,7 @@ public class ApprovalController extends AbstractContextAwareController {
 	 * @throws LdapUserNotFoundException 
 	 */
 	private void init()  {
-		User currentUser = getCurrentUser();
-		if (currentUser != null) {
-		paginator = new ApprovalPaginator(getDomainService(), currentUser.getId());
-		} else {
-		paginator = new ApprovalPaginator(getDomainService(), null);
-		}
-		
+		paginator = new ApprovalPaginator(getDomainService(), getCurrentUserId());		
 	}
 
 	/**
@@ -86,13 +80,14 @@ public class ApprovalController extends AbstractContextAwareController {
 	@Override
 	public void reset() {
 		super.reset();
-		User currentUser = getCurrentUser();
-		if (currentUser != null) {
-		paginator = new ApprovalPaginator(getDomainService(), currentUser.getId());
-		} else {
-		paginator = new ApprovalPaginator(getDomainService(), null);
-		}
+		paginator = new ApprovalPaginator(getDomainService(), getCurrentUserId());
 	}
+
+	private String getCurrentUserId() {
+		User currentUser = getCurrentUser();
+		return currentUser == null ? null : currentUser.getId();
+	}
+
 	//////////////////////////////////////////////////////////////
 	// Principal methods
 	//////////////////////////////////////////////////////////////
