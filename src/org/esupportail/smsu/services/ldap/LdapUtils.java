@@ -162,6 +162,15 @@ public class LdapUtils {
 		final String retVal = ldapUserAndGroupService.getUserPagerByUid(uid);
 		return retVal;
 	}
+
+	/**
+	 * Get the pager user from the ldap.
+	 * @param user
+	 * @return
+	 */
+	public String getUserPagerByUser(LdapUser user) {
+		return user.getAttribute(userPagerAttribute);
+	}
 	
 	/**
 	 * the termOfUse user from the ldap.

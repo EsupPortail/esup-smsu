@@ -111,11 +111,6 @@ public class SendSmsManager  {
 	private String userEmailAttribute;
 
 	/**
-	 * The pager attributeName.
-	 */
-	private String userPagerAttribute;
-
-	/**
 	 * The key used to represent the CG in the ldap (up1terms).
 	 */
 	private String cgKeyName;
@@ -563,7 +558,7 @@ public class SendSmsManager  {
 					
 				//users are added to the recipient list.
 				for (LdapUser ldapUser : filteredUsers) {
-					String phone = ldapUser.getAttribute(userPagerAttribute);
+					String phone = ldapUtils.getUserPagerByUser(ldapUser);
 					String login = ldapUser.getId();
 					Recipient recipient = getOrCreateRecipient(phone, login);
 					recipients.add(recipient);
@@ -1197,14 +1192,6 @@ public class SendSmsManager  {
 	 */
 	public void setCgKeyName(final String cgKeyName) {
 		this.cgKeyName = cgKeyName;
-	}
-
-	public void setUserPagerAttribute(final String userPagerAttribute) {
-		this.userPagerAttribute = userPagerAttribute;
-	}
-
-	public String getUserPagerAttribute() {
-		return userPagerAttribute;
 	}
 
 	/**
