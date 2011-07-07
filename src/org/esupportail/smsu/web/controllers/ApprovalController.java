@@ -5,6 +5,8 @@ import org.esupportail.smsu.domain.beans.fonction.FonctionName;
 import org.esupportail.smsu.exceptions.CreateMessageException;
 import org.esupportail.smsu.web.beans.ApprovalPaginator;
 import org.esupportail.smsu.web.beans.UIMessage;
+import org.esupportail.commons.services.logging.Logger;
+import org.esupportail.commons.services.logging.LoggerImpl;
 
 /**
  * A bean to manage files.
@@ -15,6 +17,11 @@ public class ApprovalController extends AbstractContextAwareController {
 	 * The serialization id.
 	 */
 	private static final long serialVersionUID = -1149078913806276304L;
+
+	/**
+	 * A logger.
+	 */
+	private final Logger logger = new LoggerImpl(getClass());
 	
 	/**
 	 * The approval paginator.
@@ -105,6 +112,7 @@ public class ApprovalController extends AbstractContextAwareController {
 	 * @return A String
 	 */
 	public String validate()  {
+		logger.info("" + getCurrentUserId() + " approve message " + message);
 		try {
 			getDomainService().treatUIMessage(message);
 			reset();
