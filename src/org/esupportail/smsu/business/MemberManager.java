@@ -196,7 +196,7 @@ public class MemberManager {
 		final String phoneNumber = getPhoneNumber(userIdentifier);
 		final List<String> availablePhoneNumbers = getAvailablePhoneNumbers(userIdentifier);
 		boolean validCG = ldapUtils.isGeneralConditionValidateByUid(userIdentifier);
-		final List<String> validCP = ldapUtils.getSpecificConditionValidateByUid(userIdentifier);
+		final List<String> validCP = ldapUtils.getSpecificConditionsValidateByUid(userIdentifier);
 		boolean isPending = false;
 		if (isActivateValidation()) {
 			isPending = daoService.isPendingMember(userIdentifier);

@@ -336,7 +336,7 @@ public class LdapUtils {
 	 * @throws LdapWriteException 
 	 */
 	public void addGeneralConditionByUid(final String uid) throws LdapUserNotFoundException, LdapWriteException {
-		setUserTermsOfUse(uid, true, getSpecificConditionValidateByUid(uid));
+		setUserTermsOfUse(uid, true, getSpecificConditionsValidateByUid(uid));
 	}
 
 	public boolean isGeneralAndSpecificConditionValidate(final LdapUser user, final String specificConditionKey) {
@@ -364,7 +364,7 @@ public class LdapUtils {
 	 * @return
 	 * @throws LdapUserNotFoundException
 	 */
-	public List<String> getSpecificConditionValidateByUid(final String uid) 
+	public List<String> getSpecificConditionsValidateByUid(final String uid) 
 	throws LdapUserNotFoundException {
 		List<String> termsOfuse = getUserTermsOfUseByUid(uid);
 		if (termsOfuse != null) {
