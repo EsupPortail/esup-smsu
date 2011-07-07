@@ -321,8 +321,11 @@ public class MemberManager {
 					isMemberInProgress = true;
 				}
 				// save the new phone number
+				logger.info("replacing " + memberLogin + " phone number in LDAP: new:" + memberPhoneNumber + " old:" + previousNumberPhone);
 				ldapUtils.setUserPagerByUid(memberLogin, memberPhoneNumber);
-			} 
+			} else {
+				logger.info("keeping " + memberLogin + " phone number unchanged in LDAP (" + memberPhoneNumber + ")");
+			}
 
 			// save in LDAP
 			List<String> memberValidCP = member.getValidCP();
