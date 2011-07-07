@@ -20,7 +20,7 @@
 
 	<bean 
 		id="portalService" 
-		class="org.esupportail.portal.ws.client.support.uportal.CachingUportalServiceImpl"
+		class="org.esupportail.portal.ws.client.support.uportal.SmsuCachingUportalServiceImpl"
 		>
 		<property name="url" value="${portail.ws.adress}">
 			<description>The URL that responds to the portal web service.</description>

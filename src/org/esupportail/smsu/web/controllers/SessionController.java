@@ -74,7 +74,12 @@ public class SessionController extends AbstractDomainAwareBean {
 	 */
 	@Override
 	public User getCurrentUser() {
+	    try {
 		return authenticator.getUser();
+	    } catch (org.esupportail.portal.ws.client.exceptions.PortalErrorException e) {
+		    // exception already logged. ignore here to avoid loops in JSF
+		return null;
+	    }
 	}
 
 	/**
