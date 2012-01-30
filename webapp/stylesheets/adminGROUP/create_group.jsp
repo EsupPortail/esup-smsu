@@ -86,8 +86,7 @@
 				<f:verbatim> </f:verbatim>
 			</h:panelGroup>
 
-			<e:outputLabel value="#{msgs['GROUPE.SEARCH.SUPERVISORS.LDAP']}"
-				for="ldapUid" />
+			<e:outputLabel value="#{msgs['GROUPE.SEARCH.SUPERVISORS.LDAP']}" for="ldapUid" />
 			<h:panelGroup>
 				<%--	<e:form id="formSearchUser">--%>
 				<e:inputText id="ldapUid" value="#{usersSearchController.ldapUid}" />
@@ -149,6 +148,7 @@
 				<f:verbatim> </f:verbatim>
 			</h:panelGroup>
 
+
 			<e:outputLabel value="#{msgs['GROUPE.QUOTA.SMS']}" for="quota" />
 			<h:panelGroup>
 				<e:inputText id="quota"
@@ -176,7 +176,6 @@
 				</e:inputText>
 				<f:verbatim>&nbsp;&nbsp;&nbsp;&nbsp;</f:verbatim>
 				<e:message for="dest" />
-
 			</h:panelGroup>
 			<h:panelGroup>
 				<f:verbatim> </f:verbatim>
@@ -184,8 +183,6 @@
 			<h:panelGroup>
 				<f:verbatim> </f:verbatim>
 			</h:panelGroup>
-
-
 		</e:panelGrid>
 
 		<f:verbatim>
@@ -200,5 +197,4 @@
 		</e:panelGrid>
 
 	</e:form>
-
 </e:page>

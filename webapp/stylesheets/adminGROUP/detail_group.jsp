@@ -20,7 +20,7 @@
 		GroupsManagerController groupsManagerController = (GroupsManagerController) BeanUtils
 				.getBean("groupsManagerController");
 	%>
-	<!--<e:messages showDetail="true" showSummary="true"/>-->
+	<!--<e:messages showDetail="true" showSummary="true" />-->
 	<e:form id="groupForm">
 		<e:panelGrid columns="2">
 			<e:outputLabel value="#{msgs['GROUPE.SELECTGROUP']}" for="tree" />
@@ -47,7 +47,7 @@
 
 		<e:panelGrid columns="4">
 
-			<e:outputLabel value="#{msgs['GROUPE.NAME']}" for="GDisplayName"/>
+			<e:outputLabel value="#{msgs['GROUPE.NAME']}" for="GDisplayName" />
 			<h:panelGroup>
 				<e:inputText id="GDisplayName"
 					value="#{groupsManagerController.groupDisplayName}" disabled="true" maxlength="30" size="30" style="border:none;">
@@ -61,7 +61,8 @@
 				<f:verbatim> </f:verbatim>
 			</h:panelGroup>
 			
-			<e:outputLabel value="#{msgs['GROUPE.ID']}" for="GName"/>
+			<e:outputLabel value="#{msgs['GROUPE.ID']}" for="GName" />
+
 			<h:panelGroup>
 				<e:inputText id="GName"
 					value="#{groupsManagerController.group.label}" maxlength="30">
@@ -76,18 +77,14 @@
 				<f:verbatim> </f:verbatim>
 			</h:panelGroup>
 
-			<e:outputLabel value="#{msgs['ACCOUNT.NAME']}" for="AName"/>
+			<e:outputLabel value="#{msgs['ACCOUNT.NAME']}" for="AName" />
 			<h:panelGroup>
-
-
-
 				<e:inputText id="AName"
 					value="#{groupsManagerController.account.label}" maxlength="30">
 				</e:inputText>
 				<f:verbatim>&nbsp;&nbsp;&nbsp;&nbsp;</f:verbatim>
 				<e:message for="AName" />
 			</h:panelGroup>
-
 
 			<e:outputLabel for="availableAccounts"
 				value="#{msgs['ACCOUNT.AVAILABLE']}"
@@ -123,7 +120,7 @@
 			<e:outputLabel value="#{msgs['ROLE.DISPLAY.SELECT']}"
 				for="selectRoleMenu" />
 			<e:inputText value="#{groupsManagerController.role.name}"
-				disabled="true" style="background-color:#cecece;"/>
+				disabled="true" style="background-color:#cecece;" />
 			<%
 				}
 			%>
@@ -137,7 +134,7 @@
 				if (groupsManagerController
 						.isFieldAuthorized(FonctionName.FCTN_GESTIONS_RESPONSABLES)) {
 			%>
-			<e:outputLabel value="#{msgs['GROUPE.SEARCH.SUPERVISORS.LDAP']}" for="ldapUid"/>
+			<e:outputLabel value="#{msgs['GROUPE.SEARCH.SUPERVISORS.LDAP']}" for="ldapUid" />
 			<h:panelGroup>
 				<%--	<e:form id="formSearchUser">--%>
 				<e:inputText id="ldapUid" value="#{usersSearchController.ldapUid}" />
@@ -173,7 +170,7 @@
 			<%
 				}
 			%>
-			<e:outputLabel value="" for="persons"/>
+			<e:outputLabel value="" for="persons" />
 			<h:panelGroup>
 				<%--	<e:form id="formpersons">--%>
 				<e:dataTable id="persons" var="persons"
@@ -209,10 +206,10 @@
 			</h:panelGroup>
 
 
-			<e:outputLabel value="#{msgs['GROUPE.QUOTA.SMS']}" for="quota"/>
+			<e:outputLabel value="#{msgs['GROUPE.QUOTA.SMS']}" for="quota" />
 			<e:inputText id="quota"
 				value="#{groupsManagerController.group.quotaSms}" maxlength="10"
-				disabled="true" style="background-color:#cecece;"/>
+				disabled="true" style="background-color:#cecece;" />
 			<h:panelGroup>
 				<f:verbatim> </f:verbatim>
 			</h:panelGroup>
@@ -223,7 +220,7 @@
 				if (groupsManagerController
 						.isFieldAuthorized(FonctionName.FCTN_GESTION_QUOTAS)) {
 			%>
-			<e:outputLabel value="#{msgs['GROUPE.QUOTA.SMS.ADD']}" for="quotaAdd"/>
+			<e:outputLabel value="#{msgs['GROUPE.QUOTA.SMS.ADD']}" for="quotaAdd" />
 			<h:panelGroup>
 				<e:inputText id="quotaAdd"
 					immediate="true" valueChangeListener="#{groupsManagerController.addQuotaSmsValueChanged}"
@@ -243,7 +240,7 @@
 				}
 			%>
 
-			<e:outputLabel value="#{msgs['GROUPE.QUOTA.ORDER']}" for="dest"/>
+			<e:outputLabel value="#{msgs['GROUPE.QUOTA.ORDER']}" for="dest" />
 			<%
 				if (groupsManagerController
 						.isFieldAuthorized(FonctionName.FCTN_GESTION_QUOTAS)) {
