@@ -222,8 +222,12 @@ public class SmsRecipientController extends AbstractContextAwareController {
 	 * add a recipient.
 	 */
 	public void selectRecipient() {
-		if (!this.recipients.contains(this.selectedRecipient)) {
-			this.recipients.add(this.selectedRecipient);
+		mayAddRecipient(this.selectedRecipient);
+	}
+
+	private void mayAddRecipient(UiRecipient recipient) {
+		if (!this.recipients.contains(recipient)) {
+			this.recipients.add(recipient);
 		}
 	}
 
@@ -232,9 +236,7 @@ public class SmsRecipientController extends AbstractContextAwareController {
 	 */
 	public void addRecipientList() {
 		for (UiRecipient recipient : this.recipientList) {
-			if (!this.recipients.contains(recipient)) {
-				this.recipients.add(recipient);
-			}
+			mayAddRecipient(recipient);
 		}
 	}
 	/**
