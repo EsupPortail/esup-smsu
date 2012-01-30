@@ -21,81 +21,6 @@
 	</navigation-rule>
 
 	<navigation-rule>
-		<display-name>administrators</display-name>
-		<from-view-id>/stylesheets/administrators.jsp</from-view-id>
-		<navigation-case>
-			<from-outcome>addAdmin</from-outcome>
-			<to-view-id>/stylesheets/administratorAdd.jsp</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>deleteAdmin</from-outcome>
-			<to-view-id>
-				/stylesheets/administratorDelete.jsp
-			</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-
-	<navigation-rule>
-		<display-name>administratorDelete</display-name>
-		<from-view-id>
-			/stylesheets/administratorDelete.jsp
-		</from-view-id>
-		<navigation-case>
-			<from-outcome>adminDeleted</from-outcome>
-			<to-view-id>/stylesheets/administrators.jsp</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>cancel</from-outcome>
-			<to-view-id>/stylesheets/administrators.jsp</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-
-	<navigation-rule>
-		<display-name>administratorAdd</display-name>
-		<from-view-id>/stylesheets/administratorAdd.jsp</from-view-id>
-		<navigation-case>
-			<from-outcome>adminAdded</from-outcome>
-			<to-view-id>/stylesheets/administrators.jsp</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>cancel</from-outcome>
-			<to-view-id>/stylesheets/administrators.jsp</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-
-	<navigation-rule>
-		<display-name>ldapSearch</display-name>
-		<from-view-id>/stylesheets/ldapSearch.jsp</from-view-id>
-		<navigation-case>
-			<from-outcome>cancelToAdministratorAdd</from-outcome>
-			<to-view-id>/stylesheets/administratorAdd.jsp</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>cancelToDepartmentManagerAdd</from-outcome>
-			<to-view-id>
-				/stylesheets/departmentManagerAdd.jsp
-			</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-
-	<navigation-rule>
-		<display-name>ldapResults</display-name>
-		<from-view-id>/stylesheets/ldapResults.jsp</from-view-id>
-		<navigation-case>
-			<from-outcome>userSelectedToAdministratorAdd</from-outcome>
-			<to-view-id>/stylesheets/administratorAdd.jsp</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>cancelToAdministratorAdd</from-outcome>
-			<to-view-id>/stylesheets/administratorAdd.jsp</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>back</from-outcome>
-			<to-view-id>/stylesheets/ldapSearch.jsp</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-
-	<navigation-rule>
 		<display-name>performSendSMS</display-name>
 		<from-view-id>/stylesheets/sendSMS.jsp</from-view-id>
 		<navigation-case>
@@ -112,10 +37,6 @@
 		<navigation-case>
 			<from-outcome>navigationWelcome</from-outcome>
 			<to-view-id>/stylesheets/welcome.jsp</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>navigationAdministrators</from-outcome>
-			<to-view-id>/stylesheets/administrators.jsp</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>navigationPreferences</from-outcome>

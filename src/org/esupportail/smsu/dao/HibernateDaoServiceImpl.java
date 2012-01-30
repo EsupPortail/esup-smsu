@@ -125,18 +125,6 @@ public class HibernateDaoServiceImpl extends AbstractJdbcJndiHibernateDaoService
 		updateObject(user);
 	}
 
-	/**
-	 * @see org.esupportail.smsu.dao.DaoService#getAdminPaginator()
-	 */
-	@SuppressWarnings("deprecation")
-	public Paginator<User> getAdminPaginator() {
-		String queryStr = HqlUtils.fromWhereOrderByAsc(
-				User.class.getSimpleName(),
-				HqlUtils.isTrue(ADMIN_ATTRIBUTE),
-				ID_ATTRIBUTE);
-		return new HibernateFixedQueryPaginator<User>(this, queryStr);
-	}
-
 	//////////////////////////////////////////////////////////////
 	// VersionManager
 	//////////////////////////////////////////////////////////////

@@ -41,17 +41,6 @@
 		</property>
 	</bean>
 
-	<bean id="administratorsController"
-		class="org.esupportail.smsu.web.controllers.AdministratorsController"
-		parent="abstractContextAwareController"
-		scope="session"
-		>
-		<description>A bean to manage administrators.</description>
-		<property name="ldapUserService" ref="ldapUserService">
-			<description>The LDAP service.</description>
-		</property>
-	</bean>
-
 	<bean id="preferencesController"
 		class="org.esupportail.smsu.web.controllers.PreferencesController"
 		parent="abstractContextAwareController"
@@ -138,20 +127,6 @@
 			<description>The max size of a SMS.</description>
 		</property>
 		<property name="smtpServiceUtils" ref="smtpServiceUtils" />
-	</bean>
-	
-	<bean id="ldapSearchController"
-		class="org.esupportail.smsu.web.controllers.LdapSearchController"
-		parent="abstractApplicationAwareBean"
-		scope="session"
-    	>
-		<description>A bean to manage LDAP searches.</description>
-		<property name="ldapUserService" ref="ldapUserService">
-			<description>The LDAP service.</description>
-		</property>
-		<property name="sessionController" ref="sessionController">
-			<description>The context bean.</description>
-		</property>
 	</bean>
 
 	<bean id="exceptionController"

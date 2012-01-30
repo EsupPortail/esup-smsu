@@ -284,13 +284,6 @@ public class DomainServiceImpl implements DomainService, InitializingBean {
 	}
 
 	/**
-	 * @see org.esupportail.smsu.domain.DomainService#getAdminPaginator()
-	 */
-	public Paginator<User> getAdminPaginator() {
-		return this.daoService.getAdminPaginator();
-	}
-
-	/**
 	 * @param displayNameLdapAttribute the displayNameLdapAttribute to set
 	 */
 	public void setDisplayNameLdapAttribute(final String displayNameLdapAttribute) {
@@ -338,40 +331,6 @@ public class DomainServiceImpl implements DomainService, InitializingBean {
 	//////////////////////////////////////////////////////////////
 	// Authorizations
 	//////////////////////////////////////////////////////////////
-
-	/**
-	 * @see org.esupportail.smsu.domain.DomainService#userCanViewAdmins(org.esupportail.smsu.domain.beans.User)
-	 */
-	public boolean userCanViewAdmins(final User user) {
-		if (user == null) {
-			return false;
-		}
-		return user.getAdmin();
-	}
-
-	/**
-	 * @see org.esupportail.smsu.domain.DomainService#userCanAddAdmin(org.esupportail.smsu.domain.beans.User)
-	 */
-	public boolean userCanAddAdmin(final User user) {
-		if (user == null) {
-			return false;
-		}
-		return user.getAdmin();
-	}
-
-	/**
-	 * @see org.esupportail.smsu.domain.DomainService#userCanDeleteAdmin(
-	 * org.esupportail.smsu.domain.beans.User, org.esupportail.smsu.domain.beans.User)
-	 */
-	public boolean userCanDeleteAdmin(final User user, final User admin) {
-		if (user == null) {
-			return false;
-		}
-		if (!user.getAdmin()) {
-			return false;
-		}
-		return !user.equals(admin);
-	}
 
 	/**
 	 * @see org.esupportail.smsu.domain.DomainService#checkRights

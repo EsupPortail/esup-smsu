@@ -69,11 +69,6 @@ public interface DaoService extends Serializable {
 	 */
 	void updateUser(User user);
 
-	/**
-	 * @return a paginator for administrators.
-	 */
-	Paginator<User> getAdminPaginator();
-
 	//////////////////////////////////////////////////////////////
 	// VersionManager
 	//////////////////////////////////////////////////////////////

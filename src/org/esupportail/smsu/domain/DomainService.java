@@ -86,11 +86,6 @@ public interface DomainService extends Serializable {
 	 */
 	void deleteAdmin(User user);
 
-	/**
-	 * @return a paginator for administrators.
-	 */
-	Paginator<User> getAdminPaginator();
-
 	//////////////////////////////////////////////////////////////
 	// VersionManager
 	//////////////////////////////////////////////////////////////
@@ -115,24 +110,6 @@ public interface DomainService extends Serializable {
 	//////////////////////////////////////////////////////////////
 	// Authorizations
 	//////////////////////////////////////////////////////////////
-	/**
-	 * @param currentUser
-	 * @return 'true' if the user can view administrators.
-	 */
-	boolean userCanViewAdmins(User currentUser);
-	
-	/**
-	 * @param user 
-	 * @return 'true' if the user can grant the privileges of administrator.
-	 */
-	boolean userCanAddAdmin(User user);
-
-	/**
-	 * @param user 
-	 * @param admin
-	 * @return 'true' if the user can revoke the privileges of an administrator.
-	 */
-	boolean userCanDeleteAdmin(User user, User admin);
 	
 	/**
 	 * @param fonctions 
