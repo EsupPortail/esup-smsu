@@ -67,7 +67,6 @@ public class LdapUtilsHelpers {
 	 * constructor.
 	 */
 	public LdapUtilsHelpers() {
-		super();
 	}
 	
 	
@@ -79,15 +78,12 @@ public class LdapUtilsHelpers {
 	 */
 	public List<String> getLdapAttributesByUidAndName(final String uid, 
 			final String name) throws LdapUserNotFoundException {
-		List<String> retVal = null;
-		
 		try {
 			final LdapUser ldapUser = ldapService.getLdapUser(uid);
-			retVal = ldapUser.getAttributes(name);
+			return ldapUser.getAttributes(name);
 		} catch (UserNotFoundException e) {
 			throw new LdapUserNotFoundException("Unable to find the user with id : [" + uid + "]", e);
 		}
-		return retVal;
 	}
 	
 	
@@ -122,8 +118,7 @@ public class LdapUtilsHelpers {
 		if (logger.isDebugEnabled()) {
 			logger.debug("LDAP filter applied : " + filterAsStr);
 		}
-		final List<LdapUser> retVal = ldapService.getLdapUsersFromFilter(filterAsStr);
-		return retVal;
+		return ldapService.getLdapUsersFromFilter(filterAsStr);
 	}
 	
 	/**
@@ -192,9 +187,8 @@ public class LdapUtilsHelpers {
 	 * @return a list for user mails.
 	 */
 	public List<String> getUserMailsByUids(final List<String> uids) {
-		final List<LdapUser> ldapUsers = getUsersByUids(uids);
 		final List<String> retVal = new ArrayList<String>();
-		for (LdapUser ldapUser : ldapUsers) {
+		for (LdapUser ldapUser : getUsersByUids(uids)) {
 			if (logger.isDebugEnabled()) {
 				logger.debug("mail recipient added to list :" 
 						+ ldapUser.getAttribute(userEmailAttribute).trim());
