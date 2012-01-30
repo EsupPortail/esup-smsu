@@ -15,7 +15,6 @@ import org.esupportail.commons.services.ldap.LdapException;
 import org.esupportail.commons.services.ldap.LdapGroup;
 import org.esupportail.commons.services.ldap.LdapUser;
 import org.esupportail.commons.services.ldap.LdapUserAndGroupService;
-import org.esupportail.commons.services.ldap.WriteableLdapUserService;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.portal.ws.client.PortalGroup;
@@ -63,7 +62,7 @@ public class LdapUtils {
 	/**
 	 * used to manage user (write only).
 	 */
-	private WriteableLdapUserService writeableLdapUserService;
+	private WriteableLdapUserServiceSMSUImpl writeableLdapUserService;
 
 	/**
 	 * used to manage group (read only).
@@ -268,6 +267,7 @@ public class LdapUtils {
 	 */
 	private void setOrClearLdapAttributeByUidAndName(final String uid, final String name, final String etiquette, final List<String> value) 
 					throws LdapUserNotFoundException, LdapWriteException {
+		writeableLdapUserService.invalidateLdapCache();
 		final LdapUser ldapUser = getLdapUserByUserUid(uid);
 
 		Map<String, List<String>> attrs = ldapUser.getAttributes();
@@ -895,7 +895,7 @@ public class LdapUtils {
 	 * Standard setter used by spring.
 	 * @param writeableLdapUserService
 	 */
-	public void setWriteableLdapUserService(final WriteableLdapUserService writeableLdapUserService) {
+	public void setWriteableLdapUserService(final WriteableLdapUserServiceSMSUImpl writeableLdapUserService) {
 		this.writeableLdapUserService = writeableLdapUserService;
 	}
 	

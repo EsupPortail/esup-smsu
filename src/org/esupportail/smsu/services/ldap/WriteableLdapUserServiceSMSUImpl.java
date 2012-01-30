@@ -2,6 +2,7 @@ package org.esupportail.smsu.services.ldap;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.sf.ehcache.CacheManager;
 
 import org.esupportail.commons.services.ldap.LdapUser;
 import org.esupportail.commons.services.ldap.WriteableLdapUserServiceImpl;
@@ -14,6 +15,8 @@ import org.springframework.ldap.support.DirContextAdapter;
  */
 public class WriteableLdapUserServiceSMSUImpl extends WriteableLdapUserServiceImpl {
 	
+	private CacheManager cacheManager;
+
 	/**
 	 * serial UID.
 	 */
@@ -40,5 +43,19 @@ public class WriteableLdapUserServiceSMSUImpl extends WriteableLdapUserServiceIm
 				context.setAttributeValues(ldapAttributeName, null);
 			}
 		}
+	}
+
+	public void updateLdapUser(final LdapUser ldapUser) throws org.esupportail.commons.services.ldap.LdapAttributesModificationException {
+		super.updateLdapUser(ldapUser);
+		invalidateLdapCache();
+	}
+
+	public void invalidateLdapCache() {
+		net.sf.ehcache.Cache cache = cacheManager.getCache(org.esupportail.commons.services.ldap.CachingLdapEntityServiceImpl.class.getName());
+		cache.removeAll();		
+	}
+
+	public void setCacheManager(final CacheManager cacheManager) {
+		this.cacheManager = cacheManager;
 	}
 }

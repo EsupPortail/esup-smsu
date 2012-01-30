@@ -120,6 +120,7 @@
 				<value>${ldap.termsOfUseAttribute}</value>
 			</list>
 		</property>
+		<property name="cacheManager" ref="cacheManager" />
 	</bean>
 
 
