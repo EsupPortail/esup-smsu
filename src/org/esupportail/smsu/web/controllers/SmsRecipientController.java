@@ -193,16 +193,18 @@ public class SmsRecipientController extends AbstractContextAwareController {
 	public void addGroupRecipient() {
 		if (this.selectedRecipientGroup != null) {
 			if (this.selectedRecipientGroup.length() > 0) {
-				UiRecipient grpToAdd = new GroupRecipient(this.selectedRecipientGroup, 
-						this.selectedRecipientGroup, null, null);
-				for (UiRecipient uiRecipient : clone(this.recipients)) {
-					if (uiRecipient.getClass().equals(GroupRecipient.class)) {
-						this.recipients.remove(uiRecipient);
-					}
-				}
+				// we must keep only one GroupRecipient, the code relies on this (??)
+				removeGroupRecipients();
+				this.recipients.add(new GroupRecipient(this.selectedRecipientGroup));
 
-				this.recipients.add(grpToAdd);
+			}
+		}
+	}
 
+	private void removeGroupRecipients() {
+		for (UiRecipient uiRecipient : clone(this.recipients)) {
+			if (uiRecipient.getClass().equals(GroupRecipient.class)) {
+				this.recipients.remove(uiRecipient);
 			}
 		}
 	}

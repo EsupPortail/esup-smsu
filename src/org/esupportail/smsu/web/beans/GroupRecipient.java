@@ -19,9 +19,8 @@ public class GroupRecipient extends UiRecipient {
 	 * @param login
 	 * @param phone
 	 */
-	public GroupRecipient(final String displayName, final String id, final String login,
-			final String phone) {
-		super(displayName, id, login, phone);
+	public GroupRecipient(final String displayName) {
+		super(displayName, displayName, null, null);
 	}
 
 
