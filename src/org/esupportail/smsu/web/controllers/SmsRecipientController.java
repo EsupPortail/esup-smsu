@@ -200,9 +200,7 @@ public class SmsRecipientController extends AbstractContextAwareController {
 			if (this.selectedRecipientGroup.length() > 0) {
 				UiRecipient grpToAdd = new GroupRecipient(this.selectedRecipientGroup, 
 						this.selectedRecipientGroup, null, null);
-				List<UiRecipient> list = new ArrayList<UiRecipient>(); 
-				list.addAll(this.recipients);
-				for (UiRecipient uiRecipient : list) {
+				for (UiRecipient uiRecipient : clone(this.recipients)) {
 					if (uiRecipient.getClass().equals(GroupRecipient.class)) {
 						this.recipients.remove(uiRecipient);
 					}
@@ -212,6 +210,12 @@ public class SmsRecipientController extends AbstractContextAwareController {
 
 			}
 		}
+	}
+
+	private <A> List<A> clone(List<A> list) {
+		List<A> r = new ArrayList<A>(); 
+		r.addAll(list);
+		return r;
 	}
 
 	/**
