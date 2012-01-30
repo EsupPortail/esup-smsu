@@ -157,7 +157,7 @@ alter table person
 create table recipient
 (
    RCP_ID               int not null auto_increment,
-   RCP_PHONE            char(10) not null,
+   RCP_PHONE            varchar(255) not null,
    RCP_LOGIN            varchar(32),
    primary key (RCP_ID)
 )
