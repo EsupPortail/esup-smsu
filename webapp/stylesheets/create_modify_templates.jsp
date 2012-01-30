@@ -1,7 +1,7 @@
 <%@include file="_include.jsp"%>
 
 <e:page stringsVar="msgs" locale="#{sessionController.locale}"
-	authorized="#{templateManagerController.pageAuthorized}">
+	authorized="#{templateManagerController.pageAuthorized}" footer="">
 
 	<%@include file="_navigation.jsp"%>
 	<e:section value="#{msgs['TEMPLATE.CREATE.TITLE']}"

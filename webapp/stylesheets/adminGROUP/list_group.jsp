@@ -1,6 +1,6 @@
 <%@include file="../_include.jsp"%>
 <e:page stringsVar="msgs" menuItem="gestionGroupes" locale="#{sessionController.locale}" 
-authorized="#{groupsManagerController.pageAuthorized}">
+authorized="#{groupsManagerController.pageAuthorized}" footer="">
 	<%@include file="../_navigation.jsp"%>
 	<e:section value="#{msgs['GROUPE.LIST.TITLE']}" />
 	

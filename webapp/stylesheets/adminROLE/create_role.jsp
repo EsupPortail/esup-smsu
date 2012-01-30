@@ -1,6 +1,6 @@
 <%@include file="../_include.jsp"%>
 <e:page stringsVar="msgs" menuItem="gestionRoles" locale="#{sessionController.locale}" 
-authorized="#{rolesController.pageAuthorized}">
+authorized="#{rolesController.pageAuthorized}" footer="">
 	<%@include file="../_navigation.jsp"%>
 	<e:section value="#{msgs['ROLE.NEW.TITLE']}" />
 

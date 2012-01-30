@@ -2,7 +2,7 @@
 
 <e:page stringsVar="msgs"
 	locale="#{sessionController.locale}"
-	authorized="#{sendSMSController.pageAuthorized}">
+	authorized="#{sendSMSController.pageAuthorized}" footer="">
 
 	<%@include file="_navigation.jsp"%>
 	<f:verbatim><br><br><br></f:verbatim>

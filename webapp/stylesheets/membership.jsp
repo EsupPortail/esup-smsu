@@ -1,7 +1,7 @@
 <%@include file="_include.jsp"%>
 <e:page stringsVar="msgs" menuItem="adhesion"
 	locale="#{sessionController.locale}"
-	authorized="#{membershipController.pageAuthorized}">
+	authorized="#{membershipController.pageAuthorized}" footer="">
 	<%@include file="_navigation.jsp"%>
 	<script type="text/javascript">
 	function selectPhoneNumberFromAvailable(value) {

@@ -2,7 +2,7 @@
 
 <e:page stringsVar="msgs" menuItem="gestionServicesCP"
 	locale="#{sessionController.locale}"
-	authorized="#{servicesSmsuController.pageAuthorized}">
+	authorized="#{servicesSmsuController.pageAuthorized}" footer="">
 
 	<%@include file="_navigation.jsp"%>
 	<e:section value="#{msgs['SERVICE.LIST.TITLE']}" />

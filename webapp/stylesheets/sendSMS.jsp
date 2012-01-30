@@ -1,7 +1,7 @@
 <%@include file="_include.jsp"%>
 <e:page stringsVar="msgs" menuItem="envoiSMS"
 	locale="#{sessionController.locale}"
-	authorized="#{sendSMSController.pageAuthorized}">
+	authorized="#{sendSMSController.pageAuthorized}" footer="">
 
 	<%@include file="_navigation.jsp"%>
 

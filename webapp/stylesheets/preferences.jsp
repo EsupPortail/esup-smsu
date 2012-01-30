@@ -1,5 +1,5 @@
 <%@include file="_include.jsp"%>
-<e:page stringsVar="msgs" menuItem="preferences" locale="#{sessionController.locale}" authorized="#{preferencesController.pageAuthorized}">
+<e:page stringsVar="msgs" menuItem="preferences" locale="#{sessionController.locale}" authorized="#{preferencesController.pageAuthorized}" footer="">
 	<%@include file="_navigation.jsp"%>
 
  	<e:form id="preferencesForm">

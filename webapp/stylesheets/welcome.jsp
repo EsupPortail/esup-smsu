@@ -1,5 +1,5 @@
 <%@include file="_include.jsp"%>
-<e:page stringsVar="msgs" menuItem="welcome" locale="#{sessionController.locale}" >
+<e:page stringsVar="msgs" menuItem="welcome" locale="#{sessionController.locale}" footer="">
 	<%@include file="_navigation.jsp"%>
 	<e:messages/>
 	<e:section value="#{msgs['WELCOME.TITLE']}" />

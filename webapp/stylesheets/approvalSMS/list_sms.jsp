@@ -1,6 +1,6 @@
 <%@include file="../_include.jsp"%>
 <e:page stringsVar="msgs" menuItem="approbationEnvoi" locale="#{sessionController.locale}" 
-authorized="#{approvalController.pageAuthorized}">
+authorized="#{approvalController.pageAuthorized}" footer="">
 	<%@include file="../_navigation.jsp"%>
 	<e:section value="#{msgs['APPROVAL.LIST.TITLE']}" />
 	

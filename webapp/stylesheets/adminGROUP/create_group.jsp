@@ -2,7 +2,7 @@
 
 <e:page stringsVar="msgs" menuItem="gestionGroupes"
 	locale="#{sessionController.locale}"
-	authorized="#{groupsManagerController.pageAuthorized}">
+	authorized="#{groupsManagerController.pageAuthorized}" footer="">
 
 	<%@include file="../_navigation.jsp"%>
 

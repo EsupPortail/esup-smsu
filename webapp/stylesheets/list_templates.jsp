@@ -2,7 +2,7 @@
 
 <e:page stringsVar="msgs" menuItem="templates"
 	locale="#{sessionController.locale}"
-	authorized="#{templateManagerController.pageAuthorized}">
+	authorized="#{templateManagerController.pageAuthorized}" footer="">
 
 	<%@include file="_navigation.jsp"%>
 	<e:section value="#{msgs['TEMPLATE.LIST.TITLE']}" />
