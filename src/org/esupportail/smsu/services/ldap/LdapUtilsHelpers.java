@@ -21,7 +21,7 @@ import org.springframework.ldap.support.filter.WhitespaceWildcardsFilter;
  * @author PRQD8824
  *
  */
-public class SearchableLdapUserAndGroupServiceSMSUImpl {
+public class LdapUtilsHelpers {
 	
 	/**
 	 * serial UID.
@@ -82,7 +82,7 @@ public class SearchableLdapUserAndGroupServiceSMSUImpl {
 	/**
 	 * constructor.
 	 */
-	public SearchableLdapUserAndGroupServiceSMSUImpl() {
+	public LdapUtilsHelpers() {
 		super();
 	}
 	/**

@@ -57,7 +57,7 @@ public class LdapUtils {
 	/**
 	 * used to manage user (read only)
 	 */
-	private SearchableLdapUserAndGroupServiceSMSUImpl ldapUtilsHelpers;
+	private LdapUtilsHelpers ldapUtilsHelpers;
 	
 	/**
 	 * used to manage user (write only).
@@ -878,7 +878,7 @@ public class LdapUtils {
 	 * @param ldapUtilsHelpers
 	 */
 	public void setLdapUtilsHelpers(
-			final SearchableLdapUserAndGroupServiceSMSUImpl ldapUtilsHelpers) {
+			final LdapUtilsHelpers ldapUtilsHelpers) {
 		this.ldapUtilsHelpers = ldapUtilsHelpers;
 	}
 		

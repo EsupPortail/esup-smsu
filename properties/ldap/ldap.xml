@@ -68,7 +68,7 @@
 	</bean>
 
 	<bean id="ldapUtilsHelpers"
-		class="org.esupportail.smsu.services.ldap.SearchableLdapUserAndGroupServiceSMSUImpl"
+		class="org.esupportail.smsu.services.ldap.LdapUtilsHelpers"
 		lazy-init="true">
 		<property name="ldapService" ref="ldapService"/>
 		<property name="userIdAttribute" value="${ldap.uidAttribute}"/>
