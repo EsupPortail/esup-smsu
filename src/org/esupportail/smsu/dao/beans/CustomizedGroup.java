@@ -99,6 +99,9 @@ public class CustomizedGroup implements Serializable {
 	 */
 	public CustomizedGroup() {
 		super();
+		quotaSms = Long.parseLong("0");
+		quotaOrder = Long.parseLong("0");
+		consumedSms = Long.parseLong("0");
 	}
 
 

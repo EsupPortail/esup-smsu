@@ -15,7 +15,8 @@ public class TestSend extends SeleneseTestCase {
 	String testService = "service1 de test";
 
 	String openPagsTree = "tree:0:t2";
-	String pagsLocator = "//span[text()='Groupes LDAP']";
+	String pagsGroupName = "Groupes LDAP";
+	String pagsLocator = "//span[text()='" + pagsGroupName + "']";
 
 	String timeout = "30000";
 
@@ -132,21 +133,22 @@ public class TestSend extends SeleneseTestCase {
 		clickAndWait("navigationForm:gestionServicesCP");
 	}
 
-	boolean clickDeleteRoleOrGroup(String name) {
+	/* kind can be "delete" or "detailPage" */
+	boolean clickRoleOrGroupButton(String name, String kind) {
 		String tr = "//span[text()='" + name + "']/ancestor::tr";
-		String deleteButton = "//input[contains(@id, ':delete')]";
-		if (clickAndWaitIfPresent(tr + deleteButton))
+		String button = "//input[contains(@id, ':" + kind + "')]";
+		if (clickAndWaitIfPresent(tr + button))
 			return true;
 		else {
 			trueOrFail(!selenium.isElementPresent(tr),
-				   "expected " + name + " to have a delete button");
+				   "expected " + name + " to have a " + kind + " button");
 			return false;
 		}
 	}
 
 	boolean mayDeleteRole(String name) {
 		navigationForm_gestionRoles();
-		return clickDeleteRoleOrGroup(name);
+		return clickRoleOrGroupButton(name, "delete");
 	}
 	void createRole(String name, int[] fonctions) {
 		navigationForm_gestionRoles();
@@ -159,7 +161,11 @@ public class TestSend extends SeleneseTestCase {
 
 	boolean mayDeleteGroup(String name) {
 		navigationForm_gestionGroupes();
-		return clickDeleteRoleOrGroup(name);
+		return clickRoleOrGroupButton(name, "delete");
+	}
+	void mayDeleteGroups(String... names) {
+		navigationForm_gestionGroupes();
+		for (String name : names) clickRoleOrGroupButton(name, "delete");
 	}
 
 	void startCreateGroup() {
@@ -175,8 +181,11 @@ public class TestSend extends SeleneseTestCase {
 
 	void createGroup(String[] pagsLocators, String[] supervisors, String role, int quota, int maxSmsPerSend) {
 		startCreateGroup();
-		for (String locator : pagsLocators) clickAndWait(locator);
+		selectPagsGroup(pagsLocators);
 		finishCreateGroup(supervisors, role, quota, maxSmsPerSend);
+	}
+	void selectPagsGroup(String[] pagsLocators) {
+		for (String locator : pagsLocators) clickAndWait(locator);
 	}
 
 	void finishCreateGroup(String[] supervisors, String role, int quota, int maxSmsPerSend) {
@@ -202,6 +211,20 @@ public class TestSend extends SeleneseTestCase {
 		clickAndWait("groupsForm:data:" + groupNumber + ":detailPage");
 		selenium.type("groupForm:quotaAdd", "" + quotaAdd);
 		clickAndWait(inputLocatorByValue("Save"));
+	}
+	void modifyGroupName(String oldName, String newName) {
+		navigationForm_gestionGroupes();
+		clickRoleOrGroupButton(oldName, "detailPage");
+		selenium.type("groupForm:GName", newName);
+		clickAndWait(inputLocatorByValue("Save"));
+		forbidResponse("An error occurred", "group name modification");
+	}
+	void modifyGroupPags(String name, String[] pagsLocators) {
+		navigationForm_gestionGroupes();
+		clickRoleOrGroupButton(name, "detailPage");
+		selectPagsGroup(pagsLocators);
+		clickAndWait(inputLocatorByValue("Save"));
+		forbidResponse("An error occurred", "group PAGS modification");
 	}
 
 	void adhesion(String phoneNumber) {
@@ -322,7 +345,6 @@ public class TestSend extends SeleneseTestCase {
 	}
 	
 	void createGroup_pags() {
-		startCreateGroup();
 		createGroup(new String[] { "treeForm:" + openPagsTree, pagsLocator },
 			    new String[] { "Admin Smsutest" }, "SUPER_ADMIN", 999999, 1);
 	}
@@ -390,7 +412,17 @@ public class TestSend extends SeleneseTestCase {
 		searchSMS_checkFirstRow("Sent", testMsg);
 	}
 
+	void groupCreationAndModifications() {
+		mayDeleteGroups("foo", "bar", pagsGroupName);
+		createGroup("foo", new String[] {}, "roleUserOnly", 0, 0);
+		modifyGroupName("foo", "bar");
+		modifyGroupPags("bar", new String[] { "treeForm:" + openPagsTree, pagsLocator });
+		mayDeleteGroups("foo", "bar", pagsGroupName);
+	}
+
 	public void testSend() throws Exception {
+		groupCreationAndModifications();
+
 		createServiceCP(testService, testService);
 		// by default, user2smsutest should have CG + testService (cf test-ldap-users.ldif)
 		checkAdhesion("user2smsutest", new String[] { testService });
