@@ -531,19 +531,23 @@ public class LdapUtils {
 	 * @param uid : group identifier in the LDAP
 	 * @return the group name
 	 */
-	public String getGroupNameByUid(final String uid) {
-		String retVal;
+	public String getGroupNameByUid(final String uid) {	    
+		String retVal = getGroupNameByUidOrNull(uid);
+		return retVal != null ? retVal : uid;
+	}
+
+	/**
+	 * Retrieve the group by id.
+	 * @param uid : group identifier in the LDAP
+	 * @return the group name
+	 */
+	public String getGroupNameByUidOrNull(final String uid) {
 		try {
-		PortalGroup portalGroup = portalService.getGroupById(uid);
-		if (portalGroup != null) {
-			retVal = portalGroup.getName();
-		} else {
-			retVal = uid;
-		}
+		    PortalGroup portalGroup = portalService.getGroupById(uid);
+		    if (portalGroup != null) return portalGroup.getName();
 		} catch (PortalGroupNotFoundException e) {
-			retVal = uid;
 		}
-		return retVal;
+		return null;
 	}
 	
 	/**

@@ -175,6 +175,7 @@ public class TestSend extends SeleneseTestCase {
 
 	void createGroup(String name, String[] supervisors, String role, int quota, int maxSmsPerSend) {
 		startCreateGroup();
+		selectValueAndMayWait("groupForm:selectTypeRecipient", "UID");
 		selenium.type("groupForm:GName", name);
 		finishCreateGroup(supervisors, role, quota, maxSmsPerSend);
 	}
@@ -185,6 +186,7 @@ public class TestSend extends SeleneseTestCase {
 		finishCreateGroup(supervisors, role, quota, maxSmsPerSend);
 	}
 	void selectPagsGroup(String[] pagsLocators) {
+		selectValueAndMayWait("groupForm:selectTypeRecipient", "GROUP");
 		for (String locator : pagsLocators) clickAndWait(locator);
 	}
 
@@ -215,6 +217,7 @@ public class TestSend extends SeleneseTestCase {
 	void modifyGroupName(String oldName, String newName) {
 		navigationForm_gestionGroupes();
 		clickRoleOrGroupButton(oldName, "detailPage");
+		selectValueAndMayWait("groupForm:selectTypeRecipient", "UID");
 		selenium.type("groupForm:GName", newName);
 		clickAndWait(inputLocatorByValue("Save"));
 		forbidResponse("An error occurred", "group name modification");
@@ -414,7 +417,7 @@ public class TestSend extends SeleneseTestCase {
 
 	void groupCreationAndModifications() {
 		mayDeleteGroups("foo", "bar", pagsGroupName);
-		createGroup("foo", new String[] {}, "roleUserOnly", 100, 2);
+		createGroup("foo", new String[] {}, "SUPER_ADMIN", 100, 2);
 		modifyGroupName("foo", "bar");
 		modifyGroupPags("bar", new String[] { "groupForm:" + openPagsTree, pagsLocator });
 

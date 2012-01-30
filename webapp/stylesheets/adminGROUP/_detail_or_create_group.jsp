@@ -13,10 +13,19 @@
 	}
 </script>
 
-<e:panelGrid columns="2">
-  <e:outputLabel value="#{msgs['GROUPE.SELECTGROUP']}" for="tree" />
-  <h:panelGroup rendered="true">
+
+		
+<e:panelGrid columns="4">
+
+  <e:selectOneMenu id="selectTypeRecipient" onchange="submit();"
+		   binding="#{groupsManagerController.selectTypeGroup}"
+		   value="#{groupsManagerController.groupType}">
+    <f:selectItems value="#{groupsManagerController.groupTypeOptions}" />
+  </e:selectOneMenu>
+
+  <h:panelGroup>
     <t:tree2 id="tree" value="#{groupsManagerController.treeModel}"
+	     rendered="#{groupsManagerController.groupType == 'GROUP'}"
 	     var="node" varNodeToggler="t" clientSideToggle="false"
 	     showRootNode="true">
       <f:facet name="group">
@@ -33,36 +42,32 @@
 	</h:panelGroup>
       </f:facet>
     </t:tree2>
+    <e:inputText id="GName"
+		 rendered="#{groupsManagerController.groupType == 'UID'}"
+		 value="#{groupsManagerController.group.label}" maxlength="30">
+    </e:inputText>
+    <f:verbatim>&nbsp;&nbsp;&nbsp;&nbsp;</f:verbatim>
+    <e:message for="GName" />
+
   </h:panelGroup>
-</e:panelGrid>
+  <h:panelGroup> <f:verbatim> </f:verbatim> </h:panelGroup>
+  <h:panelGroup> <f:verbatim> </f:verbatim> </h:panelGroup>
 
-<e:panelGrid columns="4">
 
-
-<% if (!create_group) { %>
-  <e:outputLabel value="#{msgs['GROUPE.NAME']}" for="GDisplayName" />
+  <h:panelGroup>
+  <e:outputLabel 
+      rendered="#{groupsManagerController.groupType == 'GROUP'}"
+      value="#{msgs['GROUPE.NAME']}" for="GDisplayName" />
+  </h:panelGroup>
   <h:panelGroup>
     <e:inputText id="GDisplayName"
+		  rendered="#{groupsManagerController.groupType == 'GROUP'}"
 		 value="#{groupsManagerController.groupDisplayName}" disabled="true" maxlength="30" size="30" style="border:none;">
     </e:inputText>
     <f:verbatim>&nbsp;&nbsp;&nbsp;&nbsp;</f:verbatim>
   </h:panelGroup>
   <h:panelGroup> <f:verbatim> </f:verbatim> </h:panelGroup>
   <h:panelGroup> <f:verbatim> </f:verbatim> </h:panelGroup>
-<% } %>
-
-		
-  <e:outputLabel value="#{msgs['GROUPE.ID']}" for="GName" />
-  <h:panelGroup>
-    <e:inputText id="GName"
-		 value="#{groupsManagerController.group.label}" maxlength="30">
-    </e:inputText>
-    <f:verbatim>&nbsp;&nbsp;&nbsp;&nbsp;</f:verbatim>
-    <e:message for="GName" />
-  </h:panelGroup>
-  <h:panelGroup> <f:verbatim> </f:verbatim> </h:panelGroup>
-  <h:panelGroup> <f:verbatim> </f:verbatim> </h:panelGroup>
-
 
   <e:outputLabel value="#{msgs['ACCOUNT.NAME']}" for="AName" />
   <h:panelGroup>

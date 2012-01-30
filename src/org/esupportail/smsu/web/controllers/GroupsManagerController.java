@@ -3,6 +3,7 @@ package org.esupportail.smsu.web.controllers;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.faces.component.html.HtmlSelectOneMenu;
 import javax.faces.model.SelectItem;
 
 import org.apache.myfaces.custom.tree2.TreeModelBase;
@@ -47,6 +48,8 @@ public class GroupsManagerController extends AbstractContextAwareController {
 	 */
 	private UIRole role;
 	
+	private HtmlSelectOneMenu selectTypeGroup;
+
 	/**
 	 * add quota of sms.
 	 */
@@ -56,6 +59,14 @@ public class GroupsManagerController extends AbstractContextAwareController {
 	 * isShowCreateButton.
 	 */
 	private Boolean isShowCreateButton = false;
+
+
+	private String groupType;
+
+	/**
+	 * groupTypeOptions.
+	 */
+	private List<SelectItem> groupTypeOptions;
 		
 	/**
 	 * list items of RolesList.
@@ -186,6 +197,7 @@ public class GroupsManagerController extends AbstractContextAwareController {
 	private void init()  {
 	 	paginator = new GroupPaginator(getDomainService(), ldapUtils);
 	 	//treeModel = new TreeModelBase(getRootNode());
+		initGroupTypeOptions();
 		// recuperer la liste des roles
 		initSelectRoleListItems();
 		// initialize the available accounts list
@@ -196,6 +208,12 @@ public class GroupsManagerController extends AbstractContextAwareController {
 	}
 
 	
+	private void initGroupTypeOptions() {
+		groupTypeOptions = new ArrayList<SelectItem>();
+		groupTypeOptions.add(new SelectItem("GROUP", this.getI18nService().getString("GROUPE.SELECTGROUP")));
+		groupTypeOptions.add(new SelectItem("UID", this.getI18nService().getString("GROUPE.UID")));
+	}
+
 	/**
 	 * initialize roles in the page.
 	 */
@@ -416,6 +434,9 @@ public class GroupsManagerController extends AbstractContextAwareController {
 		this.role.setName(group.getRole().getName());
 		
 		this.addQuotaSms = null;
+
+		logger.warn("xxx " + group.getLabel() + " " + getGroupIsUidDisplayName());
+		groupType = ldapUtils.getGroupNameByUidOrNull(group.getLabel()) == null ? "UID" : "GROUP";
 	
 		return "navigationDetailGroup";
 	}
@@ -478,6 +499,40 @@ public class GroupsManagerController extends AbstractContextAwareController {
 		return group;
 	}
 	
+	//////////////////////////////////////////////////////////////
+	// Getter and Setter of groupType
+	//////////////////////////////////////////////////////////////
+	/**
+	 * @return groupType
+	 */
+	public String getGroupType() {
+		return groupType == null ? "GROUP" : groupType;
+	}
+
+	/**
+	 * @param groupType
+	 */
+	public void setGroupType(final String groupType) {
+		this.groupType = groupType;
+	}
+
+	//////////////////////////////////////////////////////////////
+	// Getter and Setter of selectTypeGroup
+	//////////////////////////////////////////////////////////////
+	/**
+	 * @return selectTypeGroup
+	 */
+	public HtmlSelectOneMenu getSelectTypeGroup() {
+		return selectTypeGroup;
+	}
+
+	/**
+	 * @param selectTypeGroup
+	 */
+	public void setSelectTypeGroup(final HtmlSelectOneMenu selectTypeGroup) {
+		this.selectTypeGroup = selectTypeGroup;
+	}
+
 	//////////////////////////////////////////////////////////////
 	// Setter of usersSearchController
 	//////////////////////////////////////////////////////////////
@@ -571,17 +626,25 @@ public class GroupsManagerController extends AbstractContextAwareController {
 		return addQuotaSms;
 	}
 
-	public String getGroupDisplayName() {
-		String displayName;
+	private String getGroupIsUidDisplayName() {
 		try {
-			displayName = ldapUtils.getUserDisplayNameByUserUid(group.getLabel());
+			return ldapUtils.getUserDisplayNameByUserUid(group.getLabel());
 		} catch (LdapUserNotFoundException e) {
-			displayName = ldapUtils.getGroupNameByUid(group.getLabel());
-			if (displayName == null) {
-				logger.debug("Group not found : " + group.getLabel());
-				displayName = group.getLabel();
-			}	
+			return null;
 		}
+	}
+
+	public String getGroupDisplayName() {
+		if (group.getLabel() == null) return null;
+
+		String displayName = getGroupIsUidDisplayName();
+		if (displayName == null) {
+			displayName = ldapUtils.getGroupNameByUid(group.getLabel());
+		}
+		if (displayName == null) {
+			logger.debug("Group not found : " + group.getLabel());
+			displayName = group.getLabel();
+		}	
 		return displayName;
 	}
 	//////////////////////////////////////////////////////////////
@@ -645,6 +708,11 @@ public class GroupsManagerController extends AbstractContextAwareController {
 	public List<SelectItem> getSelectRoleListItems() {
 		return selectRoleListItems;
 	} 
+
+
+	public List<SelectItem> getGroupTypeOptions() {
+		return groupTypeOptions;
+	}
 	
 	//////////////////////////////////////////////////////////////
 	// Getter of allRoles
