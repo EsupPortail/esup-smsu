@@ -111,6 +111,7 @@
 		</property>
 		<property name="userPagerAttribute" value="${ldap.pagerAttribute}"/>
 		<property name="userDisplayName" value="${ldap.displayNameAttribute}"/>
+		<property name="phoneNumberPattern" value="${recipient.phoneNumberPattern}"></property>
 	</bean>
 
 	<bean id="performSendSmsController"

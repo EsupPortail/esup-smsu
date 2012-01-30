@@ -105,6 +105,11 @@ public class SendSmsManager  {
 	private ContentCustomizationManager customizer;
 
 	/**
+	 * the phone number validation pattern.
+	 */
+	private String phoneNumberPattern;
+
+	/**
 	 * the LDAP Email attribute.
 	 */
 	private String userEmailAttribute;
@@ -524,10 +529,7 @@ public class SendSmsManager  {
 
 			// single users and phone numbers can be directly added to the message.
 			if (!uiRecipient.getClass().equals(GroupRecipient.class)) {
-
-				// check if the recipient is already in the database. 
-				Recipient recipient = getOrCreateRecipient(uiRecipient.getPhone(), uiRecipient.getLogin());
-				recipients.add(recipient);
+				mayAdd(recipients, uiRecipient.getPhone(), uiRecipient.getLogin());
 			} else {
 				String serviceKey = service != null ? service.getKey() : null;
 
@@ -543,14 +545,22 @@ public class SendSmsManager  {
 				for (LdapUser ldapUser : filteredUsers) {
 					String phone = ldapUtils.getUserPagerByUser(ldapUser);
 					String login = ldapUser.getId();
-					Recipient recipient = getOrCreateRecipient(phone, login);
-					recipients.add(recipient);
+					mayAdd(recipients, phone, login);
 				}
 
 			}
 		}
 
 		return recipients;
+	}
+
+	private void mayAdd(Set<Recipient> recipients, String phone, String login) {
+		if (StringUtils.isEmpty(this.phoneNumberPattern) || 
+		    phone.matches(this.phoneNumberPattern)) {
+			recipients.add(getOrCreateRecipient(phone, login));
+		} else {
+			logger.debug("skipping weird phone number " + phone);
+		}
 	}
 
 	private Recipient getOrCreateRecipient(String phone, String login) {
@@ -1132,6 +1142,16 @@ public class SendSmsManager  {
 	 */
 	public void setDefaultAccount(final String defaultAccount) {
 		this.defaultAccount = defaultAccount;
+	}
+
+	//////////////////////////////////////////////////////////////
+	// Setter of phoneNumberPattern
+	//////////////////////////////////////////////////////////////
+	/**
+	 * @param phoneNumberPattern
+	 */
+	public void setPhoneNumberPattern(final String phoneNumberPattern) {
+		this.phoneNumberPattern = phoneNumberPattern;
 	}
 
 	/**

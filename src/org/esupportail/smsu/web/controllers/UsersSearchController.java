@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.esupportail.commons.services.ldap.LdapException;
 import org.esupportail.commons.services.ldap.LdapUser;
 import org.esupportail.commons.services.logging.Logger;
@@ -74,6 +75,11 @@ public class UsersSearchController extends AbstractContextAwareController {
 	 * user display name ldap attribute.
 	 */
 	private String userDisplayName;
+
+	/**
+	 * the phone number validation pattern.
+	 */
+	private String phoneNumberPattern;
 	
 	/**
 	 * the service chosen by the user
@@ -138,12 +144,18 @@ public class UsersSearchController extends AbstractContextAwareController {
 					String userId = user.getId();
 					String displayName = user.getAttribute(userDisplayName) + " (" + user.getId() + ")";
 					String phone = user.getAttribute(userPagerAttribute);
-					if (logger.isDebugEnabled()) {
+				
+					if (StringUtils.isEmpty(this.phoneNumberPattern) 
+					    || phone.matches(this.phoneNumberPattern)) {
+					    if (logger.isDebugEnabled()) {
 						logger.debug("ajout de la personne : uid =" + userId 
 								+ " displayName=" + displayName 
 								+ " phone=" + phone + " a la liste");
+					    }
+					    ldapUsers.add(new SingleUserRecipient(displayName, userId, userId, phone));
+					} else {
+					    logger.debug("skipping weird phone number " + phone);
 					}
-					ldapUsers.add(new SingleUserRecipient(displayName, userId, userId, phone));
 				}
 				if (ldapUsers.size() == 0) {
 					addInfoMessage("formGeneral:ldapUid", "SENDSMS.MESSAGE.NOUSERFOUND");
@@ -268,6 +280,16 @@ public class UsersSearchController extends AbstractContextAwareController {
 	 */
 	public String getUserDisplayName() {
 		return userDisplayName;
+	}
+
+	//////////////////////////////////////////////////////////////
+	// Setter of phoneNumberPattern
+	//////////////////////////////////////////////////////////////
+	/**
+	 * @param phoneNumberPattern
+	 */
+	public void setPhoneNumberPattern(final String phoneNumberPattern) {
+		this.phoneNumberPattern = phoneNumberPattern;
 	}
 
 	//////////////////////////////////////////////////////////////

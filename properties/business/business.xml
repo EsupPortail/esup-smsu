@@ -52,6 +52,7 @@
 		<property name="smtpServiceUtils" ref="smtpServiceUtils"/>
 		<property name="smsMaxSize" value="${sms.maxLength}"/>
 		<property name="defaultAccount" value="${sms.defaultAccount}"/>
+		<property name="phoneNumberPattern" value="${recipient.phoneNumberPattern}"></property>
 		<property name="userEmailAttribute" value="${ldap.emailAttribute}"/>
 		<property name="smsuPersonAttributesGroupStore" ref="personAttributesGroupStore" />
 	</bean>
