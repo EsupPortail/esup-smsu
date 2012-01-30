@@ -473,7 +473,7 @@ public class SendSmsManager  {
 
 		if (logger.isDebugEnabled()) {
 			if (cGroup != null)
-				logger.debug("Supervisor found from " + groupKind + " group : [" + cGroup.getLabel() + "]");
+				logger.info("Supervisor found from " + groupKind + " group : [" + cGroup.getLabel() + "]");
 			else
 				logger.debug("No supervisor found from " + groupKind + " group.");
 		}
