@@ -345,7 +345,7 @@ public class TestSend extends SeleneseTestCase {
 	}
 	
 	void createGroup_pags() {
-		createGroup(new String[] { "treeForm:" + openPagsTree, pagsLocator },
+		createGroup(new String[] { "groupForm:" + openPagsTree, pagsLocator },
 			    new String[] { "Admin Smsutest" }, "SUPER_ADMIN", 999999, 1);
 	}
 
@@ -416,7 +416,7 @@ public class TestSend extends SeleneseTestCase {
 		mayDeleteGroups("foo", "bar", pagsGroupName);
 		createGroup("foo", new String[] {}, "roleUserOnly", 100, 2);
 		modifyGroupName("foo", "bar");
-		modifyGroupPags("bar", new String[] { "treeForm:" + openPagsTree, pagsLocator });
+		modifyGroupPags("bar", new String[] { "groupForm:" + openPagsTree, pagsLocator });
 
 		navigationForm_gestionGroupes();
 		clickRoleOrGroupButton(pagsGroupName, "detailPage");

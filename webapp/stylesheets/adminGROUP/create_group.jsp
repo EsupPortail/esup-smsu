@@ -10,7 +10,7 @@
 </script>
 	<e:section value="#{msgs['GROUPE.NEW.TITLE']}" />
 	<e:messages />
-	<e:form id="treeForm">
+	<e:form id="groupForm">
 		<e:panelGrid columns="2">
 			<e:outputLabel value="#{msgs['GROUPE.SELECTGROUP']}" for="tree" />
 			<h:panelGroup rendered="true">
@@ -33,8 +33,7 @@
 				</t:tree2>
 			</h:panelGroup>
 		</e:panelGrid>
-	</e:form>
-	<e:form id="groupForm">
+
 		<e:panelGrid columns="4">
 			<e:outputLabel value="#{msgs['GROUPE.ID']}" for="GName" />
 
@@ -153,6 +152,7 @@
 			<e:outputLabel value="#{msgs['GROUPE.QUOTA.SMS']}" for="quota" />
 			<h:panelGroup>
 				<e:inputText id="quota"
+					immediate="true" valueChangeListener="#{groupsManagerController.quotaSmsValueChanged}">
 					value="#{groupsManagerController.group.quotaSms}" maxlength="10">
 					<t:validateRegExpr pattern='\d{0,10}' />
 				</e:inputText>
@@ -170,6 +170,7 @@
 			<e:outputLabel value="#{msgs['GROUPE.QUOTA.ORDER']}" for="dest" />
 			<h:panelGroup>
 				<e:inputText id="dest"
+					immediate="true" valueChangeListener="#{groupsManagerController.quotaOrderValueChanged}"
 					value="#{groupsManagerController.group.quotaOrder}" maxlength="10">
 					<t:validateRegExpr pattern='\d{0,10}' />
 				</e:inputText>

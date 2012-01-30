@@ -532,6 +532,28 @@ public class GroupsManagerController extends AbstractContextAwareController {
 		return role;
 	}
 
+	private Long getLongNewValue(javax.faces.event.ValueChangeEvent e) {
+		Object o = e.getNewValue();
+		if (o == null)
+			return new Long(0);
+		else if (o instanceof Long)
+			return (Long) o;
+		else {
+			String s = (String) o;
+			return s.equals("") ? new Long(0) : Long.parseLong(s);
+		}
+	}
+
+	public void addQuotaSmsValueChanged(javax.faces.event.ValueChangeEvent e) {
+		setAddQuotaSms((String) e.getNewValue());
+	}
+	public void quotaOrderValueChanged(javax.faces.event.ValueChangeEvent e) {
+		group.setQuotaOrder(getLongNewValue(e));
+	}
+	public void quotaSmsValueChanged(javax.faces.event.ValueChangeEvent e) {
+		group.setQuotaSms(getLongNewValue(e));
+	}
+
 	//////////////////////////////////////////////////////////////
 	// Getter and Setter of addQuotaSms
 	//////////////////////////////////////////////////////////////

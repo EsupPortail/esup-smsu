@@ -21,7 +21,7 @@
 				.getBean("groupsManagerController");
 	%>
 	<!--<e:messages showDetail="true" showSummary="true"/>-->
-	<e:form id="treeForm">
+	<e:form id="groupForm">
 		<e:panelGrid columns="2">
 			<e:outputLabel value="#{msgs['GROUPE.SELECTGROUP']}" for="tree" />
 			<h:panelGroup rendered="true">
@@ -44,8 +44,6 @@
 				</t:tree2>
 			</h:panelGroup>
 		</e:panelGrid>
-	</e:form>
-	<e:form id="groupForm">
 
 		<e:panelGrid columns="4">
 
@@ -232,6 +230,7 @@
 			<e:outputLabel value="#{msgs['GROUPE.QUOTA.SMS.ADD']}" for="quotaAdd"/>
 			<h:panelGroup>
 				<e:inputText id="quotaAdd"
+					immediate="true" valueChangeListener="#{groupsManagerController.addQuotaSmsValueChanged}"
 					value="#{groupsManagerController.addQuotaSms}" maxlength="10">
 					<t:validateRegExpr pattern='\d{0,10}' />
 				</e:inputText>
@@ -256,6 +255,7 @@
 			%>
 			<h:panelGroup>
 				<e:inputText id="dest"
+					immediate="true" valueChangeListener="#{groupsManagerController.quotaOrderValueChanged}"
 					value="#{groupsManagerController.group.quotaOrder}" maxlength="10">
 					<t:validateRegExpr pattern='\d{0,10}' />
 				</e:inputText>
