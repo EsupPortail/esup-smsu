@@ -240,9 +240,7 @@ public class GroupsManagerController extends AbstractContextAwareController {
 	
 	public void selectGroup() {
 		if (this.selectedGroupFromTree != null) {
-			CustomizedGroup cg = new CustomizedGroup();
-			cg.setLabel(this.selectedGroupFromTree);
-			setGroup(cg);
+			group.setLabel(this.selectedGroupFromTree);
 		}
 	}
 	

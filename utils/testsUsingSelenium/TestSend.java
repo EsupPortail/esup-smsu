@@ -414,10 +414,18 @@ public class TestSend extends SeleneseTestCase {
 
 	void groupCreationAndModifications() {
 		mayDeleteGroups("foo", "bar", pagsGroupName);
-		createGroup("foo", new String[] {}, "roleUserOnly", 0, 0);
+		createGroup("foo", new String[] {}, "roleUserOnly", 100, 2);
 		modifyGroupName("foo", "bar");
 		modifyGroupPags("bar", new String[] { "treeForm:" + openPagsTree, pagsLocator });
-		mayDeleteGroups("foo", "bar", pagsGroupName);
+
+		navigationForm_gestionGroupes();
+		clickRoleOrGroupButton(pagsGroupName, "detailPage");
+		expectedValue("2", selenium.getValue("groupForm:dest"));
+		expectedValue("100", selenium.getValue("groupForm:quota"));
+
+		trueOrFail(!mayDeleteGroup("foo"), "group foo should not exist anymore");
+		trueOrFail(!mayDeleteGroup("bar"), "group bar should not exist anymore");
+		trueOrFail(mayDeleteGroup(pagsGroupName), "group " + pagsGroupName + " should exist");
 	}
 
 	public void testSend() throws Exception {
