@@ -48,19 +48,22 @@
 				default).
 			</description>
 		</property>
-		<property name="attributesAsString" value="${ldap.attributes}">
-			<description>
-				The comma-separated list of the LDAP attributes to retrieve.
-			</description>
+		<property name="attributes">
+		  <description> LDAP attributes to retrieve. </description>
+		  <list>
+		    <value>${ldap.displayNameAttribute}</value>
+		    <value>${ldap.emailAttribute}</value>
+		    <value>${ldap.pagerAttribute}</value>
+		    <value>${ldap.termsOfUseAttribute}</value>
+		    <value>${ldap.displayNameAttribute}</value>
+		    <value>${ldap.firstNameAttribute}</value>
+		    <value>${ldap.lastNameAttribute}</value>
+		  </list>
 		</property>
 		<property name="searchAttribute" value="${ldap.searchAttribute}">
 			<description>The LDAP attribute to search for.</description>
 		</property>
-		<property name="searchDisplayedAttributesAsString" value="${ldap.searchDisplayedAttributes}" >
-			<description>
-				The comma-separated list of the LDAP attributes to display when searching for users.
-			</description>
-		</property>
+		<property name="searchDisplayedAttributesAsString" value="cn" /> <!-- unused -->
 		<property name="cacheManager" ref="cacheManager">
 			<description>The cache manager, required.</description>
 		</property>
@@ -83,7 +86,12 @@
 		<property name="i18nService" ref="i18nService" />
 		<property name="ldapTemplate" ref="ldapTemplate"/>
 		<!-- Group parameters -->
-		<property name="groupAttributesAsString" value="${ldap.group.groupAttr}"/>
+		<property name="groupAttributes">
+		  <list>
+		    <value>${ldap.group.groupMemberAttr}</value>
+		    <value>${ldap.group.groupSearchAttr}</value>
+		  </list>
+		</property>
 		<property name="groupCacheName" value=""/>
 		<property name="groupDnSubPath" value="${ldap.group.dnSubPath}"/>
 		<property name="groupIdAttribute" value="${ldap.group.idAttribute}"/>
@@ -93,12 +101,23 @@
 		<property name="groupObjectClass" value="${ldap.group.groupObjectClass}"/>
 		<property name="groupTestFilter" value="${ldap.group.testFilter}"/>
 		<!-- User parameters -->
-		<property name="userAttributesAsString" value="${ldap.attributes}"/>
+		<property name="userAttributes">
+		  <description> LDAP attributes to retrieve. </description>
+		  <list>
+		    <value>${ldap.displayNameAttribute}</value>
+		    <value>${ldap.emailAttribute}</value>
+		    <value>${ldap.pagerAttribute}</value>
+		    <value>${ldap.termsOfUseAttribute}</value>
+		    <value>${ldap.displayNameAttribute}</value>
+		    <value>${ldap.firstNameAttribute}</value>
+		    <value>${ldap.lastNameAttribute}</value>
+		  </list>
+		</property>
 		<property name="userCacheName" value=""/>
 		<property name="userDnSubPath" value="${ldap.dnSubPath}"/>
 		<property name="userIdAttribute" value="${ldap.uidAttribute}"/>
 		<property name="userSearchAttribute" value="${ldap.searchAttribute}"/>
-		<property name="userSearchDisplayedAttributes" value="${ldap.searchDisplayedAttributes}"/>
+		<property name="userSearchDisplayedAttributes" value="cn"/> <!-- unused -->
 		<property name="userDisplayName" value="${ldap.displayNameAttribute}"/>
 		<property name="firstNameAttribute" value="${ldap.firstNameAttribute}"/>
 		<property name="lastNameAttribute" value="${ldap.lastNameAttribute}"/>
