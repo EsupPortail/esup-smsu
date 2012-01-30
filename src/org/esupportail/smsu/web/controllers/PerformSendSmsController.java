@@ -112,7 +112,7 @@ public class PerformSendSmsController extends AbstractContextAwareController {
 
 		if (!recipientValidation()) return null;
 
-				// récupération du user
+				// recuperation du user
 				String login;
 				User currentUser = getCurrentUser();
 				if (currentUser != null) {

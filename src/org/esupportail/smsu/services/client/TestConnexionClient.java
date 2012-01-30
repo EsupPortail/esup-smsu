@@ -28,7 +28,7 @@ public class TestConnexionClient {
 	public String testConnexion() {
 		String response;
 		try {
-		//	logger.debug("récupération du bean");
+		//	logger.debug("recuperation du bean");
 		//TestConnexion remoteService = (TestConnexion) BeanUtils.getBean(BEAN_NAME);
 	
 		

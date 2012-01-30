@@ -363,7 +363,7 @@ public class SendSmsManager  {
 				if (mailRecipient == null) {
 					mailRecipient = new MailRecipient(null, addresse, login);
 				} else {
-					// cas tordu d'un destinataire sans login remont�.
+					// cas tordu d'un destinataire sans login
 					if (mailRecipient.getLogin() == null) {
 						mailRecipient.setLogin(login);
 					}
@@ -817,7 +817,7 @@ public class SendSmsManager  {
 			final String mess = 
 			    "Message necessite approbation : nombre maximum de sms par envoi pour le groupe d'envoi [" + 
 			    groupSender.getLabel() + 
-			    "] et groupe associ� [" + cGroup.getLabel() + 
+			    "] et groupe associated [" + cGroup.getLabel() + 
 			    "]. Essai d'envoi de " + nbToSend + " message(s), nombre max par envoi = " + quotaOrder;
 			logger.info(mess);
 			return false;
@@ -829,11 +829,11 @@ public class SendSmsManager  {
 
 		if (logger.isDebugEnabled()) {
 			final String mess = 
-			    "V�rification du quota front office pour le groupe d'envoi [" + 
+			    "Verification du quota front office pour le groupe d'envoi [" + 
 			    groupSender.getLabel() + 
-			    "] et groupe associ� [" + cGroup.getLabel() + 
+			    "] et groupe associated [" + cGroup.getLabel() + 
 			    "]. Essai d'envoi de " + nbToSend + " message(s), quota = " + cGroup.getQuotaSms() + 
-			    " , consomm� = " + cGroup.getConsumedSms();
+			    " , consomme = " + cGroup.getConsumedSms();
 			logger.warn(mess);
 		}
 		if (cGroup.checkQuotaSms(nbToSend)) {
@@ -841,8 +841,8 @@ public class SendSmsManager  {
 		} else {
 			final String mess = 
 			    "Erreur de quota pour le groupe d'envoi [" + groupSender.getLabel() + 
-			    "] et groupe associ� [" + cGroup.getLabel() + "]. Essai d'envoi de " + nbToSend + 
-			    " message(s), quota = " + cGroup.getQuotaSms() + " , consomm� = " + cGroup.getConsumedSms();
+			    "] et groupe associated [" + cGroup.getLabel() + "]. Essai d'envoi de " + nbToSend + 
+			    " message(s), quota = " + cGroup.getQuotaSms() + " , consomme = " + cGroup.getConsumedSms();
 			logger.warn(mess);
 			throw new CreateMessageException.GroupQuotaException(cGroup.getLabel());
 		}

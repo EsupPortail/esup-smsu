@@ -42,13 +42,13 @@ public class InitSSLParameters implements InitializingBean{
 	public void afterPropertiesSet() throws Exception {
 		System.setProperty("javax.net.ssl.keyStore",
 				this.keyStore);
-		logger.info("keystore utilisé : " + this.keyStore);
+		logger.info("used keystore: " + this.keyStore);
 		System.setProperty("javax.net.ssl.keyStorePassword", 
 				this.keyStorePassword);
 		
 		System.setProperty("javax.net.ssl.trustStore",
 				this.trustStore);
-		logger.info("keystore utilisé : " + this.keyStore);
+		logger.info("used trustStore: " + this.trustStore);
 		System.setProperty("javax.net.ssl.trustStorePassword", 
 				this.trustStorePassword);
 	}

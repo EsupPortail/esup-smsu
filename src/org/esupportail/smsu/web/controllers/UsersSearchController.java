@@ -115,7 +115,7 @@ public class UsersSearchController extends AbstractContextAwareController {
 		if (this.ldapUid != null) {
 			if (this.ldapUid.length() > 0 ) {
 				if (logger.isDebugEnabled()) {
-					logger.debug("Recherche d'utilisateurs à partir du token : " + this.ldapUid);
+					logger.debug("Recherche d'utilisateurs a partir du token : " + this.ldapUid);
 				}
 				if (logger.isDebugEnabled()) {
 					logger.debug("Chosen service ? => " + service);
@@ -147,7 +147,7 @@ public class UsersSearchController extends AbstractContextAwareController {
 					if (logger.isDebugEnabled()) {
 						logger.debug("ajout de la personne : uid =" + userId 
 								+ " displayName=" + displayName 
-								+ " phone=" + phone + " à la liste");
+								+ " phone=" + phone + " a la liste");
 					}
 					recipient = new  SingleUserRecipient(displayName, userId, userId, phone);
 					ldapUsers.add(recipient);
@@ -197,13 +197,13 @@ public class UsersSearchController extends AbstractContextAwareController {
 		if (this.ldapFilter != null) {
 			if (this.ldapFilter.length() > 0 ) {
 				if (logger.isDebugEnabled()) {
-					logger.debug("Exécution de la requete utilisateur : " + this.ldapFilter);
+					logger.debug("Execution de la requete utilisateur : " + this.ldapFilter);
 				}
 				List<LdapUser> list = new ArrayList<LdapUser>();
 				try {
 					list = ldapUtils.searchLdapUsersByFilter(this.ldapFilter);
 				} catch (LdapException  e) {
-					logger.error("Erreur lors de l'exécution de la requete : [" + this.ldapFilter + "]", e);
+					logger.error("Erreur lors de l'execution de la requete : [" + this.ldapFilter + "]", e);
 					addErrorMessage(null, "SENDSMS.MESSAGE.LDAPREQUESTERROR");
 				}
 				String displayName;
@@ -221,7 +221,7 @@ public class UsersSearchController extends AbstractContextAwareController {
 					if (logger.isDebugEnabled()) {
 						logger.debug("ajout de la personne : uid =" + userId 
 								+ " displayName=" + displayName 
-								+ " phone=" + phone + " à la liste");
+								+ " phone=" + phone + " a la liste");
 					}
 					
 					if (phone == null) {

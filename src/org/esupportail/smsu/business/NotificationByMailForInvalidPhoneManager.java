@@ -81,7 +81,7 @@ public class NotificationByMailForInvalidPhoneManager {
 			}
 		} catch (Exception e) {
 			if (logger.isDebugEnabled()) {
-				logger.debug("Probl�me de connextion Web Service !!!");
+				logger.debug("Probleme de connexion Web Service !!!");
 			}
 		}
 		

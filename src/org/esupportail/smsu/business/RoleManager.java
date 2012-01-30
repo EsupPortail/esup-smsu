@@ -84,7 +84,7 @@ public class RoleManager {
 				isUpdateable = false;
 			}
 				
-			// Role de l'utilisateur connect� n'est pas supprimable ni modifiable
+			// Role de l'utilisateur connected n'est pas supprimable ni modifiable
 			if (idRoles.contains(role.getId())) {
 				isDeletable = false;
 				isUpdateable = false;
