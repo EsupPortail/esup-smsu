@@ -133,24 +133,17 @@ public class UsersSearchController extends AbstractContextAwareController {
 				}
 
 				List<LdapUser> list = ldapUtils.searchConditionFriendlyLdapUsersByToken(
-									  this.ldapUid, serviceKey);
-				String displayName;
-				String phone;
-				String userId;
-				SingleUserRecipient recipient;
-				
-				
+									  this.ldapUid, serviceKey);			
 				for (LdapUser user : list) {
-					userId = user.getId();
-					displayName = user.getAttribute(userDisplayName) + " (" + user.getId() + ")";
-					phone = user.getAttribute(userPagerAttribute);
+					String userId = user.getId();
+					String displayName = user.getAttribute(userDisplayName) + " (" + user.getId() + ")";
+					String phone = user.getAttribute(userPagerAttribute);
 					if (logger.isDebugEnabled()) {
 						logger.debug("ajout de la personne : uid =" + userId 
 								+ " displayName=" + displayName 
 								+ " phone=" + phone + " a la liste");
 					}
-					recipient = new  SingleUserRecipient(displayName, userId, userId, phone);
-					ldapUsers.add(recipient);
+					ldapUsers.add(new SingleUserRecipient(displayName, userId, userId, phone));
 				}
 				if (ldapUsers.size() == 0) {
 					addInfoMessage("formGeneral:ldapUid", "SENDSMS.MESSAGE.NOUSERFOUND");
