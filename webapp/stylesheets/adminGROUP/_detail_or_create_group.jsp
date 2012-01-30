@@ -47,12 +47,8 @@
 				</e:inputText>
 				<f:verbatim>&nbsp;&nbsp;&nbsp;&nbsp;</f:verbatim>
 			</h:panelGroup>
-			<h:panelGroup>
-				<f:verbatim> </f:verbatim>
-			</h:panelGroup>
-			<h:panelGroup>
-				<f:verbatim> </f:verbatim>
-			</h:panelGroup>
+			<h:panelGroup> <f:verbatim> </f:verbatim> </h:panelGroup>
+			<h:panelGroup> <f:verbatim> </f:verbatim> </h:panelGroup>
                     <% } %>
 			
 			<e:outputLabel value="#{msgs['GROUPE.ID']}" for="GName" />
@@ -64,12 +60,8 @@
 				<f:verbatim>&nbsp;&nbsp;&nbsp;&nbsp;</f:verbatim>
 				<e:message for="GName" />
 			</h:panelGroup>
-			<h:panelGroup>
-				<f:verbatim> </f:verbatim>
-			</h:panelGroup>
-			<h:panelGroup>
-				<f:verbatim> </f:verbatim>
-			</h:panelGroup>
+			<h:panelGroup> <f:verbatim> </f:verbatim> </h:panelGroup>
+			<h:panelGroup> <f:verbatim> </f:verbatim> </h:panelGroup>
 
 			<e:outputLabel value="#{msgs['ACCOUNT.NAME']}" for="AName" />
 			<h:panelGroup>
@@ -115,12 +107,8 @@
 			<%
 				}
 			%>
-			<h:panelGroup>
-				<f:verbatim> </f:verbatim>
-			</h:panelGroup>
-			<h:panelGroup>
-				<f:verbatim> </f:verbatim>
-			</h:panelGroup>
+			<h:panelGroup> <f:verbatim> </f:verbatim> </h:panelGroup>
+			<h:panelGroup> <f:verbatim> </f:verbatim> </h:panelGroup>
 			<%
 				if (groupsManagerController
 						.isFieldAuthorized(FonctionName.FCTN_GESTIONS_RESPONSABLES)) {
@@ -152,12 +140,8 @@
 				</e:dataTable>
 				<%--	</e:form>--%>
 			</h:panelGroup>
-			<h:panelGroup>
-				<f:verbatim> </f:verbatim>
-			</h:panelGroup>
-			<h:panelGroup>
-				<f:verbatim> </f:verbatim>
-			</h:panelGroup>
+			<h:panelGroup> <f:verbatim> </f:verbatim> </h:panelGroup>
+			<h:panelGroup> <f:verbatim> </f:verbatim> </h:panelGroup>
 			<%
 				}
 			%>
@@ -189,12 +173,8 @@
 				</e:dataTable>
 				<%--	</e:form>--%>
 			</h:panelGroup>
-			<h:panelGroup>
-				<f:verbatim> </f:verbatim>
-			</h:panelGroup>
-			<h:panelGroup>
-				<f:verbatim> </f:verbatim>
-			</h:panelGroup>
+			<h:panelGroup> <f:verbatim> </f:verbatim> </h:panelGroup>
+			<h:panelGroup> <f:verbatim> </f:verbatim> </h:panelGroup>
 
 
 	            <% if (!create_group) { %>
@@ -204,12 +184,8 @@
 					value="#{groupsManagerController.group.quotaSms}" maxlength="10"
 					disabled="true" style="background-color:#cecece;" />
 			</h:panelGroup>
-			<h:panelGroup>
-				<f:verbatim> </f:verbatim>
-			</h:panelGroup>
-			<h:panelGroup>
-				<f:verbatim> </f:verbatim>
-			</h:panelGroup>
+			<h:panelGroup> <f:verbatim> </f:verbatim> </h:panelGroup>
+			<h:panelGroup> <f:verbatim> </f:verbatim> </h:panelGroup>
                     <% } %>
 
 			<%
@@ -240,12 +216,8 @@
 				<e:message for="quotaAdd" />
 			     <% } %>
 			</h:panelGroup>
-			<h:panelGroup>
-				<f:verbatim> </f:verbatim>
-			</h:panelGroup>
-			<h:panelGroup>
-				<f:verbatim> </f:verbatim>
-			</h:panelGroup>
+			<h:panelGroup> <f:verbatim> </f:verbatim> </h:panelGroup>
+			<h:panelGroup> <f:verbatim> </f:verbatim> </h:panelGroup>
 			<%
 				}
 			%>
@@ -272,23 +244,15 @@
 			<%
 				}
 			%>
-			<h:panelGroup>
-				<f:verbatim> </f:verbatim>
-			</h:panelGroup>
-			<h:panelGroup>
-				<f:verbatim> </f:verbatim>
-			</h:panelGroup>
+			<h:panelGroup> <f:verbatim> </f:verbatim> </h:panelGroup>
+			<h:panelGroup> <f:verbatim> </f:verbatim> </h:panelGroup>
 		     <% if (!create_group) { %>
 			<e:outputLabel value="#{msgs['GROUPE.QUOTA.CONSUMEDSMS']}"
 				for="consumedSms" />
 			<e:inputText value="#{groupsManagerController.group.consumedSms}"
 				maxlength="10" disabled="true" style="background-color:#cecece;" />
-			<h:panelGroup>
-				<f:verbatim> </f:verbatim>
-			</h:panelGroup>
-			<h:panelGroup>
-				<f:verbatim> </f:verbatim>
-			</h:panelGroup>
+			<h:panelGroup> <f:verbatim> </f:verbatim> </h:panelGroup>
+			<h:panelGroup> <f:verbatim> </f:verbatim> </h:panelGroup>
 		     <% } %>
 		</e:panelGrid>
 
