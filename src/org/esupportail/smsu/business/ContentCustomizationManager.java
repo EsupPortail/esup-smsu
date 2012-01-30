@@ -180,10 +180,6 @@ public class ContentCustomizationManager {
 				logger.debug("User not found : " + expGroupName);
 			}
 			groupName = ldapUtils.getGroupNameByUid(expGroupName);
-			if (groupName == null) {
-				logger.debug("Group not found : " + expGroupName);
-				groupName = expGroupName;
-			}	
 		}
 		 
 		if (logger.isDebugEnabled()) {

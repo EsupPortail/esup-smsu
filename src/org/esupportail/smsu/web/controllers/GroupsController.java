@@ -105,10 +105,6 @@ public class GroupsController extends AbstractContextAwareController {
 			} catch (LdapUserNotFoundException e) {
 				
 				groupDisplayName = ldapUtils.getGroupNameByUid(groupLabel);
-				if (groupDisplayName == null) {
-					
-					groupDisplayName = groupLabel;
-				}	
 			}
 			groupItems.add(new SelectItem(grp.getId().toString(), groupDisplayName));
 		}

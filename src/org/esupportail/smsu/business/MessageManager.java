@@ -132,9 +132,6 @@ public class MessageManager {
 			} catch (LdapUserNotFoundException e) {
 
 				groupName = ldapUtils.getGroupNameByUid(groupLabel);
-				if (groupName == null) {
-					groupName = groupLabel;
-				}	
 			} 
 
 		return groupName;

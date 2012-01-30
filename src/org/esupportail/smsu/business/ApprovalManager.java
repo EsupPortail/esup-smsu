@@ -140,9 +140,6 @@ public class ApprovalManager {
 			} catch (LdapUserNotFoundException e) {
 
 				groupName = ldapUtils.getGroupNameByUid(groupLabel);
-				if (groupName == null) {
-					groupName = groupLabel;
-				}	
 			} 
 
 		return groupName;
