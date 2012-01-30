@@ -43,22 +43,6 @@ public class LdapUtilsHelpers {
 	 */
 	private String userIdAttribute;
 	
-	
-	/**
-	 * The display name ldap attribute name.
-	 */
-	private String userDisplayName;
-	
-	/**
-	 * The attribute first name in the ldap.
-	 */
-	private String firstNameAttribute;
-
-	/**
-	 * The attribute last name in the ldap.
-	 */
-	private String lastNameAttribute;
-	
 	/**
 	 * The email ldap attribute name.
 	 */
@@ -84,80 +68,6 @@ public class LdapUtilsHelpers {
 	 */
 	public LdapUtilsHelpers() {
 		super();
-	}
-	/**
-	 * Get the user display name from the ldap.
-	 * Return null if no exist.
-	 * @param uid
-	 * @return
-	 */
-	public String getUserDisplayNameByUid(final String uid) throws LdapUserNotFoundException  {
-		final String displayName = getUniqueLdapAttributeByUidAndName(uid, userDisplayName);
-		return displayName;
-	}
-	
-	/**
-	 * Get the user first name in the ldap.
-	 * @param uid
-	 * @return
-	 * @throws LdapUserNotFoundException
-	 */
-	public String getUserFirstNameByUid(final String uid) throws LdapUserNotFoundException {
-		final String firstName = getUniqueLdapAttributeByUidAndName(uid, firstNameAttribute);
-		return firstName;
-	}
-
-	/**
-	 * Get the user last name in the ldap.
-	 * @param uid
-	 * @return
-	 * @throws LdapUserNotFoundException
-	 */
-	public String getUserLastNameByUid(final String uid) throws LdapUserNotFoundException {
-		final String lastName = getUniqueLdapAttributeByUidAndName(uid, lastNameAttribute);
-		return lastName;
-	}
-
-
-	
-	/**
-	 * Get the user email adress from the ldap.
-	 * Return null if no exist.
-	 * @param uid
-	 * @return
-	 */
-	public String getUserEmailAdressByUid(final String uid) throws LdapUserNotFoundException {
-		final String email = getUniqueLdapAttributeByUidAndName(uid, userEmailAttribute);
-		return email;
-	}
-	
-	/**
-	 * Get the user pager from the ldap.
-	 * Return null if no exist.
-	 * @param uid
-	 * @return
-	 */
-	public String getUserPagerByUid(final String uid) throws LdapUserNotFoundException {
-		final String pager = getUniqueLdapAttributeByUidAndName(uid, userPagerAttribute);
-		return pager;
-	}
-	
-	/**
-	 * 
-	 * @param uid
-	 * @param name
-	 * @return
-	 */
-	private String getUniqueLdapAttributeByUidAndName(final String uid, 
-			final String name) throws LdapUserNotFoundException {
-		String retVal = null;
-		final List<String> tmp = getLdapAttributesByUidAndName(uid, name);
-		
-		if (tmp.size() > 0) {
-			retVal = tmp.get(0);
-		}
-		
-		return retVal;
 	}
 	
 	
@@ -356,34 +266,7 @@ public class LdapUtilsHelpers {
 	 */
 	public void setUserTermsOfUseAttribute(final String userTermsOfUseAttribute) {
 		this.userTermsOfUseAttribute = userTermsOfUseAttribute;
-	}
-	
-	/**
-	 * Standard setter used by spring.
-	 * @param userDisplayName
-	 */
-	public void setUserDisplayName(final String userDisplayName) {
-		this.userDisplayName = userDisplayName;
-	}
-	
-	
-	/**
-	 * Standard setter used by spring.
-	 * @param firstNameAttribute
-	 */
-	public void setFirstNameAttribute(final String firstNameAttribute) {
-		this.firstNameAttribute = firstNameAttribute;
-	}
-
-
-	/**
-	 * Standard setter used by spring.
-	 * @param lastNameAttribute
-	 */
-	public void setLastNameAttribute(final String lastNameAttribute) {
-		this.lastNameAttribute = lastNameAttribute;
-	}
-	
+	}	
 	
 	/**
 	 * Standard setter used by Spring.

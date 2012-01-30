@@ -68,6 +68,26 @@ public class LdapUtils {
 	 * used to manage group (read only).
 	 */
 	private PortalService portalService;
+	
+	/**
+	 * The display name ldap attribute name.
+	 */
+	private String userDisplayName;
+	
+	/**
+	 * The attribute first name in the ldap.
+	 */
+	private String firstNameAttribute;
+
+	/**
+	 * The attribute last name in the ldap.
+	 */
+	private String lastNameAttribute;
+
+	/**
+	 * The email ldap attribute name.
+	 */
+	private String userEmailAttribute;
 
 	/**
 	 * the attribute pager name in the ldap.
@@ -123,14 +143,19 @@ public class LdapUtils {
 		return ldapUser;	
 	}
 	
+	private String getUniqueLdapAttributeByUidAndName(final String uid, 
+			final String name) throws LdapUserNotFoundException {
+		final List<String> tmp = getLdapAttributesByUidAndName(uid, name);		
+		return tmp.size() > 0 ? tmp.get(0) : null;
+	}
+	
 	/**
 	 * Return the display name of the specified user.
 	 * @param uid
 	 * @return
 	 */
 	public String getUserDisplayNameByUserUid(final String uid) throws LdapUserNotFoundException {
-		final String retVal = ldapUtilsHelpers.getUserDisplayNameByUid(uid);
-		return retVal;
+		return getUniqueLdapAttributeByUidAndName(uid, userDisplayName);
 	}
 	
 	
@@ -141,8 +166,7 @@ public class LdapUtils {
 	 * @throws LdapUserNotFoundException
 	 */
 	public String getUserFirstNameByUid(final String uid) throws LdapUserNotFoundException {
-		final String firstName = ldapUtilsHelpers.getUserFirstNameByUid(uid);
-		return firstName;
+		return getUniqueLdapAttributeByUidAndName(uid, firstNameAttribute);
 	}
 	
 	/**
@@ -152,8 +176,7 @@ public class LdapUtils {
 	 * @throws LdapUserNotFoundException
 	 */
 	public String getUserLastNameByUid(final String uid) throws LdapUserNotFoundException {
-		final String lastName = ldapUtilsHelpers.getUserLastNameByUid(uid);
-		return lastName;
+		return getUniqueLdapAttributeByUidAndName(uid, lastNameAttribute);
 	}
 	
 	
@@ -164,8 +187,7 @@ public class LdapUtils {
 	 * @return
 	 */
 	public String getUserEmailAdressByUid(final String uid) throws LdapUserNotFoundException {
-		final String retVal = ldapUtilsHelpers.getUserEmailAdressByUid(uid);
-		return retVal;
+		return getUniqueLdapAttributeByUidAndName(uid, userEmailAttribute);
 	}
 	
 	/**
@@ -174,8 +196,7 @@ public class LdapUtils {
 	 * @return
 	 */
 	public String getUserPagerByUid(final String uid) throws LdapUserNotFoundException {
-		final String retVal = ldapUtilsHelpers.getUserPagerByUid(uid);
-		return retVal;
+		return getUniqueLdapAttributeByUidAndName(uid, userPagerAttribute);
 	}
 
 	/**
@@ -905,6 +926,38 @@ public class LdapUtils {
 	 */
 	public void setPortalService(final PortalService portalService) {
 		this.portalService = portalService;
+	}
+	
+	/**
+	 * Standard setter used by spring.
+	 * @param userDisplayName
+	 */
+	public void setUserDisplayName(final String userDisplayName) {
+		this.userDisplayName = userDisplayName;
+	}
+	
+	/**
+	 * Standard setter used by spring.
+	 * @param firstNameAttribute
+	 */
+	public void setFirstNameAttribute(final String firstNameAttribute) {
+		this.firstNameAttribute = firstNameAttribute;
+	}
+
+	/**
+	 * Standard setter used by spring.
+	 * @param lastNameAttribute
+	 */
+	public void setLastNameAttribute(final String lastNameAttribute) {
+		this.lastNameAttribute = lastNameAttribute;
+	}
+
+	/**
+	 * Standard setter used by Spring.
+	 * @param ldapEmailAttribute
+	 */
+	public void setUserEmailAttribute(final String userEmailAttribute) {
+		this.userEmailAttribute = userEmailAttribute;
 	}
 
 	/**

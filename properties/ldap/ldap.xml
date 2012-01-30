@@ -73,9 +73,6 @@
 		<property name="ldapService" ref="ldapService"/>
 		<property name="userIdAttribute" value="${ldap.uidAttribute}"/>
 		<property name="userSearchAttribute" value="${ldap.searchAttribute}"/>
-		<property name="userDisplayName" value="${ldap.displayNameAttribute}"/>
-		<property name="firstNameAttribute" value="${ldap.firstNameAttribute}"/>
-		<property name="lastNameAttribute" value="${ldap.lastNameAttribute}"/>
 		<property name="userEmailAttribute" value="${ldap.emailAttribute}"/>
 		<property name="userPagerAttribute" value="${ldap.pagerAttribute}"/>
 		<property name="userTermsOfUseAttribute" value="${ldap.termsOfUseAttribute}"/>
@@ -183,6 +180,10 @@
 		<property name="ldapUtilsHelpers" ref="ldapUtilsHelpers"/>
 		<property name="writeableLdapUserService" ref="writeableLdapUserService"/>
 		<property name="portalService" ref="portalService"/>
+		<property name="userDisplayName" value="${ldap.displayNameAttribute}"/>
+		<property name="firstNameAttribute" value="${ldap.firstNameAttribute}"/>
+		<property name="lastNameAttribute" value="${ldap.lastNameAttribute}"/>
+		<property name="userEmailAttribute" value="${ldap.emailAttribute}"/>
 		<property name="userPagerAttribute" value="${ldap.pagerAttribute}"/>
 		<property name="userTermsOfUseAttribute" value="${ldap.termsOfUseAttribute}"/>
 		<property name="userTermsOfUseAttributeEtiquetteSMSU" value="${ldap.termsOfUseAttributeEtiquetteSMSU}"/>
