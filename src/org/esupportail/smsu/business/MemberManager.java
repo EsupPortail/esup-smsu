@@ -239,6 +239,7 @@ public class MemberManager {
 	}
 
 	/**
+	 * try to find mobile phone numbers in various LDAP attributes
 	 * @param userIdentifier
 	 * @return the list of available phone numbers
 	 * @throws LdapUserNotFoundException
