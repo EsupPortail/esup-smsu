@@ -1,9 +1,11 @@
 package org.esupportail.smsu.services.ldap;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -12,6 +14,7 @@ import org.esupportail.commons.exceptions.UserNotFoundException;
 import org.esupportail.commons.services.ldap.LdapException;
 import org.esupportail.commons.services.ldap.LdapGroup;
 import org.esupportail.commons.services.ldap.LdapUser;
+import org.esupportail.commons.services.ldap.LdapUserAndGroupService;
 import org.esupportail.commons.services.ldap.WriteableLdapUserService;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
@@ -50,7 +53,12 @@ public class LdapUtils {
 	/**
 	 * used to manage user and group (read only).
 	 */
-	private SearchableLdapUserAndGroupServiceSMSUImpl ldapUserAndGroupService;
+	private LdapUserAndGroupService ldapService;
+
+	/**
+	 * used to manage user (read only)
+	 */
+	private SearchableLdapUserAndGroupServiceSMSUImpl ldapUtilsHelpers;
 	
 	/**
 	 * used to manage user (write only).
@@ -105,7 +113,7 @@ public class LdapUtils {
 		
 		LdapUser ldapUser = null;
 		try {
-			ldapUser = ldapUserAndGroupService.getLdapUser(ldapUserUid);
+			ldapUser = ldapService.getLdapUser(ldapUserUid);
 		} catch (UserNotFoundException e) {
 			final String messageStr = 
 			    "Unable to find the user with id : [" + ldapUserUid + "]";
@@ -122,7 +130,7 @@ public class LdapUtils {
 	 * @return
 	 */
 	public String getUserDisplayNameByUserUid(final String uid) throws LdapUserNotFoundException {
-		final String retVal = ldapUserAndGroupService.getUserDisplayNameByUid(uid);
+		final String retVal = ldapUtilsHelpers.getUserDisplayNameByUid(uid);
 		return retVal;
 	}
 	
@@ -134,7 +142,7 @@ public class LdapUtils {
 	 * @throws LdapUserNotFoundException
 	 */
 	public String getUserFirstNameByUid(final String uid) throws LdapUserNotFoundException {
-		final String firstName = ldapUserAndGroupService.getUserFirstNameByUid(uid);
+		final String firstName = ldapUtilsHelpers.getUserFirstNameByUid(uid);
 		return firstName;
 	}
 	
@@ -145,7 +153,7 @@ public class LdapUtils {
 	 * @throws LdapUserNotFoundException
 	 */
 	public String getUserLastNameByUid(final String uid) throws LdapUserNotFoundException {
-		final String lastName = ldapUserAndGroupService.getUserLastNameByUid(uid);
+		final String lastName = ldapUtilsHelpers.getUserLastNameByUid(uid);
 		return lastName;
 	}
 	
@@ -157,7 +165,7 @@ public class LdapUtils {
 	 * @return
 	 */
 	public String getUserEmailAdressByUid(final String uid) throws LdapUserNotFoundException {
-		final String retVal = ldapUserAndGroupService.getUserEmailAdressByUid(uid);
+		final String retVal = ldapUtilsHelpers.getUserEmailAdressByUid(uid);
 		return retVal;
 	}
 	
@@ -167,7 +175,7 @@ public class LdapUtils {
 	 * @return
 	 */
 	public String getUserPagerByUid(final String uid) throws LdapUserNotFoundException {
-		final String retVal = ldapUserAndGroupService.getUserPagerByUid(uid);
+		final String retVal = ldapUtilsHelpers.getUserPagerByUid(uid);
 		return retVal;
 	}
 
@@ -186,7 +194,7 @@ public class LdapUtils {
 	 * @return
 	 */
 	private List<String> getUserTermsOfUseByUid(final String uid) throws LdapUserNotFoundException {
-		return ldapUserAndGroupService.getLdapAttributesByUidAndName(uid, userTermsOfUseAttribute);
+		return ldapUtilsHelpers.getLdapAttributesByUidAndName(uid, userTermsOfUseAttribute);
 	}
 
 	private String completeCgKeyName() {
@@ -261,14 +269,24 @@ public class LdapUtils {
 	private void setOrClearLdapAttributeByUidAndName(final String uid, final String name, final String etiquette, final List<String> value) 
 					throws LdapUserNotFoundException, LdapWriteException {
 		final LdapUser ldapUser = getLdapUserByUserUid(uid);
-		List<String> currentValues = ldapUser.getAttributes().get(name);
-		List<String> allValues = computeAttributeValues(currentValues, etiquette, value);
-		// flush all parameter to update only specified attribute
-		ldapUser.getAttributes().clear();
-		ldapUser.getAttributes().put(name, allValues);
+
+		Map<String, List<String>> attrs = ldapUser.getAttributes();
+		List<String> allValues = computeAttributeValues(attrs.get(name), etiquette, value);
+		attrs.put(name, allValues);
+
+		// call updateLdapUser with only the attribute we want to write in LDAP
+		ldapUser.setAttributes(singletonMap(name, allValues));
 		writeableLdapUserService.updateLdapUser(ldapUser);
+		ldapUser.setAttributes(attrs); // restore other attributes
 
 		checkAttributeWriteByUidAndNameSucceeded(uid, name, allValues);
+
+	}
+
+	private <A, B> Map<A, B> singletonMap(A key, B value) {
+		Map<A, B> r = new HashMap<A, B>();
+		r.put(key, value);
+		return r;
 	}
 
 	private List<String> computeAttributeValues(List<String> currentValues,	final String etiquette, final List<String> wantedValues) {
@@ -335,7 +353,7 @@ public class LdapUtils {
 	 * throws LdapGroupNotFoundException, LdapException {
 		
 		final LdapGroup ldapGroup = getLdapGroupByGroupId(ldapGroupId);
-		final List<LdapUser> ldapUserList = ldapUserAndGroupService.getMembers(ldapGroup);
+		final List<LdapUser> ldapUserList = ldapGroupService.getMembers(ldapGroup);
 		
 		return ldapUserList;
 	}*/
@@ -352,7 +370,7 @@ public class LdapUtils {
  * 						throws LdapGroupNotFoundException, LdapException {
 		LdapGroup ldapGroup = null;
 		try {
-			ldapGroup = ldapUserAndGroupService.getLdapGroup(ldapGroupId);
+			ldapGroup = ldapGroupService.getLdapGroup(ldapGroupId);
 		} catch (GroupNotFoundException e) {
 			final String messageStr = "Unable to find the group with id : [" + ldapGroupId + "]";
 			logger.warn(messageStr, e);
@@ -427,7 +445,7 @@ public class LdapUtils {
 	 * @return a list of users
 	 */
 	public List<LdapUser> searchLdapUsersByToken(final String token) {
-		final List<LdapUser> userList = ldapUserAndGroupService.getLdapUsersFromToken(token);
+		final List<LdapUser> userList = ldapUtilsHelpers.getLdapUsersFromToken(token);
 		return userList;
 	}
 	
@@ -437,7 +455,7 @@ public class LdapUtils {
 	 * @throws LdapException 
 	 */
 	public List<LdapUser> searchLdapUsersByFilter(final String filter) throws LdapException {
-		final List<LdapUser> userList = ldapUserAndGroupService.getLdapUsersFromFilter(filter);
+		final List<LdapUser> userList = ldapService.getLdapUsersFromFilter(filter);
 		return userList;
 	}
 	/**
@@ -446,7 +464,7 @@ public class LdapUtils {
 	 * @return a list of users
 	 */
 	public List<LdapUser> searchLdapUsersByPhoneNumber(final String token) {
-		final List<LdapUser> userList = ldapUserAndGroupService.getLdapUsersFromPhoneNumber(token);
+		final List<LdapUser> userList = ldapUtilsHelpers.getLdapUsersFromPhoneNumber(token);
 		return userList;
 	}
 	
@@ -456,7 +474,7 @@ public class LdapUtils {
 	 * @return a list of users
 	 */
 	public List<LdapUser> searchConditionFriendlyLdapUsersByToken(final String token, final String service) {
-		return ldapUserAndGroupService.getConditionFriendlyLdapUsersFromToken(
+		return ldapUtilsHelpers.getConditionFriendlyLdapUsersFromToken(
 			token, completeCgKeyName(), mayAddEtiquette(service));
 	}
 
@@ -466,7 +484,7 @@ public class LdapUtils {
 	 * @return a list of users
 	 */
 	public List<LdapUser> getConditionFriendlyLdapUsersFromUid(final List<String> uids, final String service) {
-		return ldapUserAndGroupService.getConditionFriendlyLdapUsersFromUid(
+		return ldapUtilsHelpers.getConditionFriendlyLdapUsersFromUid(
 			uids, completeCgKeyName(), mayAddEtiquette(service));
 	}
 
@@ -528,7 +546,7 @@ public class LdapUtils {
 	 * @return a list of user mails.
 	 */
 	public List<String> getUserEmailsAdressByUids(final List<String> uids) {
-		List<String> retVal = ldapUserAndGroupService.getUserMailsByUids(uids);
+		List<String> retVal = ldapUtilsHelpers.getUserMailsByUids(uids);
 		return retVal;
 	}
 	/**
@@ -721,7 +739,7 @@ public class LdapUtils {
 	throws LdapUserNotFoundException {
 		List<String> attributes;
 		try {
-			attributes = ldapUserAndGroupService.getLdapAttributesByUidAndName(uid, name);
+			attributes = ldapUtilsHelpers.getLdapAttributesByUidAndName(uid, name);
 		} catch (LdapUserNotFoundException e) {
 			final String messageStr = "Unable to find the user with id : [" + uid + "]";
 			throw new LdapUserNotFoundException(messageStr, e);
@@ -757,7 +775,7 @@ public class LdapUtils {
 	 * @return a list of LDAP user from a list of uids.
 	 */
 	public List<LdapUser> getUsersByUids(final Iterable<String> uids) {
-		return ldapUserAndGroupService.getUsersByUids(uids);
+		return ldapUtilsHelpers.getUsersByUids(uids);
 	}
 	
 	/**
@@ -765,7 +783,7 @@ public class LdapUtils {
 	 * @return a ldap group corresponding to an id
 	 */
 	public LdapGroup getLdapGroup(final String id) {
-		return ldapUserAndGroupService.getLdapGroup(id);
+		return ldapService.getLdapGroup(id);
 	}
 	
 	/**
@@ -773,7 +791,7 @@ public class LdapUtils {
 	 * @return the string id list of a ldap group. 
 	 */
 	public List<String> getMemberIds(final LdapGroup ldapGroup) {
-		return ldapUserAndGroupService.getMemberIds(ldapGroup);
+		return ldapService.getMemberIds(ldapGroup);
 	}
 	
 	/**
@@ -810,13 +828,13 @@ public class LdapUtils {
 						logger.debug("Search group with filter : " + filter.toString());
 					}
 					// TODO : parametrer le DN dans le service au lieu d'utiliser le parametrage general du Ldap?
-					List<LdapGroup> ldapGroups = ldapUserAndGroupService.getLdapGroupsFromToken(filter.toString());
+					List<LdapGroup> ldapGroups = ldapService.getLdapGroupsFromToken(filter.toString());
 					if (ldapGroups.isEmpty()) {
 						logger.error("skipping LDAP group " + testValue + " which does not exist");
 					} else {
 						LdapGroup ldapGroup = ldapGroups.get(0);
 						List<String> uids = getMemberIds(ldapGroup);
-						List<LdapUser> usersToAdd = ldapUserAndGroupService.getConditionFriendlyLdapUsersFromUid(uids, completeCgKeyName(), serviceKey);
+						List<LdapUser> usersToAdd = ldapUtilsHelpers.getConditionFriendlyLdapUsersFromUid(uids, completeCgKeyName(), serviceKey);
 						if (logger.isDebugEnabled())
 							logger.debug("found " + uids.size() + " users in group " + testValue + " and " + usersToAdd.size() + " users having pager+CG");
 						users.addAll(usersToAdd);
@@ -833,7 +851,7 @@ public class LdapUtils {
 				}
 			}
 			if (andFilter != null) {
-				ldapUserAndGroupService.andPagerAndConditionsAndService(andFilter, completeCgKeyName(), serviceKey);
+				ldapUtilsHelpers.andPagerAndConditionsAndService(andFilter, completeCgKeyName(), serviceKey);
 
 				if (orFilter == null) {
 					orFilter = new OrFilter();
@@ -843,7 +861,7 @@ public class LdapUtils {
 		}
 		if (orFilter != null) {
 			logger.debug("getMember : person attribute search");
-			users.addAll(ldapUserAndGroupService.searchWithFilter(orFilter));
+			users.addAll(ldapUtilsHelpers.searchWithFilter(orFilter));
 		}
 		if (logger.isDebugEnabled()) {
 			logger.debug("getMembers.end");
@@ -857,11 +875,20 @@ public class LdapUtils {
 		
 	/**
 	 * Standard setter used by spring.
-	 * @param ldapUserAndGroupService
+	 * @param ldapUtilsHelpers
 	 */
-	public void setLdapUserAndGroupService(
-			final SearchableLdapUserAndGroupServiceSMSUImpl ldapUserAndGroupService) {
-		this.ldapUserAndGroupService = ldapUserAndGroupService;
+	public void setLdapUtilsHelpers(
+			final SearchableLdapUserAndGroupServiceSMSUImpl ldapUtilsHelpers) {
+		this.ldapUtilsHelpers = ldapUtilsHelpers;
+	}
+		
+	/**
+	 * Standard setter used by spring.
+	 * @param ldapUtilsHelpers
+	 */
+	public void setLdapService(
+			final LdapUserAndGroupService ldapGroupService) {
+		this.ldapService = ldapGroupService;
 	}
 	
 	/**

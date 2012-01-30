@@ -6,25 +6,22 @@ import java.util.List;
 
 import org.esupportail.commons.exceptions.UserNotFoundException;
 import org.esupportail.commons.services.ldap.LdapUser;
-import org.esupportail.commons.services.ldap.SearchableLdapUserAndGroupServiceImpl;
-import org.esupportail.commons.services.ldap.SearchableLdapUserServiceImpl;
+import org.esupportail.commons.services.ldap.LdapUserAndGroupService;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
-import org.springframework.ldap.LdapTemplate;
 import org.springframework.ldap.support.filter.AndFilter;
 import org.springframework.ldap.support.filter.EqualsFilter;
 import org.springframework.ldap.support.filter.Filter;
 import org.springframework.ldap.support.filter.OrFilter;
 import org.springframework.ldap.support.filter.WhitespaceWildcardsFilter;
-import org.springframework.util.StringUtils;
 
 /**
  * SMSU implementation of the LdapUserAndGroupService.
  * @author PRQD8824
  *
  */
-public class SearchableLdapUserAndGroupServiceSMSUImpl extends SearchableLdapUserAndGroupServiceImpl {
+public class SearchableLdapUserAndGroupServiceSMSUImpl {
 	
 	/**
 	 * serial UID.
@@ -39,7 +36,7 @@ public class SearchableLdapUserAndGroupServiceSMSUImpl extends SearchableLdapUse
 	/**
 	 * Spring template used to perform search in the ldap.
 	 */
-	private LdapTemplate ldapTemplate;
+	private LdapUserAndGroupService ldapService;
 	
 	/**
 	 * The uid ldap attribute name.
@@ -77,11 +74,6 @@ public class SearchableLdapUserAndGroupServiceSMSUImpl extends SearchableLdapUse
 	 */
 	private String userTermsOfUseAttribute;
 
-	/**
-	 * the user object class.
-	 */
-	private String userObjectClass;
-	
 	/**
 	 * The search attribute field.
 	 */
@@ -179,17 +171,8 @@ public class SearchableLdapUserAndGroupServiceSMSUImpl extends SearchableLdapUse
 			final String name) throws LdapUserNotFoundException {
 		List<String> retVal = null;
 		
-		final SearchableLdapUserServiceImpl userServiceTmp = new SearchableLdapUserServiceImpl();
-		userServiceTmp.setIdAttribute(userIdAttribute);
-		userServiceTmp.setObjectClass(userObjectClass);
-		userServiceTmp.setLdapTemplate(ldapTemplate);
-		final List<String> attrList = new LinkedList<String>();
-		attrList.add(name);
-		userServiceTmp.setAttributes(attrList);
-		userServiceTmp.afterPropertiesSet();
-
 		try {
-			final LdapUser ldapUser = userServiceTmp.getLdapUser(uid);
+			final LdapUser ldapUser = ldapService.getLdapUser(uid);
 			retVal = ldapUser.getAttributes(name);
 		} catch (UserNotFoundException e) {
 			throw new LdapUserNotFoundException("Unable to find the user with id : [" + uid + "]", e);
@@ -229,7 +212,7 @@ public class SearchableLdapUserAndGroupServiceSMSUImpl extends SearchableLdapUse
 		if (logger.isDebugEnabled()) {
 			logger.debug("LDAP filter applied : " + filterAsStr);
 		}
-		final List<LdapUser> retVal = getLdapUsersFromFilter(filterAsStr);
+		final List<LdapUser> retVal = ldapService.getLdapUsersFromFilter(filterAsStr);
 		return retVal;
 	}
 	
@@ -335,12 +318,11 @@ public class SearchableLdapUserAndGroupServiceSMSUImpl extends SearchableLdapUse
 	
 	
 	/**
-	 * Set the ldapTemplate.
-	 * @param ldapTemplate
+	 * Set the ldapService.
+	 * @param ldapService
 	 */
-	public void setLdapTemplate(final LdapTemplate ldapTemplate) {
-		super.setLdapTemplate(ldapTemplate);
-		this.ldapTemplate = ldapTemplate;		
+	public void setLdapService(final LdapUserAndGroupService ldapService) {
+		this.ldapService = ldapService;		
 	}
 	
 	/**
@@ -351,37 +333,13 @@ public class SearchableLdapUserAndGroupServiceSMSUImpl extends SearchableLdapUse
 		this.userEmailAttribute = userEmailAttribute;
 	}
 	
-	/**
-	 * Standard setter used by Spring.
-	 * @param attributes
-	 */
-	public void setUserAttributesAsString(final String attributes) {
-		final List<String> list = new LinkedList<String>();
-		for (String attribute : attributes.split(",")) {
-			if (StringUtils.hasText(attribute)) {
-				if (!list.contains(attribute)) {
-					list.add(attribute);
-				}
-			}
-		}
-		setUserAttributes(list);
-	}
-	
+
+
 	/**
 	 * Standard setter used by spring.
 	 */
 	public void setUserIdAttribute(final String idAttribute) {
-		super.setUserIdAttribute(idAttribute);
 		this.userIdAttribute = idAttribute;
-	}
-	
-	/**
-	 * Standard setter used by spring.
-	 * @param objectClass
-	 */
-	public void setUserObjectClass(final String objectClass) {
-		super.setUserObjectClass(objectClass);
-		this.userObjectClass = objectClass;
 	}
 	
 	/**
@@ -408,21 +366,6 @@ public class SearchableLdapUserAndGroupServiceSMSUImpl extends SearchableLdapUse
 		this.userDisplayName = userDisplayName;
 	}
 	
-	/**
-	 * Standard setter used by Spring.
-	 * @param attributes
-	 */
-	public void setGroupAttributesAsString(final String attributes) {
-		final List<String> list = new LinkedList<String>();
-		for (String attribute : attributes.split(",")) {
-			if (StringUtils.hasText(attribute)) {
-				if (!list.contains(attribute)) {
-					list.add(attribute);
-				}
-			}
-		}
-		setGroupAttributes(list);
-	}
 	
 	/**
 	 * Standard setter used by spring.
@@ -447,7 +390,6 @@ public class SearchableLdapUserAndGroupServiceSMSUImpl extends SearchableLdapUse
 	 * @param searchAttribute
 	 */
 	public void setUserSearchAttribute(final String searchAttribute) {
-		super.setUserSearchAttribute(searchAttribute);
 		this.searchAttribute = searchAttribute;
 	}
 

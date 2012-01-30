@@ -15,7 +15,7 @@ import org.esupportail.commons.exceptions.ConfigException;
 import org.esupportail.commons.exceptions.UserNotFoundException;
 import org.esupportail.commons.services.application.Version;
 import org.esupportail.commons.services.ldap.LdapUser;
-import org.esupportail.commons.services.ldap.LdapUserService;
+import org.esupportail.commons.services.ldap.LdapUserAndGroupService;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.commons.utils.Assert;
@@ -85,9 +85,9 @@ public class DomainServiceImpl implements DomainService, InitializingBean {
 	private DaoService daoService;
 
 	/**
-	 * {@link LdapUserService}.
+	 * {@link LdapUserAndGroupService}.
 	 */
-	private LdapUserService ldapUserService;
+	private LdapUserAndGroupService ldapService;
 
 		
 	/**
@@ -185,8 +185,8 @@ public class DomainServiceImpl implements DomainService, InitializingBean {
 	public void afterPropertiesSet() throws Exception {
 		Assert.notNull(this.daoService, 
 				"property daoService of class " + this.getClass().getName() + " can not be null");
-		Assert.notNull(this.ldapUserService, 
-				"property ldapUserService of class " + this.getClass().getName() + " can not be null");
+		Assert.notNull(this.ldapService, 
+				"property ldapService of class " + this.getClass().getName() + " can not be null");
 		Assert.hasText(this.displayNameLdapAttribute, 
 				"property displayNameLdapAttribute of class " + this.getClass().getName() 
 				+ " can not be null");
@@ -224,7 +224,7 @@ public class DomainServiceImpl implements DomainService, InitializingBean {
 	 * @see org.esupportail.smsu.domain.DomainService#getUser(java.lang.String)
 	 */
 	public User getUser(final String id) throws UserNotFoundException {
-			LdapUser ldapUser = this.ldapUserService.getLdapUser(id);
+			LdapUser ldapUser = this.ldapService.getLdapUser(id);
 			User user = new User();
 			user.setId(ldapUser.getId());
 			setUserInfo(user, ldapUser);
@@ -299,10 +299,10 @@ public class DomainServiceImpl implements DomainService, InitializingBean {
 	}
 
 	/**
-	 * @param ldapUserService the ldapUserService to set
+	 * @param ldapService the ldapService to set
 	 */
-	public void setLdapUserService(final LdapUserService ldapUserService) {
-		this.ldapUserService = ldapUserService;
+	public void setLdapService(final LdapUserAndGroupService ldapService) {
+		this.ldapService = ldapService;
 	}
 
 	//////////////////////////////////////////////////////////////
