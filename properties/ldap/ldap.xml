@@ -14,33 +14,12 @@
 
 	<bean id="ldapUserService"
 		class="org.esupportail.commons.services.ldap.SearchableLdapUserServiceImpl"
-		lazy-init="true"
-		>
-		<description>
-			This bean provides LDAP facilities to all the other beans.
-			It must implement interface
-			org.esupportail.commons.services.ldap.LdapUserService. This service is
-			used both for searching the attributes of connected users
-			and also for searchin users (get their id from a part of
-			their identity). In the example below, if "smith" is the
-			search string, the search filter will be "cn=*SMITH*", and
-			the corresponding users' ids will be found in attribute uid.
-			This class caches the results of the LDAP requests and
-			supports statistics retrieval.
-		</description>
+		lazy-init="true">
 		<property name="i18nService" ref="i18nService">
-			<description>
-				The i18nService, used for statistics.
-			</description>
+			<description> The i18nService, used for statistics. </description>
 		</property>
-		<property name="ldapTemplate" ref="ldapTemplate">
-			<description>
-				The LDAP template used to access the LDAP directory.
-			</description>
-		</property>
-		<property name="dnSubPath" value="${ldap.dnSubPath}">
-			<description>The DN sub path.</description>
-		</property>
+		<property name="ldapTemplate" ref="ldapTemplate" />
+		<property name="dnSubPath" value="${ldap.dnSubPath}" />
 		<property name="idAttribute" value="${ldap.uidAttribute}">
 			<description>
 				The LDAP attribute that stores the unique identifier of
@@ -60,16 +39,10 @@
 		    <value>${ldap.lastNameAttribute}</value>
 		  </list>
 		</property>
-		<property name="searchAttribute" value="${ldap.searchAttribute}">
-			<description>The LDAP attribute to search for.</description>
-		</property>
+		<property name="searchAttribute" value="${ldap.searchAttribute}" />
 		<property name="searchDisplayedAttributesAsString" value="cn" /> <!-- unused -->
-		<property name="cacheManager" ref="cacheManager">
-			<description>The cache manager, required.</description>
-		</property>
-		<property name="cacheName" value="">
-			<description>The name of the cache, optional.</description>
-		</property>
+		<property name="cacheManager" ref="cacheManager" />
+		<property name="cacheName" value="" />
 		<property name="testFilter" value="${ldap.testFilter}" >
 			<description>
 				The LDAP filter that will be taken into account when using 
