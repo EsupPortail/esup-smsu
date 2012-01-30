@@ -5,7 +5,7 @@ authorized="#{rolesController.pageAuthorized}">
 	<%@include file="../_navigation.jsp"%>
 	<e:section value="#{msgs['ROLE.UPDATE.TITLE']}" />
 
-	<!--<e:messages showDetail="true" showSummary="true"/>-->
+	<%--<e:messages showDetail="true" showSummary="true"/>--%>
 	<e:form id="update">
 	        
 		<e:panelGrid columns="2" >
