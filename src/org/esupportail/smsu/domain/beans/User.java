@@ -40,14 +40,7 @@ public class User implements Serializable {
 	 * roles list.
 	 */
 	private List<Integer> roles = new ArrayList<Integer>();
-	
-    /**
-	 * True for administrators.
-	 */
-    private boolean admin;
-    
-    private boolean superAdmin;
-	
+    	
     /**
      * The prefered language.
      */
@@ -88,7 +81,7 @@ public class User implements Serializable {
 	@Override
 	public String toString() {
 		return "User#" + hashCode() + "[id=[" + id + "], displayName=[" + displayName 
-		    + "], admin=[" + admin + "], language=[" + language
+		    + "], language=[" + language
 		    + "], fonctions=[" + join(fonctions, ",") + "], roles=[" + join(roles, ",") + "]]";
 	}
 
@@ -135,19 +128,6 @@ public class User implements Serializable {
         this.displayName = StringUtils.nullIfEmpty(displayName);
     }
     
-    /**
-	 * @param admin  The admin to set.
-	 */
-    public void setAdmin(final boolean admin) {
-        this.admin = admin;
-    }
-    /**
-	 * @return  Returns the admin.
-	 */
-    public boolean getAdmin() {
-        return this.admin;
-    }
-
 	/**
 	 * @return the language
 	 */
@@ -188,14 +168,6 @@ public class User implements Serializable {
 	 */
 	public List<Integer> getRoles() {
 		return roles;
-	}
-
-	public void setSuperAdmin(final boolean superAdmin) {
-		this.superAdmin = superAdmin;
-	}
-
-	public boolean isSuperAdmin() {
-		return superAdmin;
 	}
     
 

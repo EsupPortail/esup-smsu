@@ -33,19 +33,6 @@ alter table basic_group
    add unique AK_BGRAK (BGR_LABEL);
 
 /*==============================================================*/
-/* Table : B_USER                                               */
-/*==============================================================*/
-create table b_user
-(
-   ID                   varchar(255) not null,
-   DISP_NAME            varchar(255),
-   ADMI                 numeric(1,0) not null,
-   LANG                 varchar(255),
-   primary key (ID)
-)
-type = InnoDB;
-
-/*==============================================================*/
 /* Table : B_VERS_MANA                                          */
 /*==============================================================*/
 create table b_vers_mana

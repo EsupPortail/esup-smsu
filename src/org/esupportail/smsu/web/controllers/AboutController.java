@@ -4,8 +4,6 @@
  */
 package org.esupportail.smsu.web.controllers;
 
-import org.esupportail.smsu.domain.beans.User;
-
 /**
  * A bean to manage files.
  */
@@ -29,21 +27,6 @@ public class AboutController extends AbstractContextAwareController {
 	@Override
 	public String toString() {
 		return getClass().getSimpleName() + "#" + hashCode();
-	}
-
-	/**
-	 * @return true if the current user is allowed to test the exceptions.
-	 */
-	public boolean isExceptionAuthorized() {
-		boolean result = false;
-
-		User currentUser = getCurrentUser();
-		if (currentUser != null) {
-			
-			result = currentUser.isSuperAdmin();
-		} 
-
-		return result;
 	}
 	
 	/**

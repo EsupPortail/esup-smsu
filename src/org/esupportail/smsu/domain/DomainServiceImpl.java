@@ -19,8 +19,6 @@ import org.esupportail.commons.services.ldap.LdapUserService;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.commons.utils.Assert;
-import org.esupportail.commons.web.beans.Paginator;
-
 import org.esupportail.smsu.business.ApprovalManager;
 import org.esupportail.smsu.business.FonctionManager;
 import org.esupportail.smsu.business.GroupManager;
@@ -222,65 +220,17 @@ public class DomainServiceImpl implements DomainService, InitializingBean {
 	}
 
 	/**
-	 * @see org.esupportail.smsu.domain.DomainService#updateUserInfo(org.esupportail.smsu.domain.beans.User)
-	 */
-	public void updateUserInfo(final User user) {
-		if (setUserInfo(user, ldapUserService.getLdapUser(user.getId()))) {
-			updateUser(user);
-		}
-	}
-
-	/**
-	 * If the user is not found in the database, try to create it from a LDAP search.
+	 * create user from a LDAP search.
 	 * @see org.esupportail.smsu.domain.DomainService#getUser(java.lang.String)
 	 */
 	public User getUser(final String id) throws UserNotFoundException {
-		User user = daoService.getUser(id);
-		
-		if (user == null) {
 			LdapUser ldapUser = this.ldapUserService.getLdapUser(id);
-			user = new User();
+			User user = new User();
 			user.setId(ldapUser.getId());
 			setUserInfo(user, ldapUser);
-			daoService.addUser(user);
-			logger.info("user '" + user.getId() + "' has been added to the database");
-		}
 		user.setFonctions(securityManager.loadUserRightsByUsername(user.getId()));
 		user.setRoles(securityManager.loadUserRolesByUsername(user.getId()));
-		user.setSuperAdmin(securityManager.isUserSuperAdmin(user.getId()));
 		return user;
-	}
-
-	/**
-	 * @see org.esupportail.smsu.domain.DomainService#getUsers()
-	 */
-	public List<User> getUsers() {
-		return this.daoService.getUsers();
-	}
-
-	/**
-	 * @see org.esupportail.smsu.domain.DomainService#updateUser(org.esupportail.smsu.domain.beans.User)
-	 */
-	public void updateUser(final User user) {
-		this.daoService.updateUser(user);
-	}
-
-	/**
-	 * @see org.esupportail.smsu.domain.DomainService#addAdmin(org.esupportail.smsu.domain.beans.User)
-	 */
-	public void addAdmin(
-			final User user) {
-		user.setAdmin(true);
-		updateUser(user);
-	}
-
-	/**
-	 * @see org.esupportail.smsu.domain.DomainService#deleteAdmin(org.esupportail.smsu.domain.beans.User)
-	 */
-	public void deleteAdmin(
-			final User user) {
-		user.setAdmin(false);
-		updateUser(user);
 	}
 
 	/**

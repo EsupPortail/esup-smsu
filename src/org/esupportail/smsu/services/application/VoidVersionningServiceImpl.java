@@ -5,7 +5,6 @@ import org.esupportail.commons.services.application.VersionningService;
 import org.esupportail.commons.services.database.DatabaseUtils;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
-import org.esupportail.smsu.domain.beans.User;
 import org.esupportail.smsu.web.controllers.AbstractDomainAwareBean;
 
 @SuppressWarnings("serial")
@@ -16,11 +15,6 @@ public class VoidVersionningServiceImpl extends AbstractDomainAwareBean implemen
 	 */
 	private final Logger logger = new LoggerImpl(getClass());
 	
-	/**
-	 * The id of the first administrator.
-	 */
-	private String firstAdministratorId;
-	
 	public void checkVersion(boolean throwException, boolean printLatestVersion)
 			throws VersionException {
 		// rien
@@ -29,10 +23,6 @@ public class VoidVersionningServiceImpl extends AbstractDomainAwareBean implemen
 
 	public void initDatabase() {
 		DatabaseUtils.create();
-		logger.info("creating the first user of the application thanks to " 
-				+ getClass().getName() + ".firstAdministratorId...");
-		User firstAdministrator = getDomainService().getUser(firstAdministratorId);
-		getDomainService().addAdmin(firstAdministrator);
 		logger.info("the database has been created.");
 		
 	}
@@ -40,19 +30,5 @@ public class VoidVersionningServiceImpl extends AbstractDomainAwareBean implemen
 	public boolean upgradeDatabase() {
 		// rien
 		return false;
-	}
-	
-	/**
-	 * @return the firstAdministratorId
-	 */
-	public String getFirstAdministratorId() {
-		return firstAdministratorId;
-	}
-
-	/**
-	 * @param firstAdministratorId the firstAdministratorId to set
-	 */
-	public void setFirstAdministratorId(final String firstAdministratorId) {
-		this.firstAdministratorId = firstAdministratorId;
 	}
 }

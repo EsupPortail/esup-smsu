@@ -17,7 +17,6 @@
 		class="org.esupportail.smsu.services.application.VoidVersionningServiceImpl"
 		parent="abstractDomainAwareBean"
 		>
-		<property name="firstAdministratorId" value="${init.firstAdministratorId}" />
 	</bean>
 
 </beans>

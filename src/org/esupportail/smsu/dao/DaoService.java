@@ -9,8 +9,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.esupportail.commons.web.beans.Paginator;
-
 import org.esupportail.smsu.dao.beans.Account;
 import org.esupportail.smsu.dao.beans.BasicGroup;
 import org.esupportail.smsu.dao.beans.CustomizedGroup;
@@ -25,7 +23,6 @@ import org.esupportail.smsu.dao.beans.Role;
 import org.esupportail.smsu.dao.beans.Service;
 import org.esupportail.smsu.dao.beans.Template;
 
-import org.esupportail.smsu.domain.beans.User;
 import org.esupportail.smsu.domain.beans.VersionManager;
 import org.esupportail.smsu.domain.beans.message.MessageStatus;
 
@@ -35,39 +32,6 @@ import org.esupportail.smsu.domain.beans.message.MessageStatus;
  * The DAO service interface.
  */
 public interface DaoService extends Serializable {
-
-	//////////////////////////////////////////////////////////////
-	// User
-	//////////////////////////////////////////////////////////////
-	
-	/**
-	 * @param id
-	 * @return the User instance that corresponds to an id.
-	 */
-	User getUser(String id);
-
-	/**
-	 * @return the list of all the users.
-	 */
-	List<User> getUsers();
-
-	/**
-	 * Add a user.
-	 * @param user
-	 */
-	void addUser(User user);
-
-	/**
-	 * Delete a user.
-	 * @param user
-	 */
-	void deleteUser(User user);
-
-	/**
-	 * Update a user.
-	 * @param user
-	 */
-	void updateUser(User user);
 
 	//////////////////////////////////////////////////////////////
 	// VersionManager

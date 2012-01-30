@@ -9,13 +9,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.esupportail.commons.dao.AbstractJdbcJndiHibernateDaoService;
-import org.esupportail.commons.dao.HibernateFixedQueryPaginator;
-import org.esupportail.commons.dao.HqlUtils;
 import org.esupportail.commons.services.application.UninitializedDatabaseException;
 import org.esupportail.commons.services.application.VersionningUtils;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
-import org.esupportail.commons.web.beans.Paginator;
 import org.esupportail.smsu.dao.beans.Account;
 import org.esupportail.smsu.dao.beans.BasicGroup;
 import org.esupportail.smsu.dao.beans.CustomizedGroup;
@@ -29,7 +26,6 @@ import org.esupportail.smsu.dao.beans.Recipient;
 import org.esupportail.smsu.dao.beans.Role;
 import org.esupportail.smsu.dao.beans.Service;
 import org.esupportail.smsu.dao.beans.Template;
-import org.esupportail.smsu.domain.beans.User;
 import org.esupportail.smsu.domain.beans.VersionManager;
 import org.esupportail.smsu.domain.beans.message.MessageStatus;
 import org.hibernate.Criteria;
@@ -46,11 +42,6 @@ import org.springframework.jdbc.BadSqlGrammarException;
  */
 public class HibernateDaoServiceImpl extends AbstractJdbcJndiHibernateDaoService 
 									 implements DaoService, InitializingBean {
-
-	/**
-	 * The name of the 'admin' attribute.
-	 */
-	private static final String ADMIN_ATTRIBUTE = "admin";
 
 	/**
 	 * The name of the 'id' attribute.
@@ -84,45 +75,6 @@ public class HibernateDaoServiceImpl extends AbstractJdbcJndiHibernateDaoService
 	 */
 	private Session getCurrentSession() {
 		return getHibernateTemplate().getSessionFactory().getCurrentSession();
-	}
-
-	//////////////////////////////////////////////////////////////
-	// User
-	//////////////////////////////////////////////////////////////
-	/**
-	 * @see org.esupportail.smsu.dao.DaoService#getUser(java.lang.String)
-	 */
-	public User getUser(final String id) {
-		return (User) getHibernateTemplate().get(User.class, id);
-	}
-
-	/**
-	 * @see org.esupportail.smsu.dao.DaoService#getUsers()
-	 */
-	@SuppressWarnings("unchecked")
-	public List<User> getUsers() {
-		return getHibernateTemplate().loadAll(User.class);
-	}
-
-	/**
-	 * @see org.esupportail.smsu.dao.DaoService#addUser(org.esupportail.smsu.domain.beans.User)
-	 */
-	public void addUser(final User user) {
-		addObject(user);
-	}
-
-	/**
-	 * @see org.esupportail.smsu.dao.DaoService#deleteUser(org.esupportail.smsu.domain.beans.User)
-	 */
-	public void deleteUser(final User user) {
-		deleteObject(user);
-	}
-
-	/**
-	 * @see org.esupportail.smsu.dao.DaoService#updateUser(org.esupportail.smsu.domain.beans.User)
-	 */
-	public void updateUser(final User user) {
-		updateObject(user);
 	}
 
 	//////////////////////////////////////////////////////////////

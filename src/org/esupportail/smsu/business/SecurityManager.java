@@ -10,7 +10,6 @@ import org.esupportail.smsu.dao.DaoService;
 import org.esupportail.smsu.dao.beans.CustomizedGroup;
 import org.esupportail.smsu.dao.beans.Fonction;
 import org.esupportail.smsu.dao.beans.Role;
-import org.esupportail.smsu.domain.beans.EnumeratedRole;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.services.ldap.beans.UserGroup;
 
@@ -114,33 +113,6 @@ public class SecurityManager {
 		return roles;
 	}
 
-	/**
-	 * @param login
-	 * @return
-	 */
-	public boolean isUserSuperAdmin(final String login) {
-		boolean ret = false;
-		List<UserGroup> groups = ldapUtils.getUserGroupsByUid(login);
-		UserGroup selfGroup = new UserGroup(login, login);
-		groups.add(selfGroup);
-		for (UserGroup group : groups) {
-			// 1- Retrieve the DAO CustomizedGroup by "cgr_Label"
-			CustomizedGroup grp = daoService.getCustomizedGroupByLabel(group.getLdapId());
-			// 2 - Retrieve the role associate to the CustomizedGroup, So all these fonctions
-			if (grp != null) { 
-				Role role = grp.getRole();
-				if (logger.isDebugEnabled()) {
-					logger.debug("role Name : " + role.getName());
-				}
-				if (role.getName().equals(EnumeratedRole.SUPER_ADMIN.toString())) {
-					logger.debug("User is super admin");
-					ret = true;
-				}
-			}
-		}
-			
-		return ret;
-	}
 	/**
 	 * check if less one of rights belong fonctions.
 	 * @param fonctions: list of user fonctions

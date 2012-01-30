@@ -12,8 +12,6 @@ import java.util.Set;
 import org.esupportail.commons.exceptions.ConfigException;
 import org.esupportail.commons.exceptions.UserNotFoundException;
 import org.esupportail.commons.services.application.Version;
-import org.esupportail.commons.web.beans.Paginator;
-
 import org.esupportail.smsu.business.beans.Member;
 import org.esupportail.smsu.dao.beans.Account;
 import org.esupportail.smsu.dao.beans.BasicGroup;
@@ -56,35 +54,6 @@ public interface DomainService extends Serializable {
 	 * @throws UserNotFoundException
 	 */
 	User getUser(String id) throws UserNotFoundException;
-
-	/**
-	 * @return the list of all the users.
-	 */
-	List<User> getUsers();
-
-	/**
-	 * Update a user.
-	 * @param user
-	 */
-	void updateUser(User user);
-
-	/**
-	 * Update a user's information (retrieved from the LDAP directory for instance).
-	 * @param user
-	 */
-	void updateUserInfo(User user);
-	
-	/**
-	 * Add an administrator.
-	 * @param user
-	 */
-	void addAdmin(User user);
-
-	/**
-	 * Delete an administrator.
-	 * @param user
-	 */
-	void deleteAdmin(User user);
 
 	//////////////////////////////////////////////////////////////
 	// VersionManager
