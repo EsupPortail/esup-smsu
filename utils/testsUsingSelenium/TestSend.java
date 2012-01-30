@@ -421,7 +421,7 @@ public class TestSend extends SeleneseTestCase {
 		navigationForm_gestionGroupes();
 		clickRoleOrGroupButton(pagsGroupName, "detailPage");
 		expectedValue("2", selenium.getValue("groupForm:dest"));
-		expectedValue("100", selenium.getValue("groupForm:quota"));
+		expectedValue("100", selenium.getValue("groupForm:currentQuota"));
 
 		trueOrFail(!mayDeleteGroup("foo"), "group foo should not exist anymore");
 		trueOrFail(!mayDeleteGroup("bar"), "group bar should not exist anymore");
