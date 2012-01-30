@@ -35,6 +35,14 @@ public class TestSend extends SeleneseTestCase {
 		selenium.select(selectLocator, optionLocator);
 		selenium.waitForPageToLoad(timeout);
 	}
+	void selectValueAndMayWait(String selectLocator, String value) {
+		if (!value.equals(selenium.getSelectedValue(selectLocator)))
+			selectAndWait(selectLocator, "value=" + value);
+	}
+	void selectLabelAndMayWait(String selectLocator, String label) {
+		if (!label.equals(selenium.getSelectedLabel(selectLocator)))
+			selectAndWait(selectLocator, "label=" + label);
+	}
 
 	boolean clickAndWaitIfPresent(String locator) {
 		if (selenium.isElementPresent(locator)) {
@@ -75,7 +83,7 @@ public class TestSend extends SeleneseTestCase {
 
 	void sendSMSByPhone(String phone, String body) {
 		clickAndWait("navigationForm:envoiSMS");
-		selectAndWait("formGeneral:selectTypeRecipient", "label=Phones");
+		selectLabelAndMayWait("formGeneral:selectTypeRecipient", "Phones");
 		selenium.type("formGeneral:phoneNumber", phone);
 		clickAndWait(inputLocatorByValue("Ajouter"));
 		selenium.type("formGeneral:SMSbody", body);
@@ -89,8 +97,7 @@ public class TestSend extends SeleneseTestCase {
 	void sendSMSByUser(String user, int nbMatches, String body, String service) {
 		clickAndWait("navigationForm:envoiSMS");
 
-		selenium.select("formGeneral:selectTypeRecipient", "label=Users");
-		//no waitForPageToLoad since "Users" is the default
+		selectLabelAndMayWait("formGeneral:selectTypeRecipient", "Users");
 
 		if (service != null) selectAndWait("formGeneral:selectService", service);
 		selenium.type("formGeneral:ldapUid", user);
@@ -105,7 +112,7 @@ public class TestSend extends SeleneseTestCase {
 
 	void sendSMSByGroup(String[] pagsLocators, String body, String service) {
 		clickAndWait("navigationForm:envoiSMS");
-		selectAndWait("formGeneral:selectTypeRecipient", "label=User Group");
+		selectLabelAndMayWait("formGeneral:selectTypeRecipient", "User Group");
 		if (service != null) selectAndWait("formGeneral:selectService", service);
 		for (String locator : pagsLocators) clickAndWait(locator);
 		selenium.type("formGeneral:SMSbody", body);
