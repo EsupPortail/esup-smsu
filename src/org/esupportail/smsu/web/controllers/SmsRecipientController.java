@@ -14,6 +14,7 @@ import javax.faces.component.html.HtmlSelectOneMenu;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.myfaces.component.html.ext.HtmlPanelGroup;
 import org.apache.myfaces.custom.tree2.TreeNode;
 import org.apache.myfaces.custom.tree2.TreeNodeBase;
@@ -143,22 +144,19 @@ public class SmsRecipientController extends AbstractContextAwareController {
 	 * add a phone number to the recipient list.
 	 */
 	public void addPhoneNumber() {
-		if (this.phoneNumberToAdd != null) {
-			if (this.phoneNumberToAdd.length() > 0) {
-				if (!this.phoneNumberPattern.trim().equals("")) {
-					if (this.phoneNumberToAdd.matches(this.phoneNumberPattern)) {
-						UiRecipient recToAdd = new PhoneNumberRecipient(this.phoneNumberToAdd,
-								this.phoneNumberToAdd, null, this.phoneNumberToAdd);
-						if (!this.recipients.contains(recToAdd)) {
-							this.recipients.add(recToAdd);
-						}
-					} else {
-						this.phoneNumberToAdd = "";
-						logger.error("Error phone number");
-						addErrorMessage(null, "SENDSMS.MESSAGE.PHONENUMBERERROR");
-					}
-				}
-			}
+		if (StringUtils.isEmpty(this.phoneNumberToAdd)) {
+			return;
+		}
+
+		if (this.phoneNumberPattern.trim().equals("")) {
+			logger.error("Error phoneNumberPattern");
+			addErrorMessage(null, "INTERNAL ERROR");
+		} else if (this.phoneNumberToAdd.matches(this.phoneNumberPattern)) {
+			mayAddPhoneNumber(this.phoneNumberToAdd);
+		} else {
+			this.phoneNumberToAdd = "";
+			logger.error("Error phone number");
+			addErrorMessage(null, "SENDSMS.MESSAGE.PHONENUMBERERROR");
 		}
 	}
 
@@ -178,10 +176,7 @@ public class SmsRecipientController extends AbstractContextAwareController {
 			logger.info("found phone numbers " + User.join(numbers, " "));
 		}
 		for (String number : numbers) {
-			UiRecipient recToAdd = new PhoneNumberRecipient(number, number, null, number);
-			if (!this.recipients.contains(recToAdd)) {
-				this.recipients.add(recToAdd);
-			}
+			mayAddPhoneNumber(number);
 		}
 	}
 
@@ -229,6 +224,10 @@ public class SmsRecipientController extends AbstractContextAwareController {
 		if (!this.recipients.contains(recipient)) {
 			this.recipients.add(recipient);
 		}
+	}
+
+	private void mayAddPhoneNumber(String phone) {
+		mayAddRecipient(new PhoneNumberRecipient(phone, phone, null, phone));
 	}
 
 	/**
