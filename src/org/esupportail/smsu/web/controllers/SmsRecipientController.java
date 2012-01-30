@@ -1,6 +1,7 @@
 package org.esupportail.smsu.web.controllers;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -351,8 +352,12 @@ public class SmsRecipientController extends AbstractContextAwareController {
 		TreeNodeBase node = new TreeNodeBase("group", groupDescription, groupIdentifer, isGroupLeaf);
 
 		if (!isGroupLeaf) {
+			List<TreeNodeBase> l = new LinkedList<TreeNodeBase>();
 			for (PortalGroupHierarchy child : childs) {
-				TreeNodeBase childNode = getChildrenNodes(child);
+				l.add(getChildrenNodes(child));
+			}
+			Collections.sort(l);
+			for (TreeNodeBase childNode : l) {
 				node.getChildren().add(childNode);
 			}
 		}
