@@ -23,6 +23,7 @@ import org.esupportail.smsu.dao.beans.Recipient;
 import org.esupportail.smsu.dao.beans.Service;
 import org.esupportail.smsu.dao.beans.Template;
 
+import org.esupportail.smsu.domain.beans.fonction.FonctionName;
 import org.esupportail.smsu.domain.beans.User;
 import org.esupportail.smsu.exceptions.CreateMessageException;
 import org.esupportail.smsu.exceptions.UnknownIdentifierApplicationException;
@@ -85,7 +86,7 @@ public interface DomainService extends Serializable {
 	 * @param rights
 	 * @return 'true' if less one of rights belong fonctions.
 	 */
-	boolean checkRights(List<String> fonctions, Set<String> rights);
+	boolean checkRights(List<String> fonctions, Set<FonctionName> rights);
 	
 	//////////////////////////////////////////////////////////////
 	// Message

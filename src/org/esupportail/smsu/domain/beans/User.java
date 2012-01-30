@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.esupportail.commons.utils.strings.StringUtils;
+import org.esupportail.smsu.domain.beans.fonction.FonctionName;
 
 /**
  * The class that represent users.
@@ -65,6 +66,10 @@ public class User implements Serializable {
 			return false;
 		}
 		return id.equals(((User) obj).getId());
+	}
+
+	public boolean hasFonction(FonctionName fonction) {
+		return getFonctions().contains(fonction.name());
 	}
 
 	/**

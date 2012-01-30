@@ -105,8 +105,7 @@
 
 			<%
 				if (groupsManagerController
-						.isFieldAuthorized(FonctionName.FCTN_GESTION_ROLES_AFFECT
-								.toString())) {
+						.isFieldAuthorized(FonctionName.FCTN_GESTION_ROLES_AFFECT)) {
 			%>
 			<e:outputLabel value="#{msgs['ROLE.SELECT']}" for="selectRoleMenu" />
 			<h:panelGroup>
@@ -136,8 +135,7 @@
 			</h:panelGroup>
 			<%
 				if (groupsManagerController
-						.isFieldAuthorized(FonctionName.FCTN_GESTIONS_RESPONSABLES
-								.toString())) {
+						.isFieldAuthorized(FonctionName.FCTN_GESTIONS_RESPONSABLES)) {
 			%>
 			<e:outputLabel value="#{msgs['GROUPE.SEARCH.SUPERVISORS.LDAP']}" for="ldapUid"/>
 			<h:panelGroup>
@@ -189,8 +187,7 @@
 					<t:column>
 						<%
 							if (groupsManagerController
-									.isFieldAuthorized(FonctionName.FCTN_GESTIONS_RESPONSABLES
-											.toString())) {
+									.isFieldAuthorized(FonctionName.FCTN_GESTIONS_RESPONSABLES)) {
 						%>
 						<e:commandButton value="#{msgs['GROUPE.DELETE']}"
 							action="#{groupsManagerController.deletePerson}">
@@ -224,8 +221,7 @@
 			</h:panelGroup>
 			<%
 				if (groupsManagerController
-						.isFieldAuthorized(FonctionName.FCTN_GESTION_QUOTAS
-								.toString())) {
+						.isFieldAuthorized(FonctionName.FCTN_GESTION_QUOTAS)) {
 			%>
 			<e:outputLabel value="#{msgs['GROUPE.QUOTA.SMS.ADD']}" for="quotaAdd"/>
 			<h:panelGroup>
@@ -250,8 +246,7 @@
 			<e:outputLabel value="#{msgs['GROUPE.QUOTA.ORDER']}" for="dest"/>
 			<%
 				if (groupsManagerController
-						.isFieldAuthorized(FonctionName.FCTN_GESTION_QUOTAS
-								.toString())) {
+						.isFieldAuthorized(FonctionName.FCTN_GESTION_QUOTAS)) {
 			%>
 			<h:panelGroup>
 				<e:inputText id="dest"

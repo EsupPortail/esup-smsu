@@ -67,7 +67,7 @@ public class TemplateManagerController extends AbstractContextAwareController {
 		if (currentUser == null) {
 			return false;
 		}
-		return currentUser.getFonctions().contains(FonctionName.FCTN_GESTION_MODELES.toString());
+		return currentUser.hasFonction(FonctionName.FCTN_GESTION_MODELES);
 	}
 
 	//////////////////////////////////////////////////////////////

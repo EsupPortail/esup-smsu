@@ -90,7 +90,7 @@ public class MessagesController<DomaineService> extends AbstractContextAwareCont
 	/**
 	 * rights list.
 	 */
-	private Set<String> rights = new HashSet<String>();
+	private Set<FonctionName> rights = new HashSet<FonctionName>();
 
 	/**
 	 * The count of recipients destCount.
@@ -137,8 +137,8 @@ public class MessagesController<DomaineService> extends AbstractContextAwareCont
 		}
 
 		// rights to enter
-		this.rights.add(FonctionName.FCTN_SUIVI_ENVOIS_ETABL.name());
-		this.rights.add(FonctionName.FCTN_SUIVI_ENVOIS_UTIL.name());
+		this.rights.add(FonctionName.FCTN_SUIVI_ENVOIS_ETABL);
+		this.rights.add(FonctionName.FCTN_SUIVI_ENVOIS_UTIL);
 		return getDomainService().checkRights(currentUser.getFonctions(), this.rights);
 	}
 

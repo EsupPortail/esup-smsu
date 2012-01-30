@@ -88,7 +88,7 @@ public class PersonsController extends AbstractContextAwareController {
 		List<LdapUser> ldapUserList = new ArrayList<LdapUser>();
 
 
-		if (getCurrentUser().getFonctions().contains(FonctionName.FCTN_SUIVI_ENVOIS_ETABL.name())) {
+		if (getCurrentUser().hasFonction(FonctionName.FCTN_SUIVI_ENVOIS_ETABL)) {
 			if (logger.isDebugEnabled()) {
 				logger.debug("get user items");
 			}

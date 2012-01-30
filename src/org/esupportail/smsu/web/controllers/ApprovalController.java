@@ -56,7 +56,7 @@ public class ApprovalController extends AbstractContextAwareController {
 		if (currentUser == null) {
 			return false;
 		}
-		return currentUser.getFonctions().contains(FonctionName.FCTN_APPROBATION_ENVOI.name());
+		return currentUser.hasFonction(FonctionName.FCTN_APPROBATION_ENVOI);
 	}
 	
 	/**

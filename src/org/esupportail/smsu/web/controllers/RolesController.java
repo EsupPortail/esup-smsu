@@ -75,7 +75,7 @@ public class RolesController extends AbstractContextAwareController {
 		if (currentUser == null) {
 			return false;
 		}
-		return currentUser.getFonctions().contains(FonctionName.FCTN_GESTION_ROLES_CRUD.name());
+		return currentUser.hasFonction(FonctionName.FCTN_GESTION_ROLES_CRUD);
 	}
 	
 	//////////////////////////////////////////////////////////////

@@ -143,20 +143,20 @@ public class GroupsManagerController extends AbstractContextAwareController {
 		if (currentUser == null) {
 			return false;
 		}
-		return currentUser.getFonctions().contains(FonctionName.FCTN_GESTION_GROUPE.name());
+		return currentUser.hasFonction(FonctionName.FCTN_GESTION_GROUPE);
 
 	}
 	
 	/**
 	 * @return true if the current user is allowed to view the page.
 	 */
-	public boolean isFieldAuthorized(final String fct) {
+	public boolean isFieldAuthorized(final FonctionName fct) {
 		//an access control is required for this page.
 		User currentUser = getCurrentUser();
 		if (currentUser == null) {
 			return false;
 		}
-		return currentUser.getFonctions().contains(fct);
+		return currentUser.hasFonction(fct);
 
 	}
 	//////////////////////////////////////////////////////////////
@@ -190,7 +190,7 @@ public class GroupsManagerController extends AbstractContextAwareController {
 		initSelectRoleListItems();
 		// initialize the available accounts list
 		initAvailableAccounts();
-		if (getCurrentUser().getFonctions().contains(FonctionName.FCTN_GESTION_ROLES_AFFECT.name())) {
+		if (getCurrentUser().hasFonction(FonctionName.FCTN_GESTION_ROLES_AFFECT)) {
 			this.isShowCreateButton = true;
 		} 
 	}

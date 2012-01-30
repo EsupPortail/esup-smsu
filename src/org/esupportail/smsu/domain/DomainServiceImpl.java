@@ -44,6 +44,7 @@ import org.esupportail.smsu.dao.beans.Recipient;
 import org.esupportail.smsu.dao.beans.Service;
 import org.esupportail.smsu.dao.beans.Template;
 
+import org.esupportail.smsu.domain.beans.fonction.FonctionName;
 import org.esupportail.smsu.domain.beans.User;
 import org.esupportail.smsu.domain.beans.VersionManager;
 import org.esupportail.smsu.exceptions.CreateMessageException;
@@ -285,7 +286,7 @@ public class DomainServiceImpl implements DomainService, InitializingBean {
 	/**
 	 * @see org.esupportail.smsu.domain.DomainService#checkRights
 	 */
-	public boolean checkRights(final List<String> fonctions, final Set<String> rights) {
+	public boolean checkRights(final List<String> fonctions, final Set<FonctionName> rights) {
 		return securityManager.checkRights(fonctions, rights);
 	}
 	//////////////////////////////////////////////////////////////

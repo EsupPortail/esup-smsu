@@ -48,7 +48,7 @@ public class ServicesSmsuController extends AbstractContextAwareController {
 		if (currentUser == null) {
 			return false;
 		}
-		return currentUser.getFonctions().contains(FonctionName.FCTN_GESTION_SERVICES_CP.toString());
+		return currentUser.hasFonction(FonctionName.FCTN_GESTION_SERVICES_CP);
 	}
 
 	//////////////////////////////////////////////////////////////

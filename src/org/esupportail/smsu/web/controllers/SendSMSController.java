@@ -139,7 +139,7 @@ public class SendSMSController extends AbstractContextAwareController {
 	/**
 	 * rights list.
 	 */
-	private Set<String> rights = new HashSet<String>();
+	private Set<FonctionName> rights = new HashSet<FonctionName>();
 	
 	/**
 	 * the select item for sms templates.
@@ -204,11 +204,11 @@ public class SendSMSController extends AbstractContextAwareController {
 			return false;
 		}
 		// rights to enter
-		this.rights.add(FonctionName.FCTN_SMS_ENVOI_ADH.toString());
-		this.rights.add(FonctionName.FCTN_SMS_ENVOI_GROUPES.toString());
-		this.rights.add(FonctionName.FCTN_SMS_ENVOI_NUM_TEL.toString());
-		this.rights.add(FonctionName.FCTN_SMS_ENVOI_LISTE_NUM_TEL.toString());
-		this.rights.add(FonctionName.FCTN_SMS_REQ_LDAP_ADH.toString());
+		this.rights.add(FonctionName.FCTN_SMS_ENVOI_ADH);
+		this.rights.add(FonctionName.FCTN_SMS_ENVOI_GROUPES);
+		this.rights.add(FonctionName.FCTN_SMS_ENVOI_NUM_TEL);
+		this.rights.add(FonctionName.FCTN_SMS_ENVOI_LISTE_NUM_TEL);
+		this.rights.add(FonctionName.FCTN_SMS_REQ_LDAP_ADH);
 		
 		return getDomainService().checkRights(currentUser.getFonctions(), this.rights);
 	}
@@ -226,7 +226,7 @@ public class SendSMSController extends AbstractContextAwareController {
 			return null;
 		}
 		
-		if (getCurrentUser().getFonctions().contains(FonctionName.FCTN_SMS_AJOUT_MAIL.name())) {
+		if (getCurrentUser().hasFonction(FonctionName.FCTN_SMS_AJOUT_MAIL)) {
 			this.isCheckBoxSendMailShow = true;
 		} 
 		init();

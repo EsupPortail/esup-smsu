@@ -12,6 +12,7 @@ import org.esupportail.smsu.dao.beans.Fonction;
 import org.esupportail.smsu.dao.beans.Role;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.services.ldap.beans.UserGroup;
+import org.esupportail.smsu.domain.beans.fonction.FonctionName;
 
 
 /**
@@ -118,24 +119,25 @@ public class SecurityManager {
 	 * @param fonctions: list of user fonctions
 	 * @param rights: list of required rights
 	 */
-	public boolean checkRights(final List<String> fonctions, final Set<String> rights) {
+	public boolean checkRights(final List<String> fonctions, final Set<FonctionName> rights) {
 		logger.debug("users rights: " + join(fonctions, " "));
 		logger.debug("one the following rights is required: " + join(rights, " "));
-		for (String right : rights) {
-			if (fonctions.contains(right)) { 
-			    logger.debug("checkRights ok: user has right " + right);
+		for (FonctionName right : rights) {
+			if (fonctions.contains(right.name())) { 
+			    logger.debug("checkRights ok: user has right " + right.name());
 			    return true; 
 			}
 		}
 		return false;
 	}
 
-	public static String join(Iterable<String> elements, CharSequence separator) {
+	public static String join(Iterable elements, CharSequence separator) {
 		if (elements == null) return "";
 
 		StringBuilder sb = null;
 
-		for (String s : elements) {
+		for (Object o : elements) {
+			String s = o.toString();
 			if (sb == null)
 				sb = new StringBuilder();
 			else
