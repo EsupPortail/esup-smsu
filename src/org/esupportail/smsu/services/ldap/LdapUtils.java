@@ -15,6 +15,7 @@ import org.esupportail.commons.services.ldap.LdapException;
 import org.esupportail.commons.services.ldap.LdapGroup;
 import org.esupportail.commons.services.ldap.LdapUser;
 import org.esupportail.commons.services.ldap.LdapUserAndGroupService;
+import org.esupportail.commons.services.ldap.LdapAttributesModificationException;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.portal.ws.client.PortalGroup;
@@ -134,13 +135,18 @@ public class LdapUtils {
 		try {
 			ldapUser = ldapService.getLdapUser(ldapUserUid);
 		} catch (UserNotFoundException e) {
-			final String messageStr = 
-			    "Unable to find the user with id : [" + ldapUserUid + "]";
-			logger.debug(messageStr, e);
-			throw new LdapUserNotFoundException(messageStr, e);
+			throwLdapUserNotFoundException(e, ldapUserUid);
 		}
 		
 		return ldapUser;	
+	}
+
+	private void throwLdapUserNotFoundException(UserNotFoundException e, final String ldapUserUid) 
+			throws LdapUserNotFoundException {
+		final String messageStr = 
+			"Unable to find the user with id : [" + ldapUserUid + "]";
+		logger.debug(messageStr, e);
+		throw new LdapUserNotFoundException(messageStr, e);
 	}
 	
 	private String getUniqueLdapAttributeByUidAndName(final String uid, 
@@ -288,40 +294,14 @@ public class LdapUtils {
 	 */
 	private void setOrClearLdapAttributeByUidAndName(final String uid, final String name, final String etiquette, final List<String> value) 
 					throws LdapUserNotFoundException, LdapWriteException {
-		writeableLdapUserService.invalidateLdapCache();
-		final LdapUser ldapUser = getLdapUserByUserUid(uid);
-
-		Map<String, List<String>> attrs = ldapUser.getAttributes();
-		List<String> allValues = computeAttributeValues(attrs.get(name), etiquette, value);
-		attrs.put(name, allValues);
-
-		// call updateLdapUser with only the attribute we want to write in LDAP
-		ldapUser.setAttributes(singletonMap(name, allValues));
-		writeableLdapUserService.updateLdapUser(ldapUser);
-		ldapUser.setAttributes(attrs); // restore other attributes
-
-		checkAttributeWriteByUidAndNameSucceeded(uid, name, allValues);
-
-	}
-
-	private <A, B> Map<A, B> singletonMap(A key, B value) {
-		Map<A, B> r = new HashMap<A, B>();
-		r.put(key, value);
-		return r;
-	}
-
-	private List<String> computeAttributeValues(List<String> currentValues,	final String etiquette, final List<String> wantedValues) {
-		if (StringUtils.isEmpty(etiquette))
-			return wantedValues;
-
-		Set<String> set = new TreeSet<String>();
-		if (currentValues != null) {
-		    for (String s : currentValues)
-			if (!s.startsWith(etiquette)) set.add(s);
+		try {
+			writeableLdapUserService.setOrClearUserAttribute(ldapService, uid, name, etiquette, value);
+		} catch (UserNotFoundException e) {
+			throwLdapUserNotFoundException(e, uid);
+		} catch (LdapAttributesModificationException e) {
+			logger.error("" + e, e);
+			throw new LdapWriteException("" + e);
 		}
-		for (String v : wantedValues) 
-			set.add(mayAddPrefix(etiquette, v));
-		return new ArrayList<String>(set);
 	}
 
 	private String mayAddPrefix(String prefix, String s) {
@@ -333,30 +313,6 @@ public class LdapUtils {
 	 */
 	private String mayAddEtiquette(String service) {
 		return service == null ? service : mayAddPrefix(userTermsOfUseAttributeEtiquetteSMSU, service);
-	}
-
-	/**
-	 * Check wether setting or clearing attribute worked correctly
-	 * @throws LdapUserNotFoundException 
-	 * @throws LdapWriteException 
-	 */
-	private void checkAttributeWriteByUidAndNameSucceeded(final String uid, final String name, final List<String> value) throws LdapUserNotFoundException, LdapWriteException {
-		List<String> storedValue = getLdapAttributesByUidAndName(uid, name);
-
-		String error = null;
-		if (value == null && (storedValue == null || storedValue.isEmpty()))
-			;
-		// nb: we can't check wether clearing attribute really removed the attribute or simply emptied it
-		else if (value != null && storedValue == null)
-			// this never happens, storedValue is never null afaik
-			error = "could not create attribute '" + name + "' with value " + join(value, ", ");
-		else if (!value.containsAll(storedValue) || !storedValue.containsAll(value))
-			error = "could not modify attribute '" + name + "' with value " + join(value, ", ") + ", it's value is still " + join(storedValue, ", "); 
-
-		if (error != null) {
-			logger.error(error);
-			throw new LdapWriteException(error);
-		}
 	}
 	
 	private void setOrClearLdapAttributeByUidAndName(final String uid, final String name, String value) 
