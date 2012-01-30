@@ -14,21 +14,22 @@ download_selenium() {
     mkdir $test_dir/selenium
     cd $test_dir/selenium
 
-    wget http://selenium.googlecode.com/files/selenium-server-standalone-2.0b2.jar
+    wget http://selenium.googlecode.com/files/selenium-server-standalone-2.8.0.jar
     ln -s selenium-server-standalone-*.jar selenium-server-standalone.jar
 
-    wget http://selenium.googlecode.com/files/selenium-java-2.0b2.zip
+    wget http://selenium.googlecode.com/files/selenium-java-2.8.0.zip
     jar xf selenium-java*.zip 
     rm selenium-java*.zip
     rm -f selenium*/*-srcs.jar
     ln -s selenium*/selenium-java*.jar selenium-java.jar 
+    ln -s selenium*/libs selenium-java-libs
 }
 
 start_selenium_server() {
     cd $test_dir
     if [ -e selenium/.server-pid ]; then stop_selenium_server; sleep 1; fi
     echo "starting selenium server"
-    java -jar selenium/selenium-server-standalone.jar -browserSessionReuse > selenium/server.output 2>&1 &
+    java -jar selenium/selenium-server-standalone.jar -browserSessionReuse -singleWindow -timeout 600 > selenium/server.output 2>&1 &
     echo $! > selenium/.server-pid
 }
 
@@ -115,7 +116,8 @@ start_smsuapi() {
 launch_test() {
     cd $test_dir
     junit_jar=$esup_commons_dir/webapp/WEB-INF/lib/junit-3.8.2.jar
-    selenium_junit_classpath=".:selenium/selenium-java.jar:$junit_jar"
+    libs=`echo selenium/selenium-java-libs/*.jar | sed 's/ /:/g'`
+    selenium_junit_classpath=".:selenium/selenium-java.jar:$junit_jar:$libs"
     javac -classpath "$selenium_junit_classpath" -encoding UTF-8 TestSend.java
     java -classpath "$selenium_junit_classpath" junit.textui.TestRunner TestSend
 }
