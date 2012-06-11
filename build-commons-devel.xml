@@ -368,7 +368,7 @@
 		</sequential>
 	</macrodef>
 
-	<target name="_commons-doc" depends="_commons-print-application-properties,_commons-javadoc" >
+	<target name="_commons-doc" depends="_commons-javadoc" >
 		<property file="build-devel.properties"/>
 		<if>
 			<isset property="docs.format" />
