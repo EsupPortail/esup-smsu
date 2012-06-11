@@ -24,7 +24,7 @@ alter table account
 create table basic_group
 (
    BGR_ID               int not null auto_increment,
-   BGR_LABEL            varchar(32) not null,
+   BGR_LABEL            varchar(255) not null,
    primary key (BGR_ID)
 )
 type = InnoDB;
