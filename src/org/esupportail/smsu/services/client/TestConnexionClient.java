@@ -33,7 +33,7 @@ public class TestConnexionClient {
 			
 			response = remoteService.testConnexion(); 
 		} catch (Exception e) {
-			response = "Erreur connexion";
+			response = "Erreur de connexion au back office smsuapi";
 			logger.error(e);
 		}
 		return response;
