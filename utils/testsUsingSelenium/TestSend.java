@@ -304,7 +304,6 @@ public class TestSend extends SeleneseTestCase {
 	void sendAdminTests() {
 		ensureLogin("adminsmsutest");
 		basicQuotaChecks("0");
-		longMessageChecks("0");
 		messageTags("0");
 	}
 

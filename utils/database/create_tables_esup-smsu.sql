@@ -119,7 +119,7 @@ create table message
    MAIL_ID              int,
    BGR_SENDER_ID        int not null,
    MSG_DATE             timestamp not null default CURRENT_TIMESTAMP,
-   MSG_CONTENT          varchar(160) not null,
+   MSG_CONTENT          varchar(255) not null,
    MSG_STATE            varchar(32) not null,
    primary key (MSG_ID)
 )
