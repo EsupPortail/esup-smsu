@@ -21,10 +21,12 @@
 	}
 
 	function calcCarat() {
-		var bodyLenght = document.getElementById("formGeneral:SMSbody").value.length;
-		var prefixLength = document.getElementById("formGeneral:SMSPrefix").value.length;
-		var signatureLength = document.getElementById("formGeneral:SMSSignature").value.length;
-		var remainings = 160 - bodyLenght - prefixLength - signatureLength;
+		var body = document.getElementById("formGeneral:SMSbody").value;
+		var prefix = document.getElementById("formGeneral:SMSPrefix").value;
+		var signature = document.getElementById("formGeneral:SMSSignature").value;
+		var msg = body + prefix + signature;
+		msg = msg.replace(/[\[\]{}\\~^|\u20AC]/g, "xx"); // cf GSM's "Basic Character Set Extension". \u20AC is euro character
+		var remainings = 160 - msg.length;
 		document.getElementById("formGeneral:caract").value = remainings;
 		if (remainings < 0) {
 			document.getElementById("formGeneral:caract").style.color = "red";
