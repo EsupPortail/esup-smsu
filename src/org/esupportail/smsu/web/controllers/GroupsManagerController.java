@@ -435,7 +435,6 @@ public class GroupsManagerController extends AbstractContextAwareController {
 		
 		this.addQuotaSms = null;
 
-		logger.warn("xxx " + group.getLabel() + " " + getGroupIsUidDisplayName());
 		groupType = ldapUtils.getGroupNameByUidOrNull(group.getLabel()) == null ? "UID" : "GROUP";
 	
 		return "navigationDetailGroup";
