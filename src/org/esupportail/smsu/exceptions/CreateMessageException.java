@@ -147,4 +147,20 @@ public abstract class CreateMessageException extends Exception {
 
 	}
 
+	static public class PAGSGroupStoreConfigNotSynchronizedException extends CreateMessageException {
+
+		private static final long serialVersionUID = -1;
+
+		public PAGSGroupStoreConfigNotSynchronizedException() {
+		}
+
+		public String toString() {
+			return "Configuration issue : PAGSGroupStoreConfig.xml inside smsu is not synchronized with the version used by esup-portail";
+		}
+
+		public String toI18nString(I18nService i18nService) {
+			return toString();
+		}
+
+	}
 }

@@ -35,6 +35,7 @@ import org.esupportail.smsu.exceptions.CreateMessageException;
 import org.esupportail.smsu.exceptions.InsufficientQuotaException;
 import org.esupportail.smsu.exceptions.UnknownIdentifierApplicationException;
 import org.esupportail.smsu.exceptions.CreateMessageException.EmptyGroup;
+import org.esupportail.smsu.exceptions.CreateMessageException.PAGSGroupStoreConfigNotSynchronizedException;
 import org.esupportail.smsu.groups.pags.SmsuPersonAttributesGroupStore;
 import org.esupportail.smsu.groups.pags.SmsuPersonAttributesGroupStore.GroupDefinition;
 import org.esupportail.smsu.services.client.SendSmsClient;
@@ -520,7 +521,7 @@ public class SendSmsManager  {
 	 * @return the recipients list.
 	 * @throws EmptyGroup 
 	 */
-	private Set<Recipient> getRecipients(final List<UiRecipient> uiRecipients, final Service service) throws EmptyGroup {
+	private Set<Recipient> getRecipients(final List<UiRecipient> uiRecipients, final Service service) throws EmptyGroup, PAGSGroupStoreConfigNotSynchronizedException {
 
 		Set<Recipient> recipients = new HashSet<Recipient>();
 
@@ -586,7 +587,7 @@ public class SendSmsManager  {
 	 * @param serviceKey 
 	 * @return the user list.
 	 */
-	public List<LdapUser> getUsersByGroup(final String groupName, String serviceKey) {
+	public List<LdapUser> getUsersByGroup(final String groupName, String serviceKey) throws PAGSGroupStoreConfigNotSynchronizedException {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Search users for group [" + groupName + "]");
 		}
@@ -606,7 +607,7 @@ public class SendSmsManager  {
 	 * @param serviceKey 
 	 * @return the list of the unique sub-members of a group (recursive)
 	 */
-	private List<LdapUser> getMembers(final PortalGroupHierarchy groupHierarchy, String serviceKey) {
+	private List<LdapUser> getMembers(final PortalGroupHierarchy groupHierarchy, String serviceKey) throws PAGSGroupStoreConfigNotSynchronizedException {
 		final PortalGroup currentGroup = groupHierarchy.getGroup();
 		if (logger.isDebugEnabled()) {
 			logger.debug("Search users for subgroup [" + currentGroup.getName()
@@ -624,7 +625,7 @@ public class SendSmsManager  {
 		return members;
 	}
 
-	private List<LdapUser> getMembersNonRecursive(final PortalGroup currentGroup, String serviceKey) {
+	private List<LdapUser> getMembersNonRecursive(final PortalGroup currentGroup, String serviceKey) throws PAGSGroupStoreConfigNotSynchronizedException {
 		List<LdapUser> members = new LinkedList<LdapUser>();
 		//get the corresponding ldap group to extract members
 
@@ -637,9 +638,9 @@ public class SendSmsManager  {
 				}
 				members = ldapUtils.getMembers(gd, serviceKey);
 			} else {
-				if (logger.isDebugEnabled()) {
-					logger.debug("No group definition found");
-				}
+				logger.error("could not find group " + groupStoreId + " in PAGSGroupStoreConfig.xml in smsu");
+				logger.error("smsu needs a PAGSGroupStoreConfig.xml synchronized with the version used by esup-portail");
+				throw new CreateMessageException.PAGSGroupStoreConfigNotSynchronizedException();
 			}
 		return members;
 	}
