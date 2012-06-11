@@ -1,9 +1,9 @@
 <project name="esup-commons" default="commons-error" basedir=".">
 
-	<fail message="ERROR: Ant 1.7 is required (found: ${ant.version})">
+	<fail message="ERROR: Ant 1.7 or later is required (found: ${ant.version})">
 		<condition>
 			<not>
-				<contains string="${ant.version}" substring="1.7" />
+				<matches string="${ant.version}" pattern="1\.[789]" />
 			</not>
 		</condition>
 	</fail>
