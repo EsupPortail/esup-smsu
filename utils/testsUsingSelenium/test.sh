@@ -14,10 +14,10 @@ download_selenium() {
     mkdir $test_dir/selenium
     cd $test_dir/selenium
 
-    wget http://selenium.googlecode.com/files/selenium-server-standalone-2.8.0.jar
+    wget http://selenium.googlecode.com/files/selenium-server-standalone-2.19.0.jar
     ln -s selenium-server-standalone-*.jar selenium-server-standalone.jar
 
-    wget http://selenium.googlecode.com/files/selenium-java-2.8.0.zip
+    wget http://selenium.googlecode.com/files/selenium-java-2.19.0.zip
     jar xf selenium-java*.zip 
     rm selenium-java*.zip
     rm -f selenium*/*-srcs.jar
@@ -31,6 +31,7 @@ start_selenium_server() {
     echo "starting selenium server"
     java -jar selenium/selenium-server-standalone.jar -browserSessionReuse -singleWindow -timeout 600 > selenium/server.output 2>&1 &
     echo $! > selenium/.server-pid
+    sleep 1
 }
 
 raw_stop_selenium_server() {
