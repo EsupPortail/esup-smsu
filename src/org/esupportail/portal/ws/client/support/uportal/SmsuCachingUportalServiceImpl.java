@@ -25,12 +25,9 @@ public class SmsuCachingUportalServiceImpl extends CachingUportalServiceImpl {
 	protected DataAccessException wrap(final Exception e) {
 		String reason = e.toString();
 		String msg = "failed accessing portail services using " + getUrl() + " : " + reason;
-		if (e instanceof org.apache.axis.AxisFault) {
-			if (reason != null) {
-				if (reason.contains("java.net.ConnectException:")) {
-					logger.fatal(msg);
-				}
-			}
+		if (e instanceof org.apache.axis.AxisFault &&
+		    reason != null && reason.contains("java.net.ConnectException:")) {
+		    logger.fatal(msg);
 		} else
 			logger.error(msg);
 		return super.wrap(e);

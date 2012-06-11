@@ -10,6 +10,8 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
+import org.esupportail.commons.services.logging.Logger;
+import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.commons.utils.Assert;
 import org.esupportail.commons.utils.ContextUtils;
 import org.esupportail.commons.utils.strings.StringUtils;
@@ -27,6 +29,11 @@ public class SessionController extends AbstractDomainAwareBean {
 	 * The serialization id.
 	 */
 	private static final long serialVersionUID = -5936434246704000653L;
+
+	/**
+	 * Log4j logger.
+	 */
+	private final Logger logger = new LoggerImpl(getClass());
 
 	/**
 	 * The exception controller (called when logging in/out).
@@ -77,8 +84,8 @@ public class SessionController extends AbstractDomainAwareBean {
 	    try {
 		return authenticator.getUser();
 	    } catch (org.esupportail.portal.ws.client.exceptions.PortalErrorException e) {
-		    // exception already logged. ignore here to avoid loops in JSF
-		return null;
+		logger.debug("" + e, e); // nb: exception already logged in SmsuCachingUportalServiceImpl
+		return null; // ignore exception here to avoid loops in JSF
 	    }
 	}
 
