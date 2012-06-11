@@ -56,30 +56,23 @@ public class SecurityManager {
 	 * if the authentication is successfull.
 	 */
 	public List<String> loadUserRightsByUsername(final String login) {
-		 List<String> fonctions = new ArrayList<String>();
-		// Retrieve all Groups of User "login"
+		List<String> fonctions = new ArrayList<String>();
 		logger.debug("parameter login in loadUserRightsByUsername method is: " + login);
-		List<UserGroup> groups = ldapUtils.getUserGroupsByUid(login);	
-		UserGroup selfGroup = new UserGroup(login, login);
-		groups.add(selfGroup);
 		
-		for (UserGroup group : groups) {
-			// 1- Retrieve the DAO CustomizedGroup by "cgr_Label"
-			logger.debug("group login in loadUserRightsByUsername method is: " + group.getLdapId());
-			CustomizedGroup grp = daoService.getCustomizedGroupByLabel(group.getLdapId());
-			// 2 - Retrieve the role associate to the CustomizedGroup, So all these fonctions
-			if (grp != null) { 
+		for (CustomizedGroup grp : getCustomizedGroups(login)) {
 				logger.debug("group label in loadUserRightsByUsername method is: " + grp.getLabel());
-				for (Fonction fct : grp.getRole().getFonctions()) {
-					// 3 - add fonctions to "fonctions" ArrayList
-					if (!fonctions.contains(fct.getName())) {
-						logger.debug("parameter fct in addFonction method is: " + fct);
-						fonctions.add(fct.getName());
-					}
-				}
-			}
+				addFonctions(fonctions, grp.getRole().getFonctions());
 		}
 		return fonctions;
+	}
+
+	private void addFonctions(List<String> fonctions, Set<Fonction> fonctions_to_add) {
+		for (Fonction fct : fonctions_to_add) {
+			if (!fonctions.contains(fct.getName())) {
+				logger.debug("parameter fct in addFonction method is: " + fct);
+				fonctions.add(fct.getName());
+			}
+		}
 	}
 
 	/**
@@ -90,18 +83,9 @@ public class SecurityManager {
 	 */
 	public List<Integer> loadUserRolesByUsername(final String login) {
 		List<Integer> roles = new ArrayList<Integer>();
-		// Retrieve all Groups of User "login"
 		logger.debug("parameter login in loadUserRolesByUsername method is: " + login);
-		List<UserGroup> groups = ldapUtils.getUserGroupsByUid(login);	
-		UserGroup selfGroup = new UserGroup(login, login);
-		groups.add(selfGroup);
 		
-		for (UserGroup group : groups) {
-			// 1- Retrieve the DAO CustomizedGroup by "cgr_Label"
-			logger.debug("group login in loadUserRolesByUsername method is: " + group.getLdapId());
-			CustomizedGroup grp = daoService.getCustomizedGroupByLabel(group.getLdapId());
-			// 2 - Retrieve the role associate to the CustomizedGroup, So all these fonctions
-			if (grp != null) { 
+		for (CustomizedGroup grp : getCustomizedGroups(login)) {
 				logger.debug("group label in loadUserRolesByUsername method is: " + grp.getLabel());
 				Role role = grp.getRole();
 				
@@ -109,9 +93,32 @@ public class SecurityManager {
 					logger.debug("parameter role in addRole method is: " + role.getId());
 					roles.add(role.getId());
 				}
-			}
 		}
 		return roles;
+	}
+
+	private List<UserGroup> getUserGroupsPlusSelfGroup(String login) {
+		List<UserGroup> groups = new ArrayList<UserGroup>();
+		try {
+		    groups = ldapUtils.getUserGroupsByUid(login);
+		} catch (Exception e) {
+		    logger.debug("" + e, e); // nb: exception already logged in SmsuCachingUportalServiceImpl
+		    // go on, things can still work using only the self group
+		}
+		UserGroup selfGroup = new UserGroup(login, login);
+		groups.add(selfGroup);
+		return groups;
+	}
+	
+	private List<CustomizedGroup> getCustomizedGroups(String login) {
+		List<CustomizedGroup> l = new ArrayList<CustomizedGroup>();
+
+		for (UserGroup group : getUserGroupsPlusSelfGroup(login)) {
+			logger.debug("group login is: " + group.getLdapId());
+			CustomizedGroup grp = daoService.getCustomizedGroupByLabel(group.getLdapId());
+			if (grp != null) l.add(grp);
+		}
+		return l;
 	}
 
 	/**
