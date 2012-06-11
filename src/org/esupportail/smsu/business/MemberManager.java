@@ -280,44 +280,10 @@ public class MemberManager {
 	 * @throws LdapUserNotFoundException
 	 */
 	private String getPhoneNumber(final String userIdentifier) throws LdapUserNotFoundException {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Get phone number of member " + userIdentifier);
-		}
+		logger.debug("Get phone number of member " + userIdentifier);
 		String phoneNumber = ldapUtils.getUserPagerByUid(userIdentifier);
-
-		//		if (phoneNumber == null) {
-		//			List<String> values;
-		//			for (String attribute : this.phoneAttribute) {
-		//				if (logger.isDebugEnabled()) {
-		//					logger.debug("Search phone number with attribute " + attribute);
-		//				}
-		//				values = ldapUtils.getLdapAttributesByUidAndName(userIdentifier, attribute);
-		//				for (String value : values) {
-		//					String nValue = value.replaceAll(" ", "");
-		//					if (!phoneNumberPrefixToRemove.equals("")) {
-		//						if (logger.isDebugEnabled()) {
-		//							logger.debug("phone Number Prefix To Remove " + phoneNumberPrefixToRemove);
-		//						}
-		//						nValue = nValue.replaceAll(phoneNumberPrefixToRemove, "0");
-		//					}
-		//					if (logger.isDebugEnabled()) {
-		//						logger.debug("test pattern with value " + nValue);
-		//					}
-		//					if (nValue.matches(this.phoneNumberPattern)) {
-		//						phoneNumber = nValue;
-		//						if (logger.isDebugEnabled()) {
-		//							logger.debug("phone number found from attribute " + attribute);
-		//						}
-		//					}
-		//				}
-		//			}	
-		//		} else {
-		//			if (logger.isDebugEnabled()) {
-		//				logger.debug("phone number found from pager attribute " + phoneNumber);
-		//			}
-		//		}
+		logger.debug("Phone number of member " + userIdentifier + ": " + phoneNumber);
 		return phoneNumber;
-
 	}
 	/**
 	 * save the member.
