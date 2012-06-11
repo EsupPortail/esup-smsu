@@ -181,8 +181,5 @@ public class SessionController extends AbstractDomainAwareBean {
 	public void setCasLogoutUrl(final String casLogoutUrl) {
 		this.casLogoutUrl = StringUtils.nullIfEmpty(casLogoutUrl);
 	}
-	
-	//public String getTestConnexion() {
-		//return getDomainService().testConnexion();
-	//}
+
 }

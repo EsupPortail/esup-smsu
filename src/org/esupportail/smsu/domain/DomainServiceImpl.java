@@ -134,10 +134,6 @@ public class DomainServiceImpl implements DomainService, InitializingBean {
 	private TestConnexionClient testConnexion;
 	
 	/**
-	 * 
-	 */
-	//private TestConnexionClient testConnexion;
-	/**
 	 * The LDAP attribute that contains the display name. 
 	 */
 	private String displayNameLdapAttribute;
@@ -892,15 +888,6 @@ public class DomainServiceImpl implements DomainService, InitializingBean {
 	public TemplateManager getTemplateManager() {
 		return templateManager;
 	}
-
-	
-	/*public TestConnexionClient getTestConnexion() {
-		return testConnexion;
-	}
-
-	public void setTestConnexion(final TestConnexionClient testConnexion) {
-		this.testConnexion = testConnexion;
-	}*/
 
 	/**
 	 * @see org.esupportail.smsu.domain.DomainService#addTemplate(org.esupportail.smsu.dao.beans.Template)
