@@ -56,7 +56,8 @@ public class ApprovalController extends AbstractContextAwareController {
 		if (currentUser == null) {
 			return false;
 		}
-		return getDomainService().isSupervisor(currentUser);
+		return currentUser.hasFonction(FonctionName.FCTN_GESTIONS_RESPONSABLES)
+		    || getDomainService().isSupervisor(currentUser);
 	}
 	
 	/**
