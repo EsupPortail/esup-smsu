@@ -606,15 +606,6 @@
 				<fail message="${tomcat.bootstrap} not found, please check your tomcat installation" />	
 			</then>
 		</if>
-		<if>
-			<not>
-				<isset property="tomcat.keystore" />
-			</not>
-			<then>
-				<property name="tomcat.keystore" value="${utils.dir}/cas/cru-root.keystore"/>
-				<echo message="Property tomcat.keystore not set, using default (${tomcat.keystore})" />	
-			</then>
-		</if>
 	</target>
 
 	<target name="set-download-properties" depends="read-commons-properties" >
@@ -1082,7 +1073,17 @@
 	    <property name="memory.maxPermSize" value="512m" />
 		<echo message="memory.xmx = ${memory.xmx}"/>
 		<echo message="memory.maxPermSize = ${memory.maxPermSize}"/>
+
+		<if>
+			<isset property="tomcat.keystore" />
+			<then>
 		<property name="jvmarg.trustStore" value="-Djavax.net.ssl.trustStore=${tomcat.keystore}"/>
+			</then>
+			<else>
+				<property name="jvmarg.trustStore" value="-Dfoo=bar"/> <!-- dummy JVM arg since empty arg is not valid  -->
+			</else>
+		</if>
+
 		<if>
 			<ispropertytrue property="jmxRemote.use" />
 			<then>
