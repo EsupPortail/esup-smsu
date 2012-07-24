@@ -83,7 +83,7 @@ authorized="#{approvalController.pageAuthorized}" footer="">
 					<t:column sortable="true" defaultSorted="true">
 						<f:facet name="header" >
 							<e:text
-								value="#{msgs['SMS.USER.VALUE']}" />
+								value="#{msgs['SMS.SENDER']}" />
 						</f:facet>
 						<e:text value="#{message.senderName}" />
 					</t:column>
