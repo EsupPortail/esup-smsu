@@ -14,6 +14,7 @@ import org.esupportail.commons.services.i18n.I18nService;
 import org.esupportail.commons.services.ldap.LdapUser;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
+import org.esupportail.commons.services.urlGeneration.UrlGenerator;
 import org.esupportail.portal.ws.client.PortalGroup;
 import org.esupportail.portal.ws.client.PortalGroupHierarchy;
 import org.esupportail.smsu.business.beans.CustomizedMessage;
@@ -89,6 +90,11 @@ public class SendSmsManager  {
 	 * Used to launch task.
 	 */
 	private SchedulerUtils schedulerUtils;
+
+	/**
+	 * The URL generator.
+	 */
+	private UrlGenerator urlGenerator;
 
 	/**
 	 * The SMS max size.
@@ -277,10 +283,11 @@ public class SendSmsManager  {
 		List<String> toList = getSupervisorsMails(getSupervisors(cGroup));
 		String senderName = ldapUtils.getUserDisplayName(message.getSender());
 		String cGroupName = ldapUtils.getGroupDisplayName(cGroup);
+		String approvalURL = urlGenerator.casUrl(Collections.singletonMap("approvalSMS", ""));
 		String subject = getI18nString("MSG.SUBJECT.MAIL.TO.APPROVAL", senderName);
-		String textBody = getI18nString("MSG.TEXTBOX.MAIL.TO.APPROVAL", cGroupName);
+		String textBody = getI18nString("MSG.TEXTBOX.MAIL.TO.APPROVAL", cGroupName, approvalURL);
 		if (toList != null) {
-			smtpServiceUtils.sendMessage(toList, null, subject, textBody);
+			smtpServiceUtils.sendHTMLMessage(toList, null, subject, textBody);
 		}
 	}
 
@@ -1013,6 +1020,9 @@ public class SendSmsManager  {
 	private String getI18nString(String key, String arg1) {
 		return i18nService.getString(key, i18nService.getDefaultLocale(), arg1);
 	}
+	private String getI18nString(String key, String arg1, String arg2) {
+		return i18nService.getString(key, i18nService.getDefaultLocale(), arg1, arg2);
+	}
 
 	///////////////////////////////////
 	// Getter and Setter of smsMaxSize
@@ -1178,4 +1188,10 @@ public class SendSmsManager  {
 		return smsuPersonAttributesGroupStore;
 	}
 
+	/**
+	 * @param urlGenerator the urlGenerator to set
+	 */
+	public void setUrlGenerator(final UrlGenerator urlGenerator) {
+		this.urlGenerator = urlGenerator;
+	}
 }

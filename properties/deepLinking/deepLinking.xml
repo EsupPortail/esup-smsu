@@ -21,6 +21,25 @@
 		lazy-init="true"
 		>
 		<property name="sessionController" ref="sessionController" />
+		<property name="approvalController" ref="approvalController" />
 	</bean>
+
+    <bean 
+    	id="uportalUrlGenerator"
+    	class="org.esupportail.commons.services.urlGeneration.UportalUrlGeneratorImpl"
+    	lazy-init="true"
+    	>
+        <property name="casUrl" value="${cas.url}" />
+        <property name="uportalFunctionnalName" value="${portail.fnameOfSmsu}" />
+        <property name="uportalUrl" value="${portail.address}" />
+    </bean>
+
+    <bean 
+    	id="servletUrlGenerator"
+    	class="org.esupportail.commons.services.urlGeneration.ServletUrlGeneratorImpl"
+    	lazy-init="true"
+    	>
+        <property name="casUrl" value="${cas.url}" />
+    </bean>
 
 </beans>

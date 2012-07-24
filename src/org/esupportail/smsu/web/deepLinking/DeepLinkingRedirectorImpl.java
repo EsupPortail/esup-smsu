@@ -5,6 +5,7 @@ package org.esupportail.smsu.web.deepLinking;
 
 import java.util.Map;
 
+import org.esupportail.smsu.web.controllers.ApprovalController;
 import org.esupportail.smsu.web.controllers.SessionController;
 import org.esupportail.commons.utils.Assert;
 import org.esupportail.commons.web.deepLinking.AbstractDeepLinkingRedirector;
@@ -23,6 +24,11 @@ public class DeepLinkingRedirectorImpl extends AbstractDeepLinkingRedirector {
 	 * The session controller.
 	 */
 	private SessionController sessionController;
+
+	/**
+	 * The approval controller.
+	 */
+	private ApprovalController approvalController;
 	
 	/**
 	 * Bean constructor.
@@ -39,6 +45,8 @@ public class DeepLinkingRedirectorImpl extends AbstractDeepLinkingRedirector {
 		super.afterPropertiesSet();
 		Assert.notNull(this.sessionController, "property sessionController of class " 
 				+ this.getClass().getName() + " can not be null");
+		Assert.notNull(approvalController, "property approvalController of class "
+				+ this.getClass().getName() + " can not be null");
 	}
 
 	/**
@@ -46,7 +54,14 @@ public class DeepLinkingRedirectorImpl extends AbstractDeepLinkingRedirector {
 	 */
 	public String redirect(
 			final Map<String, String> params) {
+
 		sessionController.resetSessionLocale();
+
+		if (params != null && params.containsKey("approvalSMS")) {
+			if (approvalController.enter() != null)
+				// nb: can not use handleNavigation since there is no FacesContext instance yet (??)
+				return "/stylesheets/approvalSMS/list_sms.jsp";
+		};
 		return null;
 	}
 
@@ -55,6 +70,13 @@ public class DeepLinkingRedirectorImpl extends AbstractDeepLinkingRedirector {
 	 */
 	public void setSessionController(final SessionController sessionController) {
 		this.sessionController = sessionController;
+	}
+
+	/**
+	 * @param approvalController the approvalController to set
+	 */
+	public void setApprovalController(final ApprovalController approvalController) {
+		this.approvalController = approvalController;
 	}
 
 }

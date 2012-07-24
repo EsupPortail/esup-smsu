@@ -37,6 +37,21 @@ public class SmtpServiceUtils {
 							final List<String> copyAdresses,
 							final String subject,
 							final String textBody) {		
+		_sendMessage(toAdresses, copyAdresses, subject, null, textBody);
+	}
+
+	public void sendHTMLMessage(final List<String> toAdresses,
+							final List<String> copyAdresses,
+							final String subject,
+							final String htmlBody) {
+		_sendMessage(toAdresses, copyAdresses, subject, htmlBody, null);
+	}
+
+	private void _sendMessage(final List<String> toAdresses,
+							final List<String> copyAdresses,
+							final String subject,
+							final String htmlBody,
+							final String textBody) {		
 		InternetAddress[] to = createInternetAdresses(toAdresses);
 		InternetAddress[] cc = createInternetAdresses(copyAdresses);
 
@@ -53,7 +68,7 @@ public class SmtpServiceUtils {
 			logger.debug(msg);			
 		}
 		
-		smtpService.sendtocc(to, cc, null, subject, null, textBody, null);
+		smtpService.sendtocc(to, cc, null, subject, htmlBody, textBody, null);
 			
 	}
 	
