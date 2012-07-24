@@ -140,8 +140,7 @@ public class HibernateDaoServiceImpl extends AbstractJdbcJndiHibernateDaoService
 		select.append("SELECT DISTINCT message ");
 		
 		// FROM
-		StringBuffer from = new StringBuffer();
-		from.append(" FROM Message message");
+		String from = " FROM Message message";
 		
 		// WHERE
 		StringBuffer where = new StringBuffer();
@@ -222,17 +221,10 @@ public class HibernateDaoServiceImpl extends AbstractJdbcJndiHibernateDaoService
 		// Order by 
 		String orderBy = " ORDER BY message." + Message.PROP_ID + " ASC ";
 		
-		String queryString = "";
-		StringBuffer selectFrom = select.append(from.toString());
-		
-		if (whereClause) {
-			String whereStr = where.toString();
-			StringBuffer temp = selectFrom.append(whereStr);
-			temp.append(orderBy);
-			queryString = temp.toString();
-		} else {
-			queryString = selectFrom.append(orderBy).toString();
-		}
+		select.append(from);	
+		if (whereClause) select.append(where.toString());
+		select.append(orderBy);
+		String queryString = select.toString();
 		
 		if (logger.isDebugEnabled()) {
 			logger.debug("queryString : " + queryString);
