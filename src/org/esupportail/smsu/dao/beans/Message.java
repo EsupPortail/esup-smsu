@@ -165,6 +165,7 @@ public class Message  implements Serializable {
 		this.setContent(message.getContent());
 		this.setState(message.getState());
 		this.setMail(message.getMail());
+		// nb: setRecipients and setSupervisors are not done
 	}
 
 	/**
