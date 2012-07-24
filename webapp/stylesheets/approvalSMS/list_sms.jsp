@@ -93,7 +93,7 @@ authorized="#{approvalController.pageAuthorized}" footer="">
 							<e:text
 								value="#{msgs['SMS.GROUP.VALUE']}" />
 						</f:facet>
-						<e:text value="#{message.groupName}" />
+						<e:text value="#{message.groupRecipientName}" />
 					</t:column>
 			
 					<t:column>

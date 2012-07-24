@@ -11,7 +11,6 @@ import org.esupportail.commons.services.ldap.LdapUser;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.dao.DaoService;
-import org.esupportail.smsu.dao.beans.BasicGroup;
 import org.esupportail.smsu.dao.beans.Message;
 import org.esupportail.smsu.dao.beans.Person;
 import org.esupportail.smsu.domain.beans.User;
@@ -40,19 +39,14 @@ public class ApprovalManager {
 	private DaoService daoService;
 
 	/**
-	 * {@link LdapUtils}.
+	 * {@link MessageManager}.
 	 */
-	private LdapUtils ldapUtils;
+	private MessageManager messageManager;
 
 	/**
 	 * {@link DaoService}.
 	 */
 	private SendSmsManager sendSmsManager;
-
-	/**
-	 * displayName.
-	 */
-	private String displayNameAttributeAsString;
 
 	/**
 	 * Log4j logger.
@@ -84,42 +78,7 @@ public class ApprovalManager {
 		if (!user.hasFonction(FonctionName.FCTN_GESTIONS_RESPONSABLES))
 			messages = filterApprovalMessagesASupervisorCanApprove(messages, user);
 
-		Map<String, LdapUser> ldapUserByUid = getLdapUserByUid(senderLogins(messages));
-
-		List<UIMessage> uimessages = new ArrayList<UIMessage>();
-		for (Message mess : messages) {
-			String displayName = retreiveNiceDisplayName(ldapUserByUid, mess.getSender().getLogin());
-			String groupName = retreiveNiceGroupName(mess.getGroupRecipient());					
-			uimessages.add(new UIMessage(displayName, groupName, mess));
-		}
-		return uimessages;
-	}
-
-	private LinkedHashSet<String> senderLogins(List<Message> messages) {
-		LinkedHashSet<String> l = new LinkedHashSet<String>();	       		
-		for (Message mess : messages)
-			l.add(mess.getSender().getLogin());
-		return l;
-	}
-
-	private Map<String, LdapUser> getLdapUserByUid(Iterable<String> uids) {
-		Map<String, LdapUser> ldapUserByUid = new TreeMap<String, LdapUser>();
-		for (LdapUser u : ldapUtils.getUsersByUids(uids))
-		    ldapUserByUid.put(u.getId(), u);
-		return ldapUserByUid;
-	}
-
-	private String retreiveNiceDisplayName(Map<String, LdapUser> ldapUserByUid, String senderLogin) {
-		logger.debug("mess.getSender.getLogin is: " + senderLogin);
-		
-		LdapUser ldapUser = ldapUserByUid.get(senderLogin);
-		if (ldapUser != null) {
-			String displayName = ldapUser.getAttribute(displayNameAttributeAsString);
-			logger.debug("displayName is: " + displayName);
-			return displayName + "  (" + senderLogin + ")"; 
-		} else {
-			return senderLogin;
-		}
+		return messageManager.toUIMessages(messages);
 	}
 
 	private List<Message> filterApprovalMessagesASupervisorCanApprove(List<Message> msgs, User user) {
@@ -129,24 +88,6 @@ public class ApprovalManager {
 			if (mess.getSupervisors().contains(p))
 				messages.add(mess);
 		return messages;
-	}
-
-	private String retreiveNiceGroupName(BasicGroup recipientGroup) {
-		return recipientGroup != null ?
-			retreiveNiceGroupName(recipientGroup.getLabel()) : NONE;
-	}
-
-	private String retreiveNiceGroupName(String groupLabel) {
-		String groupName = NONE;
-
-			try {
-				groupName = ldapUtils.getUserDisplayNameByUserUid(groupLabel);
-			} catch (LdapUserNotFoundException e) {
-
-				groupName = ldapUtils.getGroupNameByUid(groupLabel);
-			} 
-
-		return groupName;
 	}
 
 	/**
@@ -184,13 +125,13 @@ public class ApprovalManager {
 	}
 
 	//////////////////////////////////////////////////////////////
-	// Setter of spring object ldapUtils
+	// Setter of spring object messageManager
 	//////////////////////////////////////////////////////////////
 	/**
-	 * @param ldapUtils
+	 * @param messageManager
 	 */
-	public void setLdapUtils(final LdapUtils ldapUtils) {
-		this.ldapUtils = ldapUtils;
+	public void setMessageManager(final MessageManager messageManager) {
+		this.messageManager = messageManager;
 	}
 
 	//////////////////////////////////////////////////////////////
@@ -202,23 +143,5 @@ public class ApprovalManager {
 	public void setSendSmsManager(final SendSmsManager sendSmsManager) {
 		this.sendSmsManager = sendSmsManager;
 	}
-
-
-
-	/**
-	 * @param displayNameAttributeAsString the displayNameAttributeAsString to set
-	 */
-	public void setDisplayNameAttributeAsString(
-			final String displayNameAttributeAsString) {
-		this.displayNameAttributeAsString = displayNameAttributeAsString;
-	}
-
-	/**
-	 * @return the displayNameAttributeAsString
-	 */
-	public String getDisplayNameAttributeAsString() {
-		return displayNameAttributeAsString;
-	}
-
 
 }

@@ -20,9 +20,10 @@ public class UIMessage extends Message  {
 	private String displayName;
 	
 	/**
-	 * groupName.
+	 * group names.
 	 */
-	private String groupName;
+	private String groupSenderName;
+	private String groupRecipientName;
 	
 	/**
 	 * displayName.
@@ -45,31 +46,24 @@ public class UIMessage extends Message  {
 	public UIMessage() {
 		super();
 	}
-
-	/**
-	 * @param displayName
-	 * @param groupName 
-	 * @param message 
-	 */
-	public UIMessage(final String displayName,	final String groupName, final Message message) {
-		super(message);
-		this.displayName = displayName;
-		this.groupName = groupName;
-		this.nbRecipients = message.getRecipients().size();
-	}
 	
 	/**
-	 * @param displayName
-	 * @param groupName 
-	 * @param message
 	 * @param stateMessage 
 	 * @param stateMail  
+	 * @param displayName
+	 * @param groupSenderName
+	 * @param groupRecipientName
+	 * @param message
 	 */
 	public UIMessage(final String stateMessage, final String stateMail, final String displayName, 
-			final String groupName, final Message message) {
-		this(displayName, groupName, message);
+			final String groupSenderName, final String groupRecipientName, final Message message) {
+		super(message);
 		this.stateMessage = stateMessage;
 		this.stateMail = stateMail;
+		this.displayName = displayName;
+		this.groupSenderName = groupSenderName;
+		this.groupRecipientName = groupRecipientName;
+		this.nbRecipients = message.getRecipients().size();
 	}
 	
 
@@ -131,18 +125,12 @@ public class UIMessage extends Message  {
 		return displayName;
 	}
 
-	/**
-	 * @param groupName the groupName to set
-	 */
-	public void setGroupName(final String groupName) {
-		this.groupName = groupName;
+	public String getGroupSenderName() {
+		return groupSenderName;
 	}
 
-	/**
-	 * @return the groupName
-	 */
-	public String getGroupName() {
-		return groupName;
+	public String getGroupRecipientName() {
+		return groupRecipientName;
 	}
 
 	/**

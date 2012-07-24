@@ -13,6 +13,7 @@ import org.esupportail.commons.services.ldap.LdapUser;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.dao.DaoService;
+import org.esupportail.smsu.dao.beans.BasicGroup;
 import org.esupportail.smsu.dao.beans.Mail;
 import org.esupportail.smsu.dao.beans.Message;
 import org.esupportail.smsu.domain.beans.mail.MailStatus;
@@ -89,16 +90,20 @@ public class MessageManager {
 	
 		List<Message> messages = daoService.getMessages(userGroupId, userAccountId, userServiceId, 
 								 userTemplateId, userUserId, beginDateSQL, endDateSQL);
-		
+		return toUIMessages(messages);
+	}
+
+	public List<UIMessage> toUIMessages(List<Message> messages) {
 		Map<String, LdapUser> ldapUserByUid = getLdapUserByUid(senderLogins(messages));
 
 		List<UIMessage> uimessages = new ArrayList<UIMessage>();
 		for (Message mess : messages) {
 			String displayName = retreiveNiceDisplayName(ldapUserByUid, mess.getSender().getLogin());
-			String groupName = retreiveNiceGroupName(mess.getGroupSender().getLabel());
+			String groupSenderName = retreiveNiceGroupName(mess.getGroupSender());
+			String groupRecipientName = retreiveNiceGroupName(mess.getGroupRecipient());
 			String stateMessage = messageStatusI18nMessage(mess.getStateAsEnum());
 			String stateMail = mailStatusI18nMessage(mess.getMail());
-			uimessages.add(new UIMessage(stateMessage, stateMail, displayName, groupName, mess));
+			uimessages.add(new UIMessage(stateMessage, stateMail, displayName, groupSenderName, groupRecipientName, mess));
 		}
 		return uimessages;
 	}
@@ -135,6 +140,11 @@ public class MessageManager {
 		} else {
 			return senderLogin;
 		}
+	}
+
+	private String retreiveNiceGroupName(BasicGroup recipientGroup) {
+		return recipientGroup != null ?
+			retreiveNiceGroupName(recipientGroup.getLabel()) : NONE;
 	}
 
 	private String retreiveNiceGroupName(String groupLabel) {

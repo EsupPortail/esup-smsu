@@ -196,7 +196,7 @@
 							<e:text
 								value="#{msgs['SMS.GROUP.VALUE']}" />
 						</f:facet>
-						<e:text value="#{message.groupName}" />
+						<e:text value="#{message.groupSenderName}" />
 					</t:column>
 			
 					<t:column>

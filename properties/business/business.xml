@@ -123,16 +123,11 @@
 	<bean id="approvalManager"
 		class="org.esupportail.smsu.business.ApprovalManager">
 		<description>The business layer concerning the smsu approval.</description>
-		<property name="ldapUtils" ref="ldapUtils">
-			<description>The LDAP service.</description>
-		</property>
+		<property name="messageManager" ref="messageManager" />
 		<property name="sendSmsManager" ref="sendSmsManager">
 			<description>The SendSmsManager service.</description>
 		</property>
 		<property name="daoService" ref="daoService" />
-		<property name="displayNameAttributeAsString"> 
-			<value type="java.lang.String">${ldap.displayNameAttribute}</value>
-		</property>
 	</bean>
 	
 	<bean id="groupManager"
