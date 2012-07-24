@@ -68,28 +68,19 @@ public class RoleManager {
 		List<Role> allRoles = daoService.getRoles();
 		
 		for (Role role : allRoles) {
-			isDeletable = false;
-			isUpdateable = true;
-			
-			Boolean testCustomizedGroup = testCustomizedGroupBeforeDeleteRole(role);
 			
 			// if not attached to Customized Groups
-			if (testCustomizedGroup) {
-				isDeletable = true;
-			}
+			isDeletable = daoService.getCustomizedGroupByRole(role) == null;
 			
-			// Role super admin (Id=1) n'est pas supprimable ni modifiable
-			if (role.getName().equals(RoleEnum.SUPER_ADMIN.toString())) {
+			isUpdateable = true;
+
+			// Role super admin (Id=1) et utilisateur connected n'est pas supprimable ni modifiable
+			if (role.getName().equals(RoleEnum.SUPER_ADMIN.toString()) ||
+			    idRoles != null && idRoles.contains(role.getId())) {
 				isDeletable = false;
 				isUpdateable = false;
 			}
-				
-			// Role de l'utilisateur connected n'est pas supprimable ni modifiable
-			if (idRoles != null && idRoles.contains(role.getId())) {
-				isDeletable = false;
-				isUpdateable = false;
-			}
-			
+						
 			UIRole newrole = new UIRole(role.getId(), role.getName(), isDeletable, isUpdateable);
 			allUIRoles.add(newrole);
 		}
@@ -104,16 +95,6 @@ public class RoleManager {
 	 */
 	public List<UIRole> getAllRoles() {
 		return getAllRoles(null);
-	}
-	
-	/**
-	 * Used by getAllRoles functions.
-	 * @param role 
-	 * @return true if no group is linked to 
-	 */
-	private Boolean testCustomizedGroupBeforeDeleteRole(final Role role) {
-		CustomizedGroup customizedGroup = daoService.getCustomizedGroupByRole(role);	
-		return customizedGroup == null;
 	}
 
 	/**
