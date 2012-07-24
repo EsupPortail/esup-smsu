@@ -47,14 +47,12 @@ public class SmtpServiceUtils {
 
 		
 		if (logger.isDebugEnabled()) {
-			final StringBuilder sb = new StringBuilder(200);
-			sb.append("Sending email to : \n");
-			sb.append(" - to : " + join(toInternetAdressesList, " - "));
-			sb.append("\n - cc : " + join(ccInternetAdressesList, " - "));
-			sb.append("\n - Subject : ").append(subject);
-			sb.append("\n - body : ").append(textBody);
-			logger.debug(sb.toString());
-			
+			String msg = "Sending email to :" +
+				"\n - to : " + join(toInternetAdressesList, " - ") +
+				"\n - cc : " + join(ccInternetAdressesList, " - ") +
+				"\n - Subject : " + subject +
+				"\n - body : " + textBody;
+			logger.debug(msg);			
 		}
 		
 		final InternetAddress[] toInternetAdressesAsArray = toInternetAdressesList.toArray(new InternetAddress[toInternetAdressesList.size()]);  
