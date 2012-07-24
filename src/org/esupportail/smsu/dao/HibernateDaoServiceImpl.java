@@ -132,7 +132,7 @@ public class HibernateDaoServiceImpl extends AbstractJdbcJndiHibernateDaoService
 	@SuppressWarnings("unchecked")
 	public List<Message> getMessages(final Integer userGroupId, final Integer userAccountId, 
 			final Integer userServiceId, final Integer userTemplateId, final Integer userUserId, 
-			final Date beginDate, final Date endDate) {
+			final java.sql.Date beginDate, final java.sql.Date endDate) {
 		List<Message> result = null;
 
 		// SELECT
@@ -206,10 +206,7 @@ public class HibernateDaoServiceImpl extends AbstractJdbcJndiHibernateDaoService
 			if (whereClause) {
 				where.append(keywordAND);
 			}
-			long startDateLong = beginDate.getTime();
-			java.sql.Date startDateSQL = new java.sql.Date(startDateLong);
-			where.append(" message." + Message.PROP_DATE + ">='" + startDateSQL
-					+ "'");
+			where.append(" message." + Message.PROP_DATE + ">='" + beginDate + "'");
 			whereClause = true;
 		}
 		
@@ -218,10 +215,7 @@ public class HibernateDaoServiceImpl extends AbstractJdbcJndiHibernateDaoService
 			if (whereClause) {
 				where.append(keywordAND);
 			}
-			long endDateLong = endDate.getTime();
-			java.sql.Date endDateSQL = new java.sql.Date(endDateLong);
-			where.append(" message." + Message.PROP_DATE + "<='" + endDateSQL
-					+ "'");
+			where.append(" message." + Message.PROP_DATE + "<'" + endDate + "'");
 			whereClause = true;
 		}
 		

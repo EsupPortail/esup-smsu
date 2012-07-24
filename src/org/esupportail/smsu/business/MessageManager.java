@@ -1,6 +1,7 @@
 package org.esupportail.smsu.business;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -80,9 +81,14 @@ public class MessageManager {
 	public List<UIMessage> getMessages(final Integer userGroupId, final Integer userAccountId, 
 			final Integer userServiceId, final Integer userTemplateId, final Integer userUserId, 
 			final Date beginDate, final Date endDate) {
-		
+
+		java.sql.Date beginDateSQL = 
+			beginDate == null ? null : new java.sql.Date(beginDate.getTime()); // get rid of HH:MM:SS
+		java.sql.Date endDateSQL =
+			endDate == null ? null : new java.sql.Date(addOneDay(endDate).getTime());
+	
 		List<Message> messages = daoService.getMessages(userGroupId, userAccountId, userServiceId, 
-								 userTemplateId, userUserId, beginDate, endDate);
+								 userTemplateId, userUserId, beginDateSQL, endDateSQL);
 		
 		Map<String, LdapUser> ldapUserByUid = getLdapUserByUid(senderLogins(messages));
 
@@ -95,6 +101,13 @@ public class MessageManager {
 			uimessages.add(new UIMessage(stateMessage, stateMail, displayName, groupName, mess));
 		}
 		return uimessages;
+	}
+
+	private Date addOneDay(Date d) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(d);
+		cal.add(Calendar.DATE, 1);
+		return cal.getTime();
 	}
 
 	private LinkedHashSet<String> senderLogins(List<Message> messages) {
