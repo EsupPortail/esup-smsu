@@ -24,6 +24,8 @@ import org.esupportail.portal.ws.client.PortalService;
 import org.esupportail.portal.ws.client.exceptions.PortalErrorException;
 import org.esupportail.portal.ws.client.exceptions.PortalGroupNotFoundException;
 import org.esupportail.portal.ws.client.exceptions.PortalUserNotFoundException;
+import org.esupportail.smsu.dao.beans.BasicGroup;
+import org.esupportail.smsu.dao.beans.CustomizedGroup;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
 import org.esupportail.smsu.exceptions.ldap.LdapWriteException;
 import org.esupportail.smsu.groups.SmsuLdapGroupPersonAttributeDaoImpl;
@@ -481,15 +483,27 @@ public class LdapUtils {
 		}
 		return userGroups;
 	}
+
+	public String getGroupDisplayName(CustomizedGroup cg) {
+		return getGroupDisplayName(cg.getLabel());
+	}
+	public String getGroupDisplayName(BasicGroup cg) {
+		return getGroupDisplayName(cg.getLabel());
+	}
 	
 	/**
 	 * Retrieve the group by id.
-	 * @param uid : group identifier in the LDAP
+	 * @param id : group identifier
 	 * @return the group name
 	 */
-	public String getGroupNameByUid(final String uid) {	    
-		String retVal = getGroupNameByUidOrNull(uid);
-		return retVal != null ? retVal : uid;
+        public String getGroupDisplayName(final String id) {
+		String displayName;
+		try {
+			displayName = getUserDisplayNameByUserUid(id);
+		} catch (LdapUserNotFoundException e) {
+			displayName = getGroupNameByUidOrNull(id);
+		}
+		return displayName != null ? displayName : id;
 	}
 
 	/**

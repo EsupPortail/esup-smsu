@@ -16,7 +16,6 @@ import org.esupportail.smsu.dao.beans.Account;
 import org.esupportail.smsu.dao.beans.CustomizedGroup;
 import org.esupportail.smsu.domain.beans.User;
 import org.esupportail.smsu.domain.beans.fonction.FonctionName;
-import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.web.beans.GroupPaginator;
 import org.esupportail.smsu.web.beans.GroupPerson;
@@ -625,26 +624,10 @@ public class GroupsManagerController extends AbstractContextAwareController {
 		return addQuotaSms;
 	}
 
-	private String getGroupIsUidDisplayName() {
-		try {
-			return ldapUtils.getUserDisplayNameByUserUid(group.getLabel());
-		} catch (LdapUserNotFoundException e) {
-			return null;
-		}
-	}
-
 	public String getGroupDisplayName() {
 		if (group.getLabel() == null) return null;
 
-		String displayName = getGroupIsUidDisplayName();
-		if (displayName == null) {
-			displayName = ldapUtils.getGroupNameByUid(group.getLabel());
-		}
-		if (displayName == null) {
-			logger.debug("Group not found : " + group.getLabel());
-			displayName = group.getLabel();
-		}	
-		return displayName;
+		return ldapUtils.getGroupDisplayName(group);
 	}
 	//////////////////////////////////////////////////////////////
 	// Getter and Setter of grpAlreadySelected

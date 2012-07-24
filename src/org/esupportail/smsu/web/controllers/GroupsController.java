@@ -97,15 +97,7 @@ public class GroupsController extends AbstractContextAwareController {
 		if (groups != null) {
 		for (BasicGroup grp : groups) {
 			//groupItems.add(new SelectItem(grp.getBgrId().toString(), grp.getBgrLabel()));
-			//String label = ldapUtils.getGroupNameByUid(grp.getLabel());
-			String groupDisplayName;
-			String groupLabel = grp.getLabel();
-			try {
-				groupDisplayName = ldapUtils.getUserDisplayNameByUserUid(groupLabel);
-			} catch (LdapUserNotFoundException e) {
-				
-				groupDisplayName = ldapUtils.getGroupNameByUid(groupLabel);
-			}
+			String groupDisplayName = ldapUtils.getGroupDisplayName(grp);
 			groupItems.add(new SelectItem(grp.getId().toString(), groupDisplayName));
 		}
 		}

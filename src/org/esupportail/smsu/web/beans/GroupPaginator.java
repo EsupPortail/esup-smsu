@@ -67,14 +67,7 @@ public class GroupPaginator extends ListPaginator<DisplayedGroup> {
 		for (CustomizedGroup cg : listCg) {
 			DisplayedGroup dg = new DisplayedGroup();
 			dg.setCustomizedGroup(cg);
-			String displayName;
-			try {
-				displayName = ldapUtils.getUserDisplayNameByUserUid(cg.getLabel());
-			} catch (LdapUserNotFoundException e) {
-				
-				displayName = ldapUtils.getGroupNameByUid(cg.getLabel());
-			}
-			dg.setDisplayName(displayName);
+			dg.setDisplayName(ldapUtils.getGroupDisplayName(cg));
 			listGroup.add(dg);
 		}
 		//return domainService.getAllGroups();

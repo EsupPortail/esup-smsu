@@ -172,15 +172,7 @@ public class ContentCustomizationManager {
 
 	private String expGroupName(final String expGroupName) {
 		// a sending group can be a user name
-		String groupName;
-		try {
-			groupName = ldapUtils.getUserDisplayNameByUserUid(expGroupName);
-		} catch (LdapUserNotFoundException e) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("User not found : " + expGroupName);
-			}
-			groupName = ldapUtils.getGroupNameByUid(expGroupName);
-		}
+		String groupName = ldapUtils.getGroupDisplayName(expGroupName);
 		 
 		if (logger.isDebugEnabled()) {
 			logger.debug("Group name used :" + groupName);

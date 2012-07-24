@@ -144,20 +144,7 @@ public class MessageManager {
 
 	private String retreiveNiceGroupName(BasicGroup recipientGroup) {
 		return recipientGroup != null ?
-			retreiveNiceGroupName(recipientGroup.getLabel()) : NONE;
-	}
-
-	private String retreiveNiceGroupName(String groupLabel) {
-		String groupName = NONE;
-
-			try {
-				groupName = ldapUtils.getUserDisplayNameByUserUid(groupLabel);
-			} catch (LdapUserNotFoundException e) {
-
-				groupName = ldapUtils.getGroupNameByUid(groupLabel);
-			} 
-
-		return groupName;
+			ldapUtils.getGroupDisplayName(recipientGroup.getLabel()) : NONE;
 	}
 
 	private String i18nMessageKeyToMessage(String i18nKey) {
