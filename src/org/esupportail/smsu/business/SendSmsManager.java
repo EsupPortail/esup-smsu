@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.text.DateFormat;
 import java.lang.reflect.UndeclaredThrowableException;
 
 import org.apache.commons.lang.StringUtils;
@@ -29,6 +30,7 @@ import org.esupportail.smsu.dao.beans.Person;
 import org.esupportail.smsu.dao.beans.Recipient;
 import org.esupportail.smsu.dao.beans.Service;
 import org.esupportail.smsu.dao.beans.Template;
+import org.esupportail.smsu.domain.beans.User;
 import org.esupportail.smsu.domain.beans.mail.MailStatus;
 import org.esupportail.smsu.domain.beans.message.MessageStatus;
 import org.esupportail.smsu.exceptions.BackOfficeUnrichableException;
@@ -202,7 +204,7 @@ public class SendSmsManager  {
 				;
 			else if (message.getStateAsEnum().equals(MessageStatus.WAITING_FOR_APPROVAL))
 				// envoi du mail
-				sendMailsToSupervisors(message);
+				sendApprovalMailToSupervisors(message);
 			else 
 				maySendMessageInBackground(message);
 		} catch (UnknownIdentifierApplicationException e) {
@@ -269,26 +271,74 @@ public class SendSmsManager  {
 		}
 	}
 
-	//////////////////////////////////////////////////////////////
-	// Private tools methods
-	//////////////////////////////////////////////////////////////
 	/**
 	 * send mail based on supervisors.
-	 * @param supervisors
 	 * @return
 	 */
-	private void sendMailsToSupervisors(final Message message) {
-		CustomizedGroup cGroup = getSupervisorCustomizedGroup(message);
+	private void sendApprovalMailToSupervisors(final Message message) {
+		sendMailToSupervisors(message, MessageStatus.WAITING_FOR_APPROVAL, null);
+	}
 
+	public void sendMailMessageApprovedOrCanceled(Message message, MessageStatus status, User currentUser) {
+		sendMailToSupervisors(message, status, currentUser);
+		sendMailToSenderMessageApprovedOrCanceled(message, status, currentUser);
+	}
+
+	private void sendMailToSupervisors(final Message message, MessageStatus status, User currentUser) {
+		CustomizedGroup cGroup = getSupervisorCustomizedGroup(message);
 		List<String> toList = getSupervisorsMails(getSupervisors(cGroup));
+		if (toList == null) {
+			logger.error("no supervisors??");
+			return;
+		}
+
+		String subjectKey;
+		String textBodyKey;
+		String textBodyParam3;
+		if (status == MessageStatus.CANCEL) {
+			subjectKey = "MSG.SUBJECT.MAIL.TO.CANCELED";
+			textBodyKey = "MSG.TEXTBOX.MAIL.TO.CANCELED";
+			textBodyParam3 = currentUser.getDisplayName();
+		} else if (status == MessageStatus.IN_PROGRESS) {
+			subjectKey = "MSG.SUBJECT.MAIL.TO.APPROVED";
+			textBodyKey = "MSG.TEXTBOX.MAIL.TO.APPROVED";
+			textBodyParam3 = currentUser.getDisplayName();
+		} else {
+			subjectKey = "MSG.SUBJECT.MAIL.TO.APPROVAL";
+			textBodyKey = "MSG.TEXTBOX.MAIL.TO.APPROVAL";
+			textBodyParam3 = urlGenerator.casUrl(Collections.singletonMap("approvalSMS", ""));
+		}
 		String senderName = ldapUtils.getUserDisplayName(message.getSender());
 		String cGroupName = ldapUtils.getGroupDisplayName(cGroup);
-		String approvalURL = urlGenerator.casUrl(Collections.singletonMap("approvalSMS", ""));
-		String subject = getI18nString("MSG.SUBJECT.MAIL.TO.APPROVAL", senderName);
-		String textBody = getI18nString("MSG.TEXTBOX.MAIL.TO.APPROVAL", cGroupName, approvalURL);
-		if (toList != null) {
-			smtpServiceUtils.sendHTMLMessage(toList, null, subject, textBody);
+		String subject = getI18nString(subjectKey, senderName);
+		String textBody = getI18nString(textBodyKey, cGroupName,
+						i18nMsgDate(message), i18nMsgTime(message), textBodyParam3);
+		smtpServiceUtils.sendHTMLMessage(toList, null, subject, textBody);
+	}
+
+	private void sendMailToSenderMessageApprovedOrCanceled(final Message message, MessageStatus status, User currentUser) {
+		List<String> toList = ldapUtils.getUserEmailsAdressByUids(Collections.singleton(message.getSender().getLogin()));
+
+		String subjectKey;
+		String textBodyKey;
+		if (status == MessageStatus.CANCEL) {
+			subjectKey = "MSG.SUBJECT.MAIL.TO.SENDER.CANCELED";
+			textBodyKey = "MSG.TEXTBOX.MAIL.TO.SENDER.CANCELED";
+		} else {
+			subjectKey = "MSG.SUBJECT.MAIL.TO.SENDER.APPROVED";
+			textBodyKey = "MSG.TEXTBOX.MAIL.TO.SENDER.APPROVED";
 		}
+		String subject = getI18nString(subjectKey, i18nMsgDate(message), i18nMsgTime(message));
+		String textBody = getI18nString(textBodyKey, 
+						i18nMsgDate(message), i18nMsgTime(message), currentUser.getDisplayName());
+		smtpServiceUtils.sendHTMLMessage(toList, null, subject, textBody);
+	}
+
+	private String i18nMsgDate(Message msg) {
+		return DateFormat.getDateInstance(DateFormat.MEDIUM, i18nService.getDefaultLocale()).format(msg.getDate());
+	}
+	private String i18nMsgTime(Message msg) {
+		return DateFormat.getTimeInstance(DateFormat.MEDIUM, i18nService.getDefaultLocale()).format(msg.getDate());
 	}
 
 	private Set<Person> getSupervisors(CustomizedGroup cGroup) {
@@ -1022,6 +1072,12 @@ public class SendSmsManager  {
 	}
 	private String getI18nString(String key, String arg1, String arg2) {
 		return i18nService.getString(key, i18nService.getDefaultLocale(), arg1, arg2);
+	}
+	private String getI18nString(String key, String arg1, String arg2, String arg3) {
+		return i18nService.getString(key, i18nService.getDefaultLocale(), arg1, arg2, arg3);
+	}
+	private String getI18nString(String key, String arg1, String arg2, String arg3, String arg4) {
+		return i18nService.getString(key, i18nService.getDefaultLocale(), arg1, arg2, arg3, arg4);
 	}
 
 	///////////////////////////////////

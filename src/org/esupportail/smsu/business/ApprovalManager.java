@@ -94,8 +94,9 @@ public class ApprovalManager {
 	 * Update the State of the message.
 	 * @param uiMessage
 	 */
-	public void cancelMessage(final UIMessage uiMessage) {
+	public void cancelMessage(final UIMessage uiMessage, User currentUser) {
 		Message message = daoService.getMessageById(uiMessage.getId());
+		sendSmsManager.sendMailMessageApprovedOrCanceled(message, MessageStatus.CANCEL, currentUser);
 		message.setStateAsEnum(MessageStatus.CANCEL);
 		daoService.updateMessage(message);
 
@@ -106,9 +107,10 @@ public class ApprovalManager {
 	 * @param uiMessage
 	 * @throws CreateMessageException.WebService
 	 */
-	public void approveMessage(final UIMessage uiMessage) throws CreateMessageException.WebService {
+	public void approveMessage(final UIMessage uiMessage, User currentUser) throws CreateMessageException.WebService {
 		Message message = daoService.getMessageById(uiMessage.getId());
 		logger.debug("Message approved");
+		sendSmsManager.sendMailMessageApprovedOrCanceled(message, MessageStatus.IN_PROGRESS, currentUser);
 		message.setStateAsEnum(MessageStatus.IN_PROGRESS);
 		sendSmsManager.treatMessage(message);
 

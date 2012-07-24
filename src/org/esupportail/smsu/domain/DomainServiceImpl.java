@@ -350,15 +350,15 @@ public class DomainServiceImpl implements DomainService, InitializingBean {
 		return  approvalManager.getApprovalUIMessages(user);
 	}
 	
-	public void cancelMessage(final UIMessage uiMessage) {
-		approvalManager.cancelMessage(uiMessage);
+	public void cancelMessage(final UIMessage uiMessage, User currentUser) {
+		approvalManager.cancelMessage(uiMessage, currentUser);
 	}
 
 	/**
 	 * @throws CreateMessageException 
 	 */
-	public void approveMessage(final UIMessage uimessage) throws CreateMessageException.WebService {
-		approvalManager.approveMessage(uimessage);
+	public void approveMessage(final UIMessage uimessage, User currentUser) throws CreateMessageException.WebService {
+		approvalManager.approveMessage(uimessage, currentUser);
 		
 	}
 	//////////////////////////////////////////////////////////////

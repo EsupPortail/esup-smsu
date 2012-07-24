@@ -186,7 +186,7 @@ public class LdapUtilsHelpers {
 	 * @param uids
 	 * @return a list for user mails.
 	 */
-	public List<String> getUserMailsByUids(final List<String> uids) {
+	public List<String> getUserMailsByUids(final Iterable<String> uids) {
 		final List<String> retVal = new ArrayList<String>();
 		for (LdapUser ldapUser : getUsersByUids(uids)) {
 			String mail = ldapUser.getAttribute(userEmailAttribute);

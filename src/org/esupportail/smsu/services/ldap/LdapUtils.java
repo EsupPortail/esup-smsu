@@ -552,7 +552,7 @@ public class LdapUtils {
 	 * @param uids
 	 * @return a list of user mails.
 	 */
-	public List<String> getUserEmailsAdressByUids(final List<String> uids) {
+	public List<String> getUserEmailsAdressByUids(final Iterable<String> uids) {
 		List<String> retVal = ldapUtilsHelpers.getUserMailsByUids(uids);
 		return retVal;
 	}
