@@ -25,14 +25,8 @@ public class UIMessage extends Message  {
 	private String groupSenderName;
 	private String groupRecipientName;
 	
-	/**
-	 * displayName.
-	 */
 	private String stateMessage;
 	
-	/**
-	 * displayName.
-	 */
 	private String stateMail;
 	/**
 	 * Log4j logger.
