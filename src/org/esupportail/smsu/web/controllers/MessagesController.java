@@ -94,11 +94,6 @@ public class MessagesController<DomaineService> extends AbstractContextAwareCont
 	 */
 	private Set<FonctionName> rights = new HashSet<FonctionName>();
 
-	/**
-	 * The count of recipients destCount.
-	 */
-	private String destCount;
-
 	private String supervisorsText;
 	private String recipientsText;
 
@@ -233,7 +228,6 @@ public class MessagesController<DomaineService> extends AbstractContextAwareCont
 	}
 
 	public String displayDetails() {
-		this.destCount = null;
 		this.supervisorsText = null;
 		this.recipientsText = null;
 		this.backListDestCount = null;
@@ -254,7 +248,6 @@ public class MessagesController<DomaineService> extends AbstractContextAwareCont
 	private void computeDetailsSentMessage() {
 		try {
 			TrackInfos infos = getDomainService().getTrackInfos(message.getId());
-			this.destCount = infos.getNbDestTotal().toString();
 			this.backListDestCount = infos.getNbDestBlackList().toString();
 			this.sentSMSCount = infos.getNbSentSMS().toString();
 		} catch (UnknownIdentifierApplicationException e) {
@@ -266,9 +259,6 @@ public class MessagesController<DomaineService> extends AbstractContextAwareCont
 
 	private void computeMoreDetails() {
 		Message mess = getDomainService().getMessage(message.getId());
-		if (this.destCount == null) {
-		    this.destCount = Integer.toString(mess.getRecipients().size());
-		}
 		this.recipientsText = computeRecipientsText(mess.getRecipients());
 		this.supervisorsText = computeSupervisorsText(mess.getSupervisors());
 	}
@@ -289,15 +279,6 @@ public class MessagesController<DomaineService> extends AbstractContextAwareCont
 	}
 
 	//////////////////////////////////////////////
-	// Getter of WS parameter destCount
-	//////////////////////////////////////////////
-	/**
-	 * @return the destCount
-	 */
-	public String getDestCount() {
-		return this.destCount;
-	}
-
 	public String getSupervisorsText() {
 		return this.supervisorsText;
 	}

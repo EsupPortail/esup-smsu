@@ -30,7 +30,7 @@
 	<e:text rendered="#{messagesController.message.groupRecipient != null}" value="#{messagesController.message.groupRecipient.label}" />
 
 	<e:bold value="#{msgs['SMS.NBR.RECEVERS']}"></e:bold>
-	<e:text id="TT" value="#{messagesController.destCount}" />
+	<e:text id="TT" value="#{messagesController.message.nbRecipients}" />
 			
 	<e:bold rendered="#{messagesController.backListDestCount != null}" value="#{msgs['SMS.NBR.RECEVERS.BACKLIST']}"></e:bold>
 	<e:text rendered="#{messagesController.backListDestCount != null}" value="#{messagesController.backListDestCount}" />

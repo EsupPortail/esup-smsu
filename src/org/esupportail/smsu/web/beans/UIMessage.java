@@ -12,6 +12,8 @@ public class UIMessage extends Message  {
 
 	private static final long serialVersionUID = 1L;
 	
+	private Integer nbRecipients;
+
 	/**
 	 * displayName.
 	 */
@@ -53,6 +55,7 @@ public class UIMessage extends Message  {
 		super(message);
 		this.displayName = displayName;
 		this.groupName = groupName;
+		this.nbRecipients = message.getRecipients().size();
 	}
 	
 	/**
@@ -110,7 +113,9 @@ public class UIMessage extends Message  {
 		return true;
 	}
 
-
+	public int getNbRecipients() {
+		return nbRecipients;
+	}
 
 	/**
 	 * @param displayName
