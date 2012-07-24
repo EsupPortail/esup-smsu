@@ -104,15 +104,8 @@ public class RoleManager {
 	 */
 	public void saveRole(final UIRole role, final List<String> selectedValues) {
 		Role newrole = new Role(role);
-		Set<Fonction> fonctions = new HashSet<Fonction>();
-		Integer fctId;
-		
-		for (String val : selectedValues) {
-			fctId = (Integer) Integer.parseInt(val);
-			fonctions.add(daoService.getFonctionById(fctId));
-		    }
-		newrole.setFonctions(fonctions);
-        daoService.saveRole(newrole);
+		newrole.setFonctions(stringIdsToFonctions(selectedValues));
+		daoService.saveRole(newrole);
 	}
 	
 	/**
@@ -131,14 +124,7 @@ public class RoleManager {
 	 */
 	public void updateRole(final UIRole role, final List<String> selectedValues) {
 		Role newrole = new Role(role);
-		Set<Fonction> fonctions = new HashSet<Fonction>();
-		Integer fctId;
-		
-		for (String val : selectedValues) {
-			fctId = Integer.parseInt(val);
-			fonctions.add(daoService.getFonctionById(fctId));
-		    }
-		newrole.setFonctions(fonctions);
+		newrole.setFonctions(stringIdsToFonctions(selectedValues));
 		daoService.updateRole(newrole);
 	}
 	
@@ -149,12 +135,27 @@ public class RoleManager {
 	 */
 	public List<String> getIdFctsByRole(final UIRole role) {
 		Role newrole = new Role(role);
-		Set<Fonction> fonctions = daoService.getFctsByRole(newrole);
+		return fonctionsToStringIds(daoService.getFctsByRole(newrole));
+	}
 
+	private Fonction stringIdToFonction(String val) {
+		Integer fctId = Integer.parseInt(val);
+		return daoService.getFonctionById(fctId);
+	}
+
+	private Set<Fonction> stringIdsToFonctions(List<String> selectedValues) {
+		Set<Fonction> fonctions = new HashSet<Fonction>();		
+		for (String val : selectedValues) {
+			fonctions.add(stringIdToFonction(val));
+		}
+		return fonctions;
+	}
+
+	private List<String> fonctionsToStringIds(Set<Fonction> fonctions) {
 		List<String> selectedValues = new ArrayList<String>();
 		for (Fonction fct : fonctions) {
-	      selectedValues.add(fct.getId().toString());
-	    }
+			selectedValues.add(fct.getId().toString());
+		}
 		return selectedValues;
 	}
 	
