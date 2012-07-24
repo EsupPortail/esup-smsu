@@ -183,16 +183,12 @@ public class RolesController extends AbstractContextAwareController {
 	}
 	
 	private void initFunctionsUsingBundles() {
-		logger.debug("ici 1");
-		
 		this.allBundleFonctions = new ArrayList<UIFonction>();
 		
 		// Init Fonctions using Bundle
 		if (this.allFonctions != null) {
-			logger.debug("ici 2");
 			for (Fonction fct : this.allFonctions) {
 				
-				logger.debug("ici 3");
 				UIFonction uifct = new UIFonction();
 				uifct.setId(fct.getId().toString());
 				
@@ -200,7 +196,6 @@ public class RolesController extends AbstractContextAwareController {
 									getI18nService().getDefaultLocale());
 				uifct.setName(msg);
 				this.allBundleFonctions.add(uifct);
-				logger.debug("ici 6");
 			}
 		}
 	}
