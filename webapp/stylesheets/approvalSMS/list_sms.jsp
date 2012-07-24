@@ -79,6 +79,15 @@ authorized="#{approvalController.pageAuthorized}" footer="">
 									
 				</h:panelGroup>
 				</f:facet>
+					<t:column>
+						<f:facet name="header">
+							<e:text
+								value="#{msgs['SMS.DATE']}" />
+						</f:facet>
+						<e:text value="#{message.date}" >
+						<f:convertDateTime locale="#{preferencesController.locale}" pattern="dd/MM/yyyy HH:mm" timeZone="Europe/Paris"/>
+						</e:text>
+					</t:column>
 					
 					<t:column sortable="true" defaultSorted="true">
 						<f:facet name="header" >
@@ -88,6 +97,14 @@ authorized="#{approvalController.pageAuthorized}" footer="">
 						<e:text value="#{message.senderName}" />
 					</t:column>
 			
+					<t:column>
+						<f:facet name="header">
+							<e:text
+								value="#{msgs['SMS.NBR.RECEVERS']}" />
+						</f:facet>
+						<e:text value="#{message.nbRecipients}" />
+					</t:column>
+
 					<t:column>
 						<f:facet name="header">
 							<e:text
