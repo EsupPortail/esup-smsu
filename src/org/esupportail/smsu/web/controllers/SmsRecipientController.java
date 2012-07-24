@@ -42,11 +42,6 @@ public class SmsRecipientController extends AbstractContextAwareController {
 	private static final long serialVersionUID = 234380160181697485L;
 
 	/**
-	 * the select component.
-	 */
-	private HtmlSelectOneMenu selectTypeDest;
-
-	/**
 	 * the selected recipient type.
 	 */
 	private String recipientType;
@@ -375,23 +370,6 @@ public class SmsRecipientController extends AbstractContextAwareController {
 	 */
 	public TreeModelBase getTreeModel() {
 		return treeModel;
-	}
-
-	//////////////////////////////////////////////////////////////
-	// Getter and Setter of selectTypeDest
-	//////////////////////////////////////////////////////////////
-	/**
-	 * @return selectTypeDest
-	 */
-	public HtmlSelectOneMenu getSelectTypeDest() {
-		return selectTypeDest;
-	}
-
-	/**
-	 * @param selectTypeDest
-	 */
-	public void setSelectTypeDest(final HtmlSelectOneMenu selectTypeDest) {
-		this.selectTypeDest = selectTypeDest;
 	}
 
 	//////////////////////////////////////////////////////////////

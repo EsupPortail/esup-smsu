@@ -5,7 +5,6 @@
 	for="selectTypeRecipient" />
 
 <e:selectOneMenu id="selectTypeRecipient" onchange="submit();"
-	binding="#{smsRecipientController.selectTypeDest}"
 	valueChangeListener="#{smsRecipientController.modifTypeDest}"
 	value="#{smsRecipientController.recipientType}">
 	<f:selectItems value="#{smsRecipientController.destTypeOptions}" />

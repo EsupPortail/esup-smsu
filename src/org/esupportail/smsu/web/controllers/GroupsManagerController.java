@@ -46,8 +46,6 @@ public class GroupsManagerController extends AbstractContextAwareController {
 	 * The role.
 	 */
 	private UIRole role;
-	
-	private HtmlSelectOneMenu selectTypeGroup;
 
 	/**
 	 * add quota of sms.
@@ -512,23 +510,6 @@ public class GroupsManagerController extends AbstractContextAwareController {
 	 */
 	public void setGroupType(final String groupType) {
 		this.groupType = groupType;
-	}
-
-	//////////////////////////////////////////////////////////////
-	// Getter and Setter of selectTypeGroup
-	//////////////////////////////////////////////////////////////
-	/**
-	 * @return selectTypeGroup
-	 */
-	public HtmlSelectOneMenu getSelectTypeGroup() {
-		return selectTypeGroup;
-	}
-
-	/**
-	 * @param selectTypeGroup
-	 */
-	public void setSelectTypeGroup(final HtmlSelectOneMenu selectTypeGroup) {
-		this.selectTypeGroup = selectTypeGroup;
 	}
 
 	//////////////////////////////////////////////////////////////

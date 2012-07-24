@@ -18,7 +18,6 @@
 <e:panelGrid columns="4">
 
   <e:selectOneMenu id="selectTypeRecipient" onchange="submit();"
-		   binding="#{groupsManagerController.selectTypeGroup}"
 		   value="#{groupsManagerController.groupType}">
     <f:selectItems value="#{groupsManagerController.groupTypeOptions}" />
   </e:selectOneMenu>
