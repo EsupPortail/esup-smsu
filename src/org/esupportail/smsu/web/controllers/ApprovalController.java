@@ -115,7 +115,7 @@ public class ApprovalController extends AbstractContextAwareController {
 	public String validate()  {
 		logger.info("" + getCurrentUserId() + " approve message " + message);
 		try {
-			getDomainService().treatUIMessage(message);
+			getDomainService().approveMessage(message);
 			reset();
 			return "navigationApproveSMS";
 		} catch (CreateMessageException e) {
@@ -130,7 +130,7 @@ public class ApprovalController extends AbstractContextAwareController {
 	 * @return A String
 	 */
 	public String cancel()  {
-		getDomainService().updateUIMessage(message);
+		getDomainService().cancelMessage(message);
 		reset();
 		return "navigationApproveSMS";
 	}

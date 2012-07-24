@@ -125,14 +125,14 @@ public interface DomainService extends Serializable {
 	/**
 	 * @param uiMessage 
 	 */
-	void updateUIMessage(UIMessage uiMessage);
+	void cancelMessage(UIMessage uiMessage);
 	
 	/**
 	 * treat a message.
 	 * @param message 
 	 * @throws CreateMessageException 
 	 */
-	void treatUIMessage(UIMessage uimessage) throws CreateMessageException.WebService;
+	void approveMessage(UIMessage uimessage) throws CreateMessageException.WebService;
 
 	//////////////////////////////////////////////////////////////
 	// Group

@@ -350,19 +350,15 @@ public class DomainServiceImpl implements DomainService, InitializingBean {
 		return  approvalManager.getApprovalUIMessages(user);
 	}
 	
-	/**
-	 * @see org.esupportail.smsu.domain.DomainService#updateUIMessage(org.esupportail.smsu.web.beans.UIMessage)
-	 */
-	public void updateUIMessage(final UIMessage uiMessage) {
-		approvalManager.updateUIMessage(uiMessage);
+	public void cancelMessage(final UIMessage uiMessage) {
+		approvalManager.cancelMessage(uiMessage);
 	}
 
 	/**
 	 * @throws CreateMessageException 
-	 * @see org.esupportail.smsu.domain.DomainService#treatMessage(org.esupportail.smsu.dao.beans.Message)
 	 */
-	public void treatUIMessage(final UIMessage uimessage) throws CreateMessageException.WebService {
-		approvalManager.treatUIMessage(uimessage);
+	public void approveMessage(final UIMessage uimessage) throws CreateMessageException.WebService {
+		approvalManager.approveMessage(uimessage);
 		
 	}
 	//////////////////////////////////////////////////////////////
