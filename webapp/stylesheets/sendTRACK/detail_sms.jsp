@@ -4,6 +4,8 @@
 	<e:section value="#{msgs['SEND.DETAIL.TITLE']}" />
 
 	<e:panelGrid columns="2" cellpadding="5" cellspacing="3">
+
+
 	<e:bold value="#{msgs['SMS.CONTENT']}"></e:bold>
 	<e:text value="#{messagesController.message.content}" />
 		
