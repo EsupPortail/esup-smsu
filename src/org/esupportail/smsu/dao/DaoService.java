@@ -471,5 +471,8 @@ public interface DaoService extends Serializable {
 	 * @return
 	 */
 	MailRecipient getMailRecipientByAddress(String addresse);
+
+
 	
+	boolean isSupervisor(final Person person);
 }

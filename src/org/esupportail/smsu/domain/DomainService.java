@@ -525,4 +525,6 @@ public interface DomainService extends Serializable {
 	Set<String> getListPhoneNumbersInBlackList();
 	
 	String testConnexion();
+
+	boolean isSupervisor(User user);
 }

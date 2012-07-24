@@ -187,9 +187,17 @@ public class RolesController extends AbstractContextAwareController {
 		// Init Fonctions using Bundle
 		if (this.allFonctions != null) {
 			for (Fonction fct : this.allFonctions) {
-				this.allBundleFonctions.add(toUIFonction(fct));
+				if (toFonctionName(fct.getName()) != null) // filter obsolete Fonctions (eg: FCTN_APPROBATION_ENVOI)
+					this.allBundleFonctions.add(toUIFonction(fct));
 			}
 		}
+	}
+
+	private FonctionName toFonctionName(String name) {
+		for (FonctionName n : FonctionName.values()) {
+			if (name.equals(n.name())) return n;
+		}
+		return null;
 	}
 
 	private UIFonction toUIFonction(Fonction fct) {

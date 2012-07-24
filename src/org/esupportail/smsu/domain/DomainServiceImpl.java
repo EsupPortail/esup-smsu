@@ -979,4 +979,10 @@ public class DomainServiceImpl implements DomainService, InitializingBean {
 		this.testConnexion = testConnexion;
 	}
 	
+
+	public boolean isSupervisor(User user) {
+		Person person = getPersonByLogin(user.getId());
+		return person != null && daoService.isSupervisor(person);
+	}
+
 }

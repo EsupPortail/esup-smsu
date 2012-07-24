@@ -26,6 +26,7 @@ import org.esupportail.smsu.dao.beans.Person;
 import org.esupportail.smsu.dao.beans.Recipient;
 import org.esupportail.smsu.dao.beans.Role;
 import org.esupportail.smsu.dao.beans.Service;
+import org.esupportail.smsu.dao.beans.Supervisor;
 import org.esupportail.smsu.dao.beans.Template;
 import org.esupportail.smsu.domain.beans.VersionManager;
 import org.esupportail.smsu.domain.beans.message.MessageStatus;
@@ -990,6 +991,12 @@ public class HibernateDaoServiceImpl extends AbstractJdbcJndiHibernateDaoService
 		return mailRecipient;
 	}
 
+	
+	public boolean isSupervisor(final Person person) {
+		Criteria criteria = getCurrentSession().createCriteria(Supervisor.class);
+		criteria.add(Restrictions.eq("person", person));		
+		return getFirstResult(criteria) != null;
+	}
 
 	public static String join(Iterable<?> elements, CharSequence separator) {
 		if (elements == null) return "";
