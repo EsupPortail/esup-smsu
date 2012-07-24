@@ -189,11 +189,13 @@ public class LdapUtilsHelpers {
 	public List<String> getUserMailsByUids(final List<String> uids) {
 		final List<String> retVal = new ArrayList<String>();
 		for (LdapUser ldapUser : getUsersByUids(uids)) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("mail recipient added to list :" 
-						+ ldapUser.getAttribute(userEmailAttribute).trim());
+			String mail = ldapUser.getAttribute(userEmailAttribute);
+			if (mail != null) {
+				logger.debug("mail added to list :" + mail);
+				retVal.add(mail.trim());
+			} else {
+				logger.warn("no mail for " + ldapUser.getId());
 			}
-			retVal.add(ldapUser.getAttribute(userEmailAttribute).trim());
 		}
 		return retVal;
 	}

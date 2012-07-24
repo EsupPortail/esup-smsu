@@ -298,19 +298,7 @@ public class SendSmsManager  {
 		}
 		logger.info("message waiting for supervision. supervisors uids: " + uids);
 
-		List <LdapUser> ldapUsers = ldapUtils.getUsersByUids(uids);
-
-		final List<String> toList = new LinkedList<String>();
-		for (LdapUser ldapUser : ldapUsers) {
-			String mail = ldapUser.getAttribute(userEmailAttribute);
-			if (mail != null) {
-				logger.debug("mail added to list :" + mail);
-				toList.add(mail);
-			} else {
-				logger.warn("no mail for supervisor " + ldapUser.getId());
-			}
-		}
-		return toList;
+		return ldapUtils.getUserEmailsAdressByUids(uids);
 	}
 
 
