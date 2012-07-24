@@ -75,8 +75,7 @@ public class RoleManager {
 			isUpdateable = true;
 
 			// Role super admin (Id=1) et utilisateur connected n'est pas supprimable ni modifiable
-			if (role.getName().equals(RoleEnum.SUPER_ADMIN.toString()) ||
-			    idRoles != null && idRoles.contains(role.getId())) {
+			if (role.getName().equals(RoleEnum.SUPER_ADMIN.toString())) {
 				isDeletable = false;
 				isUpdateable = false;
 			}
