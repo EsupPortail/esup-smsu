@@ -16,6 +16,9 @@
 	<e:text value="#{messagesController.message.date}" >
 	<f:convertDateTime locale="#{preferencesController.locale}" pattern="dd/MM/yyyy kk:mm" timeZone="Europe/Paris"/>
 	</e:text>
+
+	<e:bold value="#{msgs['SMS.STATE']}"></e:bold>
+	<e:text value="#{messagesController.message.stateMessage}" />
 	
 	<e:bold value="#{msgs['SMS.NBR.RECEVERS']}"></e:bold>
 	<e:text id="TT" value="#{messagesController.destCount}" />
