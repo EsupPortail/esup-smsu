@@ -64,9 +64,7 @@ public class UIMessage extends Message  {
 	 */
 	public UIMessage(final String stateMessage, final String stateMail, final String displayName, 
 			final String groupName, final Message message) {
-		super(message);
-		this.displayName = displayName;
-		this.groupName = groupName;
+		this(displayName, groupName, message);
 		this.stateMessage = stateMessage;
 		this.stateMail = stateMail;
 	}
