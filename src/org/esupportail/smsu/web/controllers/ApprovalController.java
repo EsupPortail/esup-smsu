@@ -130,6 +130,7 @@ public class ApprovalController extends AbstractContextAwareController {
 	 * @return A String
 	 */
 	public String cancel()  {
+		logger.info("" + getCurrentUserId() + " cancel message " + message);
 		getDomainService().cancelMessage(message);
 		reset();
 		return "navigationApproveSMS";
