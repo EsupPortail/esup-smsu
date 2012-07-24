@@ -112,13 +112,8 @@ public class RoleManager {
 	 * @return true if no group is linked to 
 	 */
 	private Boolean testCustomizedGroupBeforeDeleteRole(final Role role) {
-		CustomizedGroup customizedGroup = daoService.getCustomizedGroupByRole(role);
-		
-		if (customizedGroup == null) {
-			return true;
-		}
-		
-		return false;
+		CustomizedGroup customizedGroup = daoService.getCustomizedGroupByRole(role);	
+		return customizedGroup == null;
 	}
 
 	/**
@@ -173,8 +168,9 @@ public class RoleManager {
 	 */
 	public List<String> getIdFctsByRole(final UIRole role) {
 		Role newrole = new Role(role.getId(), role.getName());
-		List<String> selectedValues = new ArrayList<String>();
 		Set<Fonction> fonctions = daoService.getFctsByRole(newrole);
+
+		List<String> selectedValues = new ArrayList<String>();
 		for (Fonction fct : fonctions) {
 	      selectedValues.add(fct.getId().toString());
 	    }
