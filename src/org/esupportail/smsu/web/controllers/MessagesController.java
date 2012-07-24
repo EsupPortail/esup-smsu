@@ -240,10 +240,6 @@ public class MessagesController<DomaineService> extends AbstractContextAwareCont
 				this.backListDestCount = infos.getNbDestBlackList().toString();
 				this.sentSMSCount = infos.getNbSentSMS().toString();
 			} else {
-				this.backListDestCount = getI18nService().getString("MSG.UNAVAILABLEINFO", 
-						getI18nService().getDefaultLocale());
-				this.sentSMSCount = getI18nService().getString("MSG.UNAVAILABLEINFO", 
-							getI18nService().getDefaultLocale());
 				Message mess = getDomainService().getMessage(message.getId());
 				this.destCount = Integer.toString(mess.getRecipients().size());
 			}

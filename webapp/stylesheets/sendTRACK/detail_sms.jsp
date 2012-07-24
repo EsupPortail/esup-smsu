@@ -23,14 +23,14 @@
 	<e:bold value="#{msgs['SMS.NBR.RECEVERS']}"></e:bold>
 	<e:text id="TT" value="#{messagesController.destCount}" />
 			
-	<e:bold value="#{msgs['SMS.NBR.RECEVERS.BACKLIST']}"></e:bold>
-	<e:text value="#{messagesController.backListDestCount}" />
+	<e:bold rendered="#{messagesController.backListDestCount != null}" value="#{msgs['SMS.NBR.RECEVERS.BACKLIST']}"></e:bold>
+	<e:text rendered="#{messagesController.backListDestCount != null}" value="#{messagesController.backListDestCount}" />
 		
-	<e:bold value="#{msgs['SMS.NBR.SENT']}"></e:bold>
-	<e:text value="#{messagesController.sentSMSCount}" />
+	<e:bold rendered="#{messagesController.sentSMSCount != null}" value="#{msgs['SMS.NBR.SENT']}"></e:bold>
+	<e:text rendered="#{messagesController.sentSMSCount != null}" value="#{messagesController.sentSMSCount}" />
 		
-	<e:bold value="#{msgs['SMS.MAIL.SEND']}"></e:bold>
-	<e:text value="#{messagesController.message.stateMail}" />
+	<e:bold rendered="#{messagesController.message.stateMail != ''}" value="#{msgs['SMS.MAIL.SEND']}"></e:bold>
+	<e:text rendered="#{messagesController.message.stateMail != ''}" value="#{messagesController.message.stateMail}" />
 	
 	
 	</e:panelGrid>
