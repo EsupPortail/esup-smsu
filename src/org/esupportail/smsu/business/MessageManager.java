@@ -98,12 +98,12 @@ public class MessageManager {
 
 		List<UIMessage> uimessages = new ArrayList<UIMessage>();
 		for (Message mess : messages) {
-			String displayName = retreiveNiceDisplayName(ldapUserByUid, mess.getSender().getLogin());
+			String senderName = retreiveNiceDisplayName(ldapUserByUid, mess.getSender().getLogin());
 			String groupSenderName = retreiveNiceGroupName(mess.getGroupSender());
 			String groupRecipientName = retreiveNiceGroupName(mess.getGroupRecipient());
 			String stateMessage = messageStatusI18nMessage(mess.getStateAsEnum());
 			String stateMail = mailStatusI18nMessage(mess.getMail());
-			uimessages.add(new UIMessage(stateMessage, stateMail, displayName, groupSenderName, groupRecipientName, mess));
+			uimessages.add(new UIMessage(stateMessage, stateMail, senderName, groupSenderName, groupRecipientName, mess));
 		}
 		return uimessages;
 	}

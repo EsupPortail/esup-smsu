@@ -15,9 +15,9 @@ public class UIMessage extends Message  {
 	private Integer nbRecipients;
 
 	/**
-	 * displayName.
+	 * senderName.
 	 */
-	private String displayName;
+	private String senderName;
 	
 	/**
 	 * group names.
@@ -50,17 +50,17 @@ public class UIMessage extends Message  {
 	/**
 	 * @param stateMessage 
 	 * @param stateMail  
-	 * @param displayName
+	 * @param senderName
 	 * @param groupSenderName
 	 * @param groupRecipientName
 	 * @param message
 	 */
-	public UIMessage(final String stateMessage, final String stateMail, final String displayName, 
+	public UIMessage(final String stateMessage, final String stateMail, final String senderName, 
 			final String groupSenderName, final String groupRecipientName, final Message message) {
 		super(message);
 		this.stateMessage = stateMessage;
 		this.stateMail = stateMail;
-		this.displayName = displayName;
+		this.senderName = senderName;
 		this.groupSenderName = groupSenderName;
 		this.groupRecipientName = groupRecipientName;
 		this.nbRecipients = message.getRecipients().size();
@@ -75,7 +75,7 @@ public class UIMessage extends Message  {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((displayName == null) ? 0 : displayName.hashCode());
+				+ ((senderName == null) ? 0 : senderName.hashCode());
 		result = prime * result;
 		return result;
 	}
@@ -97,11 +97,11 @@ public class UIMessage extends Message  {
 			return false;
 		}	
 		UIMessage other = (UIMessage) obj;
-		if (displayName == null) {
-			if (other.displayName != null) {
+		if (senderName == null) {
+			if (other.senderName != null) {
 				return false;
 		    }
-		} else if (!displayName.equals(other.displayName)) {
+		} else if (!senderName.equals(other.senderName)) {
 			return false;
 		  }
 		return true;
@@ -112,17 +112,17 @@ public class UIMessage extends Message  {
 	}
 
 	/**
-	 * @param displayName
+	 * @param senderName
 	 */
-	public void setDisplayName(final String displayName) {
-		this.displayName = displayName;
+	public void setSenderName(final String senderName) {
+		this.senderName = senderName;
 	}
 
 	/**
-	 * @return displayName
+	 * @return senderName
 	 */
-	public String getDisplayName() {
-		return displayName;
+	public String getSenderName() {
+		return senderName;
 	}
 
 	public String getGroupSenderName() {

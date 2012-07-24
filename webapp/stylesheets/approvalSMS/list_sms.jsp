@@ -85,7 +85,7 @@ authorized="#{approvalController.pageAuthorized}" footer="">
 							<e:text
 								value="#{msgs['SMS.USER.VALUE']}" />
 						</f:facet>
-						<e:text value="#{message.displayName}" />
+						<e:text value="#{message.senderName}" />
 					</t:column>
 			
 					<t:column>
