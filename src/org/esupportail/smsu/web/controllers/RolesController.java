@@ -116,7 +116,6 @@ public class RolesController extends AbstractContextAwareController {
 		this.allFonctions = getDomainService().getAllFonctions();
 		
 		initFunctionsUsingBundles();
-		logger.debug("ici 7");
 	}
 
 	//////////////////////////////////////////////////////////////
