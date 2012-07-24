@@ -12,7 +12,6 @@ import org.apache.myfaces.component.html.ext.HtmlPanelGroup;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.dao.beans.Message;
-import org.esupportail.smsu.dao.beans.Person;
 import org.esupportail.smsu.dao.beans.Recipient;
 import org.esupportail.smsu.domain.beans.User;
 import org.esupportail.smsu.domain.beans.fonction.FonctionName;
@@ -94,7 +93,6 @@ public class MessagesController<DomaineService> extends AbstractContextAwareCont
 	 */
 	private Set<FonctionName> rights = new HashSet<FonctionName>();
 
-	private String supervisorsText;
 	private String recipientsText;
 
 	/**
@@ -228,7 +226,6 @@ public class MessagesController<DomaineService> extends AbstractContextAwareCont
 	}
 
 	public String displayDetails() {
-		this.supervisorsText = null;
 		this.recipientsText = null;
 		this.backListDestCount = null;
 		this.sentSMSCount = null;
@@ -260,16 +257,8 @@ public class MessagesController<DomaineService> extends AbstractContextAwareCont
 	private void computeMoreDetails() {
 		Message mess = getDomainService().getMessage(message.getId());
 		this.recipientsText = computeRecipientsText(mess.getRecipients());
-		this.supervisorsText = computeSupervisorsText(mess.getSupervisors());
 	}
 
-	private String computeSupervisorsText(Set<Person> supervisors) {
-		if (supervisors == null) return null;
-		String t = null;
-		for (Person p : supervisors)
-			t = (t == null ? "" : t + ", ") + p.getLogin();
-		return t;
-	}
 	private String computeRecipientsText(Set<Recipient> recipients) {
 		if (recipients == null) return "";
 		String t = null;
@@ -279,9 +268,6 @@ public class MessagesController<DomaineService> extends AbstractContextAwareCont
 	}
 
 	//////////////////////////////////////////////
-	public String getSupervisorsText() {
-		return this.supervisorsText;
-	}
 	public String getRecipientsText() {
 		return this.recipientsText;
 	}

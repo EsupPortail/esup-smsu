@@ -137,6 +137,14 @@ authorized="#{approvalController.pageAuthorized}" footer="">
 						</f:facet>
 						<e:text value="#{message.content}" />
 					</t:column>
+
+					<t:column>
+						<f:facet name="header">
+							<e:text
+								value="#{msgs['SMS.SUPERVISORS']}" />
+						</f:facet>
+						<e:text value="#{message.supervisorsText}" />
+					</t:column>
 					
 					<t:column>
 						<f:facet name="header">

@@ -1,8 +1,11 @@
 package org.esupportail.smsu.web.beans;
 
+import java.util.Set;
+
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.dao.beans.Message;
+import org.esupportail.smsu.dao.beans.Person;
 
 /**
  * @author xphp8691
@@ -28,6 +31,8 @@ public class UIMessage extends Message  {
 	private String stateMessage;
 	
 	private String stateMail;
+	private String supervisorsText;
+
 	/**
 	 * Log4j logger.
 	 */
@@ -57,9 +62,18 @@ public class UIMessage extends Message  {
 		this.senderName = senderName;
 		this.groupSenderName = groupSenderName;
 		this.groupRecipientName = groupRecipientName;
+
 		this.nbRecipients = message.getRecipients().size();
+		this.supervisorsText = computeSupervisorsText(message.getSupervisors());
 	}
 	
+	private String computeSupervisorsText(Set<Person> supervisors) {
+		if (supervisors == null) return null;
+		String t = null;
+		for (Person p : supervisors)
+			t = (t == null ? "" : t + ", ") + p.getLogin();
+		return t;
+	}
 
 	/**
 	 * @see java.lang.Object#hashCode()
@@ -153,6 +167,10 @@ public class UIMessage extends Message  {
 	 */
 	public String getStateMail() {
 		return stateMail;
+	}
+
+	public String getSupervisorsText() {
+		return supervisorsText;
 	}
 
 }
