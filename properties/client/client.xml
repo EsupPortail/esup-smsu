@@ -13,54 +13,47 @@
 	</bean>
 -->
 
+	<bean id="xfireParams" abstract="true">
+	    <property name="username" value="${smsuapi.ws.basic.auth.username}" />
+	    <property name="password" value="${smsuapi.ws.basic.auth.password}" />
+	    <property name="lookupServiceOnStartup" value="false" />
+	</bean> 
+
 	<bean id="remoteSendTrack" lazy-init="true"
-		class="org.codehaus.xfire.spring.remoting.XFireClientFactoryBean">
+		class="org.codehaus.xfire.spring.remoting.XFireClientFactoryBean" parent="xfireParams">
 		<property name="serviceClass"
 			value="org.esupportail.smsu.services.client.SendTrack" />
 		<property name="wsdlDocumentUrl" value="${smsuapi.ws.address}/SendTrack?WSDL" />
-		<property name="lookupServiceOnStartup" value="false" />
 	</bean>
 
 	<bean id="remoteSendSms" lazy-init="true"
-		class="org.codehaus.xfire.spring.remoting.XFireClientFactoryBean">
+		class="org.codehaus.xfire.spring.remoting.XFireClientFactoryBean" parent="xfireParams">
 		<property name="serviceClass" value="org.esupportail.smsu.services.client.SendSms" />
 		<property name="wsdlDocumentUrl" value="${smsuapi.ws.address}/SendSms?WSDL" />
-		<property name="lookupServiceOnStartup">
-			<value type="boolean">false</value>
-		</property>
 	</bean>
 
 	<bean id="remoteNotificationPhoneNumber" lazy-init="true"
-		class="org.codehaus.xfire.spring.remoting.XFireClientFactoryBean">
+		class="org.codehaus.xfire.spring.remoting.XFireClientFactoryBean" parent="xfireParams">
 		<property name="serviceClass"
 			value="org.esupportail.smsu.services.client.NotificationPhoneNumberInBlackList" />
 		<property name="wsdlDocumentUrl"
 			value="${smsuapi.ws.address}/NotificationPhoneNumberInBlackList?WSDL" />
-		<property name="lookupServiceOnStartup">
-			<value type="boolean">false</value>
-		</property>
 	</bean>
 
 	<bean id="remoteListPhoneNumbers" lazy-init="true"
-		class="org.codehaus.xfire.spring.remoting.XFireClientFactoryBean">
+		class="org.codehaus.xfire.spring.remoting.XFireClientFactoryBean" parent="xfireParams">
 		<property name="serviceClass"
 			value="org.esupportail.smsu.services.client.ListPhoneNumbersInBlackList" />
 		<property name="wsdlDocumentUrl"
 			value="${smsuapi.ws.address}/ListPhoneNumbersInBlackList?WSDL" />
-		<property name="lookupServiceOnStartup">
-			<value type="boolean">false</value>
-		</property>
 	</bean>
 
 
 	<bean id="remoteTestConnexion" lazy-init="true"
-		class="org.codehaus.xfire.spring.remoting.XFireClientFactoryBean">
+		class="org.codehaus.xfire.spring.remoting.XFireClientFactoryBean" parent="xfireParams">
 		<property name="serviceClass"
 			value="org.esupportail.smsu.services.client.TestConnexion" />
 		<property name="wsdlDocumentUrl" value="${smsuapi.ws.address}/TestConnexion?WSDL" />
-		<property name="lookupServiceOnStartup">
-			<value type="boolean">false</value>
-		</property>
 	</bean>
 
 	<bean id="testConnexionClient"
