@@ -712,8 +712,7 @@ public class HibernateDaoServiceImpl extends AbstractJdbcJndiHibernateDaoService
 		Session currentSession = getCurrentSession();
 		Criteria criteria = currentSession.createCriteria(CustomizedGroup.class);
 		criteria.add(Restrictions.eq(CustomizedGroup.PROP_ROLE, role));
-		criteria.setMaxResults(1);
-		customizedGroup = (CustomizedGroup) criteria.uniqueResult();
+		customizedGroup = (CustomizedGroup) getFirstResult(criteria);
 		return customizedGroup;
 	}
 	
@@ -724,9 +723,13 @@ public class HibernateDaoServiceImpl extends AbstractJdbcJndiHibernateDaoService
 		Session currentSession = getCurrentSession();
 		Criteria criteria = currentSession.createCriteria(CustomizedGroup.class);
 		criteria.addOrder(Order.asc(CustomizedGroup.PROP_ID));
-		criteria.setMaxResults(1);
-		CustomizedGroup customizedGroup = (CustomizedGroup) criteria.uniqueResult();
+		CustomizedGroup customizedGroup = (CustomizedGroup) getFirstResult(criteria);
 		return customizedGroup;
+	}
+
+	private Object getFirstResult(Criteria criteria) {
+		criteria.setMaxResults(1);
+		return criteria.uniqueResult();
 	}
 
 	
