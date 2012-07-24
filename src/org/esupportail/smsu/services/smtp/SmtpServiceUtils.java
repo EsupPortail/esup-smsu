@@ -36,35 +36,24 @@ public class SmtpServiceUtils {
 	public void sendMessage(final List<String> toAdresses,
 							final List<String> copyAdresses,
 							final String subject,
-							final String textBody) {
-		
-		
-		// create to adresses
-		final List<InternetAddress> toInternetAdressesList = createInternetAdresses(toAdresses);
-		
-		// create cc adresses
-		final List<InternetAddress> ccInternetAdressesList = createInternetAdresses(copyAdresses);
+							final String textBody) {		
+		InternetAddress[] to = createInternetAdresses(toAdresses);
+		InternetAddress[] cc = createInternetAdresses(copyAdresses);
 
+		// SmtpService expects a non-null "To: " addresses
+		if (to == null) to = new InternetAddress[0];
 		
 		if (logger.isDebugEnabled()) {
 			String msg = "Sending email to :" +
-				"\n - to : " + join(toInternetAdressesList, " - ") +
-				"\n - cc : " + join(ccInternetAdressesList, " - ") +
+				"\n - to : " + join(to, " - ") +
+			    (cc == null ? "" : 
+			        "\n - cc : " + join(cc, " - ")) +
 				"\n - Subject : " + subject +
 				"\n - body : " + textBody;
 			logger.debug(msg);			
 		}
 		
-		final InternetAddress[] toInternetAdressesAsArray = toInternetAdressesList.toArray(new InternetAddress[toInternetAdressesList.size()]);  
-		
-		InternetAddress[] ccInternetAdressesAsArray;
-		if (ccInternetAdressesList.size() > 0) {
-			ccInternetAdressesAsArray = ccInternetAdressesList.toArray(new InternetAddress[ccInternetAdressesList.size()]);	
-		} else {
-			ccInternetAdressesAsArray = null;
-		}
-		
-		smtpService.sendtocc(toInternetAdressesAsArray, ccInternetAdressesAsArray, null, subject, null, textBody, null);
+		smtpService.sendtocc(to, cc, null, subject, null, textBody, null);
 			
 	}
 	
@@ -74,22 +63,23 @@ public class SmtpServiceUtils {
 	 * @param adresses
 	 * @return
 	 */
-	private List<InternetAddress> createInternetAdresses(final List<String> adresses) {
-		// create to adresses
-		final List<InternetAddress> internetAdressesList = new LinkedList<InternetAddress>();
+	private InternetAddress[] createInternetAdresses(final List<String> adresses) {
+		if (adresses == null) return null;
 
-		if(adresses != null) {
-			// create to adresses list
-			for(String adress : adresses) {
-				try {
-					final InternetAddress internetAddress = new InternetAddress(adress);
-					internetAdressesList.add(internetAddress);
-				} catch (AddressException e) {
-					logger.warn(adress + " is not a valid email adress, message won't be sent to it");
-				}
+		final List<InternetAddress> l = new LinkedList<InternetAddress>();
+		for(String adress : adresses) {
+			try {
+				l.add(new InternetAddress(adress));
+			} catch (AddressException e) {
+				logger.warn(adress + " is not a valid email adress, message won't be sent to it");
 			}
 		}
-		return internetAdressesList;
+
+		if (l.size() > 0) {
+			return l.toArray(new InternetAddress[0]);	
+		} else {
+			return null;
+		}
 	}
 
 	/**
@@ -136,7 +126,7 @@ public class SmtpServiceUtils {
 		return l;
 	}
 
-	public static String join(Iterable<?> elements, CharSequence separator) {
+	public static String join(Object[] elements, CharSequence separator) {
 		if (elements == null) return "";
 
 		StringBuilder sb = null;
