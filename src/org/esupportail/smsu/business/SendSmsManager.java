@@ -626,8 +626,6 @@ public class SendSmsManager  {
 
 	private List<LdapUser> getMembersNonRecursive(final PortalGroup currentGroup, String serviceKey) throws PAGSGroupStoreConfigNotSynchronizedException {
 		List<LdapUser> members = new LinkedList<LdapUser>();
-		//get the corresponding ldap group to extract members
-
 			String idFromPortal = currentGroup.getId();
 			String groupStoreId = StringUtils.split(idFromPortal,".")[1];
 			GroupDefinition gd = smsuPersonAttributesGroupStore.getGroupDefinition(groupStoreId);
