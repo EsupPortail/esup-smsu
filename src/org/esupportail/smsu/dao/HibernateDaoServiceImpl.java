@@ -134,16 +134,12 @@ public class HibernateDaoServiceImpl extends AbstractJdbcJndiHibernateDaoService
 	public List<Message> getMessages(final Integer userGroupId, final Integer userAccountId, 
 			final Integer userServiceId, final Integer userTemplateId, final Integer userUserId, 
 			final java.sql.Date beginDate, final java.sql.Date endDate) {
-		List<Message> result = null;
 
-		// SELECT
 		StringBuffer select = new StringBuffer();
 		select.append("SELECT DISTINCT message ");
 		
-		// FROM
 		String from = " FROM Message message";
 		
-		// WHERE
 		List<String> where = new LinkedList<String>();
 		
 		// Filter on sender group
@@ -196,7 +192,7 @@ public class HibernateDaoServiceImpl extends AbstractJdbcJndiHibernateDaoService
 		if (logger.isDebugEnabled()) {
 			logger.debug("queryString : " + queryString);
 		}
-		result = getHibernateTemplate().find(queryString);
+		List<Message> result = getHibernateTemplate().find(queryString);
 		
 		//criteria.addOrder(Order.asc(Message.PROP_ID));
 
