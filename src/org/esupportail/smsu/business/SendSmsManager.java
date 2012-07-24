@@ -614,6 +614,10 @@ public class SendSmsManager  {
 		}
 
 		List<LdapUser> members = getMembersNonRecursive(currentGroup, serviceKey);
+		if (!members.isEmpty()) return members;
+
+		// hum, the group is empty, it may mean that the group is using RegexTester.
+		// so recurse on sub-groups, hoping that we do not miss members doing so /o\
 
 		List<PortalGroupHierarchy> childs = groupHierarchy.getSubHierarchies();
 		if (childs != null) {
