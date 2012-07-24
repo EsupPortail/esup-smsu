@@ -8,6 +8,7 @@ package org.jasig.portal.groups.pags;
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import org.esupportail.smsu.groups.pags.SmsuPersonAttributesGroupStore.GroupDefinition;
 import org.esupportail.smsu.groups.pags.SmsuPersonAttributesGroupStore.TestGroup;
@@ -33,12 +34,17 @@ public class XMLPersonAttributesConfiguration
       Map groupDefinitions;
       Document config = null;
       try {
+        Properties props = ResourceLoader.getResourceAsProperties(this.getClass(), "/properties/config.properties");
+        String PAGSGroupStoreConfig_file = props.getProperty("PAGSGroupStoreConfig.file");
+	if (PAGSGroupStoreConfig_file == null)
+	    throw new RuntimeException("PAGSGroupStoreConfig_file is missing in /properties/config.properties");
+
          config =
             ResourceLoader.getResourceAsDocument(
                this.getClass(),
-               "/properties/groups/PAGSGroupStoreConfig.xml");
+               PAGSGroupStoreConfig_file);
       } catch (Exception rme) {
-         throw new RuntimeException("PersonAttributesGroupStore: Unable to find configuration document");
+         throw new RuntimeException("PersonAttributesGroupStore: Unable to find configuration document: " + rme);
       }
       groupDefinitions = new HashMap();
       config.normalize();
