@@ -59,8 +59,8 @@ public class TestSend extends SeleneseTestCase {
 
 	void forceLogout() {
 		selenium.open("/");
-		clickAndWaitIfPresent("navigationForm:login");		
-		clickAndWaitIfPresent("navigationForm:logout");
+		clickAndWaitIfPresent("navigationFormSmsu:login");		
+		clickAndWaitIfPresent("navigationFormSmsu:logout");
 		//selenium.deleteAllVisibleCookies();
 		current_login = null;
 	}
@@ -75,7 +75,7 @@ public class TestSend extends SeleneseTestCase {
 		forceLogout();
 
 		selenium.open("/");
-		clickAndWait("navigationForm:login");
+		clickAndWait("navigationFormSmsu:login");
 		selenium.type("username", username);
 		selenium.type("password", password);
 		clickAndWait("submit");
@@ -83,7 +83,7 @@ public class TestSend extends SeleneseTestCase {
 	}
 
 	void sendSMSByPhone(String phone, String body) {
-		clickAndWait("navigationForm:envoiSMS");
+		clickAndWait("navigationFormSmsu:envoiSMS");
 		selectLabelAndMayWait("formGeneral:selectTypeRecipient", "Phones");
 		selenium.type("formGeneral:phoneNumber", phone);
 		clickAndWait(inputLocatorByValue("Ajouter"));
@@ -96,7 +96,7 @@ public class TestSend extends SeleneseTestCase {
 	}
 
 	void sendSMSByUser(String user, int nbMatches, String body, String service) {
-		clickAndWait("navigationForm:envoiSMS");
+		clickAndWait("navigationFormSmsu:envoiSMS");
 
 		selectLabelAndMayWait("formGeneral:selectTypeRecipient", "Users");
 
@@ -112,7 +112,7 @@ public class TestSend extends SeleneseTestCase {
 	}
 
 	void sendSMSByGroup(String[] pagsLocators, String body, String service) {
-		clickAndWait("navigationForm:envoiSMS");
+		clickAndWait("navigationFormSmsu:envoiSMS");
 		selectLabelAndMayWait("formGeneral:selectTypeRecipient", "User Group");
 		if (service != null) selectAndWait("formGeneral:selectService", service);
 		for (String locator : pagsLocators) clickAndWait(locator);
@@ -122,15 +122,15 @@ public class TestSend extends SeleneseTestCase {
 
 	void navigationForm_gestionRoles() {
 		ensureLogin("adminsmsutest");
-		clickAndWait("navigationForm:gestionRoles");
+		clickAndWait("navigationFormSmsu:gestionRoles");
 	}
 	void navigationForm_gestionGroupes() {
 		ensureLogin("adminsmsutest");
-		clickAndWait("navigationForm:gestionGroupes");
+		clickAndWait("navigationFormSmsu:gestionGroupes");
 	}
 	void navigationForm_gestionServicesCP() {
 		ensureLogin("adminsmsutest");
-		clickAndWait("navigationForm:gestionServicesCP");
+		clickAndWait("navigationFormSmsu:gestionServicesCP");
 	}
 
 	/* kind can be "delete" or "detailPage" */
@@ -231,7 +231,7 @@ public class TestSend extends SeleneseTestCase {
 	}
 
 	void adhesion(String phoneNumber) {
-		clickAndWait("navigationForm:adhesion");
+		clickAndWait("navigationFormSmsu:adhesion");
 		selenium.type("formMembership:phoneNumber", phoneNumber);
 		selenium.check("formMembership:validGeneralConditions");
 		clickAndWait(inputLocatorByValue("Save the member details"));
@@ -309,7 +309,7 @@ public class TestSend extends SeleneseTestCase {
 
 	void checkAdhesion(String user, String[] services) {
 		ensureLogin(user);
-		clickAndWait("navigationForm:adhesion");
+		clickAndWait("navigationFormSmsu:adhesion");
 		trueOrFail(selenium.isChecked("formMembership:validGeneralConditions"), 
 			   user + " validGeneralConditions");
 		for (String service : services) {
@@ -356,7 +356,7 @@ public class TestSend extends SeleneseTestCase {
 
 		ensureLogin("user1smsutest");
 		adhesion(user1smsutest_phone);
-		clickAndWait("navigationForm:envoiSMS");
+		clickAndWait("navigationFormSmsu:envoiSMS");
 		for (String typ : selenium.getSelectOptions("formGeneral:selectTypeRecipient")) {
 			if (typ.equals("Users"))
 				; // ok
@@ -368,7 +368,7 @@ public class TestSend extends SeleneseTestCase {
 
 	void searchSMS_checkFirstRow(String expectedState, String expectedContent) {
 
-		clickAndWait("navigationForm:suiviEnvois");
+		clickAndWait("navigationFormSmsu:suiviEnvois");
 		clickAndWait("searchSMS:send");
 
 		// go to result last page:
@@ -383,7 +383,7 @@ public class TestSend extends SeleneseTestCase {
 	}
 
 	void cancelAllMessagesToApprove() {
-		clickAndWait("navigationForm:approbationEnvoi");
+		clickAndWait("navigationFormSmsu:approbationEnvoi");
 		while (clickAndWaitIfPresent("approvalForm:data:0:cancel"));	
 	}
 
@@ -393,7 +393,7 @@ public class TestSend extends SeleneseTestCase {
 		cancelAllMessagesToApprove();
 
 		ensureLogin("user2smsutest");
-		clickAndWait("navigationForm:envoiSMS");
+		clickAndWait("navigationFormSmsu:envoiSMS");
 		for (String typ : selenium.getSelectOptions("formGeneral:selectTypeRecipient")) {
 			if (typ.equals("Users") || typ.equals("User Group"))
 				; // ok
@@ -405,7 +405,7 @@ public class TestSend extends SeleneseTestCase {
 		searchSMS_checkFirstRow("In approval", testMsg);
 
 		ensureLogin("adminsmsutest");
-		clickAndWait("navigationForm:approbationEnvoi");
+		clickAndWait("navigationFormSmsu:approbationEnvoi");
 		forbidResponse("An error occurred", "approbationEnvoi");
 		clickAndWait("approvalForm:data:0:validate");
 		expectedResponse("No messages to approve", "all messages validated");
