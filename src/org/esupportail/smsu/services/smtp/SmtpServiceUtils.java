@@ -49,14 +49,8 @@ public class SmtpServiceUtils {
 		if (logger.isDebugEnabled()) {
 			final StringBuilder sb = new StringBuilder(200);
 			sb.append("Sending email to : \n");
-			sb.append(" - to : ");
-			for (InternetAddress  internetAddress : toInternetAdressesList) {
-				sb.append(" - ").append(internetAddress.getAddress());
-			}
-			sb.append("\n - cc : ");
-			for (InternetAddress  internetAddress : ccInternetAdressesList) {
-				sb.append(" - ").append(internetAddress.getAddress());
-			}
+			sb.append(" - to : " + join(toInternetAdressesList, " - "));
+			sb.append("\n - cc : " + join(ccInternetAdressesList, " - "));
 			sb.append("\n - Subject : ").append(subject);
 			sb.append("\n - body : ").append(textBody);
 			logger.debug(textBody);
@@ -143,4 +137,20 @@ public class SmtpServiceUtils {
 		l.add(e);
 		return l;
 	}
+
+	public static String join(Iterable<?> elements, CharSequence separator) {
+		if (elements == null) return "";
+
+		StringBuilder sb = null;
+
+		for (Object s : elements) {
+			if (sb == null)
+				sb = new StringBuilder();
+			else
+				sb.append(separator);
+			sb.append(s);			
+		}
+		return sb == null ? "" : sb.toString();
+	}
+
 }
