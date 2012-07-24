@@ -234,28 +234,33 @@ public class MessagesController<DomaineService> extends AbstractContextAwareCont
 
 		try {
 			if (MessageStatus.SENT.name().equals(message.getStateAsEnum().name())) {
-
-				TrackInfos infos = getDomainService().getTrackInfos(message.getId());
-				this.destCount = infos.getNbDestTotal().toString();
-				this.backListDestCount = infos.getNbDestBlackList().toString();
-				this.sentSMSCount = infos.getNbSentSMS().toString();
+				computeDetailsSentMessage();
 			} else {
-				Message mess = getDomainService().getMessage(message.getId());
-				this.destCount = Integer.toString(mess.getRecipients().size());
+				computeDetailsNonSentMessage();
 			}
-		} catch (UnknownIdentifierApplicationException e) {
-			addErrorMessage(
-					"TT", "WS.ERROR.APPLICATION.MESSAGE", null);
-		} catch (UnknownIdentifierMessageException e) {
-			addErrorMessage(
-					"TT", "WS.ERROR.MESSAGE.MESSAGE", null);
 		} catch (Exception e) {
-			addErrorMessage(
-					"TT", "WS.ERROR.MESSAGE", null);
-
+			addErrorMessage("TT", "WS.ERROR.MESSAGE", null);
 		}	
 
 		return "detailSend";
+	}
+
+	private void computeDetailsSentMessage() {
+		try {
+			TrackInfos infos = getDomainService().getTrackInfos(message.getId());
+			this.destCount = infos.getNbDestTotal().toString();
+			this.backListDestCount = infos.getNbDestBlackList().toString();
+			this.sentSMSCount = infos.getNbSentSMS().toString();
+		} catch (UnknownIdentifierApplicationException e) {
+			addErrorMessage("TT", "WS.ERROR.APPLICATION.MESSAGE", null);
+		} catch (UnknownIdentifierMessageException e) {
+			addErrorMessage("TT", "WS.ERROR.MESSAGE.MESSAGE", null);
+		}
+	}
+
+	private void computeDetailsNonSentMessage() {
+		Message mess = getDomainService().getMessage(message.getId());
+		this.destCount = Integer.toString(mess.getRecipients().size());
 	}
 
 	//////////////////////////////////////////////
