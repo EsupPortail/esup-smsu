@@ -122,7 +122,7 @@ public class RoleManager {
 	 * @param selectedValues
 	 */
 	public void saveRole(final UIRole role, final List<String> selectedValues) {
-		Role newrole = new Role(role.getId(), role.getName().trim());
+		Role newrole = new Role(role);
 		Set<Fonction> fonctions = new HashSet<Fonction>();
 		Integer fctId;
 		
@@ -139,7 +139,7 @@ public class RoleManager {
 	 * @param role 
 	 */
 	public void deleteRole(final UIRole role) {
-		Role newrole = new Role(role.getId(), role.getName());
+		Role newrole = new Role(role);
 		daoService.deleteRole(newrole);
 	}
 	
@@ -149,7 +149,7 @@ public class RoleManager {
 	 * @param selectedValues
 	 */
 	public void updateRole(final UIRole role, final List<String> selectedValues) {
-		Role newrole = new Role(role.getId(), role.getName().trim());
+		Role newrole = new Role(role);
 		Set<Fonction> fonctions = new HashSet<Fonction>();
 		Integer fctId;
 		
@@ -167,7 +167,7 @@ public class RoleManager {
 	 * @return Ids fonctions
 	 */
 	public List<String> getIdFctsByRole(final UIRole role) {
-		Role newrole = new Role(role.getId(), role.getName());
+		Role newrole = new Role(role);
 		Set<Fonction> fonctions = daoService.getFctsByRole(newrole);
 
 		List<String> selectedValues = new ArrayList<String>();

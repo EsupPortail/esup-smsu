@@ -66,6 +66,10 @@ public class Role implements Serializable {
 		this.setName(name);
 	}
 
+	public Role(final Role role) {
+		this(role.getId(), role.getName().trim());
+	}
+
 
 	/**
 	 * Return the unique identifier of this class.
