@@ -226,7 +226,6 @@ public class DomainServiceImpl implements DomainService, InitializingBean {
 			user.setId(ldapUser.getId());
 			setUserInfo(user, ldapUser);
 		user.setFonctions(securityManager.loadUserRightsByUsername(user.getId()));
-		user.setRoles(securityManager.loadUserRolesByUsername(user.getId()));
 		return user;
 	}
 
@@ -835,13 +834,6 @@ public class DomainServiceImpl implements DomainService, InitializingBean {
 	//////////////////////////////////////////////////////////////
 	// Role
 	//////////////////////////////////////////////////////////////
-	/**
-	 * @see org.esupportail.smsu.domain.DomainService#getAllRoles()
-	 */
-	public List<UIRole> getAllRoles(final List<Integer> idRoles) {
-		return roleManager.getAllRoles(idRoles);
-	}
-
 	/**
 	 * @see org.esupportail.smsu.domain.DomainService#getAllRoles()
 	 */

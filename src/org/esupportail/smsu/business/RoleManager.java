@@ -55,11 +55,9 @@ public class RoleManager {
 	//////////////////////////////////////////////////////////////
 	/**
 	 * retrieve all the roles defined in smsu database.
-	 * Called by RolePaginator
-	 * @param idRoles 
 	 * @return list of uiRoles
 	 */
-	public List<UIRole> getAllRoles(final List<Integer> idRoles) {
+	public List<UIRole> getAllRoles() {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Retrieve the smsu roles from the database");
 		}
@@ -85,15 +83,6 @@ public class RoleManager {
 		}
 		
 		return allUIRoles;
-	}
-	
-	/**
-	 * retrieve all the roles defined in smsu database.
-	 * Called by GroupsController.
-	 * @return list of uiRoles
-	 */
-	public List<UIRole> getAllRoles() {
-		return getAllRoles(null);
 	}
 
 	/**

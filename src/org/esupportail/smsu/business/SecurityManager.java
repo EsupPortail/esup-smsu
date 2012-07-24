@@ -75,28 +75,6 @@ public class SecurityManager {
 		}
 	}
 
-	/**
-	 * Get the user object corresponding to the given login and grant corresponding roles for the user.
-	 * @param login: user login
-	 * @return an List of Strings objectrepresenting the authenticated user and his roles 
-	 * if the authentication is successfull.
-	 */
-	public List<Integer> loadUserRolesByUsername(final String login) {
-		List<Integer> roles = new ArrayList<Integer>();
-		logger.debug("parameter login in loadUserRolesByUsername method is: " + login);
-		
-		for (CustomizedGroup grp : getCustomizedGroups(login)) {
-				logger.debug("group label in loadUserRolesByUsername method is: " + grp.getLabel());
-				Role role = grp.getRole();
-				
-				if (!roles.contains(role.getId())) {
-					logger.debug("parameter role in addRole method is: " + role.getId());
-					roles.add(role.getId());
-				}
-		}
-		return roles;
-	}
-
 	private List<UserGroup> getUserGroupsPlusSelfGroup(String login) {
 		List<UserGroup> groups = new ArrayList<UserGroup>();
 		try {

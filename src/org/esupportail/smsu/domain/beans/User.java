@@ -35,11 +35,6 @@ public class User implements Serializable {
 	 * fonctions list.
 	 */
 	private List<String> fonctions = new ArrayList<String>();
-	
-	/**
-	 * roles list.
-	 */
-	private List<Integer> roles = new ArrayList<Integer>();
     	
     /**
      * The prefered language.
@@ -86,7 +81,7 @@ public class User implements Serializable {
 	public String toString() {
 		return "User#" + hashCode() + "[id=[" + id + "], displayName=[" + displayName 
 		    + "], language=[" + language
-		    + "], fonctions=[" + join(fonctions, ",") + "], roles=[" + join(roles, ",") + "]]";
+		    + "], fonctions=[" + join(fonctions, ",") + "]]";
 	}
 
 	public static String join(Iterable<?> elements, CharSequence separator) {
@@ -160,19 +155,5 @@ public class User implements Serializable {
 		return fonctions;
 	}
 
-	/**
-	 * @param roles the roles to set
-	 */
-	public void setRoles(final List<Integer> roles) {
-		this.roles = roles;
-	}
-
-	/**
-	 * @return the roles
-	 */
-	public List<Integer> getRoles() {
-		return roles;
-	}
-    
 
 }

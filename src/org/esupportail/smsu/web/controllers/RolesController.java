@@ -104,14 +104,7 @@ public class RolesController extends AbstractContextAwareController {
 	 * @throws LdapUserNotFoundException 
 	 */
 	private void init()  {
-		User currentUser = getCurrentUser();
-		if (currentUser != null) {
-		logger.debug("Current user is not null");	
-		paginator = new RolePaginator(getDomainService(), currentUser.getRoles());
-		} else {
-		logger.debug("Current user is null");	
 		paginator = new RolePaginator(getDomainService());
-		}
 		
 		this.allFonctions = getDomainService().getAllFonctions();
 		
@@ -173,12 +166,7 @@ public class RolesController extends AbstractContextAwareController {
 	@Override
 	public void reset() {
 		super.reset();
-		User currentUser = getCurrentUser();
-		if (currentUser != null) {
-		paginator = new RolePaginator(getDomainService(), currentUser.getRoles());
-		} else {
 		paginator = new RolePaginator(getDomainService());
-		}
 	}
 	
 	private void initFunctionsUsingBundles() {

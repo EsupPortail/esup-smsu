@@ -27,25 +27,9 @@ public class RolePaginator extends ListPaginator<UIRole> {
 	 */
 	private DomainService domainService;
 	
-	/**
-	 * roles list.
-	 */
-	private List<Integer> idRoles = new ArrayList<Integer>();
-	
 	 //////////////////////////////////////////////////////////////
 	 // Constructors
 	 //////////////////////////////////////////////////////////////
-	 /**
-	 * Constructor.
-	 * @param domainService 
-	 */
-	@SuppressWarnings("deprecation")
-	public RolePaginator(final DomainService domainService, final List<Integer> roles) {
-		super(null, 0);
-		this.domainService = domainService;
-		this.idRoles = roles;
-	}
-
 	 /**
 	 * Constructor.
 	 * @param domainService 
@@ -63,22 +47,8 @@ public class RolePaginator extends ListPaginator<UIRole> {
 	 */
 	@Override
 	protected List<UIRole> getData() {
-		return domainService.getAllRoles(this.idRoles);
+		return domainService.getAllRoles();
 	}
 
-	/**
-	 * @param roles the roles to set
-	 */
-	public void setRoles(final List<Integer> roles) {
-		this.idRoles = roles;
-	}
-
-	/**
-	 * @return the roles
-	 */
-	public List<Integer> getRoles() {
-		return idRoles;
-	} 
-	
 }
 

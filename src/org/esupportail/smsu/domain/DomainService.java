@@ -479,12 +479,6 @@ public interface DomainService extends Serializable {
 	//////////////////////////////////////////////////////////////
 	/**
 	 * get all roles.
-	 * @param idRoles
-	 */
-	List<UIRole> getAllRoles(List<Integer> idRoles);
-	
-	/**
-	 * get all roles.
 	 */
 	List<UIRole> getAllRoles();
 
