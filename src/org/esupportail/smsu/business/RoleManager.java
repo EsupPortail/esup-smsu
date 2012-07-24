@@ -85,7 +85,7 @@ public class RoleManager {
 			}
 				
 			// Role de l'utilisateur connected n'est pas supprimable ni modifiable
-			if (idRoles.contains(role.getId())) {
+			if (idRoles != null && idRoles.contains(role.getId())) {
 				isDeletable = false;
 				isUpdateable = false;
 			}
@@ -103,35 +103,7 @@ public class RoleManager {
 	 * @return list of uiRoles
 	 */
 	public List<UIRole> getAllRoles() {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Retrieve the smsu roles from the database");
-		}
-		
-		List<UIRole> allUIRoles = new ArrayList<UIRole>();
-		List<Role> allRoles = daoService.getRoles();
-		
-		for (Role role : allRoles) {
-			isDeletable = false;
-			isUpdateable = true;
-			
-			Boolean testCustomizedGroup = testCustomizedGroupBeforeDeleteRole(role);
-			
-			// if not attached to Customized Groups
-			if (testCustomizedGroup) {
-				isDeletable = true;
-			}
-			
-			// Role super admin (Id=1) n'est pas supprimable ni modifiable
-			if (role.getName().equals(RoleEnum.SUPER_ADMIN.toString())) {
-				isDeletable = false;
-				isUpdateable = false;
-			}
-				
-			UIRole newrole = new UIRole(role.getId(), role.getName(), isDeletable, isUpdateable);
-			allUIRoles.add(newrole);
-		}
-		
-		return allUIRoles;
+		return getAllRoles(null);
 	}
 	
 	/**
