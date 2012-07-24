@@ -26,6 +26,7 @@ import org.esupportail.portal.ws.client.exceptions.PortalGroupNotFoundException;
 import org.esupportail.portal.ws.client.exceptions.PortalUserNotFoundException;
 import org.esupportail.smsu.dao.beans.BasicGroup;
 import org.esupportail.smsu.dao.beans.CustomizedGroup;
+import org.esupportail.smsu.dao.beans.Person;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
 import org.esupportail.smsu.exceptions.ldap.LdapWriteException;
 import org.esupportail.smsu.groups.SmsuLdapGroupPersonAttributeDaoImpl;
@@ -504,6 +505,17 @@ public class LdapUtils {
 			displayName = getGroupNameByUidOrNull(id);
 		}
 		return displayName != null ? displayName : id;
+	}
+
+	public String getUserDisplayName(final Person p) {
+		return getUserDisplayName(p.getLogin());
+	}
+	public String getUserDisplayName(final String uid) {
+		try { 
+			return getUserDisplayNameByUserUid(uid);
+		} catch (LdapUserNotFoundException e) {
+		    	return uid;
+		}
 	}
 
 	/**

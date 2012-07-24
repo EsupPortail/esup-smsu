@@ -178,7 +178,7 @@ public class SendSmsManager  {
 	private Set<Person> mayGetSupervisorsOrNull(Message message) {
 		if (MessageStatus.WAITING_FOR_APPROVAL.equals(message.getStateAsEnum())) {
 			logger.debug("Supervisors needed");
-			return getSupervisors(message);
+			return getSupervisors(getSupervisorCustomizedGroup(message));
 		} else {
 			logger.debug("No supervisors needed");
 			return null;
@@ -196,7 +196,7 @@ public class SendSmsManager  {
 				;
 			else if (message.getStateAsEnum().equals(MessageStatus.WAITING_FOR_APPROVAL))
 				// envoi du mail
-				sendMailsToSupervisors(message.getSupervisors());	
+				sendMailsToSupervisors(message);
 			else 
 				maySendMessageInBackground(message);
 		} catch (UnknownIdentifierApplicationException e) {
@@ -271,8 +271,25 @@ public class SendSmsManager  {
 	 * @param supervisors
 	 * @return
 	 */
-	private void sendMailsToSupervisors(final Set<Person> supervisors) {
-		if (supervisors == null) return;
+	private void sendMailsToSupervisors(final Message message) {
+		CustomizedGroup cGroup = getSupervisorCustomizedGroup(message);
+
+		List<String> toList = getSupervisorsMails(getSupervisors(cGroup));
+		String senderName = ldapUtils.getUserDisplayName(message.getSender());
+		String cGroupName = ldapUtils.getGroupDisplayName(cGroup);
+		String subject = getI18nString("MSG.SUBJECT.MAIL.TO.APPROVAL", senderName);
+		String textBody = getI18nString("MSG.TEXTBOX.MAIL.TO.APPROVAL", cGroupName);
+		if (toList != null) {
+			smtpServiceUtils.sendMessage(toList, null, subject, textBody);
+		}
+	}
+
+	private Set<Person> getSupervisors(CustomizedGroup cGroup) {
+		return new HashSet<Person>(cGroup.getSupervisors()); // nb: we need to copy the set to avoid "Found shared references to a collection" Hibernate exception
+	}
+
+	private List<String> getSupervisorsMails(final Set<Person> supervisors) {
+		if (supervisors == null) return null;
 		logger.debug("supervisors not null");
 
 		final List<String> uids = new LinkedList<String>();
@@ -293,9 +310,7 @@ public class SendSmsManager  {
 				logger.warn("no mail for supervisor " + ldapUser.getId());
 			}
 		}
-		String subject = getI18nString("MSG.SUBJECT.MAIL.TO.APPROVAL");
-		String textBody = getI18nString("MSG.TEXTBOX.MAIL.TO.APPROVAL");
-		smtpServiceUtils.sendMessage(toList, null, subject, textBody);
+		return toList;
 	}
 
 
@@ -446,21 +461,20 @@ public class SendSmsManager  {
 			} 
 	}
 
-	/**
-	 * @param message
-	 * @return a supervisor list
-	 */
-	private Set<Person> getSupervisors(final Message message) {
-		Set<Person> r;
+	private CustomizedGroup getSupervisorCustomizedGroup(final Message message) {
+		CustomizedGroup r;
 
-		r = getSupervisorsByGroup(message.getGroupRecipient(), "destination");
+		r = getSupervisorCustomizedGroupByGroup(message.getGroupRecipient(), "destination");
 		if (r != null) return r;
 
-		r = getSupervisorsByGroup(message.getGroupSender(), "sender");
+		r = getSupervisorCustomizedGroupByGroup(message.getGroupSender(), "sender");
 		if (r != null) return r;
 
 		logger.debug("Supervisor needed without a group. Using the default supervisor : [" + defaultSupervisorLogin + "]");
-		return Collections.singleton(defaultSupervisor());
+		r = new CustomizedGroup();
+		r.setLabel("defaultSupervisor");
+		r.setSupervisors(Collections.singleton(defaultSupervisor()));
+		return r;
 	}
 
 	private Person defaultSupervisor() {
@@ -471,10 +485,10 @@ public class SendSmsManager  {
 		return admin;
 	}
 
-	private Set<Person> getSupervisorsByGroup(final BasicGroup group, String groupKind) {
+	private CustomizedGroup getSupervisorCustomizedGroupByGroup(final BasicGroup group, String groupKind) {
 		if (group == null) return null;
 
-		CustomizedGroup cGroup = getSupervisorCustomizedGroupByGroup(group);
+		CustomizedGroup cGroup = getSupervisorCustomizedGroupByLabel(group.getLabel());
 
 		if (logger.isDebugEnabled()) {
 			if (cGroup != null)
@@ -482,14 +496,8 @@ public class SendSmsManager  {
 			else
 				logger.debug("No supervisor found from " + groupKind + " group.");
 		}
-		if (cGroup != null) 
-			return new HashSet<Person>(cGroup.getSupervisors()); // nb: we need to copy the set to avoid "Found shared references to a collection" Hibernate exception
-		else
-			return null;
-	}
-
-	private CustomizedGroup getSupervisorCustomizedGroupByGroup(final BasicGroup group) {
-		return getSupervisorCustomizedGroupByLabel(group.getLabel());
+		
+		return cGroup;
 	}
 
 	/**
@@ -1015,6 +1023,9 @@ public class SendSmsManager  {
 
 	private String getI18nString(String key) {
 		return i18nService.getString(key, i18nService.getDefaultLocale());
+	}
+	private String getI18nString(String key, String arg1) {
+		return i18nService.getString(key, i18nService.getDefaultLocale(), arg1);
 	}
 
 	///////////////////////////////////
