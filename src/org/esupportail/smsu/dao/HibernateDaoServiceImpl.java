@@ -256,8 +256,6 @@ public class HibernateDaoServiceImpl extends AbstractJdbcJndiHibernateDaoService
 		
 	}
 	
-	
-	
 	/* (non-Javadoc)
 	 * @see org.esupportail.smsu.dao.DaoService#deleteMessageOlderThan(java.util.Date)
 	 */
