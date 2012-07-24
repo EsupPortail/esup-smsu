@@ -53,7 +53,7 @@ public class SmtpServiceUtils {
 			sb.append("\n - cc : " + join(ccInternetAdressesList, " - "));
 			sb.append("\n - Subject : ").append(subject);
 			sb.append("\n - body : ").append(textBody);
-			logger.debug(textBody);
+			logger.debug(sb.toString());
 			
 		}
 		
