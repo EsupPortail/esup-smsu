@@ -6,6 +6,7 @@ package org.esupportail.smsu.dao;
 
 import java.util.Date;
 import java.util.List;
+import java.util.LinkedList;
 import java.util.Set;
 
 import org.esupportail.commons.dao.AbstractJdbcJndiHibernateDaoService;
@@ -143,86 +144,52 @@ public class HibernateDaoServiceImpl extends AbstractJdbcJndiHibernateDaoService
 		String from = " FROM Message message";
 		
 		// WHERE
-		StringBuffer where = new StringBuffer();
-		where.append(" WHERE ");
-		boolean whereClause = false;
-		String keywordAND = " AND ";
+		List<String> where = new LinkedList<String>();
 		
 		// Filter on sender group
 		if (userGroupId != 0) {
-			where.append(" message." + Message.PROP_GROUP_SENDER + "." + BasicGroup.PROP_ID + "=" + userGroupId);
-			whereClause = true;
+			where.add("message." + Message.PROP_GROUP_SENDER + "." + BasicGroup.PROP_ID + "=" + userGroupId);
 		}
 		
 		// Filter on account
 		if (userAccountId != 0) {
-			if (whereClause) {
-				where.append(keywordAND);
-			}
-			where.append(" message." + Message.PROP_ACCOUNT + "." + Account.PROP_ID + "=" + userAccountId);
-			whereClause = true;
+			where.add("message." + Message.PROP_ACCOUNT + "." + Account.PROP_ID + "=" + userAccountId);
 		}
 		
 		// Filter on Service
-		if (userServiceId != null) {
-			
+		if (userServiceId != null) {		
 			if (userServiceId != 0) {
-				if (whereClause) {
-					where.append(keywordAND);
-				}
-				where.append(" message." + Message.PROP_SERVICE + "." + Service.PROP_ID + "=" + userServiceId);
-				whereClause = true;
-			} 
-			
+				where.add("message." + Message.PROP_SERVICE + "." + Service.PROP_ID + "=" + userServiceId);
+			} 			
 		} else {
-			if (whereClause) {
-				where.append(keywordAND);
-			}
-			where.append(" message." + Message.PROP_SERVICE + "." + Service.PROP_ID + " IS NULL");
-			whereClause = true;
+			where.add("message." + Message.PROP_SERVICE + "." + Service.PROP_ID + " IS NULL");
 		}
 		
 		// Filter on template
 		if (userTemplateId != 0) {
-			if (whereClause) {
-				where.append(keywordAND);
-			}
-			where.append(" message." + Message.PROP_TEMPLATE + "." + Template.PROP_ID + "=" + userTemplateId);
-			whereClause = true;
+			where.add("message." + Message.PROP_TEMPLATE + "." + Template.PROP_ID + "=" + userTemplateId);
 		}
 		
 		// filter on send
 		if (userUserId != 0) {
-			if (whereClause) {
-				where.append(keywordAND);
-			}
-			where.append(" message." + Message.PROP_SENDER + "." + Person.PROP_ID + "=" + userUserId);
-			whereClause = true;
+			where.add("message." + Message.PROP_SENDER + "." + Person.PROP_ID + "=" + userUserId);
 		}
 		
 		// Begin date filter
 		if (beginDate != null) {
-			if (whereClause) {
-				where.append(keywordAND);
-			}
-			where.append(" message." + Message.PROP_DATE + ">='" + beginDate + "'");
-			whereClause = true;
+			where.add("message." + Message.PROP_DATE + ">='" + beginDate + "'");
 		}
 		
 		// End date filter
 		if (endDate != null) {
-			if (whereClause) {
-				where.append(keywordAND);
-			}
-			where.append(" message." + Message.PROP_DATE + "<'" + endDate + "'");
-			whereClause = true;
+			where.add("message." + Message.PROP_DATE + "<'" + endDate + "'");
 		}
 		
 		// Order by 
 		String orderBy = " ORDER BY message." + Message.PROP_ID + " ASC ";
 		
 		select.append(from);	
-		if (whereClause) select.append(where.toString());
+		if (!where.isEmpty()) select.append(" WHERE ").append(join(where, " AND "));
 		select.append(orderBy);
 		String queryString = select.toString();
 		
@@ -1026,4 +993,19 @@ public class HibernateDaoServiceImpl extends AbstractJdbcJndiHibernateDaoService
 		return mailRecipient;
 	}
 
+
+	public static String join(Iterable<?> elements, CharSequence separator) {
+		if (elements == null) return "";
+
+		StringBuilder sb = null;
+
+		for (Object s : elements) {
+			if (sb == null)
+				sb = new StringBuilder();
+			else
+				sb.append(separator);
+			sb.append(s);			
+		}
+		return sb == null ? "" : sb.toString();
+	}
 }
