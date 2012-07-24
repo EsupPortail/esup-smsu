@@ -224,16 +224,23 @@ public class GroupManager {
 			UIPerson uiper = new UIPerson();
 			uiper.setId(pert.getId().toString());
 			uiper.setLogin(pert.getLogin());
-		    try { 
-			uiper.setDisplayName(ldapUtils.getUserDisplayNameByUserUid(pert.getLogin())
-					+ " (" + pert.getLogin() + ")");	
-		    } catch (LdapUserNotFoundException e) {
-		    	uiper.setDisplayName(pert.getLogin());
-		    } 
+			uiper.setDisplayName(getPreciseDisplayName(pert));
 			persons.add(uiper);
 		    }
 		
 		return persons;
+	}
+    
+	private String getPreciseDisplayName(Person p) {
+		return getPersonPreciseDisplayName(p.getLogin());
+	}
+	private String getPersonPreciseDisplayName(String login) {
+		try {
+			return ldapUtils.getUserDisplayNameByUserUid(login)
+				+ " (" + login + ")";
+		} catch (LdapUserNotFoundException e) {
+		    	return login;
+		}
 	}
 	
 	/////////////////////////////////////////
