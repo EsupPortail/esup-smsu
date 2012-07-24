@@ -23,6 +23,12 @@
 	<e:bold rendered="#{messagesController.supervisorsText != null}" value="#{msgs['SMS.SUPERVISORS']}"></e:bold>
 	<e:text rendered="#{messagesController.supervisorsText != null}" value="#{messagesController.supervisorsText}" />
 	
+	<e:bold value="#{msgs['SMS.SENDER']}"></e:bold>
+	<e:text value="#{messagesController.message.sender.login}" />
+	
+	<e:bold rendered="#{messagesController.message.groupRecipient != null}" value="#{msgs['SMS.GROUP.RECIPIENT']}"></e:bold>
+	<e:text rendered="#{messagesController.message.groupRecipient != null}" value="#{messagesController.message.groupRecipient.label}" />
+
 	<e:bold value="#{msgs['SMS.NBR.RECEVERS']}"></e:bold>
 	<e:text id="TT" value="#{messagesController.destCount}" />
 			
@@ -34,6 +40,9 @@
 		
 	<e:bold rendered="#{messagesController.message.stateMail != ''}" value="#{msgs['SMS.MAIL.SEND']}"></e:bold>
 	<e:text rendered="#{messagesController.message.stateMail != ''}" value="#{messagesController.message.stateMail}" />
+
+	<e:bold value="#{msgs['SMS.RECIPIENTS']}"></e:bold>
+	<e:text value="#{messagesController.recipientsText}" />
 	
 	
 	</e:panelGrid>

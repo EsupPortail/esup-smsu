@@ -13,6 +13,7 @@ import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.dao.beans.Message;
 import org.esupportail.smsu.dao.beans.Person;
+import org.esupportail.smsu.dao.beans.Recipient;
 import org.esupportail.smsu.domain.beans.User;
 import org.esupportail.smsu.domain.beans.fonction.FonctionName;
 import org.esupportail.smsu.domain.beans.message.MessageStatus;
@@ -99,6 +100,7 @@ public class MessagesController<DomaineService> extends AbstractContextAwareCont
 	private String destCount;
 
 	private String supervisorsText;
+	private String recipientsText;
 
 	/**
 	 * The count of black list recipients backListDestCount.
@@ -233,15 +235,15 @@ public class MessagesController<DomaineService> extends AbstractContextAwareCont
 	public String displayDetails() {
 		this.destCount = null;
 		this.supervisorsText = null;
+		this.recipientsText = null;
 		this.backListDestCount = null;
 		this.sentSMSCount = null;
 
 		try {
 			if (MessageStatus.SENT.name().equals(message.getStateAsEnum().name())) {
 				computeDetailsSentMessage();
-			} else {
-				computeDetailsNonSentMessage();
 			}
+			computeMoreDetails();
 		} catch (Exception e) {
 			addErrorMessage("TT", "WS.ERROR.MESSAGE", null);
 		}	
@@ -262,18 +264,28 @@ public class MessagesController<DomaineService> extends AbstractContextAwareCont
 		}
 	}
 
-	private void computeDetailsNonSentMessage() {
+	private void computeMoreDetails() {
 		Message mess = getDomainService().getMessage(message.getId());
-		this.destCount = Integer.toString(mess.getRecipients().size());
-		this.supervisorsText = getSupervisorsText(mess.getSupervisors());
+		if (this.destCount == null) {
+		    this.destCount = Integer.toString(mess.getRecipients().size());
+		}
+		this.recipientsText = computeRecipientsText(mess.getRecipients());
+		this.supervisorsText = computeSupervisorsText(mess.getSupervisors());
 	}
 
-	private String getSupervisorsText(Set<Person> supervisors) {
+	private String computeSupervisorsText(Set<Person> supervisors) {
 		if (supervisors == null) return null;
-		String r = null;
+		String t = null;
 		for (Person p : supervisors)
-			r = (r == null ? "" : r + ", ") + p.getLogin();
-		return r;
+			t = (t == null ? "" : t + ", ") + p.getLogin();
+		return t;
+	}
+	private String computeRecipientsText(Set<Recipient> recipients) {
+		if (recipients == null) return "";
+		String t = null;
+		for (Recipient r : recipients)
+		    t = (t == null ? "" : t + ", ") + r.getLogin() + ":" + r.getPhone();
+		return t;
 	}
 
 	//////////////////////////////////////////////
@@ -288,6 +300,9 @@ public class MessagesController<DomaineService> extends AbstractContextAwareCont
 
 	public String getSupervisorsText() {
 		return this.supervisorsText;
+	}
+	public String getRecipientsText() {
+		return this.recipientsText;
 	}
 
 	//////////////////////////////////////////////////////
