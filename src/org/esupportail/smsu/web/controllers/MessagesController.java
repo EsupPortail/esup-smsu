@@ -308,10 +308,12 @@ public class MessagesController<DomaineService> extends AbstractContextAwareCont
 	public void setBeginDate(final Date beginDate) {
 
 		this.beginDate = beginDate;
-		if (beginDate != null) { paginator.setBeginDate(getDomainService().formatDateDao(beginDate)); 
-		} else { paginator.setBeginDate(beginDate); }
+		paginator.setBeginDate(formatDateDao(beginDate));
 	}
 
+	private Date formatDateDao(final Date date) {
+		return date == null ? null : getDomainService().formatDateDao(date);
+	}
 
 	//////////////////////////////////////////////////////////////
 	// Getter and Setter of endDate
@@ -328,8 +330,7 @@ public class MessagesController<DomaineService> extends AbstractContextAwareCont
 	 */
 	public void setEndDate(final Date endDate) {
 		this.endDate = endDate;
-		if (endDate != null) { paginator.setEndDate(getDomainService().formatDateDao(endDate)); 
-		} else { paginator.setEndDate(endDate); }
+		paginator.setEndDate(formatDateDao(endDate));
 	}
 
 
