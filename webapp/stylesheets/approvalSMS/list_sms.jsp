@@ -91,7 +91,7 @@ authorized="#{approvalController.pageAuthorized}" footer="">
 					<t:column>
 						<f:facet name="header">
 							<e:text
-								value="#{msgs['SMS.GROUP.VALUE']}" />
+								value="#{msgs['SMS.GROUP.RECIPIENT']}" />
 						</f:facet>
 						<e:text value="#{message.groupRecipientName}" />
 					</t:column>

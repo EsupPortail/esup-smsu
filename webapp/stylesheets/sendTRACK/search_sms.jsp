@@ -194,7 +194,7 @@
 					<t:column>
 						<f:facet name="header">
 							<e:text
-								value="#{msgs['SMS.GROUP.VALUE']}" />
+								value="#{msgs['SMS.GROUP.SENDER']}" />
 						</f:facet>
 						<e:text value="#{message.groupSenderName}" />
 					</t:column>
