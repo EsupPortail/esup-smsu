@@ -139,7 +139,7 @@
 				edu.yale.its.tp.cas.client.filter.loginUrl
 			</param-name>
 			<param-value>
-				${cas.url}/cas/login
+				${cas.url}/login
 			</param-value>
 		</init-param>
 		<init-param>
