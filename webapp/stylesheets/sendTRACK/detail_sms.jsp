@@ -19,6 +19,9 @@
 
 	<e:bold value="#{msgs['SMS.STATE']}"></e:bold>
 	<e:text value="#{messagesController.message.stateMessage}" />
+
+	<e:bold rendered="#{messagesController.supervisorsText != null}" value="#{msgs['SMS.SUPERVISORS']}"></e:bold>
+	<e:text rendered="#{messagesController.supervisorsText != null}" value="#{messagesController.supervisorsText}" />
 	
 	<e:bold value="#{msgs['SMS.NBR.RECEVERS']}"></e:bold>
 	<e:text id="TT" value="#{messagesController.destCount}" />

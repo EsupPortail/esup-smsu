@@ -12,6 +12,7 @@ import org.apache.myfaces.component.html.ext.HtmlPanelGroup;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.dao.beans.Message;
+import org.esupportail.smsu.dao.beans.Person;
 import org.esupportail.smsu.domain.beans.User;
 import org.esupportail.smsu.domain.beans.fonction.FonctionName;
 import org.esupportail.smsu.domain.beans.message.MessageStatus;
@@ -96,6 +97,8 @@ public class MessagesController<DomaineService> extends AbstractContextAwareCont
 	 * The count of recipients destCount.
 	 */
 	private String destCount;
+
+	private String supervisorsText;
 
 	/**
 	 * The count of black list recipients backListDestCount.
@@ -229,6 +232,7 @@ public class MessagesController<DomaineService> extends AbstractContextAwareCont
 
 	public String displayDetails() {
 		this.destCount = null;
+		this.supervisorsText = null;
 		this.backListDestCount = null;
 		this.sentSMSCount = null;
 
@@ -261,6 +265,15 @@ public class MessagesController<DomaineService> extends AbstractContextAwareCont
 	private void computeDetailsNonSentMessage() {
 		Message mess = getDomainService().getMessage(message.getId());
 		this.destCount = Integer.toString(mess.getRecipients().size());
+		this.supervisorsText = getSupervisorsText(mess.getSupervisors());
+	}
+
+	private String getSupervisorsText(Set<Person> supervisors) {
+		if (supervisors == null) return null;
+		String r = null;
+		for (Person p : supervisors)
+			r = (r == null ? "" : r + ", ") + p.getLogin();
+		return r;
 	}
 
 	//////////////////////////////////////////////
@@ -271,6 +284,10 @@ public class MessagesController<DomaineService> extends AbstractContextAwareCont
 	 */
 	public String getDestCount() {
 		return this.destCount;
+	}
+
+	public String getSupervisorsText() {
+		return this.supervisorsText;
 	}
 
 	//////////////////////////////////////////////////////
