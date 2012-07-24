@@ -1,6 +1,5 @@
 /**
- * ESUP-Portal Example Application - Copyright (c) 2006 ESUP-Portal consortium
- * http://sourcesup.cru.fr/projects/esup-example
+ * ESUP-Portal SMSU - Copyright (c) 2006-2012 ESUP-Portal consortium
  */
 package org.esupportail.smsu.services.client; 
 

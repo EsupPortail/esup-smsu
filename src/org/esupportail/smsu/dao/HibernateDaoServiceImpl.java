@@ -1,5 +1,5 @@
 /**
- * ESUP-Portail esup-smsu - Copyright (c) 2006 ESUP-Portail consortium
+ * ESUP-Portail esup-smsu - Copyright (c) 2006-2012 ESUP-Portail consortium
  * http://sourcesup.cru.fr/projects/esup-smsu
  */
 package org.esupportail.smsu.dao;

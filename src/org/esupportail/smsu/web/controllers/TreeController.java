@@ -1,6 +1,5 @@
 /**
- * ESUP-Portail Repository - Copyright (c) 2006 ESUP-Portail consortium
- * http://sourcesup.cru.fr/projects/esup-repository
+ * ESUP-Portail esup-smsu - Copyright (c) 2006-2012 ESUP-Portail consortium
  */
 package org.esupportail.smsu.web.controllers;
 

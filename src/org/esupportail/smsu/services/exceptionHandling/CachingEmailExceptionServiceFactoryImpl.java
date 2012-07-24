@@ -1,5 +1,5 @@
 /**
- * ESUP-Portail Commons - Copyright (c) 2006 ESUP-Portail consortium
+ * ESUP-Portail Commons - Copyright (c) 2006-2012 ESUP-Portail consortium
  * http://sourcesup.cru.fr/projects/esup-commons
  */
 package org.esupportail.smsu.services.exceptionHandling;

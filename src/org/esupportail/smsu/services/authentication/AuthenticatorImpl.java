@@ -1,5 +1,5 @@
 /**
- * ESUP-Portail Helpdesk - Copyright (c) 2004-2008 ESUP-Portail consortium.
+ * ESUP-Portail esup-smsu - Copyright (c) 2004-2012 ESUP-Portail consortium.
  */
 package org.esupportail.smsu.services.authentication; 
 
