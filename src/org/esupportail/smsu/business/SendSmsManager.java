@@ -279,19 +279,18 @@ public class SendSmsManager  {
 		for (Person supervisor : supervisors) {
 			uids.add(supervisor.getLogin());
 		}
+		logger.info("message waiting for supervision. supervisors uids: " + uids);
+
 		List <LdapUser> ldapUsers = ldapUtils.getUsersByUids(uids);
 
 		final List<String> toList = new LinkedList<String>();
 		for (LdapUser ldapUser : ldapUsers) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("supervisor login is :" + ldapUser.getId());
-			}
 			String mail = ldapUser.getAttribute(userEmailAttribute);
 			if (mail != null) {
-				if (logger.isDebugEnabled()) {
-					logger.debug("mail added to list :" + mail);
-				}
+				logger.debug("mail added to list :" + mail);
 				toList.add(mail);
+			} else {
+				logger.warn("no mail for supervisor " + ldapUser.getId());
 			}
 		}
 		String subject = getI18nString("MSG.SUBJECT.MAIL.TO.APPROVAL");
