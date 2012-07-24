@@ -120,7 +120,7 @@ public interface DomainService extends Serializable {
 	/**
 	 * @return the messages to approve.
 	 */
-	List<UIMessage> getApprovalUIMessages(String idUser);
+	List<UIMessage> getApprovalUIMessages(User user);
 	
 	/**
 	 * @param uiMessage 

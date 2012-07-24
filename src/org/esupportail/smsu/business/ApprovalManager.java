@@ -14,6 +14,7 @@ import org.esupportail.smsu.dao.DaoService;
 import org.esupportail.smsu.dao.beans.BasicGroup;
 import org.esupportail.smsu.dao.beans.Message;
 import org.esupportail.smsu.dao.beans.Person;
+import org.esupportail.smsu.domain.beans.User;
 import org.esupportail.smsu.domain.beans.message.MessageStatus;
 import org.esupportail.smsu.exceptions.CreateMessageException;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
@@ -77,8 +78,8 @@ public class ApprovalManager {
 	 * @param idUser
 	 * @return the UI messages.
 	 */
-	public List<UIMessage> getApprovalUIMessages(final String idUser) {
-		List<Message> messages = getApprovalMessagesASupervisorCanApprove(idUser);
+	public List<UIMessage> getApprovalUIMessages(final User user) {
+		List<Message> messages = getApprovalMessagesASupervisorCanApprove(user);
 
 		Map<String, LdapUser> ldapUserByUid = getLdapUserByUid(senderLogins(messages));
 
@@ -118,11 +119,11 @@ public class ApprovalManager {
 		}
 	}
 
-	private List<Message> getApprovalMessagesASupervisorCanApprove(String idUser) {
-		Person user = daoService.getPersonByLogin(idUser);
+	private List<Message> getApprovalMessagesASupervisorCanApprove(User user) {
+		Person p = daoService.getPersonByLogin(user.getId());
 		List<Message> messages = new ArrayList<Message>();
 		for (Message mess : daoService.getApprovalMessages())
-			if (mess.getSupervisors().contains(user))
+			if (mess.getSupervisors().contains(p))
 				messages.add(mess);
 		return messages;
 	}

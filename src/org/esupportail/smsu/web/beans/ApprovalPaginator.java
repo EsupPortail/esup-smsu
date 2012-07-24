@@ -9,6 +9,7 @@ import java.util.List;
 
 
 import org.esupportail.commons.web.beans.ListPaginator;
+import org.esupportail.smsu.domain.beans.User;
 import org.esupportail.smsu.domain.DomainService;
 
 
@@ -30,7 +31,7 @@ public class ApprovalPaginator extends ListPaginator<UIMessage> {
 	/**
 	 * The user id.
 	 */
-	private String idUser;
+	private User currentUser;
 	
 	 
 	 //////////////////////////////////////////////////////////////
@@ -51,10 +52,10 @@ public class ApprovalPaginator extends ListPaginator<UIMessage> {
 	 * @param domainService 
 	 */
 	@SuppressWarnings("deprecation")
-	public ApprovalPaginator(final DomainService domainService, final String idUser) {
+	public ApprovalPaginator(final DomainService domainService, final User user) {
 		super(null, 0);
 		this.domainService = domainService;
-		this.setIdUser(idUser);
+		this.setCurrentUser(user);
 	}
 	//////////////////////////////////////////////////////////////
 	// Principal method getData()
@@ -64,22 +65,22 @@ public class ApprovalPaginator extends ListPaginator<UIMessage> {
 	 */
 	@Override
 	protected List<UIMessage> getData() {
-		return domainService.getApprovalUIMessages(this.idUser);
+		return domainService.getApprovalUIMessages(this.currentUser);
 		
 	}
 
 	/**
 	 * @param idUser the idUser to set
 	 */
-	public void setIdUser(final String idUser) {
-		this.idUser = idUser;
+	public void setCurrentUser(final User user) {
+		this.currentUser = user;
 	}
 
 	/**
 	 * @return the idUser
 	 */
-	public String getIdUser() {
-		return idUser;
+	public User getCurrentUser() {
+		return currentUser;
 	} 
 	
 	

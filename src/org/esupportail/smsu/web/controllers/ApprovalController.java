@@ -79,7 +79,7 @@ public class ApprovalController extends AbstractContextAwareController {
 	 * @throws LdapUserNotFoundException 
 	 */
 	private void init()  {
-		paginator = new ApprovalPaginator(getDomainService(), getCurrentUserId());		
+		paginator = new ApprovalPaginator(getDomainService(), getCurrentUser());		
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class ApprovalController extends AbstractContextAwareController {
 	@Override
 	public void reset() {
 		super.reset();
-		paginator = new ApprovalPaginator(getDomainService(), getCurrentUserId());
+		paginator = new ApprovalPaginator(getDomainService(), getCurrentUser());
 	}
 
 	private String getCurrentUserId() {

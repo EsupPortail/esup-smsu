@@ -347,8 +347,8 @@ public class DomainServiceImpl implements DomainService, InitializingBean {
 	/**
 	 * @return the messages to approve.
 	 */
-	public List<UIMessage> getApprovalUIMessages(final String idUser) {
-		return  approvalManager.getApprovalUIMessages(idUser);
+	public List<UIMessage> getApprovalUIMessages(final User user) {
+		return  approvalManager.getApprovalUIMessages(user);
 	}
 	
 	/**
