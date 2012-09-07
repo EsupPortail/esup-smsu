@@ -263,7 +263,7 @@ public class MessagesController<DomaineService> extends AbstractContextAwareCont
 		if (recipients == null) return "";
 		String t = null;
 		for (Recipient r : recipients)
-		    t = (t == null ? "" : t + ", ") + r.getLogin() + ":" + r.getPhone();
+		    t = (t == null ? "" : t + ", ") + (r.getLogin() != null ? r.getLogin() : r.getPhone());
 		return t;
 	}
 
