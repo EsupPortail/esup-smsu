@@ -72,6 +72,11 @@ public class SendSmsManager  {
 	 * link to access to the sms client layer.
 	 */
 	private SendSmsClient sendSmsClient;
+	
+	/**
+	 * wether sendSmsClient is using basic auth or certificate auth
+	 */
+	private boolean usingBasicAuth;
 
 	/**
 	 * the default Supervisor login when the max SMS number is reach.
@@ -951,19 +956,19 @@ public class SendSmsManager  {
 	}
 
 	public String checkWhySmsuapiFailed(Throwable cause) {
-		String[] mustBeSetList = { "javax.net.ssl.keyStore", "javax.net.ssl.keyStorePassword" };
-		for (String mustBeSet : mustBeSetList)
-			if (System.getProperty(mustBeSet) == null) {
-				String msg = "configuration issue: " + mustBeSet + " must be set (usually in CATALINA_OPTS in env.sh)";
-				logger.error(msg);
-				return msg;
-			}
-		{
-			org.esupportail.smsu.services.ssl.InspectKeyStore inspect = new org.esupportail.smsu.services.ssl.InspectKeyStore();
-			inspect.inspectTrustStore();
+		org.esupportail.smsu.services.ssl.InspectKeyStore inspect = new org.esupportail.smsu.services.ssl.InspectKeyStore();
+		inspect.inspectTrustStore();
+
+		if (!usingBasicAuth) {
+			String[] mustBeSetList = { "javax.net.ssl.keyStore", "javax.net.ssl.keyStorePassword" };
+			for (String mustBeSet : mustBeSetList)
+				if (System.getProperty(mustBeSet) == null) {
+					String msg = "configuration issue: " + mustBeSet + " must be set (usually in CATALINA_OPTS in env.sh)";
+					logger.error(msg);
+					return msg;
+				}
 			inspect.inspectPrivateKeyStore();
 		}
-
 		logger.error("Unable to connect to smsuapi back office : " + cause);
 		return null;
 	}
@@ -1105,6 +1110,13 @@ public class SendSmsManager  {
 	 */
 	public void setSendSmsClient(final SendSmsClient sendSmsClient) {
 		this.sendSmsClient = sendSmsClient;
+	}
+
+	/**
+	 * @param usingBasicAuth
+	 */
+	public void setUsingBasicAuth(final String basicAuthUsername) {
+		this.usingBasicAuth = !StringUtils.isEmpty(basicAuthUsername);
 	}
 
 	/**

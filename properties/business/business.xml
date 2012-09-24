@@ -46,6 +46,7 @@
 		<property name="daoService" ref="daoService" />
 		<property name="customizer" ref="customizer" />
 		<property name="sendSmsClient" ref="sendSmsClient" />
+		<property name="usingBasicAuth" value="${smsuapi.ws.basic.auth.username}" />
 		<property name="defaultSupervisorLogin" value="${sms.defaultSupervisorLogin}"/>
 		<property name="schedulerUtils" ref="schedulerUtils"/>
 		<property name="ldapUtils" ref="ldapUtils"/>
