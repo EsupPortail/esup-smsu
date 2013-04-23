@@ -502,7 +502,7 @@ public class LdapUtils {
 		try {
 			displayName = getUserDisplayNameByUserUid(id);
 		} catch (LdapUserNotFoundException e) {
-			displayName = getGroupNameByUidOrNull(id);
+			displayName = getGroupNameByIdOrNull(id);
 		}
 		return displayName != null ? displayName : id;
 	}
@@ -520,12 +520,12 @@ public class LdapUtils {
 
 	/**
 	 * Retrieve the group by id.
-	 * @param uid : group identifier in the LDAP
+	 * @param id : group identifier in the LDAP
 	 * @return the group name
 	 */
-	public String getGroupNameByUidOrNull(final String uid) {
+	public String getGroupNameByIdOrNull(final String id) {
 		try {
-		    PortalGroup portalGroup = portalService.getGroupById(uid);
+		    PortalGroup portalGroup = portalService.getGroupById(id);
 		    if (portalGroup != null) return portalGroup.getName();
 		} catch (PortalGroupNotFoundException e) {
 		}
