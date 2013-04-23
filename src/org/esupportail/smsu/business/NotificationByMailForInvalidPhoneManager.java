@@ -3,6 +3,8 @@ package org.esupportail.smsu.business;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
+
 import org.esupportail.commons.services.i18n.I18nService;
 import org.esupportail.commons.services.ldap.LdapUser;
 import org.esupportail.commons.services.logging.Logger;
@@ -127,12 +129,15 @@ public class NotificationByMailForInvalidPhoneManager {
 		Set<String> listPhones = getListePhoneNumberInBlackList();
 		
 			for (String phoneNumber : listPhones) {
+				if (StringUtils.isEmpty(phoneNumber)) // ensure weird numbers are discarded
+					continue;
+
 				if (logger.isDebugEnabled()) {
 					logger.debug("search ldapUser for phone number:" + phoneNumber);
 				}
 			// 2 - Retrieve the ldapUser 	
 			List<LdapUser>  list = ldapUtils.searchLdapUsersByPhoneNumber(phoneNumber);
-    		if (!list.isEmpty()) {
+		if (list.size() == 1) {
     		String uid = list.get(0).getId();
     		String mail = getMail(uid);
 			    		if (mail != null) {
