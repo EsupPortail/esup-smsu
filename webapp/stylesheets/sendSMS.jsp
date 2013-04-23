@@ -33,14 +33,31 @@
 		} else {
 			document.getElementById("formGeneral:caract").style.color = "black";
 		}
+		return remainings >= 0;
 	}
 	
+	function validateForm() {
+	         var elt = document.getElementById("error-MESSAGETOOLONG");
+		 if (!calcCarat()) {
+			elt.style.display = "block";
+			return false;
+		 } else {
+			elt.style.display = "none";
+		 }
+		 return true;
+	}
+
 </script>
 
 
 	<e:section value="#{msgs['SENDSMS.TITLE']}" />
+
+	<e:ul id='error-MESSAGETOOLONG' style="display:none" >
+	   <e:li value="#{msgs['SENDSMS.MESSAGE.MESSAGETOOLONG']}" styleClass='portlet-msg-error' />
+	</e:ul>
+
 	<e:messages globalOnly="true"/>
-<e:form id="formGeneral" >
+<e:form id="formGeneral" onsubmit="return validateForm()" >
 	
 
 		<e:panelGrid border="0" columns="2" >
