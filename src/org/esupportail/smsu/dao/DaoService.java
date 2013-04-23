@@ -117,6 +117,12 @@ public interface DaoService extends Serializable {
 	Message getMessageById(Integer id);
 	
 	/**
+	 * remove message content in db older than the specified date.
+	 * @param date
+	 */
+	void deleteMessageContentOlderThan(Date date);
+	
+	/**
 	 * delete message in db (and supervisor sender and to recipient associated)
 	 * older than the specified date.
 	 * @param date

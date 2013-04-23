@@ -257,6 +257,19 @@ public class HibernateDaoServiceImpl extends AbstractJdbcJndiHibernateDaoService
 		
 	}
 	
+	public void deleteMessageContentOlderThan(final Date date) {
+		final String request =
+		    "update Message as mess set mess.Content = '' " + 
+		    " where mess.Date < :date and mess.Content <> ''";
+		
+		final Query query = getCurrentSession().createQuery(request);
+		query.setTimestamp("date", date);
+		
+		final int modifiedMessages = query.executeUpdate();
+
+		logger.debug("Modified items from deleteMessageContentOlderThan " + date + ": " + modifiedMessages);
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.esupportail.smsu.dao.DaoService#deleteMessageOlderThan(java.util.Date)
 	 */

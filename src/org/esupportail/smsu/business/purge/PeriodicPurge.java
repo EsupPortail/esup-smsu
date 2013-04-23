@@ -62,13 +62,13 @@ public class PeriodicPurge {
 		}
 
 		if (logger.isTraceEnabled()) {
-			logger.trace("Start the message purge");
+			logger.trace("Start the message content purge");
 		}
 
-		daoService.deleteMessageOlderThan(seniorityDate);
+		daoService.deleteMessageContentOlderThan(seniorityDate);
 
 		if (logger.isTraceEnabled()) {
-			logger.trace("End of the message purge\n" + "Start the orphan mail purge");
+			logger.trace("End of the message content purge\n" + "Start the orphan mail purge");
 		}
 
 		daoService.deleteOrphanMail();
