@@ -217,14 +217,18 @@ public class DomainServiceImpl implements DomainService, InitializingBean {
 	}
 
 	/**
-	 * create user from a LDAP search.
+	 * create user from a LDAP search or create a simple one
 	 * @see org.esupportail.smsu.domain.DomainService#getUser(java.lang.String)
 	 */
-	public User getUser(final String id) throws UserNotFoundException {
+	public User getUser(final String id) {
+		User user = new User();
+		try {
 			LdapUser ldapUser = this.ldapService.getLdapUser(id);
-			User user = new User();
 			user.setId(ldapUser.getId());
 			setUserInfo(user, ldapUser);
+		} catch (UserNotFoundException e) {
+			user.setId(id);
+		}
 		user.setFonctions(securityManager.loadUserRightsByUsername(user.getId()));
 		return user;
 	}
