@@ -23,4 +23,4 @@
 	readonly="true" disabled="true" size="50"  style="background-color:#cecece;"/>
 
 <e:outputLabel for="caract" value="#{msgs['SENDSMS.LABEL.CARACT']}" />
-<e:inputText id="caract" readonly="true" disabled="true" size="10" style="border:0px;"/>
+<e:outputLabel id="caract"/>

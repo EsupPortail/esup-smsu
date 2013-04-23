@@ -27,7 +27,7 @@
 		var msg = body + prefix + signature;
 		msg = msg.replace(/[\[\]{}\\~^|\u20AC]/g, "xx"); // cf GSM's "Basic Character Set Extension". \u20AC is euro character
 		var remainings = 160 - msg.length;
-		document.getElementById("formGeneral:caract").value = remainings;
+		document.getElementById("formGeneral:caract").innerHTML = remainings;
 		if (remainings < 0) {
 			document.getElementById("formGeneral:caract").style.color = "red";
 		} else {
