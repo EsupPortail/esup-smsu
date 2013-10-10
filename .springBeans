@@ -20,7 +20,6 @@
 		<config>properties/i18n/i18n.xml</config>
 		<config>properties/applicationContext.xml</config>
 		<config>properties/tags/tags.xml</config>
-		<config>properties/deepLinking/deepLinking.xml</config>
 		<config>properties/dao/dao.xml</config>
 		<config>properties/ldap/ldap.xml</config>
 	</configs>
@@ -34,7 +33,6 @@
 				<config>properties/auth/auth.xml</config>
 				<config>properties/cache/cache.xml</config>
 				<config>properties/dao/dao.xml</config>
-				<config>properties/deepLinking/deepLinking.xml</config>
 				<config>properties/domain/domain.xml</config>
 				<config>properties/exceptionHandling/exceptionHandling.xml</config>
 				<config>properties/i18n/i18n.xml</config>
