@@ -72,61 +72,7 @@
 		<property name="mappingLocations">
 			<list>
 				<value>
-					classpath:/properties/dao/hibernate/mapping/VersionManager.hbm.xml
-				</value>
-				<value>
-					classpath:/properties/dao/hibernate/mapping/Account.hbm.xml
-				</value>
-				<value>
-					classpath:/properties/dao/hibernate/mapping/BasicGroup.hbm.xml
-				</value>
-				<value>
-					classpath:/properties/dao/hibernate/mapping/CustomizedGroup.hbm.xml
-				</value>
-				<value>
-					classpath:/properties/dao/hibernate/mapping/Fonction.hbm.xml
-				</value>
-				<value>
-					classpath:/properties/dao/hibernate/mapping/Mail.hbm.xml
-				</value>
-				<value>
-					classpath:/properties/dao/hibernate/mapping/MailRecipient.hbm.xml
-				</value>
-				<value>
-					classpath:/properties/dao/hibernate/mapping/Message.hbm.xml
-				</value>
-				<value>
-					classpath:/properties/dao/hibernate/mapping/PendingMember.hbm.xml
-				</value>
-				<value>
-					classpath:/properties/dao/hibernate/mapping/Person.hbm.xml
-				</value>
-				<value>
-					classpath:/properties/dao/hibernate/mapping/Recipient.hbm.xml
-				</value>
-				<value>
-					classpath:/properties/dao/hibernate/mapping/Role.hbm.xml
-				</value>
-				<value>
-					classpath:/properties/dao/hibernate/mapping/RoleComposition.hbm.xml
-				</value>
-				<value>
-					classpath:/properties/dao/hibernate/mapping/Service.hbm.xml
-				</value>
-				<value>
-					classpath:/properties/dao/hibernate/mapping/Supervisor.hbm.xml
-				</value>
-				<value>
-					classpath:/properties/dao/hibernate/mapping/SupervisorSender.hbm.xml
-				</value>
-				<value>
-					classpath:/properties/dao/hibernate/mapping/Template.hbm.xml
-				</value>
-				<value>
-					classpath:/properties/dao/hibernate/mapping/ToMailRecipient.hbm.xml
-				</value>
-				<value>
-					classpath:/properties/dao/hibernate/mapping/ToRecipient.hbm.xml
+					classpath:/properties/dao/hibernate/mapping/*.hbm.xml
 				</value>
 			</list>
 		</property>
