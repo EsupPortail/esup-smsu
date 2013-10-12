@@ -1,23 +1,16 @@
 <?xml version="1.0"?>
 
-	<!--
-		/webapp/WEB-INF/web.xml The main configuration file of the application
-		for servlet installations.
-	-->
+<web-app metadata-complete="true">
+	<!-- disable "servlet api 3.0 classpath scanning" otherwise dead slow startup -->
+	<!-- metadata-complete="true" above is also needed -->
+	<!-- http://jira.codehaus.org/browse/JETTY-1503 -->
+	<absolute-ordering />
 
-<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 	<display-name>esup-smsu</display-name>
 
 	<context-param>
-		<param-name>webAppRootKey</param-name>
-		<param-value>esup-smsu</param-value>
-	</context-param>
-
-	<context-param>
 		<param-name>log4jConfigLocation</param-name>
-		<param-value>classpath:log4j.properties</param-value>
+		<param-value>classpath:properties/logging/log4j.properties</param-value>
 	</context-param>
 
 	<context-param>
@@ -27,16 +20,6 @@
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
 			classpath:/properties/applicationContext.xml
-		</param-value>
-	</context-param>
-
-	<context-param>
-		<description>
-			The logout URL of the CAS server.
-		</description>
-		<param-name>edu.yale.its.tp.cas.client.logoutUrl</param-name>
-		<param-value>
-			${cas.url}/logout?service=%s
 		</param-value>
 	</context-param>
 
@@ -53,113 +36,139 @@
 	</listener>
 	
 	<listener>
-		<listener-class>
-			org.esupportail.smsu.business.context.SmsuServletContextListener
-		</listener-class>
+	  <listener-class>org.jasig.cas.client.session.SingleSignOutHttpSessionListener</listener-class>
 	</listener>
 
-<!--BEGIN-SERVLET-ONLY-->
+	<session-config>
+	  <tracking-mode>COOKIE</tracking-mode>
+	</session-config>
+
+	<!--filter>
+	  <filter-name>cross-origin</filter-name>
+	  <filter-class>org.eclipse.jetty.servlets.CrossOriginFilter</filter-class>
+	</filter>
+	<filter-mapping>
+	  <filter-name>cross-origin</filter-name>
+	  <url-pattern>/*</url-pattern>
+	</filter-mapping-->
 
 	<filter>
-		<description>
-			The CAS filter, used to authenticate users.
-		</description>
-		<display-name>CASFilter</display-name>
-		<filter-name>CAS Filter</filter-name>
-		<filter-class>
-			edu.yale.its.tp.cas.client.filter.CASFilter
-		</filter-class>
-		<init-param>
-			<param-name>
-				edu.yale.its.tp.cas.client.filter.loginUrl
-			</param-name>
-			<param-value>
-				${cas.url}/login
-			</param-value>
-		</init-param>
-		<init-param>
-			<param-name>
-				edu.yale.its.tp.cas.client.filter.validateUrl
-			</param-name>
-			<param-value>
-				${cas.url}/serviceValidate
-			</param-value>
-		</init-param>
-		<init-param>
-			<param-name>
-				edu.yale.its.tp.cas.client.filter.serverName
-			</param-name>
-			<param-value>${tomcat.host}${tomcat.port.string}</param-value>
-		</init-param>
-		<init-param>
-			<param-name>
-				edu.yale.its.tp.cas.client.filter.wrapRequest
-			</param-name>
-			<param-value>true</param-value>
-		</init-param>
+	  <filter-name>CAS Single Sign Out Filter</filter-name>
+	  <filter-class>org.jasig.cas.client.session.SingleSignOutFilter</filter-class>
+	</filter>
+	<filter>
+	  <filter-name>CASAuthenticationFilter</filter-name>
+	  <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+	<filter>
+	  <filter-name>CASValidationFilter</filter-name>
+	  <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+	<filter>
+	  <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
+	  <filter-class>org.jasig.cas.client.util.HttpServletRequestWrapperFilter</filter-class>
 	</filter>
 
-<!--END-SERVLET-ONLY-->
+	<filter-mapping>
+	  <filter-name>CAS Single Sign Out Filter</filter-name>
+	  <url-pattern>/rest/login</url-pattern>
+	</filter-mapping>
+        <filter-mapping>
+	  <filter-name>CASAuthenticationFilter</filter-name>
+	  <url-pattern>/rest/login</url-pattern>
+        </filter-mapping>
+        <filter-mapping>
+	  <filter-name>CASValidationFilter</filter-name>
+	  <url-pattern>/rest/login</url-pattern>
+        </filter-mapping>
+        <filter-mapping>
+	  <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
+	  <url-pattern>/rest/*</url-pattern>
+        </filter-mapping>
 
-<!--BEGIN-PORTLET-ONLY-->
+	<filter>
+	  <filter-name>CsrfPrevention</filter-name>
+	  <filter-class>org.esupportail.smsu.web.CsrfPreventionFilterHttpHeader</filter-class>
+	</filter>
+	<filter-mapping>
+	  <filter-name>CsrfPrevention</filter-name>
+	  <url-pattern>/*</url-pattern>
+	</filter-mapping>
 
-	<servlet> 
-		<servlet-name>esup-smsu</servlet-name>
-		<servlet-class>
-			org.apache.pluto.core.PortletServlet
-		</servlet-class>
-		<init-param>
-			<param-name>portlet-class</param-name>
-			<param-value>
-				org.apache.portals.bridges.portletfilter.FilterPortlet
-			</param-value>
-		</init-param>
-		<init-param>
-			<param-name>portlet-name</param-name>
-			<param-value>esup-smsu</param-value>
-		</init-param>
-		<init-param>
-			<param-name>portlet-guid</param-name>
-			<param-value>esup-smsu.esup-smsu</param-value>
-		</init-param>
-		<load-on-startup>1</load-on-startup>
+	<filter>
+	  <filter-name>OneHibernateSessionPerRequest</filter-name>
+	  <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+	<filter-mapping>
+	  <filter-name>OneHibernateSessionPerRequest</filter-name>
+	  <url-pattern>/rest/*</url-pattern>
+	</filter-mapping>
 
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>esup-smsu</servlet-name>
-		<url-pattern>/esup-smsu/*</url-pattern>
-	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>esup-smsu</servlet-name>
-		<url-pattern>/PlutoInvoker/esup-smsu</url-pattern>
-	</servlet-mapping>
-
-<!--END-PORTLET-ONLY-->
+	<filter>
+	  <filter-name>RoleWrapperFilter</filter-name>
+	  <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+	<filter-mapping>
+	  <filter-name>RoleWrapperFilter</filter-name>
+	  <url-pattern>/rest/*</url-pattern>
+	</filter-mapping>
 
 	<servlet>
-		<servlet-name>Download Servlet</servlet-name>
-		<servlet-class>
-			org.esupportail.commons.web.servlet.DownloadServlet
-		</servlet-class>
+	  <servlet-name>jersey-serlvet</servlet-name>
+	  <servlet-class>com.sun.jersey.spi.spring.container.servlet.SpringServlet</servlet-class>
+	  <init-param>
+	    <param-name>com.sun.jersey.config.property.packages</param-name>
+	    <param-value>org.esupportail.smsu.web.controllers</param-value>
+	  </init-param>
+	  <init-param>
+            <param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
+            <param-value>true</param-value>
+	  </init-param>
+	  <init-param>
+            <param-name>com.sun.jersey.spi.container.ResourceFilters</param-name>
+            <param-value>com.sun.jersey.api.container.filter.RolesAllowedResourceFilterFactory</param-value>
+	  </init-param>
+	  <load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>Download Servlet</servlet-name>
-		<url-pattern>/download</url-pattern>
+	  <servlet-name>jersey-serlvet</servlet-name>
+	  <url-pattern>/rest/*</url-pattern>
 	</servlet-mapping>
+
+	<servlet>
+	  <servlet-name>StartPage</servlet-name>
+	  <servlet-class>org.springframework.web.context.support.HttpRequestHandlerServlet</servlet-class>
+	</servlet>
+	<!-- instead of using <url-pattern></url-pattern> which requires tomcat7 (JSR 315 - servlet 3) -->
+	<!-- set welcome-file-list -->
+	<welcome-file-list>
+	   <welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+	<servlet-mapping>
+	  <servlet-name>StartPage</servlet-name>
+	  <url-pattern>/index.html</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+	  <servlet-name>StartPage</servlet-name>
+	  <url-pattern>/WebWidget</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+	  <servlet-name>StartPage</servlet-name>
+	  <url-pattern>/GenTestStaticJsonPage</url-pattern>
+	</servlet-mapping>
+
+    <!--servlet>
+        <servlet-name>esup-smsu</servlet-name>
+        <servlet-class>org.apache.pluto.core.PortletServlet</servlet-class>
+        <init-param>
+            <param-name>portlet-name</param-name>
+            <param-value>esup-smsu</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>esup-smsu</servlet-name>
+        <url-pattern>/PlutoInvoker/esup-smsu</url-pattern>
+    </servlet-mapping-->
 	
-	<!--BEGIN TEST SERVLET-->
-	<!-- 
-	<servlet>
-		<servlet-name>TestServlet</servlet-name>
-		<servlet-class>
-			org.esupportail.smsu.services.servlet.TestServlet
-		</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>TestServlet</servlet-name>
-		<url-pattern>/testServlet</url-pattern>
-	</servlet-mapping>
-	 -->
-	<!--END TEST SERVLET-->
-
 </web-app>
