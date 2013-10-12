@@ -6,19 +6,22 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd "
 	>
 
-    <bean id="authenticator" lazy-init="true"
-        class="org.esupportail.smsu.services.authentication.AuthenticatorImpl">
-        <property name="authenticationService" ref="${auth.bean}" />
-        <property name="domainService" ref="domainService" />
+
+    <bean id="CASAuthenticationFilter"
+	class="org.jasig.cas.client.authentication.AuthenticationFilter">
+      <property name="casServerLoginUrl" value="${cas.url}/login" />
+      <property name="serverName" value="${tomcat.host}${tomcat.port.string}" />
     </bean>
 
-    <bean id="servletAuthenticationService" lazy-init="true"
-        class="org.esupportail.commons.services.authentication.CasFilterAuthenticationService">
+    <bean id="CASValidationFilter"
+	  class="org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter">
+      <property name="serverName" value="${tomcat.host}${tomcat.port.string}" />
+      <property name="redirectAfterValidation" value="true" />
+      <property name="ticketValidator">
+        <bean class="org.jasig.cas.client.validation.Cas20ServiceTicketValidator">
+	  <constructor-arg index="0" value="${cas.url}" />
+        </bean>
+      </property>
     </bean>
 
-    <bean id="portletAuthenticationService" lazy-init="true"
-        class="org.esupportail.commons.services.authentication.CasifiedPortalAuthenticationService">
-        <property name="uidPortalAttribute" value="${auth.portal.uidAttribute}"/>
-    </bean>
-	
 </beans>
