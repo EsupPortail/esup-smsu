@@ -5,8 +5,6 @@
     	The configuration file for EhCache. This file is referenced 
     	from /properties/cache/cache.xml.
     -->
-
-    <diskStore path="${cache.path}"/>
     
     <!-- 
     	Note: EhCache is disabled by default in hibernate.cfg.xml.
@@ -18,7 +16,6 @@
     	eternal="false" 
     	timeToIdleSeconds="30000"
     	timeToLiveSeconds="60000" 
-    	overflowToDisk="true" 
     	/>
 
     <cache 
@@ -27,7 +24,6 @@
     	eternal="false" 
     	timeToIdleSeconds="30"
     	timeToLiveSeconds="60" 
-    	overflowToDisk="true" 
     	/>
 
     <cache 
@@ -36,7 +32,6 @@
     	eternal="false" 
     	timeToIdleSeconds="30"
     	timeToLiveSeconds="60" 
-    	overflowToDisk="true" 
     	/>
 
     <cache 
@@ -45,7 +40,6 @@
     	eternal="false" 
     	timeToIdleSeconds="30"
     	timeToLiveSeconds="60" 
-    	overflowToDisk="true" 
     	/>
 
     <cache 
@@ -54,7 +48,6 @@
     	eternal="false" 
     	timeToIdleSeconds="30"
     	timeToLiveSeconds="60" 
-    	overflowToDisk="true" 
     	/>
 
     <cache 
@@ -63,7 +56,6 @@
     	eternal="false" 
     	timeToIdleSeconds="300"
     	timeToLiveSeconds="600" 
-    	overflowToDisk="true" 
     	/>
 
     <cache 
@@ -72,7 +64,6 @@
     	eternal="false" 
     	timeToIdleSeconds="900"
     	timeToLiveSeconds="900" 
-    	overflowToDisk="true" 
     	/>
 
     <defaultCache
@@ -80,7 +71,6 @@
             eternal="false"
             timeToIdleSeconds="120"
             timeToLiveSeconds="120"
-            overflowToDisk="true"
             diskPersistent="false"
             diskExpiryThreadIntervalSeconds="120"
             memoryStoreEvictionPolicy="LRU"
