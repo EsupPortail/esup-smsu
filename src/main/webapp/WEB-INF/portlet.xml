@@ -8,19 +8,12 @@
 
 	<portlet>
 		<portlet-name>esup-smsu</portlet-name>
-		<portlet-class>org.apache.portals.bridges.portletfilter.FilterPortlet</portlet-class>
-		<expiration-cache>-1</expiration-cache>
+		<portlet-class>org.esupportail.smsu.web.StartPagePortlet</portlet-class>
 		<supports>
 			<mime-type>text/html</mime-type>
 		</supports>
 		<portlet-info>
 			<title>esup-smsu</title>
-			<short-title>esup-smsu portlet</short-title>
-			<keywords>esup-smsu</keywords>
 		</portlet-info>
 	</portlet>
-	<user-attribute>
-		<description>the uid of the portal user</description>
-		<name>uid</name>
-	</user-attribute>
 </portlet-app>
