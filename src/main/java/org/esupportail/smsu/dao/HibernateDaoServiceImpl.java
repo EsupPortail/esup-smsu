@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.LinkedList;
 import java.util.Set;
 
-import org.esupportail.commons.dao.AbstractJdbcJndiHibernateDaoService;
-import org.esupportail.commons.services.application.UninitializedDatabaseException;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.dao.beans.Account;
@@ -35,12 +33,13 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.jdbc.BadSqlGrammarException;
+import org.springframework.dao.support.DataAccessUtils;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 /**
  * The Hiberate implementation of the DAO service.
  */
-public class HibernateDaoServiceImpl extends AbstractJdbcJndiHibernateDaoService 
+public class HibernateDaoServiceImpl extends HibernateDaoSupport 
 									 implements DaoService, InitializingBean {
 
 	/**
@@ -989,4 +988,61 @@ public class HibernateDaoServiceImpl extends AbstractJdbcJndiHibernateDaoService
 		}
 		return sb == null ? "" : sb.toString();
 	}
+
+	protected int getQueryIntResult(final String countQuery) {
+		return DataAccessUtils.intResult(getHibernateTemplate().find(countQuery));
+	}
+
+	protected void addObject(final Object object) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("adding " + object + "...");
+		}
+		getCurrentSession().beginTransaction();
+		getHibernateTemplate().save(object);
+		getCurrentSession().getTransaction().commit();
+		if (logger.isDebugEnabled()) {
+			logger.debug("done.");
+		}
+	}
+
+	/**
+	 * Update an object in the database.
+	 * @param object
+	 */
+	protected void updateObject(final Object object) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("merging " + object + "...");
+		}
+		getCurrentSession().beginTransaction();
+		Object merged = getHibernateTemplate().merge(object);
+		if (logger.isDebugEnabled()) {
+			logger.debug("done, updating " + merged + "...");
+		}
+		getHibernateTemplate().update(merged);
+		getCurrentSession().getTransaction().commit();
+		if (logger.isDebugEnabled()) {
+			logger.debug("done.");
+		}
+	}
+
+	/**
+	 * Delete an object from the database.
+	 * @param object
+	 */
+	protected void deleteObject(final Object object) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("merging " + object + "...");
+		}
+		getCurrentSession().beginTransaction();
+		Object merged = getHibernateTemplate().merge(object);
+		if (logger.isDebugEnabled()) {
+			logger.debug("done, deleting " + merged + "...");
+		}
+		getHibernateTemplate().delete(merged);
+                getCurrentSession().getTransaction().commit();
+		if (logger.isDebugEnabled()) {
+			logger.debug("done.");
+		}
+	}
+
 }

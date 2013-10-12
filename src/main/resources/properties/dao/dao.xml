@@ -13,51 +13,6 @@
 		This file is referenced by /properties/applicationContext.xml.
 	-->
 
-	<!-- Database manager store -->
-
-	<bean 
-		id="databaseManagerStore" 
-		lazy-init="true"
-		class="org.esupportail.commons.services.database.BasicDatabaseManagerStoreImpl"
-		>
-		<description>
-			This bean is the sore of database managers.
-		</description>
-		<property name="databaseManagers">
-			<list>
-				<ref bean="databaseManager" />
-			</list>
-		</property>
-	</bean>
-
-	<!-- Database managers -->
-
-	<bean id="hibernateSessionFactoryContainer" abstract="true">
-		<description>
-			An abstract bean inherited by all the beans that need the session
-			factory
-			(the transaction manager and the the DAO service).
-			</description>
-		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
-
-	<bean 
-		id="databaseManager" 
-		lazy-init="true"
-		class="org.esupportail.commons.services.database.hibernate.UpgradableHibernateDatabaseManagerImpl"
-		>
-		<description>
-			This bean is the database manager.
-		</description>
-		<property name="useJdbc" value="true" />
-		<property name="useJndi" value="${hibernate.useJndi}" />
-		<property name="jdbcSessionFactoryBeanName" value="${hibernate.jdbcSessionFactoryBeanName}" />
-		<property name="jndiSessionFactoryBeanName" value="${hibernate.jndiSessionFactoryBeanName}" />
-		<property name="createSessionFactoryBeanName" value="createSessionFactory" />
-		<property name="jdbcUpgradeSessionFactoryBeanName" value="${hibernate.jdbcUpgradeSessionFactoryBeanName}" />
-		<property name="jndiUpgradeSessionFactoryBeanName" value="${hibernate.jndiUpgradeSessionFactoryBeanName}" />
-	</bean>
-
 	<!-- Session factories -->
 
 	<bean 
@@ -79,141 +34,54 @@
 	</bean>
 	
 	<bean 
-		id="abstractJdbcHibernateSessionFactory" 
+		id="jdbcSessionFactory" 
 		parent="abstractHibernateSessionFactory"
-		abstract="true" 
+		lazy-init="true" 
 		>
 		<description>
 			An abstract session factory based on JDBC.
 		</description>
+
+		<property name="hibernateProperties">
+		  <props>
+		    <prop key="hibernate.connection.driver_class">${hibernate.connection.driver_class}</prop>
+		    <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+		    <prop key="hibernate.connection.url">${hibernate.connection.jdbc.url}</prop>
+		    <prop key="hibernate.connection.username">${hibernate.connection.jdbc.username}</prop>
+		    <prop key="hibernate.connection.password">${hibernate.connection.jdbc.password}</prop>
+		  </props>
+		</property>
+
 		<property name="configLocation"
 			value="classpath:/properties/dao/hibernate/hibernate-jdbc.cfg.xml" />
 	</bean>
 	
 	<bean 
-		id="abstractJndiHibernateSessionFactory" 
+		id="jndiSessionFactory" 
 		parent="abstractHibernateSessionFactory"
-		abstract="true" 
+		lazy-init="true" 
 		>
 		<description>
 			An abstract session factory based on JDBC.
 		</description>
+
+		<property name="hibernateProperties">
+		  <props>
+		    <prop key="hibernate.connection.driver_class">${hibernate.connection.driver_class}</prop>
+		    <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+		    <prop key="hibernate.connection.datasource">java:/comp/env/${hibernate.connection.jndi.datasource}</prop>
+		  </props>
+		</property>
+		    
 		<property name="configLocation"
 			value="classpath:/properties/dao/hibernate/hibernate-jndi.cfg.xml" />
 	</bean>
-	
-	<bean 
-		id="jdbcSessionFactory" 
-		parent="abstractJdbcHibernateSessionFactory" 
-		lazy-init="true"
-		>
-		<description>
-			The 'normal' session factory based on JDBC.
-		</description>
-   	</bean>
 
-	<bean 
-		id="jndiSessionFactory" 
-		parent="abstractJndiHibernateSessionFactory" 
-		lazy-init="true"
-		>
-		<description>
-			The 'normal' session factory based on JNDI.
-		</description>
-   	</bean>
-
-	<bean 
-		id="createSessionFactory"
-		parent="abstractJdbcHibernateSessionFactory"
-		lazy-init="true"
-		>
-		<description>
-			This bean is used to create the database structures. 
-			Caution: leave inherited attribute lazy-init to true or the database will
-			be re-created from scratch each time the application starts.
-		</description>
-		<!-- 
-		<property name="hibernateProperties">
-			<props>
-				<prop key="hibernate.hbm2ddl.auto">create</prop>
-			</props>
-		</property>
-			 -->
-	</bean>
-
-	<bean 
-		id="jdbcUpgradeSessionFactory"
-		parent="abstractJdbcHibernateSessionFactory"
-		lazy-init="true"
-		>
-		<description>
-			This bean is used to update the database structure. 
-			Caution: leave inherited attribute lazy-init to true or the database will
-			be updated each time the application starts.
-		</description>
-		<property name="hibernateProperties">
-			<props>
-				<prop key="hibernate.hbm2ddl.auto">update</prop>
-			</props>
-		</property>
-	</bean>
-
-	<bean 
-		id="jndiUpgradeSessionFactory"
-		parent="abstractJndiHibernateSessionFactory"
-		lazy-init="true"
-		>
-		<description>
-			This bean is used to update the database structure. 
-			Caution: leave inherited attribute lazy-init to true or the database will
-			be updated each time the application starts.
-		</description>
-		<property name="hibernateProperties">
-			<props>
-				<prop key="hibernate.hbm2ddl.auto">update</prop>
-			</props>
-		</property>
+	<bean id="sessionFactoryBeanName" class="java.lang.String">
+	  <constructor-arg value="#{${hibernate.useJndi} ? 'jndiSessionFactory' : 'jdbcSessionFactory'}"/>
 	</bean>
 
 	<!-- end of the session factories -->
-
-	<bean
-		id="jdbcExceptionTranslator" 
-		class="org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator"
-		lazy-init="true"
-		>
-		<description>
-			The bean that translates exceptions thrown by JDBC into Spring exceptions.
-		</description>
-	</bean>
-
-	<bean 
-		id="jdbcHibernateTemplate"
-		class="org.springframework.orm.hibernate3.HibernateTemplate"
-		lazy-init="true"
-		>
-		<description>
-			The JDBC Hibernate template, 
-			used by the DAO service to access the database from batch commands.
-		</description>
-		<property name="sessionFactory" ref="jdbcSessionFactory" />
-		<property name="jdbcExceptionTranslator" ref="jdbcExceptionTranslator" />
-		<property name="allowCreate" value="false" />
-	</bean>
-
-	<bean 
-		id="jndiHibernateTemplate"
-		class="org.springframework.orm.hibernate3.HibernateTemplate"
-		lazy-init="true"
-		>
-		<description>
-			The Hibernate template based on JNDI, 
-			used by the DAO service to access the database from web requests.
-		</description>
-		<property name="sessionFactory" ref="jndiSessionFactory" />
-		<property name="jdbcExceptionTranslator" ref="jdbcExceptionTranslator" />
-		<property name="allowCreate" value="false" />
-	</bean>
 
 	<bean 
 		id="daoService" 
@@ -224,10 +92,13 @@
 			This bean is the DAO service, the interface used by the domain service to access 
 			the database. It must implement interface org.esupportail.smsu.dao.DaoService.
 		</description>
-		<property name="useJdbc" value="true" />
-		<property name="useJndi" value="${hibernate.useJndi}" />
-		<property name="jdbcHibernateTemplateBeanName" value="${hibernate.jdbcTemplateBeanName}" />
-		<property name="jndiHibernateTemplateBeanName" value="${hibernate.jndiTemplateBeanName}" />
+		<property name="sessionFactory" ref="#{sessionFactoryBeanName}"></property>
+	</bean>
+
+	<bean id="OneHibernateSessionPerRequest"
+	      class="org.springframework.orm.hibernate3.support.OpenSessionInViewFilter">
+	      <property name="flushMode" value="AUTO" />
+	      <property name="sessionFactoryBeanName" value="#{sessionFactoryBeanName}" />
 	</bean>
 		
 </beans>
