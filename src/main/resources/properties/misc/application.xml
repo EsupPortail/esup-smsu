@@ -24,22 +24,22 @@
     		developers. This bean should implement interface 
     		org.esupportail.commons.services.application.ApplicationService.
     	</description>
-    	<property name="name" value="esup-smsu">
+    	<property name="name" value="${app.name}">
 	    	<description>
 	    		The name of the application.
 	    	</description>
     	</property>
-    	<property name="versionMajorNumber" value="1" >
+    	<property name="versionMajorNumber" value="${app.versionMajorNumber}" >
 	    	<description>
 	    		The major number of the application (1 for version 1.2.3).
 	    	</description>
     	</property>
-    	<property name="versionMinorNumber" value="1" >
+    	<property name="versionMinorNumber" value="${app.versionMinorNumber}" >
 	    	<description>
 	    		The minor number of the application (2 for version 1.2.3).
 	    	</description>
     	</property>
-    	<property name="versionUpdate" value="4" >
+    	<property name="versionUpdate" value="${app.versionUpdate}" >
 	    	<description>
 	    		The update of the application (3 for version 1.2.3).
 	    	</description>
