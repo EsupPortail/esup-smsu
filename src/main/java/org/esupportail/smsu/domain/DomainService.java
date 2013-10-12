@@ -230,6 +230,11 @@ public class DomainService implements InitializingBean {
 		user.setFonctions(securityManager.loadUserRightsByUsername(user.getId()));
 		return user;
 	}
+		
+	public List<String> getUserRights(String id) {
+		return securityManager.loadUserRightsByUsername(id);
+	}
+	
 
 	/**
 	 * @param displayNameLdapAttribute the displayNameLdapAttribute to set
