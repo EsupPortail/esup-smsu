@@ -11,7 +11,6 @@ import java.util.Set;
 
 import org.esupportail.commons.dao.AbstractJdbcJndiHibernateDaoService;
 import org.esupportail.commons.services.application.UninitializedDatabaseException;
-import org.esupportail.commons.services.application.VersionningUtils;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.dao.beans.Account;
@@ -28,7 +27,6 @@ import org.esupportail.smsu.dao.beans.Role;
 import org.esupportail.smsu.dao.beans.Service;
 import org.esupportail.smsu.dao.beans.Supervisor;
 import org.esupportail.smsu.dao.beans.Template;
-import org.esupportail.smsu.domain.beans.VersionManager;
 import org.esupportail.smsu.domain.beans.message.MessageStatus;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -77,40 +75,6 @@ public class HibernateDaoServiceImpl extends AbstractJdbcJndiHibernateDaoService
 	 */
 	private Session getCurrentSession() {
 		return getHibernateTemplate().getSessionFactory().getCurrentSession();
-	}
-
-	//////////////////////////////////////////////////////////////
-	// VersionManager
-	//////////////////////////////////////////////////////////////
-	/**
-	 * @see org.esupportail.smsu.dao.DaoService#getVersionManager()
-	 */
-	@SuppressWarnings("unchecked")
-	public VersionManager getVersionManager() {
-		DetachedCriteria criteria = DetachedCriteria.forClass(VersionManager.class);
-		criteria.addOrder(Order.asc(ID_ATTRIBUTE));
-		List<VersionManager> versionManagers;
-		try {
-			versionManagers = getHibernateTemplate().findByCriteria(criteria);
-		} catch (BadSqlGrammarException e) {
-			throw new UninitializedDatabaseException(
-					"your database is not initialized, please run 'ant init-data'", e);
-		}
-		if (versionManagers.isEmpty()) {
-			VersionManager versionManager = new VersionManager();
-			versionManager.setVersion(VersionningUtils.VERSION_0);
-			addObject(versionManager);
-			return versionManager;
-		}
-		return versionManagers.get(0);
-	}
-
-	/**
-	 * @see org.esupportail.smsu.dao.DaoService#updateVersionManager(
-	 * org.esupportail.smsu.domain.beans.VersionManager)
-	 */
-	public void updateVersionManager(final VersionManager versionManager) {
-		updateObject(versionManager);
 	}
 
 	//////////////////////////////////////////////////////////////

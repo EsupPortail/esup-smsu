@@ -12,11 +12,4 @@
 		This file is referenced by /properties/applicationContext.xml.
 	-->
 
-	<bean 
-		id="versionningService"
-		class="org.esupportail.smsu.services.application.VoidVersionningServiceImpl"
-		parent="abstractDomainAwareBean"
-		>
-	</bean>
-
 </beans>

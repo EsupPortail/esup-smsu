@@ -13,7 +13,6 @@ import java.util.Set;
 
 import org.esupportail.commons.exceptions.ConfigException;
 import org.esupportail.commons.exceptions.UserNotFoundException;
-import org.esupportail.commons.services.application.Version;
 import org.esupportail.commons.services.ldap.LdapUser;
 import org.esupportail.commons.services.ldap.LdapUserAndGroupService;
 import org.esupportail.commons.services.logging.Logger;
@@ -46,7 +45,6 @@ import org.esupportail.smsu.dao.beans.Template;
 
 import org.esupportail.smsu.domain.beans.fonction.FonctionName;
 import org.esupportail.smsu.domain.beans.User;
-import org.esupportail.smsu.domain.beans.VersionManager;
 import org.esupportail.smsu.exceptions.CreateMessageException;
 import org.esupportail.smsu.exceptions.UnknownIdentifierApplicationException;
 import org.esupportail.smsu.exceptions.UnknownIdentifierMessageException;
@@ -238,44 +236,6 @@ public class DomainServiceImpl implements DomainService, InitializingBean {
 	 */
 	public void setDisplayNameLdapAttribute(final String displayNameLdapAttribute) {
 		this.displayNameLdapAttribute = displayNameLdapAttribute;
-	}
-
-	//////////////////////////////////////////////////////////////
-	// VersionManager
-	//////////////////////////////////////////////////////////////
-
-	/**
-	 * @see org.esupportail.smsu.domain.DomainService#getDatabaseVersion()
-	 */
-	public Version getDatabaseVersion() throws ConfigException {
-		VersionManager versionManager = daoService.getVersionManager();
-		if (versionManager == null) {
-			return null;
-		}
-		return new Version(versionManager.getVersion());
-	}
-
-	/**
-	 * @see org.esupportail.smsu.domain.DomainService#setDatabaseVersion(java.lang.String)
-	 */
-	public void setDatabaseVersion(final String version) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("setting database version to '" + version + "'...");
-		}
-		VersionManager versionManager = daoService.getVersionManager();
-		versionManager.setVersion(version);
-		daoService.updateVersionManager(versionManager);
-		if (logger.isDebugEnabled()) {
-			logger.debug("database version set to '" + version + "'.");
-		}
-	}
-
-	/**
-	 * @see org.esupportail.smsu.domain.DomainService#setDatabaseVersion(
-	 * org.esupportail.commons.services.application.Version)
-	 */
-	public void setDatabaseVersion(final Version version) {
-		setDatabaseVersion(version.toString());
 	}
 
 	//////////////////////////////////////////////////////////////

@@ -6,7 +6,6 @@ package org.esupportail.smsu.batch;
 
 import org.esupportail.commons.services.application.ApplicationService;
 import org.esupportail.commons.services.application.ApplicationUtils;
-import org.esupportail.commons.services.application.VersionningUtils;
 import org.esupportail.commons.services.database.DatabaseUtils;
 import org.esupportail.commons.services.exceptionHandling.ExceptionUtils;
 import org.esupportail.commons.services.i18n.I18nUtils;
@@ -55,7 +54,6 @@ public class Batch {
 		PortalUtils.createPortalService();
 		SmtpUtils.createSmtpService();
 		UrlGenerationUtils.createUrlGenerator();
-		VersionningUtils.createVersionningService();
 	}
 
 	/**

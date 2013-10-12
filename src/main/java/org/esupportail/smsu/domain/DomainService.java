@@ -11,7 +11,6 @@ import java.util.Set;
 
 import org.esupportail.commons.exceptions.ConfigException;
 import org.esupportail.commons.exceptions.UserNotFoundException;
-import org.esupportail.commons.services.application.Version;
 import org.esupportail.smsu.business.beans.Member;
 import org.esupportail.smsu.dao.beans.Account;
 import org.esupportail.smsu.dao.beans.BasicGroup;
@@ -55,27 +54,6 @@ public interface DomainService extends Serializable {
 	 * @throws UserNotFoundException
 	 */
 	User getUser(String id) throws UserNotFoundException;
-
-	//////////////////////////////////////////////////////////////
-	// VersionManager
-	//////////////////////////////////////////////////////////////
-	/**
-	 * @return the database version.
-	 * @throws ConfigException when the database is not initialized
-	 */
-	Version getDatabaseVersion() throws ConfigException;
-	
-	/**
-	 * Set the database version.
-	 * @param version 
-	 */
-	void setDatabaseVersion(Version version);
-	
-	/**
-	 * Set the database version.
-	 * @param version 
-	 */
-	void setDatabaseVersion(String version);
 	
 	//////////////////////////////////////////////////////////////
 	// Authorizations

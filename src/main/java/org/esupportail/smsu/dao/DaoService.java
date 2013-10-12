@@ -23,7 +23,6 @@ import org.esupportail.smsu.dao.beans.Role;
 import org.esupportail.smsu.dao.beans.Service;
 import org.esupportail.smsu.dao.beans.Template;
 
-import org.esupportail.smsu.domain.beans.VersionManager;
 import org.esupportail.smsu.domain.beans.message.MessageStatus;
 
 
@@ -32,21 +31,6 @@ import org.esupportail.smsu.domain.beans.message.MessageStatus;
  * The DAO service interface.
  */
 public interface DaoService extends Serializable {
-
-	//////////////////////////////////////////////////////////////
-	// VersionManager
-	//////////////////////////////////////////////////////////////
-	
-	/**
-	 * @return the VersionManager of the database.
-	 */
-	VersionManager getVersionManager();
-
-	/**
-	 * Update a VersionManager.
-	 * @param versionManager
-	 */
-	void updateVersionManager(VersionManager versionManager);
 
 	//////////////////////////////////////////////////////////////
 	// Message Count
