@@ -59,8 +59,6 @@
 	    		The base URL where the latest version number should be found.
 	    	</description>
     	</property>
-        <property name="quickStart" value="${quick-start}" />
-        <property name="deployType" value="${deploy.type}" />
         <property name="databaseDriver" value="${hibernate.connection.driver_class}" />
         <property name="databaseDialect" value="${hibernate.dialect}" />
         <property name="databaseUseJndi" value="${hibernate.useJndi}" />

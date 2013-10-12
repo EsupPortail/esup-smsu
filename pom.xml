@@ -1,0 +1,261 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.esupportail</groupId>
+  <artifactId>esup-smsu</artifactId>
+  <packaging>war</packaging>
+  <name>esup-smsu</name>
+  <version>1.1.4</version>
+
+  <build>
+    <!--finalName>${project.name}</finalName-->
+
+    <plugins>
+
+      <plugin>
+	<artifactId>maven-war-plugin</artifactId>
+	<version>2.1</version>
+      </plugin>
+
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-compiler-plugin</artifactId>
+	<version>2.3.2</version>
+	<configuration>
+	  <source>1.6</source>
+	  <target>1.6</target>
+	</configuration>
+      </plugin>
+
+      <plugin>
+	<groupId>org.mortbay.jetty</groupId>
+	<artifactId>jetty-maven-plugin</artifactId>
+	<version>${jetty-version}</version>
+      </plugin>
+
+    </plugins>
+  </build>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		
+    <esup-commons-version>[0.3.3, 0.4)</esup-commons-version>
+    <spring-version>3.2.3.RELEASE</spring-version>
+    <jetty-version>8.1.9.v20130131</jetty-version>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>esup</id>
+      <url>https://mvn.esup-portail.org/content/repositories/releases</url>
+      <snapshots> <enabled>false</enabled> </snapshots>
+      <releases> <enabled>true</enabled> </releases>
+    </repository>
+  </repositories>
+
+  <dependencies>
+                <dependency>
+                        <groupId>javax.servlet</groupId>
+                        <artifactId>servlet-api</artifactId>
+                        <version>2.5</version>
+                        <scope>provided</scope>
+                </dependency>
+                <dependency>
+                        <groupId>javax.portlet</groupId>
+                        <artifactId>portlet-api</artifactId>
+                        <version>1.0</version>
+                        <scope>provided</scope>
+                </dependency>
+
+
+		<dependency>
+		  <groupId>commons-collections</groupId>
+		  <artifactId>commons-collections</artifactId>
+		  <version>[3.1, 4)</version>
+		</dependency>
+		<dependency>
+		  <groupId>commons-io</groupId>
+		  <artifactId>commons-io</artifactId>
+		  <version>[1.2, 2)</version>
+		</dependency>
+		<dependency>
+		  <groupId>commons-lang</groupId>
+		  <artifactId>commons-lang</artifactId>
+		  <version>[2.1, 3)</version>
+		</dependency>
+
+		<dependency>
+		  <groupId>org.springframework</groupId>
+		  <artifactId>spring-core</artifactId>
+		  <version>${spring-version}</version>
+		</dependency>
+		<dependency>
+		  <groupId>org.springframework</groupId>
+		  <artifactId>spring-orm</artifactId>
+		  <version>${spring-version}</version>
+		</dependency>
+		<dependency>
+		  <groupId>org.springframework</groupId>
+		  <artifactId>spring-context-support</artifactId>
+		  <version>${spring-version}</version>
+		</dependency>
+		<dependency>
+		  <groupId>org.springframework</groupId>
+		  <artifactId>spring-web</artifactId>
+		  <version>${spring-version}</version>
+		</dependency>
+
+		<dependency>
+		  <groupId>org.springframework</groupId>
+		  <artifactId>spring-ldap</artifactId>
+		  <version>1.1.2</version>
+		</dependency>
+
+		<!-- below is required by jsr168forwardport.org.springframework.web.portlet (esup-commons2-web) -->
+		<!-- forcing our version -->
+		<dependency>
+		  <groupId>org.springframework</groupId>
+		  <artifactId>spring-test</artifactId>
+		  <version>${spring-version}</version>
+		</dependency>
+		<dependency>
+		  <groupId>org.springframework</groupId>
+		  <artifactId>spring-webmvc</artifactId>
+		  <version>${spring-version}</version>
+		</dependency>
+
+		<!-- aop ? -->
+		<dependency>
+		  <groupId>org.aspectj</groupId>
+		  <artifactId>aspectjrt</artifactId>
+		  <version>[1.6.2, 2)</version>
+		</dependency>
+
+		<dependency>
+		  <groupId>org.jasig.cas.client</groupId>
+		  <artifactId>cas-client-core</artifactId>
+		  <version>[3.2.1, 4)</version>
+		</dependency>
+
+		<dependency>
+		  <groupId>esup</groupId>
+		  <artifactId>esup-uportal-ws-client</artifactId>
+		  <version>RELEASE</version>
+		</dependency>
+
+		<dependency>
+		  <groupId>org.esupportail</groupId>
+		  <artifactId>esup-commons2-ldap</artifactId>
+		  <version>${esup-commons-version}</version>
+		  <exclusions>
+		  <!-- only used by StringUtils.removeUtf8Accents. Too big to keep unused -->
+		  <exclusion>
+		    <groupId>com.ibm.icu</groupId>
+		    <artifactId>icu4j</artifactId>
+		  </exclusion>
+		  </exclusions>
+		</dependency>
+
+		<dependency>
+		  <groupId>org.esupportail</groupId>
+		  <artifactId>esup-commons2-hibernate</artifactId>
+		  <version>${esup-commons-version}</version>
+		<exclusions>
+		  <!-- remove unneeded -->
+		  <exclusion>
+		    <groupId>postgresql</groupId>
+		    <artifactId>postgresql</artifactId>
+		  </exclusion>
+		  <exclusion>
+		    <groupId>hsqldb</groupId>
+		    <artifactId>hsqldb</artifactId>
+		  </exclusion>
+		</exclusions>
+		</dependency>
+		<dependency>
+		  <groupId>org.esupportail</groupId>
+		  <artifactId>esup-commons2-web</artifactId>
+		  <version>${esup-commons-version}</version>
+		<exclusions>
+		  <!-- spring-asm is no more in spring 3.2.x -->
+		  <exclusion>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-asm</artifactId>
+		  </exclusion>
+		</exclusions>
+		</dependency>
+		<dependency>
+		  <groupId>org.esupportail</groupId>
+		  <artifactId>esup-commons2-exceptionHandling</artifactId>
+		  <version>${esup-commons-version}</version>
+		</dependency>
+		
+		<dependency>
+		  <groupId>com.sun.jersey.contribs</groupId>
+		  <artifactId>jersey-spring</artifactId>
+		  <version>[1.17.1, 2)</version>
+		<exclusions>
+		  <exclusion> <groupId>org.springframework</groupId> <artifactId>spring-aop</artifactId> </exclusion>
+		  <exclusion> <groupId>org.springframework</groupId> <artifactId>spring-core</artifactId> </exclusion>
+		  <exclusion> <groupId>org.springframework</groupId> <artifactId>spring-web</artifactId> </exclusion>
+		  <exclusion> <groupId>org.springframework</groupId> <artifactId>spring-beans</artifactId> </exclusion>
+		  <exclusion> <groupId>org.springframework</groupId> <artifactId>spring-context</artifactId> </exclusion>
+		</exclusions>
+		</dependency>
+		<dependency>
+		  <groupId>com.sun.jersey</groupId>
+		  <artifactId>jersey-json</artifactId>
+		  <version>[1.17.1, 2)</version>
+		<exclusions>
+		  <!-- jackson is much better! -->
+		  <exclusion>
+		    <groupId>org.codehaus.jettison</groupId>
+		    <artifactId>jettison</artifactId>
+		  </exclusion>
+		</exclusions>
+		</dependency>
+		<!-- for @RolesAllowed : -->
+		<dependency>
+		  <groupId>javax.annotation</groupId>
+		  <artifactId>jsr250-api</artifactId>
+		  <version>[1.0, 2)</version>
+		</dependency>
+
+		<!-- for CORS filter (CrossOriginFilter) -->
+		<dependency>
+		  <groupId>org.eclipse.jetty</groupId>
+		  <artifactId>jetty-servlets</artifactId>
+		  <version>${jetty-version}</version>
+		<exclusions>
+		  <exclusion> <groupId>org.eclipse.jetty</groupId> <artifactId>jetty-continuation</artifactId> </exclusion>
+		  <exclusion> <groupId>org.eclipse.jetty</groupId> <artifactId>jetty-http</artifactId> </exclusion>
+		  <exclusion> <groupId>org.eclipse.jetty</groupId> <artifactId>jetty-io</artifactId> </exclusion>
+		</exclusions>
+		</dependency>
+		
+		<dependency>
+                  <groupId>quartz</groupId>
+                  <artifactId>quartz</artifactId>
+                  <version>1.5.2</version>
+                </dependency>
+
+		<!--  Perl5Util -->
+		<dependency>
+		  <groupId>oro</groupId>
+		  <artifactId>oro</artifactId>
+		  <version>2.0.8</version>
+		</dependency>
+
+		<!-- for exception org.apache.axis.AxisFault in SmsuCachingUportalServiceImpl  -->
+		<dependency>
+		  <groupId>axis</groupId>
+		  <artifactId>axis</artifactId>
+		  <version>1.2.1</version>
+		  <exclusions>
+		    <exclusion> <groupId>javax.activation</groupId> <artifactId>activation</artifactId> </exclusion>
+		    <exclusion> <groupId>javax.mail</groupId> <artifactId>mail</artifactId> </exclusion>
+		  </exclusions>
+		</dependency>
+    
+  </dependencies>
+
+</project>
