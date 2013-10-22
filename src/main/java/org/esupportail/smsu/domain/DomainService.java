@@ -4,14 +4,35 @@
  */
 package org.esupportail.smsu.domain;
 
-import java.io.Serializable;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 import org.esupportail.commons.exceptions.ConfigException;
 import org.esupportail.commons.exceptions.UserNotFoundException;
+import org.esupportail.commons.services.ldap.LdapUser;
+import org.esupportail.commons.services.ldap.LdapUserAndGroupService;
+import org.esupportail.commons.services.logging.Logger;
+import org.esupportail.commons.services.logging.LoggerImpl;
+import org.esupportail.commons.utils.Assert;
+import org.esupportail.smsu.business.ApprovalManager;
+import org.esupportail.smsu.business.FonctionManager;
+import org.esupportail.smsu.business.GroupManager;
+import org.esupportail.smsu.business.MemberManager;
+import org.esupportail.smsu.business.MessageManager;
+import org.esupportail.smsu.business.PhoneNumbersInBlackListManager;
+import org.esupportail.smsu.business.RoleManager;
+import org.esupportail.smsu.business.SecurityManager;
+import org.esupportail.smsu.business.SendSmsManager;
+import org.esupportail.smsu.business.SendTrackManager;
+import org.esupportail.smsu.business.ServiceManager;
+import org.esupportail.smsu.business.TemplateManager;
 import org.esupportail.smsu.business.beans.Member;
+import org.esupportail.smsu.dao.DaoService;
+
 import org.esupportail.smsu.dao.beans.Account;
 import org.esupportail.smsu.dao.beans.BasicGroup;
 import org.esupportail.smsu.dao.beans.CustomizedGroup;
@@ -29,6 +50,7 @@ import org.esupportail.smsu.exceptions.UnknownIdentifierApplicationException;
 import org.esupportail.smsu.exceptions.UnknownIdentifierMessageException;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
 import org.esupportail.smsu.exceptions.ldap.LdapWriteException;
+import org.esupportail.smsu.services.client.TestConnexionClient;
 import org.esupportail.smsu.web.beans.MailToSend;
 import org.esupportail.smsu.web.beans.UIMessage;
 import org.esupportail.smsu.web.beans.UIPerson;
@@ -40,32 +62,209 @@ import org.esupportail.ws.remote.beans.TrackInfos;
 
 
 
+
+
+import org.springframework.beans.factory.InitializingBean;
+
 /**
- * The domain service interface.
+ * The basic implementation of DomainService.
+ * 
+ * See /properties/domain/domain-example.xml
  */
-public interface DomainService extends Serializable {
+public class DomainService implements InitializingBean {
+
+	/**
+	 * The serialization id.
+	 */
+	private static final long serialVersionUID = -8200845058340254019L;
+
+	/**
+	 * {@link DaoService}.
+	 */
+	private DaoService daoService;
+
+	/**
+	 * {@link LdapUserAndGroupService}.
+	 */
+	private LdapUserAndGroupService ldapService;
+
+		
+	/**
+	 * {@link MemberManager}.
+	 */
+	private MemberManager memberManager;
+
+	/**
+	 * {@link MessageManager}.
+	 */
+	private MessageManager messageManager;
+
+	/**
+	 * {@link MessageManager}.
+	 */
+	private ApprovalManager approvalManager;
+
+	/**
+	 * {@link SecurityManager}.
+	 */
+	private SecurityManager securityManager;
+	
+	/**
+	 * {@link SendSmsManager}.
+	 */
+	private SendSmsManager sendSmsManager;
+	
+	/**
+	 * {@link TemplateManager}.
+	 */
+	private TemplateManager templateManager;
+
+	/**
+	 * {@link sendTrackManager}.
+	 */
+	private SendTrackManager sendTrackManager;
+	
+	/**
+	 * {@link sendTrackManager}.
+	 */
+	private PhoneNumbersInBlackListManager phoneNumbersInBlackListManager;
+	
+	private TestConnexionClient testConnexion;
+	
+	/**
+	 * The LDAP attribute that contains the display name. 
+	 */
+	private String displayNameLdapAttribute;
+
+	/**
+	 * A logger.
+	 */
+	private final Logger logger = new LoggerImpl(getClass());
+
+	/**
+	 * {@link ServiceManager}.
+	 */
+	private ServiceManager serviceManager;
+	
+	/**
+	 * {@link RoleManager}.
+	 */
+	private RoleManager roleManager;
+	
+	/**
+	 * {@link GroupManager}.
+	 */
+	private GroupManager groupManager;
+	
+	/**
+	 * {@link FonctionManager}.
+	 */
+	private FonctionManager fonctionManager;
+
+	//////////////////////////////////////////////////////////////
+	// Constructors
+	//////////////////////////////////////////////////////////////
+	/**
+	 * Bean constructor.
+	 */
+	public DomainService() {
+		super();
+	}
+
+	//////////////////////////////////////////////////////////////
+	// Other
+	//////////////////////////////////////////////////////////////
+	/**
+	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
+	 */
+	public void afterPropertiesSet() throws Exception {
+		Assert.notNull(this.daoService, 
+				"property daoService of class " + this.getClass().getName() + " can not be null");
+		Assert.notNull(this.ldapService, 
+				"property ldapService of class " + this.getClass().getName() + " can not be null");
+		Assert.hasText(this.displayNameLdapAttribute, 
+				"property displayNameLdapAttribute of class " + this.getClass().getName() 
+				+ " can not be null");
+	}
 
 	//////////////////////////////////////////////////////////////
 	// User
 	//////////////////////////////////////////////////////////////
 	/**
-	 * @param id
-	 * @return the User instance that corresponds to an id.
-	 * @throws UserNotFoundException
+	 * Set the information of a user from a ldapUser.
+	 * @param user 
+	 * @param ldapUser 
+	 * @return true if the user was updated.
 	 */
-	User getUser(String id) throws UserNotFoundException;
-	
+	private boolean setUserInfo(
+			final User user, 
+			final LdapUser ldapUser) {
+		String displayName = null;
+		List<String> displayNameLdapAttributes = ldapUser.getAttributes().get(displayNameLdapAttribute);
+		if (displayNameLdapAttributes != null) {
+			displayName = displayNameLdapAttributes.get(0);
+		}
+		if (displayName == null) {
+			displayName = user.getId();
+		}
+		if (displayName.equals(user.getDisplayName())) {
+			return false;
+		}
+		user.setDisplayName(displayName);
+		return true;
+	}
+
+	/**
+	 * create user from a LDAP search or create a simple one
+	 * @see org.esupportail.smsu.domain.DomainService#getUser(java.lang.String)
+	 */
+	public User getUser(final String id) {
+		User user = new User();
+		try {
+			LdapUser ldapUser = this.ldapService.getLdapUser(id);
+			user.setId(ldapUser.getId());
+			setUserInfo(user, ldapUser);
+		} catch (UserNotFoundException e) {
+			user.setId(id);
+		}
+		user.setFonctions(securityManager.loadUserRightsByUsername(user.getId()));
+		return user;
+	}
+
+	/**
+	 * @param displayNameLdapAttribute the displayNameLdapAttribute to set
+	 */
+	public void setDisplayNameLdapAttribute(final String displayNameLdapAttribute) {
+		this.displayNameLdapAttribute = displayNameLdapAttribute;
+	}
+
 	//////////////////////////////////////////////////////////////
 	// Authorizations
 	//////////////////////////////////////////////////////////////
-	
+
 	/**
-	 * @param fonctions 
-	 * @param rights
-	 * @return 'true' if less one of rights belong fonctions.
+	 * @see org.esupportail.smsu.domain.DomainService#checkRights
 	 */
-	boolean checkRights(List<String> fonctions, Set<FonctionName> rights);
-	
+	public boolean checkRights(final List<String> fonctions, final Set<FonctionName> rights) {
+		return securityManager.checkRights(fonctions, rights);
+	}
+	//////////////////////////////////////////////////////////////
+	// Misc
+	//////////////////////////////////////////////////////////////
+	/**
+	 * @param daoService the daoService to set
+	 */
+	public void setDaoService(final DaoService daoService) {
+		this.daoService = daoService;
+	}
+
+	/**
+	 * @param ldapService the ldapService to set
+	 */
+	public void setLdapService(final LdapUserAndGroupService ldapService) {
+		this.ldapService = ldapService;
+	}
+
 	//////////////////////////////////////////////////////////////
 	// Message
 	//////////////////////////////////////////////////////////////
@@ -73,24 +272,37 @@ public interface DomainService extends Serializable {
 	 * @return the messages.
 	 * @param[userGroupId, userAccountId, userServiceId, userTemplateId, userUserId, beginDate, endDate]
 	 */
-	List<UIMessage> getMessages(Integer userGroupId, Integer userAccountId, Integer userServiceId, 
-			Integer userTemplateId, Integer userUserId, Date beginDate, Date endDate);
+	public List<UIMessage> getMessages(final Integer userGroupId, final Integer userAccountId, 
+			final Integer userServiceId, final Integer userTemplateId, final Integer userUserId, 
+			final Date beginDate, final Date endDate) {
+		return  messageManager.getMessages(userGroupId, userAccountId, userServiceId, userTemplateId, 
+				userUserId, beginDate, endDate);
+
+	}
 
 	/**
-	 * @param messageId
-	 * @return the message
+	 * {@inheritDoc}
+	 * @see org.esupportail.smsu.domain.DomainService#getMessage(java.lang.Integer)
 	 */
-	Message getMessage(Integer messageId);
+	public Message getMessage(Integer messageId) {
+		return messageManager.getMessage(messageId);
+	}
 	
 	/**
-	 * @param message
+	 * @see org.esupportail.smsu.domain.DomainService#addMessage(org.esupportail.smsu.dao.beans.Message)
 	 */
-	void addMessage(Message message);
-	
+	public void addMessage(final Message message) {
+		this.daoService.addMessage(message);
+
+	}
+
 	/**
-	 * @param message
+	 * @see org.esupportail.smsu.domain.DomainService#updateMessage(org.esupportail.smsu.dao.beans.Message)
 	 */
-	void updateMessage(Message message);
+	public void updateMessage(final Message message) {
+		this.daoService.updateMessage(message);
+
+	}
 
 	//////////////////////////////////////////////////////////////
 	// Approval Message
@@ -98,307 +310,426 @@ public interface DomainService extends Serializable {
 	/**
 	 * @return the messages to approve.
 	 */
-	List<UIMessage> getApprovalUIMessages(User user);
+	public List<UIMessage> getApprovalUIMessages(final User user) {
+		return  approvalManager.getApprovalUIMessages(user);
+	}
 	
+	public void cancelMessage(final UIMessage uiMessage, User currentUser) {
+		approvalManager.cancelMessage(uiMessage, currentUser);
+	}
+
 	/**
-	 * @param uiMessage 
-	 */
-	void cancelMessage(UIMessage uiMessage, User currentUser);
-	
-	/**
-	 * treat a message.
-	 * @param message 
 	 * @throws CreateMessageException 
 	 */
-	void approveMessage(UIMessage uimessage, User currentUser) throws CreateMessageException.WebService;
-
+	public void approveMessage(final UIMessage uimessage, User currentUser) throws CreateMessageException.WebService {
+		approvalManager.approveMessage(uimessage, currentUser);
+		
+	}
 	//////////////////////////////////////////////////////////////
 	// Group
 	//////////////////////////////////////////////////////////////
 	/**
-	 * @return the groups.
+	 * @see org.esupportail.example.domain.DomainService#getDepartments()
 	 */
-	List<BasicGroup> getGroups();
-	
+	public List<BasicGroup> getGroups() {
+		return this.daoService.getGroups();
+	}
+
 	/**
-	 * @param group
-	 * @return the group.
+	 * @see org.esupportail.smsu.domain.DomainService#getGroupByLabel(java.lang.String)
 	 */
-	BasicGroup getGroupByLabel(String group);
-	
+	public BasicGroup getGroupByLabel(final String group) {
+		return this.daoService.getGroupByLabel(group);
+	}
+
 	/**
-	 * @param group
+	 * @see org.esupportail.smsu.domain.DomainService#addBasicGroup(org.esupportail.smsu.dao.beans.BasicGroup)
 	 */
-	void addBasicGroup(BasicGroup group);
+	public void addBasicGroup(final BasicGroup group) {
+		this.daoService.addBasicGroup(group);
+	}
 
 	//////////////////////////////////////////////////////////////
 	// Account
 	//////////////////////////////////////////////////////////////
 	/**
-	 * @return the accounts.
+	 * @see org.esupportail.example.domain.DomainService#getDepartments()
 	 */
-	List<Account> getAccounts();
-	
+	public List<Account> getAccounts() {
+		return  this.daoService.getAccounts();
+
+	}
+
 	/**
-	 * @param id 
-	 * @return
+	 * @see org.esupportail.smsu.domain.DomainService#getAccountById(java.lang.Integer)
 	 */
-	Account getAccountById(Integer id);
+	public Account getAccountById(final Integer id) {
+		return this.daoService.getAccountById(id);
+	}
 
 	//////////////////////////////////////////////////////////////
 	// Person
 	//////////////////////////////////////////////////////////////
 	/**
-	 * @return the persons.
+	 * @see org.esupportail.example.domain.DomainService#getDepartments()
 	 */
-	List<Person> getPersons();
-	
-	/**
-	 * @param login
-	 * @return the person.
-	 */
-	Person getPersonByLogin(String login);
-	
-	/**
-	 * @param person
-	 */
-	void addPerson(Person person);
+	public List<Person> getPersons() {
+		return this.daoService.getPersons();
+	}
 
+	/**
+	 * @see org.esupportail.smsu.domain.DomainService#getPersonByLogin(java.lang.String)
+	 */
+	public Person getPersonByLogin(final String login) {
+		return this.daoService.getPersonByLogin(login);
+	}
+
+	/**
+	 * @see org.esupportail.smsu.domain.DomainService#addPerson(org.esupportail.smsu.dao.beans.Person)
+	 */
+	public void addPerson(final Person person) {
+		this.daoService.addPerson(person);
+		
+	}
+	
 	//////////////////////////////////////////////////////////////
 	// Service
 	//////////////////////////////////////////////////////////////
 	/**
-	 * @return the services.
+	 * @see org.esupportail.example.domain.DomainService#getDepartments()
 	 */
-	List<Service> getServices();
+	public List<Service> getServices() {
+		return this.daoService.getServices();
+	}
 	
 	/**
-	 * @param uiService 
+	 * @see org.esupportail.smsu.domain.DomainService#updateService(org.esupportail.smsu.dao.beans.Service)
 	 */
-	void addUIService(UIService uiService);
+	public void updateUIService(final UIService uiService) {
+		serviceManager.updateUIService(uiService);
+	}
 	
 	/**
-	 * @param uiService 
+	 * @see org.esupportail.smsu.domain.DomainService#getServiceById(java.lang.Integer)
 	 */
-	void updateUIService(UIService uiService);
+	public Service getServiceById(final Integer id) {
+		Service service = this.daoService.getServiceById(id);
+		return service;
+	}
 	
 	/**
-	 * @param uiService 
+	 * @see org.esupportail.smsu.domain.DomainService#addService(org.esupportail.smsu.dao.beans.Service)
 	 */
-	void deleteUIService(UIService uiService);
+	public void addUIService(final UIService uiService) {
+		serviceManager.addUIService(uiService);
+	}
 	
 	/**
-	 * @return the Uiservices
+	 * @see org.esupportail.smsu.domain.DomainService#isServiceNameAvailable(java.lang.String, java.lang.Integer)
 	 */
-	List<UIService> getAllUIServices();
+	public Boolean isServiceNameAvailable(final String name, final Integer id) {
+		return serviceManager.isNameAvailable(name, id);
+	}
 	
 	/**
-	 * @param id 
-	 * @return the service
+	 * @see org.esupportail.smsu.domain.DomainService#isServiceKeyAvailable(java.lang.String, java.lang.Integer)
 	 */
-	Service getServiceById(Integer id);
+	public Boolean isServiceKeyAvailable(final String key, final Integer id) {
+		return serviceManager.isKeyAvailable(key, id);
+	}
 	
 	/**
-	 * @param name
-	 * @param id 
-	 * @return true if the name is available
+	 * @see org.esupportail.smsu.domain.DomainService#deleteService(org.esupportail.smsu.dao.beans.Service)
 	 */
-	Boolean isServiceNameAvailable(String name, Integer id);
+	public void deleteUIService(final UIService uiService) {
+		serviceManager.deleteUIService(uiService);
+	}
 	
-	/**
-	 * @param key
-	 * @param id 
-	 * @return true if the key is available
-	 */
-	Boolean isServiceKeyAvailable(String key, Integer id);
-
 	//////////////////////////////////////////////////////////////
 	// Template
 	//////////////////////////////////////////////////////////////
 	/**
-	 * @return the templates.
+	 * @see org.esupportail.example.domain.DomainService#getDepartments()
 	 */
-	List<Template> getTemplates();
-	
+	public List<Template> getTemplates() {
+		return this.templateManager.getTemplates();
+	}
+
 	/**
-	 * @return the UI templates
+	 * @see org.esupportail.smsu.domain.DomainService#getTemplateById(java.lang.Integer)
 	 */
-	List<UITemplate> getUITemplates();
+	public Template getTemplateById(final Integer id) {
+		return this.templateManager.getTemplateById(id);
+	}
+
 	/**
-	 * @param id 
-	 * @return the template.
+	 * @see org.esupportail.smsu.domain.DomainService#getUiTemplates()
 	 */
-	Template getTemplateById(Integer id);
-	
-	/**
-	 * @param template
-	 */
-	void deleteUITemplate(UITemplate template);
-	
-	/**
-	 * @param template
-	 */
-	void addUITemplate(UITemplate template);
-	
-	/**
-	 * @param template
-	 */
-	void updateUITemplate(UITemplate template);
-	
-	/**
-	 * @param label
-	 * @param id
-	 * @return true if the label is available
-	 */
-	Boolean isTemplateLabelAvailable(String label, Integer id);
-	
-	/**
-	 * @param template
-	 * @return true if no message used the template
-	 */
-	Boolean testMessagesBeforeDeleteTemplate(Template template);
-	
-	/**
-	 * @param template
-	 * @return true if no mail used the template
-	 */
-	Boolean testMailsBeforeDeleteTemplate(Template template);
+	public List<UITemplate> getUITemplates() {
+		return this.templateManager.getUITemplates();
+	}
 	
 	//////////////////////////////////////////////////////////////
 	// Recipient
 	//////////////////////////////////////////////////////////////
 	/**
-	 * @param strPhone 
-	 * @return the recipient.
+	 * @see org.esupportail.smsu.domain.DomainService#getRecipientByPhone(java.lang.String)
 	 */
-	Recipient getRecipientByPhone(String strPhone);
-	
+	public Recipient getRecipientByPhone(final String strPhone) {
+		return this.daoService.getRecipientByPhone(strPhone);
+	}
+
 	/**
-	 * @param recipient
+	 * @see org.esupportail.smsu.domain.DomainService#addRecipient(org.esupportail.smsu.dao.beans.Recipient)
 	 */
-	void addRecipient(Recipient recipient);
+	public void addRecipient(final Recipient recipient) {
+		this.daoService.addRecipient(recipient);
+	}
+
 	
 	//////////////////////////////////////////////////////////////
 	// Customized groups
 	//////////////////////////////////////////////////////////////
 	/**
-	 * @param label
-	 * @return Boolean
+	 * @see org.esupportail.smsu.domain.DomainService#checkCustomizedGroupLabel
 	 */
-	Boolean checkCustomizedGroupLabel(String label);
+	public Boolean checkCustomizedGroupLabel(final String label) {
+		return groupManager.checkCustomizedGroupLabel(label);
+	}
+	
+	/**
+	 * @see org.esupportail.smsu.domain.DomainService#checkCustomizedGroupLabel
+	 */
+	public Boolean checkCustomizedGroupLabelWithOthersIds(final String label, final Integer id) {
+		return groupManager.checkCustomizedGroupLabelWithOthersIds(label, id);
+	}
+	
+	/**
+	 * @see org.esupportail.smsu.domain.DomainService#addCustomizedGroup
+	 */
+	public void addCustomizedGroup(final CustomizedGroup customizedGroup) {
+		this.daoService.addCustomizedGroup(customizedGroup);
+		
+	}
 
 	/**
-	 * @param label
-	 * @param id
-	 * @return Boolean
+	 * @see org.esupportail.smsu.domain.DomainService#getCustomizedGroupByLabel(java.lang.String)
 	 */
-	Boolean checkCustomizedGroupLabelWithOthersIds(String label, Integer id);
-	
-	/**
-	 * @param label
-	 * @return the customized group
-	 */
-	CustomizedGroup getCustomizedGroupByLabel(String label);
-	
-	/**
-	 * @return the first customized group from the table.
-	 */
-	CustomizedGroup getFirstCustomizedGroup();
-	
-	/**
-	 * add a customized group.
-	 * @param customizedGroup 
-	 */
-	void addCustomizedGroup(CustomizedGroup customizedGroup);
+	public CustomizedGroup getCustomizedGroupByLabel(final String label) {
+		return this.daoService.getCustomizedGroupByLabel(label);
+	}
 
 	/**
-	 * get the list of customized group.
+	 * @see org.esupportail.smsu.domain.DomainService#getFirstCustomizedGroup()
 	 */
-	List<CustomizedGroup> getAllGroups();
-	
-	/**
-	 * delete customizedGroup.
-	 * @param customizedGroup
-	 */
-	void deleteCustomizedGroup(CustomizedGroup customizedGroup);
-	
-	/**
-	 * add a customized group.
-	 * @param customizedGroup 
-	 * @param role
-	 * @param account
-	 */
-	void addCustomizedGroup(CustomizedGroup customizedGroup, UIRole role, Account account, List<UIPerson> persons);
+	public CustomizedGroup getFirstCustomizedGroup() {
+		return this.daoService.getFirstCustomizedGroup();
+	}
 
 	/**
-	 * update a customized group.
-	 * @param customizedGroup 
-	 * @param role
-	 * @param account
+	 * @see org.esupportail.smsu.domain.DomainService#getAllGroupes()
 	 */
-	void updateCustomizedGroup(CustomizedGroup customizedGroup, UIRole role, 
-			Account account, Long quotaAdd, List<UIPerson> persons);
+	public List<CustomizedGroup> getAllGroups() {
+		List<CustomizedGroup> allGroups = groupManager.getAllGroups();
+		return allGroups;
+		
+	}
 	
-	/**
-	 * update a customized group.
-	 * @param customizedGroup
-	 */
-	void updateCustomizedGroup(CustomizedGroup customizedGroup);
 	
-	/**
-	 * @param id
-	 */
-	List<UIPerson> getPersonsByIdCustomizedGroup(Integer id);
+	public void deleteCustomizedGroup(final CustomizedGroup customizedGroup) {
+		groupManager.deleteCustomizedGroup(customizedGroup);
+	}
+	
+	public void addCustomizedGroup(final CustomizedGroup customizedGroup, final UIRole role, final Account account, 
+			final List<UIPerson> persons) {
+		groupManager.addCustomizedGroup(customizedGroup, role, account, persons);
+	}
+	
+	public void updateCustomizedGroup(final CustomizedGroup customizedGroup, final UIRole role, 
+			final Account account, final Long quotaAdd, final List<UIPerson> persons) {
+		groupManager.updateCustomizedGroup(customizedGroup, role, account, quotaAdd, persons);
+	}
+	
+	public void updateCustomizedGroup(final CustomizedGroup customizedGroup) {
+		groupManager.updateCustomizedGroup(customizedGroup);
+	}
+	
+	public List<UIPerson> getPersonsByIdCustomizedGroup(final Integer id) {
+		return groupManager.getPersonsByIdCustomizedGroup(id);
+	}
 	
 	//////////////////////////////////////////////////////////////
-	// Member
+	// Member 
 	//////////////////////////////////////////////////////////////
-	/**
-	 * get a member based on his identifier.
-	 * @param userIdentifier
-	 * @return
+	/** 
 	 * @throws LdapUserNotFoundException 
+	 * @see org.esupportail.smsu.domain.DomainService#getMember(java.lang.String)
 	 */
-	Member getMember(final String userIdentifier) throws LdapUserNotFoundException;
-
-	/**
-	 * save or update the given member.
-	 * @param member
-	 * @throws LdapUserNotFoundException 
-	 * @throws LdapWriteException 
-	 */
-	void saveOrUpdateMember(final Member member) throws LdapUserNotFoundException, LdapWriteException;
-	
-	/**
-	 * test if the the code entered by the pending member is correct.
-	 * If it is the case, accept definitely this member in the SMSU.
-	 * @param member
-	 * @return a boolean that indicates if the member is accepted
-	 * @throws LdapUserNotFoundException 
-	 * @throws LdapWriteException 
-	 */
-	boolean validMember(Member member) throws LdapUserNotFoundException, LdapWriteException;
-
+	public Member getMember(final String userIdentifier) throws LdapUserNotFoundException {
+		return memberManager.getMember(userIdentifier);
+	}
 
 	/**
 	 * Test if a phone number is already in the black list.
 	 * @param phoneNumber
 	 * @return return true if the phone number is in the bl, false otherwise
 	 */
-	boolean isPhoneNumberInBlackList(String phoneNumber);
-	
-        String checkWhySmsuapiFailed(Throwable cause);
+	public boolean isPhoneNumberInBlackList(final String phoneNumber) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("Request in domaineService : " + phoneNumber);
+		}
+		Boolean retVal = memberManager.isPhoneNumberInBlackList(phoneNumber); 
+		if (logger.isDebugEnabled()) {
+			logger.debug("Response return in domaineService for : " 
+						 + phoneNumber + " is : " + retVal);
+		}
+		
+		return retVal;
+	}
 
-	
-    //////////////////////////////////////////////////////////////
-	// Used by Date methods in MessagesController
+	public String checkWhySmsuapiFailed(Throwable cause) {
+		return sendSmsManager.checkWhySmsuapiFailed(cause);
+	}
+
+	/** 
+	 * @throws LdapUserNotFoundException 
+	 * @throws LdapWriteException 
+	 * @see org.esupportail.smsu.domain.DomainService#getMember(java.lang.String)
+	 */
+	public void saveOrUpdateMember(final Member member) throws LdapUserNotFoundException, LdapWriteException {
+		memberManager.saveOrUpdateMember(member);
+	}
+
+	/** 
+	 * @throws LdapUserNotFoundException 
+	 * @throws LdapWriteException 
+	 * @see org.esupportail.smsu.domain.DomainService#validMember(org.esupportail.smsu.business.beans.Member)
+	 */
+	public boolean validMember(final Member member) throws LdapUserNotFoundException, LdapWriteException {
+		return memberManager.valid(member);
+	}
+
+	/**
+	 * @see org.esupportail.smsu.domain.DomainService#getAllServices()
+	 */
+	public List<Service> getAllServices() {
+		return serviceManager.getAllServices();
+	}
+
+	/**
+	 * @return all the services in the format used for display.
+	 */
+	public List<UIService> getAllUIServices() {
+		return serviceManager.getAllUIServices();
+	}
+
+	//////////////////////////////////////////////////////////////
+	// Mutator
 	//////////////////////////////////////////////////////////////
 	/**
-	 * format a date.
-	 * @param Date 
+	 * @return memberManager
 	 */
-	Date formatDateDao(final Date date);
+	public MemberManager getMemberManager() {
+		return memberManager;
+	}
+	/**
+	 * set memberManager.
+	 */
+	public void setMemberManager(final MemberManager memberManager) {
+		this.memberManager = memberManager;
+	}
+
+	/**
+	 * set messageManager.
+	 */
+	public void setMessageManager(final MessageManager messageManager) {
+		this.messageManager = messageManager;
+	}
+
+	/**
+	 * set approvalManager.
+	 */
+	public void setApprovalManager(final ApprovalManager approvalManager) {
+		this.approvalManager = approvalManager;
+	}
+
+	/**
+	 * set serviceManager.
+	 */
+	public void setServiceManager(final ServiceManager serviceManager) {
+		this.serviceManager = serviceManager;
+	}
+
+	/**
+	 * set securityManager.
+	 */
+	public void setSecurityManager(final SecurityManager securityManager) {
+		this.securityManager = securityManager;
+	}
 	
+	/**
+	 * set sendSmsManager.
+	 */
+	public void setSendSmsManager(final SendSmsManager sendSmsManager) {
+		this.sendSmsManager = sendSmsManager;
+	}
+
+	/**
+	 * @return sendSmsManager
+	 */
+	public SendSmsManager getSendSmsManager() {
+		return sendSmsManager;
+	}
+
+	/**
+	 * set roleManager.
+	 */
+	public void setRoleManager(final RoleManager roleManager) {
+		this.roleManager = roleManager;
+	}
+
+	/**
+	 * set groupManager.
+	 */
+	public void setGroupManager(final GroupManager groupManager) {
+		this.groupManager = groupManager;
+	}
+	
+	/**
+	 * set fonctionManager.
+	 */
+	public void setFonctionManager(final FonctionManager fonctionManager) {
+		this.fonctionManager = fonctionManager;
+	}
+	
+	//////////////////////////////////////////////////////////////
+	// Used by Date methods in MessagesController
+	//////////////////////////////////////////////////////////////
+	/** 
+ 	 *@param date
+	 * @see org.esupportail.smsu.domain.DomainService#formatDateDao
+	 */
+	public Date formatDateDao(final Date date) {
+    	String out;
+    	Date dateTemp = date;
+    	
+    	// 1- Convert Date "dd/MM/YYYY" to String
+    	SimpleDateFormat inFmt = new SimpleDateFormat("dd/MM/yyyy");
+    	String dateStr = inFmt.format(date);
+    
+    	// 2- Convert String to "YYYY-MM-DD"
+    	// 3- Convert String to Date "YYYY-MM-DD"
+    	SimpleDateFormat outFmt = new SimpleDateFormat("yyyy-MM-dd");
+    	try {
+			out = outFmt.format(inFmt.parse(dateStr));
+			dateTemp = outFmt.parse(out);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+          
+    	return dateTemp;
+	   }
+    
 	
 	//////////////////////////////////////////////////////////////
 	// Used by MessagesController
@@ -408,16 +739,21 @@ public interface DomainService extends Serializable {
 	 * get the number of persons in black list.
 	 * get the number of persons received Message.
 	 * @param msgId 
+	 * @throws UnknownIdentifierApplicationException 
 	 */
-	TrackInfos getTrackInfos(final Integer msgId) 
-				throws UnknownIdentifierApplicationException, UnknownIdentifierMessageException;
-
+	public TrackInfos getTrackInfos(final Integer msgId) 
+				throws UnknownIdentifierApplicationException, UnknownIdentifierMessageException {
+		try  {
+		 return sendTrackManager.getTrackInfos(msgId);
+		} catch (UnknownIdentifierApplicationException e1) {
+			throw e1;
+		}  catch (UnknownIdentifierMessageException e2) {
+			throw e2;
+		}
+	}
+	 
 	
-	//////////////////////////////////////////////////////////////
-	// Used by PerformSendSmsController
-	//////////////////////////////////////////////////////////////
 	/**
-	 * create the message.
 	 * @param uiRecipients 
 	 * @param login 
 	 * @param content 
@@ -425,78 +761,180 @@ public interface DomainService extends Serializable {
 	 * @param userGroup 
 	 * @param serviceId 
 	 * @param mail 
-	 * @return the message
+	 * @return a message.
 	 * @throws CreateMessageException 
+	 * @see org.esupportail.smsu.domain.DomainService#composeMessage(...)
 	 */
-	Message composeMessage(List<UiRecipient> uiRecipients, 
-			String login, String content, String smsTemplate, String userGroup,
-			Integer serviceId, MailToSend mail) throws CreateMessageException;
-	
+	public Message composeMessage(final List<UiRecipient> uiRecipients, final String login,
+			final String content, final String smsTemplate, final String userGroup,
+			final Integer serviceId, final MailToSend mail) throws CreateMessageException {
+		Message message = sendSmsManager.createMessage(uiRecipients, login, 
+				content, smsTemplate, userGroup, 
+				serviceId, mail);
+		daoService.addMessage(message);
+		return message;
+	}
+
 	/**
-	 * treat a message.
-	 * @param message 
+	 * @throws CreateMessageException
+	 * @see org.esupportail.smsu.domain.DomainService#treatMessage(org.esupportail.smsu.dao.beans.Message)
 	 */
-	void treatMessage(Message message) throws CreateMessageException.WebService;
+	public void treatMessage(final Message message) throws CreateMessageException.WebService {
+		sendSmsManager.treatMessage(message);
+	}
 
 	/**
 	 * @param portalGroupId
 	 * @return the path to the parent customized group corresponding to a group
 	 */
-	String getRecursiveGroupPathByLabel(String portalGroupId);
-	
-	//////////////////////////////////////////////////////////////
-	// Service
-	//////////////////////////////////////////////////////////////
-	/**
-	 * get all services.
-	 */
-	List<Service> getAllServices();
-	
+	public String getRecursiveGroupPathByLabel(String portalGroupId) {
+		return sendSmsManager.getRecursiveGroupPathByLabel(portalGroupId);
+	}
+
 	//////////////////////////////////////////////////////////////
 	// Role
 	//////////////////////////////////////////////////////////////
 	/**
-	 * get all roles.
+	 * @see org.esupportail.smsu.domain.DomainService#getAllRoles()
 	 */
-	List<UIRole> getAllRoles();
+	public List<UIRole> getAllRoles() {
+		return roleManager.getAllRoles();
+	}
+	
+	public void saveRole(final UIRole role, final List<String> selectedValues) {
+		roleManager.saveRole(role, selectedValues);
+	}
+	
+	public void deleteRole(final UIRole role) {
+		roleManager.deleteRole(role);
+	}
 
-	/**
-	 * save role.
-	 * @param role
-	 * @param selectedValues
-	 */
-	void saveRole(UIRole role, List<String> selectedValues);
+	public void updateRole(final UIRole role, final List<String> selectedValues) {
+		roleManager.updateRole(role, selectedValues);
+	}
 	
-	/**
-	 * delete role.
-	 * @param role
-	 */
-	void deleteRole(UIRole role);
-	
-	/**
-	 * update role.
-	 * @param role
-	 * @param selectedValues
-	 */
-	void updateRole(UIRole role, List<String> selectedValues);
-	
-	/**
-	 * get id fonction by role.
-	 * @param role
-	 */
-	List<String> getIdFctsByRole(UIRole role);
-	
+	public List<String> getIdFctsByRole(final UIRole role) {
+		return roleManager.getIdFctsByRole(role);
+	}
+
 	//////////////////////////////////////////////////////////////
 	// Fonction
 	//////////////////////////////////////////////////////////////
 	/**
-	 * get all fonctions.
+	 * @see org.esupportail.smsu.domain.DomainService#getAllRoles()
 	 */
-	List<Fonction> getAllFonctions();
-	
-	Set<String> getListPhoneNumbersInBlackList();
-	
-	String testConnexion();
+	public List<Fonction> getAllFonctions() {
+		return fonctionManager.getAllFonctions();
+	}
 
-	boolean isSupervisor(User user);
+	/**
+	 * @param templateManager
+	 */
+	public void setTemplateManager(final TemplateManager templateManager) {
+		this.templateManager = templateManager;
+	}
+
+	/**
+	 * @return templateManager
+	 */
+	public TemplateManager getTemplateManager() {
+		return templateManager;
+	}
+
+	/**
+	 * @see org.esupportail.smsu.domain.DomainService#addTemplate(org.esupportail.smsu.dao.beans.Template)
+	 */
+	public void addUITemplate(final UITemplate template) {
+		templateManager.addUITemplate(template);
+	}
+
+	/**
+	 * @see org.esupportail.smsu.domain.DomainService#deleteTemplate(org.esupportail.smsu.dao.beans.Template)
+	 */
+	public void deleteUITemplate(final UITemplate template) {
+		templateManager.deleteUITemplate(template);
+	}
+
+	/**
+	 * @see org.esupportail.smsu.domain.DomainService#isLabelAvailable(java.lang.String, java.lang.Integer)
+	 */
+	public Boolean isTemplateLabelAvailable(final String label, final Integer id) {
+		return templateManager.isLabelAvailable(label, id);
+	}
+
+	/**
+	 * @see org.esupportail.smsu.domain.DomainService#testMailsBeforeDeleteTemplate
+	 */
+	public Boolean testMailsBeforeDeleteTemplate(final Template template) {
+		return templateManager.testMailsBeforeDeleteTemplate(template);
+	}
+
+	/**
+	 * @see org.esupportail.smsu.domain.DomainService#testMessagesBeforeDeleteTemplate
+	 */
+	public Boolean testMessagesBeforeDeleteTemplate(final Template template) {
+		return templateManager.testMessagesBeforeDeleteTemplate(template);
+	}
+
+
+	/**
+	 * @see org.esupportail.smsu.domain.DomainService#updateUITemplate(org.esupportail.smsu.web.beans.UITemplate)
+	 */
+	public void updateUITemplate(final UITemplate template) {
+		templateManager.updateUITemplate(template);
+		
+	}
+
+	
+	public Set<String> getListPhoneNumbersInBlackList() {
+		
+		final Set<String> retVal = phoneNumbersInBlackListManager.getListPhoneNumbersInBlackList();
+		
+		return retVal;
+	}
+	
+	
+	/**
+	 * @param sendTrackManager the sendTrackManager to set
+	 */
+	
+	public void setSendTrackManager(final SendTrackManager sendTrackManager) {
+		this.sendTrackManager = sendTrackManager;
+	}
+
+	/**
+	 * @return the sendTrackManager
+	 */
+	
+	public SendTrackManager getSendTrackManager() {
+		return sendTrackManager;
+	}
+
+	public void setPhoneNumbersInBlackListManager(
+			final PhoneNumbersInBlackListManager phoneNumbersInBlackListManager) {
+		this.phoneNumbersInBlackListManager = phoneNumbersInBlackListManager;
+	}
+	
+	/**
+	 * @see org.esupportail.smsu.domain.DomainService#testConnexion()
+	 */
+	public String testConnexion() {
+
+		return testConnexion.testConnexion();
+	}
+
+	public TestConnexionClient getTestConnexion() {
+		return testConnexion;
+	}
+
+	public void setTestConnexion(final TestConnexionClient testConnexion) {
+		this.testConnexion = testConnexion;
+	}
+	
+
+	public boolean isSupervisor(User user) {
+		Person person = getPersonByLogin(user.getId());
+		return person != null && daoService.isSupervisor(person);
+	}
+
 }

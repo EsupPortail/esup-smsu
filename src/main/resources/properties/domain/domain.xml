@@ -4,7 +4,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd ">
 
-	<bean id="domainService" class="org.esupportail.smsu.domain.DomainServiceImpl">
+	<bean id="domainService" class="org.esupportail.smsu.domain.DomainService">
 		<property name="daoService" ref="daoService" />
 		<property name="ldapService" ref="ldapService" />
 		<property name="memberManager" ref="memberManager" /> 
