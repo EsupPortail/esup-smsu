@@ -40,9 +40,7 @@
 	<import resource="smtp/smtp.xml" />
 	<import resource="init/init.xml" />
 	<import resource="scheduler/scheduler.xml" /> 
-	<import resource="tags/tags.xml" />
 	<import resource="web/controllers.xml" />
-	<import resource="web/converters.xml" />
 	<import resource="portal/portal.xml" />
 
 </beans>

@@ -9,22 +9,6 @@
 	<portlet>
 		<portlet-name>esup-smsu</portlet-name>
 		<portlet-class>org.apache.portals.bridges.portletfilter.FilterPortlet</portlet-class>
-        <init-param>
-            <name>portlet-class</name>
-            <value>org.esupportail.commons.web.portlet.FacesPortlet</value>
-        </init-param>
-        <init-param>
-            <name>portlet-filters</name>
-            <value>jp.sf.pal.facesresponse.FacesResponseFilter,jp.sf.pal.tomahawk.filter.ExtensionsPortletFilter</value>
-        </init-param>
-		<init-param>
-			<name>default-view</name>
-			<value>/stylesheets/welcome.jsp</value>
-		</init-param>
-		<init-param>
-			<name>default-view-selector</name>
-			<value>org.esupportail.commons.web.deepLinking.UportalDefaultViewSelector</value>
-		</init-param>
 		<expiration-cache>-1</expiration-cache>
 		<supports>
 			<mime-type>text/html</mime-type>
