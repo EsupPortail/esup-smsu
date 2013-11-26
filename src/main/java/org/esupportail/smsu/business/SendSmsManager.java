@@ -10,7 +10,6 @@ import java.text.DateFormat;
 import java.lang.reflect.UndeclaredThrowableException;
 
 import org.apache.commons.lang.StringUtils;
-import org.esupportail.commons.services.database.DatabaseUtils;
 import org.esupportail.commons.services.i18n.I18nService;
 import org.esupportail.commons.services.ldap.LdapUser;
 import org.esupportail.commons.services.logging.Logger;
@@ -259,8 +258,7 @@ public class SendSmsManager  {
 			message.setStateAsEnum(MessageStatus.SENT);
 
 			// force commit to database. do not allow rollback otherwise the message will be sent again!
-			DatabaseUtils.commit();
-			DatabaseUtils.begin();
+			daoService.updateMessage(message);
 
 			//Deal with the emails
 			if (message.getMail() != null) {
