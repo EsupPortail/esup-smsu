@@ -25,7 +25,6 @@
 
 	<import resource="auth/auth.xml" />
 	<import resource="business/business.xml" />
-	<import resource="groups/groups.xml" />
 	<import resource="cache/cache.xml" />
 	<import resource="dao/dao.xml" />
  	<import resource="domain/domain.xml" />
@@ -39,6 +38,5 @@
 	<import resource="init/init.xml" />
 	<import resource="scheduler/scheduler.xml" /> 
 	<import resource="web/controllers.xml" />
-	<import resource="portal/portal.xml" />
 
 </beans>

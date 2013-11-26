@@ -179,7 +179,6 @@
 		<property name="ldapService" ref="ldapService"/>
 		<property name="ldapUtilsHelpers" ref="ldapUtilsHelpers"/>
 		<property name="writeableLdapUserService" ref="writeableLdapUserService"/>
-		<property name="portalService" ref="portalService"/>
 		<property name="userDisplayName" value="${ldap.displayNameAttribute}"/>
 		<property name="firstNameAttribute" value="${ldap.firstNameAttribute}"/>
 		<property name="lastNameAttribute" value="${ldap.lastNameAttribute}"/>
@@ -188,8 +187,6 @@
 		<property name="userTermsOfUseAttribute" value="${ldap.termsOfUseAttribute}"/>
 		<property name="userTermsOfUseAttributeEtiquetteSMSU" value="${ldap.termsOfUseAttributeEtiquetteSMSU}"/>
 		<property name="cgKeyName" value="${ldap.key.cg}"/>
-		<property name="smsuLdapPersonAttributeDaoImpl" ref="uPortalLdapAttributeSource" />
-		<property name="smsuLdapGroupPersonAttributeDaoImpl" ref="esupPortailLdapGroupAttributeSource" />
 	</bean>
 
 </beans>

@@ -18,27 +18,12 @@ import org.esupportail.commons.services.ldap.LdapUserAndGroupService;
 import org.esupportail.commons.services.ldap.LdapAttributesModificationException;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
-import org.esupportail.portal.ws.client.PortalGroup;
-import org.esupportail.portal.ws.client.PortalGroupHierarchy;
-import org.esupportail.portal.ws.client.PortalService;
-import org.esupportail.portal.ws.client.exceptions.PortalErrorException;
-import org.esupportail.portal.ws.client.exceptions.PortalGroupNotFoundException;
-import org.esupportail.portal.ws.client.exceptions.PortalUserNotFoundException;
 import org.esupportail.smsu.dao.beans.BasicGroup;
 import org.esupportail.smsu.dao.beans.CustomizedGroup;
 import org.esupportail.smsu.dao.beans.Person;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
 import org.esupportail.smsu.exceptions.ldap.LdapWriteException;
-import org.esupportail.smsu.groups.SmsuLdapGroupPersonAttributeDaoImpl;
-import org.esupportail.smsu.groups.SmsuLdapPersonAttributeDaoImpl;
-import org.esupportail.smsu.groups.pags.SmsuPersonAttributesGroupStore.GroupDefinition;
-import org.esupportail.smsu.groups.pags.SmsuPersonAttributesGroupStore.TestGroup;
 import org.esupportail.smsu.services.ldap.beans.UserGroup;
-import org.jasig.portal.groups.pags.testers.BaseAttributeTester;
-import org.springframework.ldap.support.filter.AndFilter;
-import org.springframework.ldap.support.filter.EqualsFilter;
-import org.springframework.ldap.support.filter.Filter;
-import org.springframework.ldap.support.filter.OrFilter;
 
 
 
@@ -67,11 +52,6 @@ public class LdapUtils {
 	 * used to manage user (write only).
 	 */
 	private WriteableLdapUserServiceSMSUImpl writeableLdapUserService;
-
-	/**
-	 * used to manage group (read only).
-	 */
-	private PortalService portalService;
 	
 	/**
 	 * The display name ldap attribute name.
@@ -112,17 +92,6 @@ public class LdapUtils {
 	 * The key used to represent the CG in the ldap (up1terms).
 	 */
 	private String cgKeyName;
-	
-	/**
-	 * 
-	 */
-	private SmsuLdapGroupPersonAttributeDaoImpl smsuLdapGroupPersonAttributeDaoImpl;
-	
-	private SmsuLdapPersonAttributeDaoImpl smsuLdapPersonAttributeDaoImpl;
-	
-	public LdapUtils() {
-		
-	}
 	
 	/**
 	 * Return the ldap user by this id.
@@ -474,15 +443,8 @@ public class LdapUtils {
 	 * @param uid : user identifier in the LDAP
 	 * @return the list of user group
 	 */
-	public List<UserGroup> getUserGroupsByUid(final String uid)
-	throws PortalErrorException, PortalUserNotFoundException {
-		List<PortalGroup> portalGroups = portalService.getUserGroups(uid);
-		List<UserGroup> userGroups = new ArrayList<UserGroup>();
-		for (PortalGroup portalGroup : portalGroups) {
-			UserGroup userGroup = convertToUserGroup(portalGroup);
-			userGroups.add(userGroup);
-		}
-		return userGroups;
+	public List<UserGroup> getUserGroupsByUid(final String uid) {
+		return null;
 	}
 
 	public String getGroupDisplayName(CustomizedGroup cg) {
@@ -524,11 +486,6 @@ public class LdapUtils {
 	 * @return the group name
 	 */
 	public String getGroupNameByIdOrNull(final String id) {
-		try {
-		    PortalGroup portalGroup = portalService.getGroupById(id);
-		    if (portalGroup != null) return portalGroup.getName();
-		} catch (PortalGroupNotFoundException e) {
-		}
 		return null;
 	}
 	
@@ -537,15 +494,8 @@ public class LdapUtils {
 	 * @param uid : user identifier in the LDAP
 	 * @return the list of user group
 	 */
-	public List<UserGroup> searchGroupsByName(final String uid)
-	throws PortalErrorException, PortalUserNotFoundException {
-		List<PortalGroup> portalGroups = portalService.searchGroupsByName(uid);
-		List<UserGroup> userGroups = new ArrayList<UserGroup>();
-		for (PortalGroup portalGroup : portalGroups) {
-			UserGroup userGroup = convertToUserGroup(portalGroup);
-			userGroups.add(userGroup);
-		}
-		return userGroups;
+	public List<UserGroup> searchGroupsByName(final String uid) {
+		return null;
 	}
 	
 	/**
@@ -556,186 +506,7 @@ public class LdapUtils {
 		List<String> retVal = ldapUtilsHelpers.getUserMailsByUids(uids);
 		return retVal;
 	}
-	/**
-	 * @param groupName
-	 * @return the corresponding portal group.
-	 */
-	public PortalGroup getPortalGroupByName(final String groupName) {
-		PortalGroup pGroup = portalService.getGroupByName(groupName);
-		return pGroup;
-	}
-	
-	/**
-	 * @param groupId
-	 * @return the parent group
-	 */
-	public String getParentGroupIdByGroupId(final String groupId) {
-		try {
-		List<PortalGroup> containingGroups = portalService.getContainingGroupsById(groupId);
-		List<String> parentGroupIds = new ArrayList<String>();
-		for (PortalGroup group : containingGroups)  {
-			if (logger.isDebugEnabled()) {
-				logger.debug("Parent group of " + groupId + " : [" + group.getName() + "] found");
-			}
-			parentGroupIds.add(group.getId());
-		}
-		String parentGroupId = null;
-		if (parentGroupIds.size() > 0) {
-			parentGroupId = parentGroupIds.get(0);
-		}
-		return parentGroupId;
-		} catch (PortalErrorException e) {
-			logger.debug("discarded exception " + e, e);
-			List<PortalGroup> userGroups = portalService.getUserGroups(groupId);
-			PortalGroup rootGroup = portalService.getRootGroup();
-			Integer position = isPortalGroupInList(userGroups, rootGroup);
-			if (position != null) {
-				userGroups.remove(position.intValue());
-			}
-			PortalGroup leafGroup = getLeafGroup(rootGroup, userGroups);
-			if (logger.isDebugEnabled()) {
-				logger.debug("Leaf found : " + leafGroup.getId() + ":" + leafGroup.getName());
-			}
-			return leafGroup.getId();
-
-		}
-	}
-	
-	private PortalGroup getLeafGroup(final PortalGroup parentGroup, final List<PortalGroup> userGroups) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Getting leaf groups for [" 
-					+ parentGroup.getId() + ":" + parentGroup.getName() + "]");
-			for (PortalGroup g : userGroups) {
-				logger.debug("UserGroup [" + g.getId() + ":" + g.getName() + "]");
-			}
-		}
-		List<PortalGroup> subGroups = portalService.getSubGroups(parentGroup);
-		if (logger.isDebugEnabled()) {
-			for (PortalGroup g : subGroups) {
-				logger.debug("Subgroup : [" + g.getId() + ":" + g.getName() + "]");
-			}
-		}
-		PortalGroup childGroup = parentGroup;
-		Iterator<PortalGroup> i = subGroups.iterator();
-		Boolean newLeaf = false;
-		while (i.hasNext() && !newLeaf) {
-			PortalGroup subGroup = i.next();
-			Integer position = isPortalGroupInList(userGroups, subGroup); 
-			if (position != null) {
-				newLeaf = true;
-				if (logger.isDebugEnabled()) {
-					logger.debug("New node found : [" + subGroup.getId() + ":"  
-							+ subGroup.getName() + "] on position " + position.toString());
-				}
-				List<PortalGroup> gList = new ArrayList<PortalGroup>();
-				gList.addAll(userGroups);
-				gList.remove(position.intValue());
-				if (gList.size() > 1) {
-					childGroup = getLeafGroup(subGroup, gList);
-				} else {
-					childGroup = gList.get(0);
-				}
-			} else {
-				if (logger.isDebugEnabled()) {
-					logger.debug("SubGroup not found in user groups : [" + subGroup.getId() 
-							+ ":" + subGroup.getName() + "]");
-				}
-			}
-		}
-		return childGroup;
-	}
-	
-	/**
-	 * @param listGroup
-	 * @param groupToSearch
-	 * @return null or the position in the list.
-	 */
-	Integer isPortalGroupInList(final List<PortalGroup> listGroup, final PortalGroup groupToSearch) {
-		Integer position = null;
 		
-		Integer listSize = listGroup.size();
-		Integer i = 0;
-		while (i < listSize && position == null) {
-			PortalGroup group = listGroup.get(i);
-			if (group.getId().equals(groupToSearch.getId()) 
-					&& group.getName().equals(groupToSearch.getName())) {
-				position = i;
-			}
-			i++;
-		}
-		
-		return position;
-	}
-	/**
-	 * Retrieve the parent group of a given group or a given user.
-	 * @param groupId identifier of the group or the user
-	 * @return a UserGroup if it  exists
-	 * 
-	public UserGroup getParentGroupByGroupId(final String groupId)
-	throws PortalErrorException, PortalUserNotFoundException, PortalGroupNotFoundException {
-		UserGroup result = null;
-		final PortalGroup portalGroup = portalService.getGroupById(groupId);
-		UserGroup formattedGroup = convertToUserGroup(portalGroup);
-		PortalGroup rootGroup = portalService.getRootGroup();
-		UserGroup formattedRootGroup = convertToUserGroup(rootGroup);
-		if (formattedGroup.equals(formattedRootGroup)) {
-			result = null;
-		} else {
-			List<UserGroup> parentGroups = getParentsGroupByGroupId(groupId);
-			if ((parentGroups == null) || (parentGroups.isEmpty())) {
-				result = null;	
-			} else if (parentGroups.size() == 1) {
-				result = parentGroups.get(0);
-			} else {
-				// detect the first parent
-				Set<UserGroup> groupsTmp = new HashSet<UserGroup>();
-				for (UserGroup group : parentGroups) {
-					String currentGroupId = group.getLdapId();
-					List<UserGroup> currentGroups = getParentsGroupByGroupId(currentGroupId);
-					groupsTmp.addAll(currentGroups);
-				}
-				parentGroups.removeAll(groupsTmp);
-				if (parentGroups.size() == 1) {
-					Iterator<UserGroup> iterator = parentGroups.iterator();
-					result = iterator.next();
-				} else {
-					result = null;	
-				}
-			}
-		}
-		return result;
-	}
-	 */
-
-	/**
-	 * convert the portalGroup to a user Group.
-	 * @param group
-	 * @return
-	 */
-	private UserGroup convertToUserGroup(final PortalGroup portalGroup) {
-		final String idGroup = portalGroup.getId();
-		final String nameGroup = portalGroup.getName();
-		UserGroup formattedGroup = new UserGroup(idGroup, nameGroup);
-		return formattedGroup;
-	}
-	
-	/**
-	 * Retrieve the parent groups of a given group or a given user.
-	 * @param id identifier of the group or the user
-	 * @return a list of UserGroup
-	 */
-	@SuppressWarnings("unused")
-	private  List<UserGroup> getParentsGroupByGroupId(final String id)
-				throws PortalErrorException, PortalGroupNotFoundException {
-		List<UserGroup> parentGroups = new ArrayList<UserGroup>();
-		List<PortalGroup> parentPortalGroups = portalService.getContainingGroupsById(id);
-		for (PortalGroup portalGroup : parentPortalGroups) {
-			UserGroup userGroup = convertToUserGroup(portalGroup);
-			parentGroups.add(userGroup);
-		}
-		return parentGroups;
-	}
-	
 	/**
 	 * @param uid
 	 * @param name
@@ -754,29 +525,6 @@ public class LdapUtils {
 		return attributes;
 	}
 
-	/**
-	 * @return the group hierarchy from the portal.
-	 */
-	public PortalGroupHierarchy getPortalGroupHierarchy() {
-		PortalGroupHierarchy groupsHierarcchy = portalService.getGroupHierarchy();
-		return groupsHierarcchy;
-	}
-	
-	/**
-	 * @param groupName
-	 * @return the PortalGroupHierarchy corresponding to a group name.
-	 */
-	public PortalGroupHierarchy getPortalGroupHierarchyByGroupName(final String groupName) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("get portal group hierarchy for group : " + groupName);
-		}
-		//get the portal group from the group name
-		PortalGroup group = portalService.getGroupByName(groupName);
-		//get the recipient group hierarchy
-		PortalGroupHierarchy groupHierarchy = portalService.getGroupHierarchy(group);
-		return groupHierarchy;
-	}
-	
 	/**
 	 * @param uids
 	 * @return a list of LDAP user from a list of uids.
@@ -799,81 +547,6 @@ public class LdapUtils {
 	 */
 	public List<String> getMemberIds(final LdapGroup ldapGroup) {
 		return ldapService.getMemberIds(ldapGroup);
-	}
-	
-	/**
-	 * @param gd
-	 * @param serviceKey 
-	 * @return the string id list of a ldap group. 
-	 */
-	@SuppressWarnings("unchecked")
-	public List<LdapUser> getMembers(final GroupDefinition gd, String serviceKey) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("getMembers.start");
-		}
-		serviceKey = mayAddEtiquette(serviceKey);
-		final List<LdapUser> users = new LinkedList<LdapUser>();
-		final List<TestGroup> tgs = gd.getTestGroups();
-		final String groupPortalParameter = smsuLdapGroupPersonAttributeDaoImpl.getPortalAttribute();
-		OrFilter orFilter = null; 
-		for (TestGroup testGroup : tgs) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("test group : " + testGroup.toString());
-			}
-			final List<BaseAttributeTester> tests = testGroup.getTests();
-			AndFilter andFilter = null;
-			for (BaseAttributeTester test : tests) {
-				if (logger.isDebugEnabled()) {
-					logger.debug("test : " + test.toString());
-				}
-				final String portalAttributeName = test.getAttributeName();
-				final String testValue = test.getTestValue();
-				if (portalAttributeName.equals(groupPortalParameter)) {
-					final String groupLdapAttribute = smsuLdapGroupPersonAttributeDaoImpl.getLdapAttribute();
-					EqualsFilter filter = new EqualsFilter(groupLdapAttribute,testValue);
-					if (logger.isDebugEnabled()) {
-						logger.debug("Search group with filter : " + filter.toString());
-					}
-					// TODO : parametrer le DN dans le service au lieu d'utiliser le parametrage general du Ldap?
-					List<LdapGroup> ldapGroups = ldapService.getLdapGroupsFromToken(filter.toString());
-					if (ldapGroups.isEmpty()) {
-						logger.error("skipping LDAP group " + testValue + " which does not exist");
-					} else {
-						LdapGroup ldapGroup = ldapGroups.get(0);
-						List<String> uids = getMemberIds(ldapGroup);
-						List<LdapUser> usersToAdd = ldapUtilsHelpers.getConditionFriendlyLdapUsersFromUid(uids, completeCgKeyName(), serviceKey);
-						if (logger.isDebugEnabled())
-							logger.debug("found " + uids.size() + " users in group " + testValue + " and " + usersToAdd.size() + " users having pager+CG");
-						users.addAll(usersToAdd);
-					}
-				} else {
-					final String attributeName = (String) smsuLdapPersonAttributeDaoImpl.getReverseAttributeMappings().get(portalAttributeName);
-					Filter filter = test.getLdapFilter(attributeName, testValue);
-					if (filter != null) {
-						if (andFilter == null) {
-							andFilter = new AndFilter();
-						}
-						andFilter.and(filter);
-					}
-				}
-			}
-			if (andFilter != null) {
-				ldapUtilsHelpers.andPagerAndConditionsAndService(andFilter, completeCgKeyName(), serviceKey);
-
-				if (orFilter == null) {
-					orFilter = new OrFilter();
-				}
-				orFilter.or(andFilter);
-			}
-		}
-		if (orFilter != null) {
-			logger.debug("getMember : person attribute search");
-			users.addAll(ldapUtilsHelpers.searchWithFilter(orFilter));
-		}
-		if (logger.isDebugEnabled()) {
-			logger.debug("getMembers.end");
-		}
-		return users;
 	}
 	
 	/**
@@ -904,14 +577,6 @@ public class LdapUtils {
 	 */
 	public void setWriteableLdapUserService(final WriteableLdapUserServiceSMSUImpl writeableLdapUserService) {
 		this.writeableLdapUserService = writeableLdapUserService;
-	}
-	
-	/**
-	 * Standard setter used by spring.
-	 * @param portalService
-	 */
-	public void setPortalService(final PortalService portalService) {
-		this.portalService = portalService;
 	}
 	
 	/**
@@ -976,24 +641,6 @@ public class LdapUtils {
 	 */
 	public void setCgKeyName(final String cgKeyName) {
 		this.cgKeyName = cgKeyName;
-	}
-
-	public SmsuLdapGroupPersonAttributeDaoImpl getSmsuLdapGroupPersonAttributeDaoImpl() {
-		return smsuLdapGroupPersonAttributeDaoImpl;
-	}
-
-	public void setSmsuLdapGroupPersonAttributeDaoImpl(
-			final SmsuLdapGroupPersonAttributeDaoImpl smsuLdapGroupPersonAttributeDaoImpl) {
-		this.smsuLdapGroupPersonAttributeDaoImpl = smsuLdapGroupPersonAttributeDaoImpl;
-	}
-
-	public SmsuLdapPersonAttributeDaoImpl getSmsuLdapPersonAttributeDaoImpl() {
-		return smsuLdapPersonAttributeDaoImpl;
-	}
-
-	public void setSmsuLdapPersonAttributeDaoImpl(
-			final SmsuLdapPersonAttributeDaoImpl smsuLdapPersonAttributeDaoImpl) {
-		this.smsuLdapPersonAttributeDaoImpl = smsuLdapPersonAttributeDaoImpl;
 	}
 
 	private <A> LinkedList<A> singletonList(A e) {
