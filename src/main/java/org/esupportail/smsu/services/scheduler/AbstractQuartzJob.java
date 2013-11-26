@@ -1,9 +1,9 @@
 package org.esupportail.smsu.services.scheduler;
 
-import org.esupportail.commons.services.database.DatabaseUtils;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
-import org.esupportail.smsu.business.context.ApplicationContextUtils;
+import org.esupportail.smsu.utils.HibernateUtils;
+import org.hibernate.SessionFactory;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.Scheduler;
@@ -82,21 +82,13 @@ public abstract class AbstractQuartzJob extends QuartzJobBean implements Statefu
         // get the quartz exception handler (use to manage error in job)
         final QuartzExceptionHandler exceptionHandler = getQuartzExceptionHandler(context);
 
-        try {
-        	ApplicationContextUtils.initApplicationContext();
-             // Open session & transaction (esup commons way)
-        	DatabaseUtils.open();
-        	DatabaseUtils.begin();
 
-        	// do the job
+       	SessionFactory sessionFactory = HibernateUtils.getSessionFactory(applicationContext);
+
+    	boolean participate = HibernateUtils.openSession(sessionFactory);
+    	try {     
         	executeJob(applicationContext);
-        	// if everything ok, commit
-        	DatabaseUtils.commit();
- 
         } catch (Throwable t) {
-        	// if an error occurs, rollback
-        	DatabaseUtils.rollback();
-
         	logger.error("An exception occurred during the execute internal ", t);
             if (exceptionHandler != null) {
                 exceptionHandler.process("Abstract Quartz job", t);
@@ -104,8 +96,8 @@ public abstract class AbstractQuartzJob extends QuartzJobBean implements Statefu
                 throw new UnsupportedOperationException("The exceptionHander has to be not null");
             }
         } finally {
-        	DatabaseUtils.close();
-        }
+		HibernateUtils.closeSession(sessionFactory, participate);
+	}
 	}
 	
 	/**
