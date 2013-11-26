@@ -2,12 +2,7 @@ package org.esupportail.smsu.business;
 
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
-import org.esupportail.commons.services.ldap.LdapUser;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.dao.DaoService;
@@ -17,8 +12,6 @@ import org.esupportail.smsu.domain.beans.User;
 import org.esupportail.smsu.domain.beans.fonction.FonctionName;
 import org.esupportail.smsu.domain.beans.message.MessageStatus;
 import org.esupportail.smsu.exceptions.CreateMessageException;
-import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
-import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.web.beans.UIMessage;
 
 
@@ -27,11 +20,6 @@ import org.esupportail.smsu.web.beans.UIMessage;
  *
  */
 public class ApprovalManager {
-
-	/**
-	 * const.
-	 */
-	private static final String NONE = "Aucun";
 	
 	/**
 	 * {@link DaoService}.

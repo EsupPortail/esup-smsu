@@ -9,7 +9,6 @@ import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.dao.DaoService;
 import org.esupportail.smsu.dao.beans.CustomizedGroup;
 import org.esupportail.smsu.dao.beans.Fonction;
-import org.esupportail.smsu.dao.beans.Role;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.services.ldap.beans.UserGroup;
 import org.esupportail.smsu.domain.beans.fonction.FonctionName;

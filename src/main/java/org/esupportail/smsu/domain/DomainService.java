@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.esupportail.commons.exceptions.ConfigException;
 import org.esupportail.commons.exceptions.UserNotFoundException;
 import org.esupportail.commons.services.ldap.LdapUser;
 import org.esupportail.commons.services.ldap.LdapUserAndGroupService;
@@ -72,11 +71,6 @@ import org.springframework.beans.factory.InitializingBean;
  * See /properties/domain/domain-example.xml
  */
 public class DomainService implements InitializingBean {
-
-	/**
-	 * The serialization id.
-	 */
-	private static final long serialVersionUID = -8200845058340254019L;
 
 	/**
 	 * {@link DaoService}.
