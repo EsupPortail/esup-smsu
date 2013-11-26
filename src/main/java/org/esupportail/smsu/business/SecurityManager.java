@@ -115,7 +115,7 @@ public class SecurityManager {
 		return false;
 	}
 
-	public static String join(Iterable elements, CharSequence separator) {
+	public static String join(Iterable<?> elements, CharSequence separator) {
 		if (elements == null) return "";
 
 		StringBuilder sb = null;
