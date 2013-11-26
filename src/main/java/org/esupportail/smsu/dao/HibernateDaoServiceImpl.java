@@ -43,11 +43,6 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 									 implements DaoService, InitializingBean {
 
 	/**
-	 * The name of the 'id' attribute.
-	 */
-	private static final String ID_ATTRIBUTE = "id";
-
-	/**
 	 * The serialization id.
 	 */
 	private static final long serialVersionUID = 3152554337896617315L;
