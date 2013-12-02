@@ -9,7 +9,7 @@
 		<id	name="Id" type="integer" column="ACC_ID">
 			<generator class="native" />
 		</id>
-		<property name="Label" column="ACC_LABEL" 
+		<property name="Label" column="ACC_LABEL" unique="true" 
 		    type="string" not-null="true" length="32" />
 
 		<set inverse="true" name="Messages">

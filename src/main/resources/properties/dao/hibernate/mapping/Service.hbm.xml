@@ -6,8 +6,8 @@
 		<id name="Id" type="integer" column="SVC_ID">
 			<generator class="native"/>
 		</id>
-		<property name="Name" column="SVC_NAME" type="string" not-null="true" length="32"/>
-		<property name="Key" column="SVC_KEY" type="string" not-null="true" length="16"/>
+		<property name="Name" column="SVC_NAME" type="string" not-null="true" length="32" unique="true"/>
+		<property name="Key" column="SVC_KEY" type="string" not-null="true" length="16" unique="true"/>
 		<set inverse="true" name="Messages">
 			<key column="SVC_ID"/>
 			<one-to-many class="Message"/>
