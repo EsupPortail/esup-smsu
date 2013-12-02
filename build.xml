@@ -92,6 +92,24 @@
 <!-- ******************************************************************************** -->
 <!-- * below are helper targets ***************************************************** -->
 <!-- ******************************************************************************** -->
+	<target name="generate-ddl" depends="ant-extra,compile">
+	  <path id="all.classpath">
+	    <fileset dir="tmp/ant-extra" includes="*.jar"/>
+	    <fileset dir="tmp/compile-lib" includes="*.jar" />
+	  </path>
+	  <taskdef name="hibernatetool" 
+		   classname="org.hibernate.tool.ant.HibernateToolTask" 
+		   classpathref="all.classpath" />
+	  <hibernatetool>
+	    <classpath><path location="${build.classes}"/></classpath>
+	    <configuration propertyfile="src/main/resources/properties/config.properties">
+	      <fileset dir="src/main/resources/properties/dao">
+		<include name="**/*.hbm.xml"/>
+	      </fileset>
+	    </configuration>
+	    <hbm2ddl export="no" destdir="utils/database" outputfilename="create_tables.sql"/>
+	  </hibernatetool>
+	</target>
 
 	<target name="hotswap" depends="tstamp,compile">
 		<taskdef name="hotswap" classname="dak.ant.taskdefs.Hotswap">
@@ -116,28 +134,29 @@
 	  </tstamp>
 	</target>
 
-	<target name="prepare-jetty">
-	  <condition property="need-download-jetty-ant">
-	    <not><available file="tmp/jetty-lib" type="dir" /></not>
+	<target name="prepare-ant-extra">
+	  <condition property="need-download-ant-extra">
+	    <not><available file="tmp/ant-extra" type="dir" /></not>
 	  </condition>
 	</target>
 
-	<target name="download-jetty-ant" if="need-download-jetty-ant">
-	      <artifact:dependencies filesetId="jetty-ant.fileset">
-		<dependency groupId="org.mortbay.jetty" artifactId="jetty-ant" version="${jetty-version}" >
-		</dependency>
+	<target name="download-ant-extra" if="need-download-ant-extra">
+	      <artifact:dependencies filesetId="ant-extra.fileset">
+		<dependency groupId="org.mortbay.jetty" artifactId="jetty-ant" version="${jetty-version}" />
+		<dependency groupId="org.hibernate" artifactId="hibernate-tools" version="3.2.4.GA" />
 	      </artifact:dependencies>
 
-	      <copy todir="tmp/jetty-lib">
-		<fileset refid="jetty-ant.fileset"/>
+	      <copy todir="tmp/ant-extra">
+		<fileset refid="ant-extra.fileset"/>
 		<mapper type="flatten"/>
 	      </copy>
 	</target>
 	
-	<target name="jetty.run" depends="prepare-jetty,download-jetty-ant,compile" description="test using jetty">
-
+	<target name="ant-extra" depends="prepare-ant-extra,download-ant-extra" />
+	
+	<target name="jetty.run" depends="ant-extra,compile" description="test using jetty">
 	  <path id="jetty.plugin.classpath">
-	    <fileset dir="tmp/jetty-lib" includes="*.jar"/>
+	    <fileset dir="tmp/ant-extra" includes="*.jar"/>
 	  </path>
 	  <taskdef classpathref="jetty.plugin.classpath" resource="tasks.properties" loaderref="jetty.loader" />
 
