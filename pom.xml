@@ -173,10 +173,6 @@
 		    <groupId>postgresql</groupId>
 		    <artifactId>postgresql</artifactId>
 		  </exclusion>
-		  <exclusion>
-		    <groupId>hsqldb</groupId>
-		    <artifactId>hsqldb</artifactId>
-		  </exclusion>
 		</exclusions>
 		</dependency>
 		<dependency>
