@@ -4,8 +4,8 @@
 <hibernate-mapping package="org.esupportail.smsu.dao.beans">
 	<class name="RoleComposition" table="role_composition" lazy="false">
 		<composite-id>
-			<key-many-to-one name="Fonction" class="Fonction" column="FCT_ID"/>
 			<key-many-to-one name="Role" class="Role" column="ROL_ID"/>
+			<key-many-to-one name="Fonction" class="Fonction" column="FCT_ID"/>
 		</composite-id>
 	</class>
 </hibernate-mapping>
