@@ -1,0 +1,15 @@
+<div class="normalContent">
+   <a class="btn btn-default" href="#/users/new"><span class="glyphicon glyphicon-plus"></span> Ajouter un utilisateur</a>
+</div>
+
+<p>
+
+<div>
+  <table class="table table-striped">
+    <thead><tr><th>Nom</th><th>Role</th></tr></thead>
+    <tr ng-repeat="user in users">
+      <td><a href="#/users/{{user.id}}">{{user.login}}</a></td>
+      <td>{{user.role}}</td>
+    </tr>
+  </table>
+</div>

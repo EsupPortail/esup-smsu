@@ -28,7 +28,7 @@ public class LoginController {
 	String type = callback == null ? "text/html" : "application/x-javascript";
 	String js = 
 	    callback == null ?
-	    "Login success, please wait...\n<script>\n console.log('sending postMessage');\n (parent.postMessage ? parent : parent.document).postMessage('loggedUser=' + JSON.stringify(" + jsUser + "), '*');\n</script>" :
+	    "Login success, please wait...\n<script>\n (window.opener.postMessage ? window.opener : window.opener.document).postMessage('loggedUser=' + JSON.stringify(" + jsUser + "), '*');\n</script>" :
 	    callback + "(" + jsUser + ")";
 	
         return Response.status(Response.Status.OK).type(type).entity(js).build();

@@ -1,0 +1,59 @@
+Filtre : <a href="" ng-click="showAccountFilters = !showAccountFilters">{{accountFilter.account || 'aucun'}}</a>
+
+<div ng-if="showAccountFilters">
+  <a class="btn btn-default" style="margin-top: 1em" ng-show="accountFilter.account" ng-click="setAppAccount({})"><span class="glyphicon glyphicon-remove"></span> Supprimer le filtre</a>
+
+  <h4 style="margin-top: 2em">Choisissez un compte dans le tableau ci-dessous</h4>
+  <table class="table table-bordered">
+    <thead>
+    <tr>
+      <th>Etablissement</th>
+      <th>Application</th>
+      <th>Compte</th>
+    </tr>
+    </thead>
+    <tbody ng-repeat="(institution, list) in appAccountsTree">
+      <tr ng-repeat="e in list.slice(0,1)">
+        <td rowspan="{{list.length}}">{{institution}}</td>
+        <td>{{e.app}}</td>
+        <td><a href="" ng-click="setAppAccount(e)">{{e.account}}</a></td>
+      </tr>
+      <tr ng-repeat="e in list.slice(1)">
+        <td>{{e.app}}</td>
+        <td><a href="" ng-click="setAppAccount(e)">{{e.account}}</a></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div style="margin-top: 1em" ng-show="groupedBy && !showAccountFilters">
+
+<table class="table table-striped">
+  <thead>
+  <tr>
+    <th>Date</th>
+    <th>Nombre de SMS</th>
+  </tr>
+  </thead>
+  <tbody ng-repeat="group in groupedBy">
+    <tr>
+      <td colspan="5"><b>{{group.institution}}</b> {{group.app}} {{group.account}}</td>
+    </tr>
+    <tr ng-repeat="e in group.list">
+      <td>{{e.date | date:'short'}}</td>
+      <td>{{e.nbSmsAndDetails}}</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- margin-bottom is needed: -->
+<!-- * to make things more understable when the new results get displayed -->
+<!-- * on mobile phones, the onscroll event can be buggy, this blank fixes it -->
+<div style="margin-bottom: 8em" class="normalContent" when-scrolled="showMoreResults()" >
+  <a href="" ng-hide="inProgress || noMoreResults" name="{{nbResults}}" ng-click="showMoreResults()">Voir plus</a>
+  <div ng-show="inProgress">En cours...</div>
+</div>
+
+</div>
+
+</div>

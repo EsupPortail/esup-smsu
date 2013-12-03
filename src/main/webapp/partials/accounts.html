@@ -1,0 +1,13 @@
+<style>
+.ngHeaderText {
+  white-space: normal;
+}
+.gridStyle.loading {
+  opacity: 0.5;
+}
+.highConsumedRatio {
+  color: #f00;
+}
+</style>
+
+<div class="gridStyle" ng-grid="gridOptions" ng-class="{loading: !accounts}"></div>

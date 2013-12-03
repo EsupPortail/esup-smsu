@@ -1,0 +1,38 @@
+<div class="normalContent" ng-show="user">
+
+ <a class="btn btn-default" ng-hide="user.isNew" ng-click="delete()"><span class="glyphicon glyphicon-remove"></span> Supprimer l'utilisateur</a>
+
+ <h4 style="margin-top: 2em" ng-hide="user.isNew">Modifier</h4>
+
+ <form novalidate name="myForm" class="form-horizontal" ng-submit="submitted = 1; submit()" class="form-horizontal">
+
+  <div class="form-group" ng-class="{'has-error': submitted && myForm.name.$invalid}">
+    <label class="col-md-3 control-label" for="name">Nom</label>
+    <div class="col-md-6">
+      <input type="text" name="name" ng-model="user.login" my-validator="{ unique: checkUniqueName }" required maxlength="30" class="form-control">
+      <span display-required-if-needed input-name="myForm.name"></span>
+      <span ng-show="submitted && myForm.name.$error.unique" class="help-block">Already in use</span>
+    </div>
+  </div>
+
+  <div class="form-group" ng-class="{'has-error': submitted && myForm.role.$invalid}">
+    <label class="col-md-3 control-label" for="role">Rôle</label>
+    <div class="col-md-6">
+      <select required name="role" ng-model="user.role" ng-options="role as role for (role, caps) in roles" class="form-control">
+	<option value="" ng-selected="selected">Sélectionnez un rôle</option>
+      </select>
+      <span ng-show="submitted && myForm.role.$error.required" class="help-block">Required</span>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="col-md-offset-3 col-md-6">
+      <button class="btn btn-primary" type="submit">
+	<span class="glyphicon" ng-class="{'glyphicon-plus': user.isNew, 'glyphicon-pencil': !user.isNew}"></span>
+	{{user.isNew && "Créer" || "Enregistrer"}}</button>
+    </div>
+  </div>
+
+ </form>
+
+</div>

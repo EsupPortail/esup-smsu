@@ -1,0 +1,32 @@
+<div class="container">
+<div class="row">
+ <div class="col-sm-3 sidenavDiv">
+  <ul class="sidenav nav nav-stacked" ng-class="{ifSideNavbar: !forceSidenav}">
+	<li ng-repeat="tab in mainVisibleTabs" ng-class="{active: tab == currentMainTab}">
+	   <a href="#{{tab.route}}">
+	     <span class="glyphicon glyphicon-chevron-right"></span>
+	     {{tab.mainText}}
+	   </a>
+	</li>
+  </ul>
+ </div>
+
+ <div class="page col-sm-9">
+
+
+   <ul class="breadcrumb">
+     <li ng-if="currentTab.route != '/welcome'" class="ifBottomNavbar">
+       <a href="#/welcome">Accueil</a>
+     </li>
+     <li ng-if="currentTab != currentMainTab" >
+       <a href="#{{currentMainTab.route}}">{{currentMainTab.mainText}}</a>
+     </li>
+     <li class="active">{{currentTab.text || currentTab.mainText}}</li>
+   </ul>
+
+
+   <div class="content" ng-class="{loadInProgress: loadInProgress}" ng-view></div>
+   
+ </div>
+</div>
+</div>

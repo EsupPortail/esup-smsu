@@ -1,0 +1,46 @@
+<div ng-show="appAccount">
+
+  <dl style="margin-top: 2em" class="dl-horizontal">
+    <dt>Etablissement</dt><dd>{{appAccount.institution}}</dd>
+    <dt>Application</dt><dd>{{appAccount.app}}</dd>
+    <dt>Compte d'imputation</dt><dd>{{appAccount.account}}</dd>
+  </dl>
+
+  <table class="table table-striped">
+  <tr>
+    <th>Mois</th>
+    <th>Nombre de SMS envoyés</th>
+    <th>Nombre de SMS reçus</th>
+    <th>Taux d'échec</th>
+  </tr>
+  <tr ng-repeat="e in appAccount.data">
+    <td>{{e.month}}</td>
+    <td>{{e.nbSendedSMS}}</td>
+    <td>{{e.nbReceived}}</td>
+    <td>{{e.failureRate}}</td>
+  </tr>
+</table>
+
+</div>
+
+
+<table class="table table-bordered">
+  <thead>
+  <tr>
+    <th>Etablissement</th>
+    <th>Application</th>
+    <th>Compte</th>
+  </tr>
+  </thead>
+  <tbody ng-repeat="(institution, list) in appAccountsTree">
+    <tr ng-repeat="e in list.slice(0,1)">
+      <td rowspan="{{list.length}}">{{institution}}</td>
+      <td>{{e.app}}</td>
+      <td><a href="" ng-click="setAppAccount(e)">{{e.account}}</a></td>
+    </tr>
+    <tr ng-repeat="e in list.slice(1)">
+      <td>{{e.app}}</td>
+      <td><a href="" ng-click="setAppAccount(e)">{{e.account}}</a></td>
+    </tr>
+  </tbody>
+</table>
