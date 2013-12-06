@@ -956,17 +956,6 @@ public class SendSmsManager  {
 	public String checkWhySmsuapiFailed(Throwable cause) {
 		org.esupportail.smsu.services.ssl.InspectKeyStore inspect = new org.esupportail.smsu.services.ssl.InspectKeyStore();
 		inspect.inspectTrustStore();
-
-		if (!usingBasicAuth) {
-			String[] mustBeSetList = { "javax.net.ssl.keyStore", "javax.net.ssl.keyStorePassword" };
-			for (String mustBeSet : mustBeSetList)
-				if (System.getProperty(mustBeSet) == null) {
-					String msg = "configuration issue: " + mustBeSet + " must be set (usually in CATALINA_OPTS in env.sh)";
-					logger.error(msg);
-					return msg;
-				}
-			inspect.inspectPrivateKeyStore();
-		}
 		logger.error("Unable to connect to smsuapi back office : " + cause);
 		return null;
 	}
