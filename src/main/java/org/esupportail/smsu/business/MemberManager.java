@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.business.beans.Member;
@@ -180,8 +181,7 @@ public class MemberManager {
 		if (hasChanged) {
 			// save the new phone number
 			logger.info("replacing " + login + " phone number in LDAP: new:" + wanted + " old:" + previous);
-			ldapUtils.setUserPagerByUid(login, 
-						    wanted.equals("") ? null : wanted);
+			ldapUtils.setUserPagerByUid(login, wanted.equals("") ? null : wanted);
 		} else {
 			logger.info("keeping " + login + " phone number unchanged in LDAP (" + wanted + ")");
 		}
@@ -258,10 +258,7 @@ public class MemberManager {
 	 * @throws LdapWriteException 
 	 */
 	public void saveOrUpdateMember(final Member member) throws LdapUserNotFoundException, LdapWriteException {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Save a member ");
-		}
-
+		logger.debug("Save a member ");
 		boolean numberPhoneChanged = savePhoneNumber(member);
 
 		String memberLogin = member.getLogin();
@@ -296,28 +293,24 @@ public class MemberManager {
 	 * @throws LdapWriteException 
 	 */
 	public boolean valid(final Member member) throws LdapUserNotFoundException, LdapWriteException {
-		// retrieve the corresponding pending member
 		final String login = member.getLogin();
+
+		// retrieve the corresponding pending member
 		PendingMember pendingMember = daoService.getPendingMember(login);
 		// check if exists
-		boolean result = false;		
-		if (pendingMember == null) {
-			result = false;
-		} else {
+		if (pendingMember == null) return false;
+		
 			// check if the code is correct
 			final String dbCode = pendingMember.getValidationCode().toString();
 			final String code = member.getPhoneNumberValidationCode();
 			if (dbCode.equals(code)) {
 				// add smsu general condition for this member in the LDAP 
 				ldapUtils.addGeneralConditionByUid(login);
-				// delete the pending member
 				daoService.deletePendingMember(login);
-				result = true;
+				return true;
 			} else {
-				result = false;
+				return false;
 			}
-		}
-		return result;
 	}
 
 	/**

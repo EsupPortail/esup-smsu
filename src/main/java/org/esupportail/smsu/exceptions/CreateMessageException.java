@@ -42,14 +42,17 @@ public abstract class CreateMessageException extends Exception {
 		}
 	}
 	
+	@SuppressWarnings("serial")
 	static public class WebServiceUnknownApplication extends CreateMessageException.WebService {
 		public WebServiceUnknownApplication(Exception e) { super(e); }
 		public String i18nKey() { return "WS.ERROR.APPLICATION"; }
 	}
+	@SuppressWarnings("serial")
 	static public class WebServiceInsufficientQuota extends CreateMessageException.WebService {
 		public WebServiceInsufficientQuota(Exception e) { super(e); }
 		public String i18nKey() { return "WS.ERROR.QUOTA"; }
 	}
+	@SuppressWarnings("serial")
 	static public class BackOfficeUnreachable extends CreateMessageException.WebService {
 		public BackOfficeUnreachable(Exception e) { super(e); }
 		public String i18nKey() { return "WS.ERROR.MESSAGE"; }

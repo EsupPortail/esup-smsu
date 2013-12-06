@@ -101,14 +101,8 @@ public class ServiceManager {
 	 * @return true if the service can be deleted.
 	 */
 	private Boolean canServiceBeDeleted(final Service service) {
-		List<Message> listMessages = new ArrayList<Message>();
-		listMessages = daoService.getMessagesByService(service);
-		
-		if (listMessages.isEmpty()) {
-			return true;
-		}
-		
-		return false;
+		List<Message> listMessages = daoService.getMessagesByService(service);
+		return listMessages.isEmpty();
 	}
 
 	////////////////////////////////////////
