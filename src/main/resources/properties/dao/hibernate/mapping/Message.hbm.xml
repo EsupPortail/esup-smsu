@@ -10,7 +10,7 @@
 		
 		<property name="Date" column="MSG_DATE" type="timestamp" not-null="false" generated="always" insert="false" update="false"/>
 		<property name="Content" column="MSG_CONTENT" type="string" not-null="true" length="255"/>
-		<property name="State" column="MSG_STATE" type="string" not-null="true" length="16"/>
+		<property name="State" column="MSG_STATE" type="string" not-null="true" length="32"/>
 		
 		<many-to-one name="Account" column="ACC_ID" class="Account" not-null="true" cascade="all"/>
 		<many-to-one name="Template" column="TPL_ID" class="Template" not-null="false" cascade="all"/>
