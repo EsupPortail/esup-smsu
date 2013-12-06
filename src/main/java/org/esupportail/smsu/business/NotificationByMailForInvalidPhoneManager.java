@@ -103,11 +103,11 @@ public class NotificationByMailForInvalidPhoneManager {
     		String mail = getMail(uid);
 			    		if (mail != null) {
 			    		// 3 - Send mail
-			        	String subject = getI18nService().getString("MSG.SUBJECT.MAIL.TO.INVALIDPHONE", 
-			        					 getI18nService().getDefaultLocale());
+			        	String subject = i18nService.getString("MSG.SUBJECT.MAIL.TO.INVALIDPHONE", 
+			        					 i18nService.getDefaultLocale());
 			        	
-			    		String textBody = getI18nService().getString("MSG.TEXTBOX.MAIL.TO.INVALIDPHONE",
-			    					  getI18nService().getDefaultLocale(), phoneNumber);
+			    		String textBody = i18nService.getString("MSG.TEXTBOX.MAIL.TO.INVALIDPHONE",
+			    					  i18nService.getDefaultLocale(), phoneNumber);
 			        	
 			        	smtpServiceUtils.sendOneMessage(mail, subject, textBody);
 			    		} else {

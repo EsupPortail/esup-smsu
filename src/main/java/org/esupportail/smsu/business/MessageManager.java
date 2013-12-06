@@ -177,11 +177,11 @@ public class MessageManager {
 			logger.debug("mess.getStateAsEnum : " + messageStatus);
 		}				
 		String i18nKey = messageStatusI18nMessageKey(messageStatus);
-		return i18nKey != null ? i18nMessageKeyToMessage(i18nKey) : NONE;
+		return i18nKey != null ? i18nMessageKeyToMessage(i18nKey) : "";
 	}
 
 	private String mailStatusI18nMessage(Mail mail) {
-		return mail != null ? mailStatusI18nMessage(mail.getStateAsEnum()) : NONE;
+		return mail != null ? mailStatusI18nMessage(mail.getStateAsEnum()) : "";
 	}
 
 	private String mailStatusI18nMessage(MailStatus mailStatus) {
@@ -189,7 +189,7 @@ public class MessageManager {
 			logger.debug("mess.getMail.getStateAsEnum : " + mailStatus);
 		}
 		String i18nKey = mailStatusI18nMessageKey(mailStatus);
-		return i18nKey != null ? i18nMessageKeyToMessage(i18nKey) : NONE;
+		return i18nKey != null ? i18nMessageKeyToMessage(i18nKey) : "";
 	}
 
 	private String messageStatusI18nMessageKey(MessageStatus messageStatus) {
