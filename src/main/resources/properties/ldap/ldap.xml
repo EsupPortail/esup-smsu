@@ -15,19 +15,27 @@
 	<bean id="ldapService"
 		class="org.esupportail.commons.services.ldap.SearchableLdapUserAndGroupServiceImpl"
 		lazy-init="true">
+		<property name="userService" ref="ldapUserService" />
+		<property name="groupService" ref="ldapGroupService" />
+		<property name="groupMemberAttribute" value="${ldap.group.groupMemberAttr}"/>
+	</bean>
+	
+	<bean id="ldapUserService"
+		class="org.esupportail.commons.services.ldap.SearchableLdapUserServiceImpl"
+		lazy-init="true">
 		<property name="i18nService" ref="i18nService">
 			<description> The i18nService, used for statistics. </description>
 		</property>
 		<property name="ldapTemplate" ref="ldapTemplate" />
-		<property name="userDnSubPath" value="${ldap.dnSubPath}" />
-		<property name="userIdAttribute" value="${ldap.uidAttribute}">
+		<property name="dnSubPath" value="${ldap.dnSubPath}" />
+		<property name="idAttribute" value="${ldap.uidAttribute}">
 			<description>
 				The LDAP attribute that stores the unique identifier of
 				users in the LDAP directory (optional, "uid" by
 				default).
 			</description>
 		</property>
-		<property name="userAttributes">
+		<property name="attributes">
 		  <description> LDAP attributes to retrieve. </description>
 		  <list>
 		    <value>${ldap.displayNameAttribute}</value>
@@ -39,31 +47,37 @@
 		    <value>${ldap.lastNameAttribute}</value>
 		  </list>
 		</property>
-		<property name="userSearchAttribute" value="${ldap.searchAttribute}" />
-		<property name="userSearchDisplayedAttributes"> <list><value>cn</value></list> </property> <!-- unused -->
+		<property name="searchAttribute" value="${ldap.searchAttribute}" />
+		<property name="searchDisplayedAttributes"> <list><value>cn</value></list> </property> <!-- unused -->
 		<property name="cacheManager" ref="cacheManager" />
-		<property name="userObjectClass" value="${ldap.objectClass}"/>
-		<property name="userTestFilter" value="${ldap.testFilter}" >
+		<property name="objectClass" value="${ldap.objectClass}"/>
+		<property name="testFilter" value="${ldap.testFilter}" >
 			<description>
 				The LDAP filter that will be taken into account when using 
 				ant target test-ldap.
 			</description>
 		</property>
-
-		<!-- Group parameters -->
-		<property name="groupAttributes">
+	</bean>
+	
+	<bean id="ldapGroupService"
+		class="org.esupportail.commons.services.ldap.SearchableLdapGroupServiceImpl"
+		lazy-init="true">
+		<property name="i18nService" ref="i18nService">
+			<description> The i18nService, used for statistics. </description>
+		</property>
+		<property name="ldapTemplate" ref="ldapTemplate" />
+		<property name="attributes">
 		  <list>
 		    <value>${ldap.group.groupMemberAttr}</value>
 		    <value>${ldap.group.groupSearchAttr}</value>
 		  </list>
 		</property>
-		<property name="groupDnSubPath" value="${ldap.group.dnSubPath}"/>
-		<property name="groupIdAttribute" value="${ldap.group.idAttribute}"/>
-		<property name="groupMemberAttribute" value="${ldap.group.groupMemberAttr}"/>
-		<property name="groupSearchAttribute" value="${ldap.group.groupSearchAttr}"/>
-		<property name="groupSearchDisplayedAttributes"> <list><value>cn</value></list> </property> <!-- unused -->
-		<property name="groupObjectClass" value="${ldap.group.groupObjectClass}"/>
-		<property name="groupTestFilter" value="${ldap.group.testFilter}"/>
+		<property name="dnSubPath" value="${ldap.group.dnSubPath}"/>
+		<property name="idAttribute" value="${ldap.group.idAttribute}"/>
+		<property name="searchAttribute" value="${ldap.group.groupSearchAttr}"/>
+		<property name="searchDisplayedAttributes"> <list><value>cn</value></list> </property> <!-- unused -->
+		<property name="objectClass" value="${ldap.group.groupObjectClass}"/>
+		<property name="testFilter" value="${ldap.group.testFilter}"/>
 
 	</bean>
 
