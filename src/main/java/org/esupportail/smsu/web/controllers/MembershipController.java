@@ -9,6 +9,7 @@ import org.esupportail.smsu.business.beans.Member;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
 import org.esupportail.smsu.exceptions.ldap.LdapWriteException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 
 @Path("/membership")
 public class MembershipController {
@@ -69,7 +70,8 @@ public class MembershipController {
 			}
 		}
 	}
-	
+
+	@Required
 	public void setPhoneNumberPattern(final String phoneNumberPattern) {
 		this.phoneNumberPattern = phoneNumberPattern;
 	}

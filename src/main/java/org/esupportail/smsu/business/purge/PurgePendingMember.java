@@ -8,6 +8,7 @@ import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.dao.DaoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 
 /**
  *  Manage the purge in table PendingMember.
@@ -56,6 +57,7 @@ public class PurgePendingMember {
 	/***********
 	 * Mutator
 	 */
+	@Required
 	public void setSeniorityDay(final int seniorityDay) {
 		this.seniorityDay = seniorityDay;
 	}

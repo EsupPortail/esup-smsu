@@ -319,6 +319,7 @@ public class MemberManager {
 	/**
 	 * @param attributes 
 	 */
+	@Required
 	public void setPhoneAttributesAsString(final String attributes) {
 		final List<String> list = new LinkedList<String>();
 		for (String attribute : attributes.split(",")) {

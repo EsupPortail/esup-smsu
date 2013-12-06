@@ -8,6 +8,7 @@ import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.dao.DaoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 
 /**
  * This class manages the periodic purge.
@@ -63,11 +64,7 @@ public class PeriodicPurge {
 			logger.debug("End of periodic purge");
 	}
 	
-	
-	public void setDaoService(final DaoService daoService) {
-		this.daoService = daoService;
-	}
-	
+	@Required
 	public void setSeniorityDay(final int seniorityDay) {
 		this.seniorityDay = seniorityDay;
 	}
