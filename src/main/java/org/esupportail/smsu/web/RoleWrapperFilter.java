@@ -1,6 +1,6 @@
 package org.esupportail.smsu.web;
 
-import java.util.List;
+import java.util.Set;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -47,26 +47,24 @@ public final class RoleWrapperFilter implements Filter {
 	response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }
 
-    protected List<String> retrieveRoles(final HttpServletRequest request) {
+    protected Set<String> retrieveRoles(final HttpServletRequest request) {
         String user = request.getRemoteUser();
         return securityManager.loadUserRightsByUsername(user);
     }
 
     final class MyHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
-        private final List<String> roles;
+        private final Set<String> roles;
 
-        MyHttpServletRequestWrapper(final HttpServletRequest request, final List<String> roles) {
+        MyHttpServletRequestWrapper(final HttpServletRequest request, Set<String> roles) {
             super(request);
             this.roles = roles;
         }
 
         public boolean isUserInRole(final String role) {
-	    for (String r : roles) {
-		if (r.equals(role)) {
+	    if (roles.contains(role)) {
 		    logger.debug("user has role " + role);
 		    return true;
-		}
             }
 	    String user = getRemoteUser();
 	    logger.warn("user " + user + " has not role " + role);

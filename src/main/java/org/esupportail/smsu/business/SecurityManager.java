@@ -2,6 +2,7 @@ package org.esupportail.smsu.business;
 
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -32,8 +33,8 @@ public class SecurityManager {
 	 * @return an List of Strings objectrepresenting the authenticated user and his rights 
 	 * if the authentication is successfull.
 	 */
-	public List<String> loadUserRightsByUsername(final String login) {
-		List<String> fonctions = new ArrayList<String>();
+	public Set<String> loadUserRightsByUsername(final String login) {
+		Set<String> fonctions = new HashSet<String>();
 		logger.debug("parameter login in loadUserRightsByUsername method is: " + login);
 		
 		for (CustomizedGroup grp : getCustomizedGroups(login)) {
@@ -43,12 +44,10 @@ public class SecurityManager {
 		return fonctions;
 	}
 
-	private void addFonctions(List<String> fonctions, Set<Fonction> fonctions_to_add) {
+	private void addFonctions(Set<String> fonctions, Set<Fonction> fonctions_to_add) {
 		for (Fonction fct : fonctions_to_add) {
-			if (!fonctions.contains(fct.getName())) {
 				logger.debug("parameter fct in addFonction method is: " + fct);
 				fonctions.add(fct.getName());
-			}
 		}
 	}
 
