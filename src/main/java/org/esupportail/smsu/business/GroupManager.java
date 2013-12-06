@@ -42,19 +42,6 @@ public class GroupManager {
 
 	private final Logger logger = new LoggerImpl(getClass());
 
-	//////////////////////////////////////////////////////////////
-	// Constructeur
-	//////////////////////////////////////////////////////////////
-	/**
-	 * Bean constructor.
-	 */
-	public GroupManager() {
-		super();
-	}
-	
-	//////////////////////////////////////////////////////////////
-	// Principal methods
-	//////////////////////////////////////////////////////////////
 	/**
 	 * @param label
 	 * @return Boolean
@@ -197,52 +184,5 @@ public class GroupManager {
 		    	return login;
 		}
 	}
-	
-	/////////////////////////////////////////
-	//  setter for spring object daoService
-	////////////////////////////////////////
-	/**
-	 * @param daoService the daoService to set
-	 */
-	public void setDaoService(final DaoService daoService) {
-		this.daoService = daoService;
-	}
-
-	//////////////////////////////////////////////////////////////
-	// Getter and Setter of ldapUtils
-	//////////////////////////////////////////////////////////////
-	/**
-	 * @param ldapUtils
-	 */
-	public void setLdapUtils(final LdapUtils ldapUtils) {
-		this.ldapUtils = ldapUtils;
-	}
-
-	/**
-	 * @return ldapUtils
-	 */
-	public LdapUtils getLdapUtils() {
-		return ldapUtils;
-	}
-	
-	//////////////////////////////////////////////////////////////
-	// Getter and Setter of userDisplayName
-	//////////////////////////////////////////////////////////////
-	/**
-	 * @param userDisplayName
-	 */
-	public void setUserDisplayName(final String userDisplayName) {
-		this.userDisplayName = userDisplayName;
-	}
-
-	/**
-	 * @return userDisplayName
-	 */
-	public String getUserDisplayName() {
-		return userDisplayName;
-	}
-
-	
-
 
 }

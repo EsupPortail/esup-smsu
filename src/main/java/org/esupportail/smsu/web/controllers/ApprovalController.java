@@ -47,11 +47,4 @@ public class ApprovalController {
 		approvalManager.cancelOrApproveMessage(id, currentUser, status);
 	}
 
-	public void setDomainService(DomainService domainService) {
-		this.domainService = domainService;
-	}
-
-	public void setApprovalManager(ApprovalManager approvalManager) {
-		this.approvalManager = approvalManager;
-	}
 }

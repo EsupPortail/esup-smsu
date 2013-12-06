@@ -26,8 +26,4 @@ public class AccountsController {
 		return domainService.getAccounts();
 	}
 
-	public void setDomainService(DomainService domainService) {
-		this.domainService = domainService;
-	}
-
 }

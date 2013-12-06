@@ -16,10 +16,6 @@ import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-/**
- * @author xphp8691
- *
- */
 public class ContentCustomizationManager {
 
 	@Autowired private LdapUtils ldapUtils;
@@ -29,24 +25,8 @@ public class ContentCustomizationManager {
 	 */
 	private String defaultNotFoundData;
 
-	/**
-	 * Log4j logger.
-	 */
 	private final Logger logger = new LoggerImpl(getClass());
 
-	///////////////////////////////////////
-	//  constructor
-	//////////////////////////////////////
-	/**
-	 * Bean constructor.
-	 */
-	public ContentCustomizationManager() {
-		super();
-	}
-
-	///////////////////////////////////////
-	//  Principal methods
-	//////////////////////////////////////
 	/**
 	 * @param content
 	 * @return the list of sender tags found in the content.
@@ -185,35 +165,8 @@ public class ContentCustomizationManager {
 	}
 
 	//////////////////////////////////////////////////////////////
-	// Getter and Setter of ldapUtils
+	// setters
 	//////////////////////////////////////////////////////////////
-	/**
-	 * @param ldapUtils
-	 */
-	public void setLdapUtils(final LdapUtils ldapUtils) {
-		this.ldapUtils = ldapUtils;
-	}
-
-	/**
-	 * @return ldapUtils
-	 */
-	public LdapUtils getLdapUtils() {
-		return ldapUtils;
-	}
-
-	//////////////////////////////////////////////////////////////
-	// Getter and Setter of defaultNotFoundData
-	//////////////////////////////////////////////////////////////
-	/**
-	 * @return defaultNotFoundData
-	 */
-	public String getDefaultNotFoundData() {
-		return defaultNotFoundData;
-	}
-
-	/**
-	 * @param defaultNotFoundData
-	 */
 	public void setDefaultNotFoundData(final String defaultNotFoundData) {
 		this.defaultNotFoundData = defaultNotFoundData;
 	}

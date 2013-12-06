@@ -11,16 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *  Manage the purge in table PendingMember.
- * @author PRQD8824
  *
  */
 public class PurgePendingMember {
 
-	/**
-	 * A logger.
-	 */
 	private final Logger logger = new LoggerImpl(getClass());
-
 
 	/**
 	 * Maximum day of sms seniority.
@@ -30,9 +25,6 @@ public class PurgePendingMember {
 	@Autowired private DaoService daoService;
 	
 
-	/**
-	 * 
-	 */
 	public void purgePendingMember() {
 		// compute de limite date
 		final long currentTimeInMillis = System.currentTimeMillis();
@@ -52,38 +44,20 @@ public class PurgePendingMember {
 	 */
 	private void purgePendingMemberOlderThan(final Date date) {
 		
-		if (logger.isDebugEnabled()) {
 			logger.debug("Starting purge of pending member table with parameter : \n" + 
 				     " - date : " + date);
-		}
 		
 		final int nbSmsDeleted = daoService.deletePendingMemberOlderThan(date);
 		
-		if (logger.isDebugEnabled()) {
 			logger.debug("End purge of pending member table, result : \n" +
 				     " - number of pending member deleted : " + nbSmsDeleted);
-		}
 	}
 	
 	/***********
 	 * Mutator
 	 */
-	
-	
-	/**
-	 * Standard setter used by spring.
-	 * @param seniorityDay
-	 */
 	public void setSeniorityDay(final int seniorityDay) {
 		this.seniorityDay = seniorityDay;
 	}
 	
-
-	/**
-	 * Standard setter used by spring.
-	 * @param daoService
-	 */
-	public void setDaoService(final DaoService daoService) {
-		this.daoService = daoService;
-	}
 }

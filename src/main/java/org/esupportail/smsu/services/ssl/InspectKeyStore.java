@@ -32,7 +32,6 @@ public class InspectKeyStore
 	}
     }
 		
-    @SuppressWarnings("unchecked")
     public ArrayList<String> getKeyStoreAliases(KeyStore ks) {
 	try {
 	    return Collections.list(ks.aliases());

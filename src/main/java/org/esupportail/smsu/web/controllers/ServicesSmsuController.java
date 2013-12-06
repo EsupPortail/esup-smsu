@@ -63,8 +63,4 @@ public class ServicesSmsuController {
 			}
 	}
 
-	public void setServiceManager(ServiceManager serviceManager) {
-		this.serviceManager = serviceManager;
-	}
-
 }

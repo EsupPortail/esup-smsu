@@ -74,7 +74,4 @@ public class MembershipController {
 		this.phoneNumberPattern = phoneNumberPattern;
 	}
 
-	public void setMemberManager(MemberManager memberManager) {
-		this.memberManager = memberManager;
-	}
 }

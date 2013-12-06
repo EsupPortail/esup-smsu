@@ -28,10 +28,6 @@ import org.esupportail.smsu.web.beans.UIMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
-/**
- * Business layer concerning smsu service.
- *
- */
 public class MessageManager {
 
 	@Autowired private DaoService daoService;
@@ -39,18 +35,6 @@ public class MessageManager {
 	@Autowired private LdapUtils ldapUtils;
 	
 	private final Logger logger = new LoggerImpl(getClass());
-
-	//////////////////////////////////////////////////////////////
-	// Constructeur
-	//////////////////////////////////////////////////////////////
-	/**
-	 * Bean constructor.
-	 */
-	public MessageManager() {
-		super();
-	}
-
-
 
 	//////////////////////////////////////////////////////////////
 	// Principal methods
@@ -227,62 +211,4 @@ public class MessageManager {
 		}
 		return null;
 	}
-	
-	/**
-	 * @param messageId
-	 * @return a message
-	 */
-	public Message getMessage(final Integer messageId) {
-		return daoService.getMessageById(messageId);
-	}
-
-	///////////////////////////////////////
-	//  setter for spring object daoService
-	//////////////////////////////////////	
-	/**
-	 * @param daoService the daoService to set
-	 */
-	public void setDaoService(final DaoService daoService) {
-		this.daoService = daoService;
-	}
-
-	//////////////////////////////////////////////////////////////
-	// Setter of spring object ldapUtils
-	//////////////////////////////////////////////////////////////
-	/**
-	 * @param ldapUtils
-	 */
-	public void setLdapUtils(final LdapUtils ldapUtils) {
-		this.ldapUtils = ldapUtils;
-	}
-
-	/**
-	 * @param displayNameAttributeAsString the displayNameAttributeAsString to set
-	 */
-	public void setDisplayNameAttributeAsString(
-			final String displayNameAttributeAsString) {
-		this.displayNameAttributeAsString = displayNameAttributeAsString;
-	}
-
-	/**
-	 * @return the displayNameAttributeAsString
-	 */
-	public String getDisplayNameAttributeAsString() {
-		return displayNameAttributeAsString;
-	}
-
-	/**
-	 * @param i18nService the i18nService to set
-	 */
-	public void setI18nService(final I18nService i18nService) {
-		this.i18nService = i18nService;
-	}
-
-	/**
-	 * @return the i18nService
-	 */
-	public I18nService getI18nService() {
-		return i18nService;
-	}
-
 }

@@ -68,7 +68,4 @@ public class TemplateManagerController {
 			}
 	}
 
-	public void setTemplateManager(TemplateManager templateManager) {
-		this.templateManager = templateManager;
-	}	
 }

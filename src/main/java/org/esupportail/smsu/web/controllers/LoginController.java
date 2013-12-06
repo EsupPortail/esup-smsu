@@ -33,9 +33,5 @@ public class LoginController {
 	
         return Response.status(Response.Status.OK).type(type).entity(js).build();
     }
-
-	public void setDomainService(DomainService domainService) {
-		this.domainService = domainService;
-	}
-    
+ 
 }

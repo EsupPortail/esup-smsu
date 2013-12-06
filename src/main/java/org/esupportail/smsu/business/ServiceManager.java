@@ -14,17 +14,11 @@ import org.esupportail.smsu.web.beans.UIService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
-/**
- * Business layer concerning smsu service.
- *
- */
 public class ServiceManager {
 	
 	@Autowired private DaoService daoService;
 	
-	/**
-	 * Log4j logger.
-	 */
+	@SuppressWarnings("unused")
 	private final Logger logger = new LoggerImpl(getClass());
 
 	public Map<String, String> getUIServices() {
@@ -36,7 +30,6 @@ public class ServiceManager {
 
 	/**
 	 * retrieve all the service defined in smsu database.
-	 * @return
 	 */
 	public List<UIService> getAllUIServices() {
 		List<UIService> allUiServices = new ArrayList<UIService>();
@@ -50,9 +43,6 @@ public class ServiceManager {
 		daoService.updateService(convertFromUI(service));
 	}
 	
-	/**
-	 * @param service
-	 */
 	public void addUIService(final UIService service) {
 		daoService.addService(convertFromUI(service));
 	}
@@ -75,7 +65,7 @@ public class ServiceManager {
 	/**
 	 * @param name
 	 * @param id 
-	 * @return true if no other service has the same key.
+	 * @return true if no other service has the same name or if name unmodified
 	 */
 	public Boolean isNameAvailable(final String name, final Integer id) {
 		Service existingService = daoService.getServiceByName(name);
@@ -103,16 +93,6 @@ public class ServiceManager {
 	private Boolean canServiceBeDeleted(final Service service) {
 		List<Message> listMessages = daoService.getMessagesByService(service);
 		return listMessages.isEmpty();
-	}
-
-	////////////////////////////////////////
-	//  setter for spring object daoService
-	////////////////////////////////////////
-	/**
-	 * @param daoService the daoService to set
-	 */
-	public void setDaoService(final DaoService daoService) {
-		this.daoService = daoService;
 	}
 
 }

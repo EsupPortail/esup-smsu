@@ -18,24 +18,9 @@ public class FonctionManager {
 	
 	@Autowired private DaoService daoService;
 	
-	/**
-	 * Log4j logger.
-	 */
+	@SuppressWarnings("unused")
 	private final Logger logger = new LoggerImpl(getClass());
 	
-	//////////////////////////////////////////////////////////////
-	// Constructeur
-	//////////////////////////////////////////////////////////////
-	/**
-	 * constructor.
-	 */
-	public FonctionManager() {
-		super();
-	}
-	
-	///////////////////////////////////////
-	//  Principal method
-	//////////////////////////////////////
 	/**
 	 * Retrieve all the fonctions defined in smsu database.
 	 * @return
@@ -55,19 +40,5 @@ public class FonctionManager {
 		}
 		return null;
 	}
-
-	/////////////////////////////////////////
-	//  setter for spring object daoService
-	////////////////////////////////////////
-	/**
-	 * @param daoService 
-	 */
-	public void setDaoService(final DaoService daoService) {
-		this.daoService = daoService;
-	}
-
-
-
-
 
 }

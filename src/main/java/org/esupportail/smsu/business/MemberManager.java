@@ -71,20 +71,7 @@ public class MemberManager {
 	 */
 	private String phoneNumberPrefixToRemove = "";
 
-	/**
-	 * Log4j logger.
-	 */
 	private final Logger logger = new LoggerImpl(getClass());
-
-	///////////////////////////////////////
-	//  constructor
-	//////////////////////////////////////
-	/**
-	 * Bean constructor.
-	 */
-	public MemberManager() {
-
-	}
 
 	///////////////////////////////////////
 	//  private method
@@ -326,115 +313,9 @@ public class MemberManager {
 		return retVal;
 	}
 
-	/**
-	 * @return true or false
-	 */
-	public void setPhoneAttributesAsString(final String attributes) {
-		final List<String> list = new LinkedList<String>();
-		for (String attribute : attributes.split(",")) {
-			if (StringUtils.hasText(attribute)) {
-				if (!list.contains(attribute)) {
-					list.add(attribute);
-				}
-			}
-		}
-		setPhoneAttribute(list);
-	}
-
-
-	//////////////////////////////////////////////////////////////
-	// Getter and Setter of phoneAttribute
-	//////////////////////////////////////////////////////////////
-	/**
-	 * @param phoneAttribute
-	 */
-	public void setPhoneAttribute(final List<String> phoneAttribute) {
-		this.phoneAttribute = phoneAttribute;
-	}
-
-	/**
-	 * @return the list of phone attributes.
-	 */
-	public List<String> getPhoneAttribute() {
-		return phoneAttribute;
-	}
-
-	//////////////////////////////////////////////////////////////
-	// Getter and Setter of phoneNumberPattern
-	//////////////////////////////////////////////////////////////
-	/**
-	 * @param phoneNumberPattern
-	 */
-	public void setPhoneNumberPattern(final String phoneNumberPattern) {
-		this.phoneNumberPattern = phoneNumberPattern;
-	}
-
-	/**
-	 * @return phoneNumberPattern.
-	 */
-	public String getPhoneNumberPattern() {
-		return phoneNumberPattern;
-	}
-
 	///////////////////////////////////////
 	// setter for spring objets
 	//////////////////////////////////////
-
-	/**
-	 * @param daoService the daoService to set
-	 */
-	public void setDaoService(final DaoService daoService) {
-		this.daoService = daoService;
-	}
-
-	/**
-	 * @param ldapUtils
-	 */
-	public void setLdapUtils(final LdapUtils ldapUtils) {
-		this.ldapUtils = ldapUtils;
-	}
-
-	/**
-	 * @param sendSmsClient
-	 */
-	public void setSendSmsClient(final SendSmsClient sendSmsClient) {
-		this.sendSmsClient = sendSmsClient;
-	}
-
-	/**
-	 * @param activateValidation
-	 */
-	public void setActivateValidation(final Boolean activateValidation) {
-		this.activateValidation = activateValidation;
-	}
-
-	/**
-	 * @param maxLengthCodeValidation
-	 */
-	public void setMaxNumberCodeValidation(final Integer maxNumberCodeValidation) {
-		this.maxNumberCodeValidation = maxNumberCodeValidation;
-	}
-
-	/**
-	 * @param accountValidation
-	 */
-	public void setAccountValidation(final String accountValidation) {
-		this.accountValidation = accountValidation;
-	}
-
-	/**
-	 * @param titleSmsValidation
-	 */
-	public void setTitleSmsValidation(final String titleSmsValidation) {
-		this.titleSmsValidation = titleSmsValidation;
-	}
-
-
-	public void setNotificationPhoneNumberInBlackListClient(
-			final NotificationPhoneNumberInBlackListClient notificationPhoneNumberInBlackListClient) {
-		this.notificationPhoneNumberInBlackListClient = notificationPhoneNumberInBlackListClient;
-	}
-
 	/**
 	 * @param attributes 
 	 */
@@ -450,24 +331,41 @@ public class MemberManager {
 		setPhoneAttribute(list);
 	}
 
-	/**
-	 * @param phoneNumberPrefixToRemove
-	 */
+	public void setPhoneAttribute(final List<String> phoneAttribute) {
+		this.phoneAttribute = phoneAttribute;
+	}
+
+	@Required
+	public void setPhoneNumberPattern(final String phoneNumberPattern) {
+		this.phoneNumberPattern = phoneNumberPattern;
+	}
+
+	@Required
+	public void setActivateValidation(final Boolean activateValidation) {
+		this.activateValidation = activateValidation;
+	}
+
+	@Required
+	public void setMaxNumberCodeValidation(final Integer maxNumberCodeValidation) {
+		this.maxNumberCodeValidation = maxNumberCodeValidation;
+	}
+
+	@Required
+	public void setAccountValidation(final String accountValidation) {
+		this.accountValidation = accountValidation;
+	}
+
+	@Required
+	public void setTitleSmsValidation(final String titleSmsValidation) {
+		this.titleSmsValidation = titleSmsValidation;
+	}
+
+	@Required
 	public void setPhoneNumberPrefixToRemove(final String phoneNumberPrefixToRemove) {
 		this.phoneNumberPrefixToRemove = phoneNumberPrefixToRemove;
 	}
 
-	/**
-	 * @return
-	 */
-	public String getPhoneNumberPrefixToRemove() {
-		return phoneNumberPrefixToRemove;
-	}
-
-	public String getValidationRoleName() {
-		return validationRoleName;
-	}
-
+	@Required
 	public void setValidationRoleName(final String validationRoleName) {
 		this.validationRoleName = validationRoleName;
 	}

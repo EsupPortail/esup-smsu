@@ -60,9 +60,5 @@ public class RolesController {
 	public List<String> allFonctions() {
 		return fonctionManager.getAllFonctions();
 	}
-	
-	public void setFonctionManager(FonctionManager fonctionManager) {
-		this.fonctionManager = fonctionManager;
-	}
 		
 }

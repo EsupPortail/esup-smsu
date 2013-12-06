@@ -55,10 +55,6 @@ import org.springframework.beans.factory.annotation.Required;
 
 
 
-/**
- * @author xphp8691
- *
- */
 public class SendSmsManager  {
 
 	@Autowired private DaoService daoService;
@@ -96,13 +92,10 @@ public class SendSmsManager  {
 	 */
 	private String userEmailAttribute;
 	
-	/**
-	 * Log4j logger.
-	 */
 	private final Logger logger = new LoggerImpl(getClass());
 
 	//////////////////////////////////////////////////////////////
-	// Constructors
+	// Pricipal methods
 	//////////////////////////////////////////////////////////////
 	public int sendMessage(UINewMessage msg) throws CreateMessageException {
 		Message message = composeMessage(msg);
@@ -649,25 +642,6 @@ public class SendSmsManager  {
 		return members;
 	}
 
-	private List<LdapUser> getMembersNonRecursive(final PortalGroup currentGroup, String serviceKey) throws PAGSGroupStoreConfigNotSynchronizedException {
-		List<LdapUser> members = new LinkedList<LdapUser>();
-			String idFromPortal = currentGroup.getId();
-			String groupStoreId = StringUtils.split(idFromPortal,".")[1];
-			GroupDefinition gd = smsuPersonAttributesGroupStore.getGroupDefinition(groupStoreId);
-			if (gd != null) {
-				if (logger.isDebugEnabled()) {
-					logger.debug("search members");
-				}
-				members = ldapUtils.getMembers(gd, serviceKey);
-			} else {
-				logger.error("could not find group " + groupStoreId + " in PAGSGroupStoreConfig.xml in smsu");
-				logger.error("smsu needs a PAGSGroupStoreConfig.xml synchronized with the version used by esup-portail");
-				throw new CreateMessageException.PAGSGroupStoreConfigNotSynchronizedException();
-			}
-		return members;
-	}
-
-
 	/**
 	 * @param source
 	 * @param toMerge
@@ -1053,9 +1027,6 @@ public class SendSmsManager  {
 			return null;
 	}
 
-	private String getI18nString(String key) {
-		return i18nService.getString(key, i18nService.getDefaultLocale());
-	}
 	private String getI18nString(String key, String arg1) {
 		return i18nService.getString(key, i18nService.getDefaultLocale(), arg1);
 	}
@@ -1070,180 +1041,30 @@ public class SendSmsManager  {
 	}
 
 	///////////////////////////////////
-	// Getter and Setter of smsMaxSize
+	// setters
 	///////////////////////////////////
-	/**
-	 * @param smsMaxSize
-	 */
+	@Required
 	public void setSmsMaxSize(final Integer smsMaxSize) {
 		this.smsMaxSize = smsMaxSize;
 	}
 
-	/**
-	 * @return smsMaxSize
-	 */
-	public Integer getSmsMaxSize() {
-		return smsMaxSize;
-	}
-
-	//////////////////////////////
-	//  setters for spring objects
-	//////////////////////////////
-	/**
-	 * @param sendSmsClient
-	 */
-	public void setSendSmsClient(final SendSmsClient sendSmsClient) {
-		this.sendSmsClient = sendSmsClient;
-	}
-
-	/**
-	 * @param usingBasicAuth
-	 */
-	public void setUsingBasicAuth(final String basicAuthUsername) {
-		this.usingBasicAuth = !StringUtils.isEmpty(basicAuthUsername);
-	}
-
-	/**
-	 * Standard setter used by spring.
-	 * @param schedulerUtils
-	 */
-	public void setSchedulerUtils(final SchedulerUtils schedulerUtils) {
-		this.schedulerUtils = schedulerUtils;
-	}
-
-	/**
-	 * Standard setter used by spring.
-	 * @param smtpServiceUtils
-	 */
-	public void setSmtpServiceUtils(final SmtpServiceUtils smtpServiceUtils) {
-		this.smtpServiceUtils = smtpServiceUtils;
-	}
-
-	/**
-	 * Standard setter used by spring.
-	 * @param ldapUtils
-	 */
-	public void setLdapUtils(final LdapUtils ldapUtils) {
-		this.ldapUtils = ldapUtils;
-	}
-
-	///////////////////////////////////
-	// Getter and Setter of i18nService
-	///////////////////////////////////
-	/**
-	 * Set the i18nService.
-	 * @param i18nService
-	 */
-	public void setI18nService(final I18nService i18nService) {
-		this.i18nService = i18nService;
-	}
-
-	/**
-	 * @return the i18nService.
-	 */
-	public I18nService getI18nService() {
-		return i18nService;
-	}
-
-	///////////////////////////////////////////////
-	// Getter and Setter of defaultSupervisorLogin
-	///////////////////////////////////////////////
-	/**
-	 * @return the defaultSupervisorLogin.
-	 */
-	public String getDefaultSupervisorLogin() {
-		return defaultSupervisorLogin;
-	}
-
-	/**
-	 * @param defaultSupervisorLogin
-	 */
+	@Required
 	public void setDefaultSupervisorLogin(final String defaultSupervisorLogin) {
 		this.defaultSupervisorLogin = defaultSupervisorLogin;
 	}
 
-	//////////////////////////////////
-	// Getter and Setter of daoService
-	//////////////////////////////////
-	/**
-	 * @return the daoService.
-	 */
-	public DaoService getDaoService() {
-		return daoService;
-	}
-
-	/**
-	 * @param daoService
-	 */
-	public void setDaoService(final DaoService daoService) {
-		this.daoService = daoService;
-	}
-
-	//////////////////////////////////////////////////////////////
-	// Getter and Setter of customizer
-	//////////////////////////////////////////////////////////////
-
-	/**
-	 * @param customizer
-	 */
-	public void setCustomizer(final ContentCustomizationManager customizer) {
-		this.customizer = customizer;
-	}
-
-	/**
-	 * @return the ContentCustomizationManager
-	 */
-	public ContentCustomizationManager getCustomizer() {
-		return customizer;
-	}
-
-	//////////////////////////////////////////////////////////////
-	// Setter of defaultAccount
-	//////////////////////////////////////////////////////////////
-	/**
-	 * @param defaultAccount
-	 */
+	@Required
 	public void setDefaultAccount(final String defaultAccount) {
 		this.defaultAccount = defaultAccount;
 	}
 
-	//////////////////////////////////////////////////////////////
-	// Setter of phoneNumberPattern
-	//////////////////////////////////////////////////////////////
-	/**
-	 * @param phoneNumberPattern
-	 */
+	@Required
 	public void setPhoneNumberPattern(final String phoneNumberPattern) {
 		this.phoneNumberPattern = phoneNumberPattern;
 	}
 
-	/**
-	 * @return userEmailAttribute
-	 */
-	public String getUserEmailAttribute() {
-		return userEmailAttribute;
-	}
-
-	/**
-	 * @param userEmailAttribute
-	 */
+	@Required
 	public void setUserEmailAttribute(final String userEmailAttribute) {
 		this.userEmailAttribute = userEmailAttribute;
-	}
-
-	public void setSmsuPersonAttributesGroupStore(
-			final SmsuPersonAttributesGroupStore smsuPersonAttributesGroupStore) {
-		this.smsuPersonAttributesGroupStore = smsuPersonAttributesGroupStore;
-	}
-
-	public SmsuPersonAttributesGroupStore getSmsuPersonAttributesGroupStore() {
-		return smsuPersonAttributesGroupStore;
-	}
-
-	/**
-	 * @param urlGenerator the urlGenerator to set
-	 */
-	public void setUrlGenerator(final UrlGenerator urlGenerator) {
-		this.urlGenerator = urlGenerator;
 	}
 }

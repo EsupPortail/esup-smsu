@@ -24,16 +24,6 @@ public class SecurityManager {
 	private final Logger logger = new LoggerImpl(getClass());
 
 	//////////////////////////////////////////////////////////////
-	// Constructeur
-	//////////////////////////////////////////////////////////////
-	/**
-	 * Bean constructor.
-	 */
-	public SecurityManager() {
-		super();
-	}
-
-	//////////////////////////////////////////////////////////////
 	// Principal methods
 	//////////////////////////////////////////////////////////////
 	/**
@@ -85,67 +75,5 @@ public class SecurityManager {
 		}
 		return l;
 	}
-
-	/**
-	 * check if less one of rights belong fonctions.
-	 * @param fonctions: list of user fonctions
-	 * @param rights: list of required rights
-	 */
-	public boolean checkRights(final List<String> fonctions, final Set<FonctionName> rights) {
-		logger.debug("users rights: " + join(fonctions, " "));
-		logger.debug("one the following rights is required: " + join(rights, " "));
-		for (FonctionName right : rights) {
-			if (fonctions.contains(right.name())) { 
-			    logger.debug("checkRights ok: user has right " + right.name());
-			    return true; 
-			}
-		}
-		return false;
-	}
-
-	public static String join(Iterable<?> elements, CharSequence separator) {
-		if (elements == null) return "";
-
-		StringBuilder sb = null;
-
-		for (Object o : elements) {
-			String s = o.toString();
-			if (sb == null)
-				sb = new StringBuilder();
-			else
-				sb.append(separator);
-			sb.append(s);			
-		}
-		return sb == null ? "" : sb.toString();
-	}
-
-	////////////////////////////////////////
-	//  setter for spring object daoService
-	///////////////////////////////////////
-	/**
-	 * @param daoService the daoService to set
-	 */
-	public void setDaoService(final DaoService daoService) {
-		this.daoService = daoService;
-	}
 	
-
-	//////////////////////////////////////////////////////////////
-	// Getter and Setter of ldapUtils
-	//////////////////////////////////////////////////////////////
-	/**
-	 * @param ldapUtils
-	 */
-	public void setLdapUtils(final LdapUtils ldapUtils) {
-		this.ldapUtils = ldapUtils;
-	}
-
-	/**
-	 * @return ldapUtils
-	 */
-	public LdapUtils getLdapUtils() {
-		return ldapUtils;
-	}
-	
-
 }

@@ -25,24 +25,8 @@ public class NotificationByMailForInvalidPhoneManager {
 	@Autowired private SmtpServiceUtils smtpServiceUtils;
 	@Autowired private SmsuapiWS smsuapiWS;
 
-	/**
-	 * Log4j logger.
-	 */
 	private final Logger logger = new LoggerImpl(getClass());
-	
-	///////////////////////////////////////
-	//  constructor
-	//////////////////////////////////////
-	/**
-	 * Bean constructor.
-	 */
-	public NotificationByMailForInvalidPhoneManager() {
 		
-	}
-	
-	///////////////////////////////////////
-	//  Private method
-	//////////////////////////////////////
 	/**
 	 * Get list of phone numbers in blacklist.
 	 * @return return set of phone numbers 
@@ -117,46 +101,6 @@ public class NotificationByMailForInvalidPhoneManager {
     		logger.info("no user found for once-invalid-so-blacklisted phone number: " + phoneNumber);
     		}
 			}	
-	}
-
-	///////////////////////////////////////
-	//  setters for spring objects
-	//////////////////////////////////////
-	/**
-	 * @param ldapUtils
-	 */
-	public void setLdapUtils(final LdapUtils ldapUtils) {
-		this.ldapUtils = ldapUtils;
-	}
-	
-	/**
-	 * @param listPhoneNumbersInBlackListClient
-	 */
-	public void setListPhoneNumbersInBlackListClient(
-			final ListPhoneNumbersInBlackListClient listPhoneNumbersInBlackListClient) {
-		this.listPhoneNumbersInBlackListClient = listPhoneNumbersInBlackListClient;
-	}
-
-	/**
-	 * @param smtpServiceUtils
-	 */
-	public void setSmtpServiceUtils(final SmtpServiceUtils smtpServiceUtils) {
-		this.smtpServiceUtils = smtpServiceUtils;
-	}
-	
-	//////////////////////////////////////////////////////////////
-	// Getter and Setter of i18nService
-	//////////////////////////////////////////////////////////////
-	/**
-	 * Set the i18nService.
-	 * @param i18nService
-	 */
-	public void setI18nService(final I18nService i18nService) {
-		this.i18nService = i18nService;
-	}
-
-	public I18nService getI18nService() {
-		return i18nService;
 	}
 
 }

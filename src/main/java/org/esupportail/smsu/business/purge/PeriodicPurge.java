@@ -11,16 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * This class manages the periodic purge.
- * @author PRQD8824
- *
  */
 public class PeriodicPurge {
 
-	/**
-	 * A logger.
-	 */
 	private final Logger logger = new LoggerImpl(getClass());
-
 	
 	/**
 	 * Message seniority.
@@ -52,70 +46,28 @@ public class PeriodicPurge {
 	 * @param seniorityDate
 	 */
 	private void purgeWithSeniorityDate(final Date seniorityDate) {
-
-		if (logger.isDebugEnabled()) {
 			logger.debug("Launching periodic purge with parameter : \n" + " - seniority date : " + seniorityDate);
-		}
-
-		if (logger.isTraceEnabled()) {
 			logger.trace("Start the message content purge");
-		}
-
 		daoService.deleteMessageContentOlderThan(seniorityDate);
-
-		if (logger.isTraceEnabled()) {
 			logger.trace("End of the message content purge\n" + "Start the orphan mail purge");
-		}
-
 		daoService.deleteOrphanMail();
-
-		if (logger.isTraceEnabled()) {
 			logger.trace("End of the orphan mail purge\n" + "Start the orphan recipient purge");
-		}
-
 		daoService.deleteOrphanRecipient();
-
-		if (logger.isTraceEnabled()) {
 			logger.trace("End of the orphan recipient purge\n" + "Start the orphan mail recipient purge");
-		}
-
 		daoService.deleteOrphanMailRecipient();
-
-		if (logger.isTraceEnabled()) {
 			logger.trace("End of the orphan mail recipient purge\n" + "Start the orphan person purge");
-		}
-
 		daoService.deleteOrphanPerson();
-		
-		if (logger.isTraceEnabled()) {
 			logger.trace("End of the orphan person purge\n" + "Start the orphan basic group purge");
-		}
-
 		daoService.deleteOrphanBasicGroup();
-		
-		if (logger.isTraceEnabled()) {
 			logger.trace("End of the orphan basic group purge\n");
-		}
-		
-		if (logger.isDebugEnabled()) {
 			logger.debug("End of periodic purge");
-		}
 	}
 	
 	
-	/**
-	 * Standard setter used by spring.
-	 * @param daoService
-	 */
 	public void setDaoService(final DaoService daoService) {
 		this.daoService = daoService;
 	}
 	
-	
-	/**
-	 * Standard setter used by spring.
-	 * @param seniorityDay
-	 */
 	public void setSeniorityDay(final int seniorityDay) {
 		this.seniorityDay = seniorityDay;
 	}

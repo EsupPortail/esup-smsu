@@ -27,28 +27,12 @@ public class RoleManager {
 	 */
 	private final Logger logger = new LoggerImpl(getClass());
 	
-	//////////////////////////////////////////////////////////////
-	// Constructeur
-	//////////////////////////////////////////////////////////////
-	/**
-	 * Bean constructor.
-	 */
-	public RoleManager() {
-		super();
-	}
-	
-	//////////////////////////////////////////////////////////////
-	// Principal Methods
-	//////////////////////////////////////////////////////////////
 	/**
 	 * retrieve all the roles defined in smsu database.
 	 * @return list of uiRoles
 	 */
 	public List<UIRole> getAllRoles() {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Retrieve the smsu roles from the database");
-		}
-		
+		logger.debug("Retrieve the smsu roles from the database");
 		List<UIRole> allUIRoles = new ArrayList<UIRole>();
 		for (Role role : daoService.getRoles()) {
 			allUIRoles.add(convertToUI(role));
@@ -130,19 +114,4 @@ public class RoleManager {
 		return selectedValues;
 	}
 	
-
-	////////////////////////////////////////
-	//  setter for spring object daoService
-	///////////////////////////////////////
-	/**
-	 * @param daoService the daoService to set
-	 */
-	public void setDaoService(final DaoService daoService) {
-		this.daoService = daoService;
-	}
-
-
-
-
-
 }

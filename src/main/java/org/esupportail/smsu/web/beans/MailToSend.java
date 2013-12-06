@@ -1,20 +1,13 @@
 package org.esupportail.smsu.web.beans;
 
-/**
- * @author xphp8691
- *
- */
 public class MailToSend {
 
-	
 	private Boolean isMailToRecipients;
-	
 	private String mailOtherRecipients;
 	
 	private String mailSubject;
 	
 	private String mailContent;
-	
 	private String mailTemplate;
 
 	/**

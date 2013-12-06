@@ -25,11 +25,6 @@ import org.springframework.ldap.filter.WhitespaceWildcardsFilter;
 public class LdapUtilsHelpers {
 	
 	/**
-	 * serial UID.
-	 */
-	private static final long serialVersionUID = -4824757654577713044L;
-	
-	/**
 	 * Logger.
 	 */
 	private final Logger logger = new LoggerImpl(getClass());
@@ -236,6 +231,7 @@ public class LdapUtilsHelpers {
 	 * Standard setter used by Spring.
 	 * @param ldapEmailAttribute
 	 */
+	@Required
 	public void setUserEmailAttribute(final String userEmailAttribute) {
 		this.userEmailAttribute = userEmailAttribute;
 	}

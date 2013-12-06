@@ -1,8 +1,5 @@
 package org.esupportail.smsu.exceptions;
 
-	/**
-	 * A class for identifer applica exceptions.
-	 */
 	public class InsufficientQuotaException extends Exception {
 		
 			/**

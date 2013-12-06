@@ -19,11 +19,6 @@ import org.esupportail.smsu.exceptions.ldap.LdapWriteException;
 import org.esupportail.smsu.services.ldap.beans.UserGroup;
 
 
-
-/**
- * @author PRQD8824
- *
- */
 public class LdapUtils {
 
 	/**

@@ -111,8 +111,4 @@ public class GroupsManagerController {
 		return ldapUtils.getGroupDisplayName(groupId);
 	}
 
-	public void setLdapUtils(final LdapUtils ldapUtils) {
-		this.ldapUtils = ldapUtils;
-	}
-
 }

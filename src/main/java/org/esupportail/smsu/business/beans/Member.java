@@ -55,43 +55,6 @@ public class Member {
 
 	private int hashCode = Integer.MIN_VALUE;
 
-	
-	
-	/////////////////////
-	// Constructors
-	/////////////////////
-	/**
-	 * Bean constructor.
-	 */
-	/**
-	 * constructor with required attributes.
-	 * @param login
-	 * @param firstName
-	 * @param lastName
-	 * @param phoneNumber
-	 * @param validCG
-	 * @param validCP
-	 * @param phoneNumberValidationCode
-	 * @param isPending 
-	 * @param availablePhoneNumbers 
-	 */
-	public Member(final String login, final String firstName, final String lastName,
-			final String phoneNumber, final Boolean validCG, final List<String> validCP,
-			final Boolean isPending, final String phoneNumberValidationCode,
-			final List<String> availablePhoneNumbers) {
-		super();
-		this.setFirstName(firstName);
-		this.setLogin(login);
-		this.setLastName(lastName);
-		this.setPhoneNumber(phoneNumber);
-		this.setPhoneNumberValidationCode(phoneNumberValidationCode);
-		this.setValidCG(validCG);
-		this.setValidCP(validCP);
-		this.setFlagPending(isPending);
-		this.setAvailablePhoneNumbers(availablePhoneNumbers);
-	}
-
-
 
 	///////////////////////////////////
 	// Getters and Setters

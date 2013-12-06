@@ -43,42 +43,6 @@ public class User implements Serializable {
 		super();
 	}
 
-	/**
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(final Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (!(obj instanceof User)) {
-			return false;
-		}
-		return id.equals(((User) obj).getId());
-	}
-
-	public boolean hasFonction(FonctionName fonction) {
-		return getFonctions().contains(fonction.name());
-	}
-
-	/**
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
-
-	/**
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "User#" + hashCode() + "[id=[" + id + "], displayName=[" + displayName 
-		    + "], language=[" + language
-		    + "], fonctions=[" + join(fonctions, ",") + "]]";
-	}
-
 	public static String join(Iterable<?> elements, CharSequence separator) {
 		if (elements == null) return "";
 
@@ -135,20 +99,5 @@ public class User implements Serializable {
 	public void setLanguage(final String language) {
 		this.language = StringUtils.nullIfEmpty(language);
 	}
-
-	/**
-	 * @param fonctions the fonctions to set
-	 */
-	public void setFonctions(final List<String> fonctions) {
-		this.fonctions = fonctions;
-	}
-
-	/**
-	 * @return the fonctions
-	 */
-	public List<String> getFonctions() {
-		return fonctions;
-	}
-
 
 }

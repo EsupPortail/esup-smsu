@@ -13,61 +13,25 @@ import org.esupportail.smsu.web.beans.UITemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
-
-/**
- * @author xphp8691
- *
- */
 public class TemplateManager {
 
 	@Autowired private DaoService daoService;
 
-	/**
-	 * Log4j logger.
-	 */
+	@SuppressWarnings("unused")
 	private final Logger logger = new LoggerImpl(getClass());
 
-	///////////////////////////////////////
-	//  constructor
-	//////////////////////////////////////
-	/**
-	 * Bean constructor.
-	 */
-	public TemplateManager() {
-		super();
-	}
 
-	/////////////////////////////////////////
-	//  setters for spring object daoService
-	/////////////////////////////////////////
-	/**
-	 * @param daoService
-	 */
-	public void setDaoService(final DaoService daoService) {
-		this.daoService = daoService;
-	}
-	
 	///////////////////////////////////////
 	// Principal methods
 	//////////////////////////////////////
-	/**
-	 * @param id
-	 * @return a template
-	 */
 	public Template getTemplateById(final Integer id) {
 		return daoService.getTemplateById(id);
 	}
 	
-	/**
-	 * @param template
-	 */
 	public void updateUITemplate(final UITemplate template) {
 		daoService.updateTemplate(convertFromUI(template));
 	}
 	
-	/**
-	 * @param template
-	 */
 	public void addUITemplate(final UITemplate template) {
 		daoService.addTemplate(convertFromUI(template));
 	}
@@ -138,8 +102,4 @@ public class TemplateManager {
 		}
 		return isDeletable;
 	}
-	
-	public void setDaoService(final DaoService daoService) {
-		this.daoService = daoService;
-	}	
 }

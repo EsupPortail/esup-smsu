@@ -18,20 +18,13 @@ import org.esupportail.smsu.web.beans.UIMessage;
 import org.esupportail.smsu.web.controllers.InvalidParameterException;
 import org.springframework.beans.factory.annotation.Autowired;
 
-
-/**
- * Business layer concerning smsu service.
- *
- */
 public class ApprovalManager {
 	
 	@Autowired private DaoService daoService;
 	@Autowired private MessageManager messageManager;
 	@Autowired private SendSmsManager sendSmsManager;
 
-	/**
-	 * Log4j logger.
-	 */
+	@SuppressWarnings("unused")
 	private final Logger logger = new LoggerImpl(getClass());
 
 	public List<UIMessage> getApprovalUIMessages(HttpServletRequest request) {
@@ -67,35 +60,5 @@ public class ApprovalManager {
 		if (!msg.getSupervisors().contains(p))
 			throw new InvalidParameterException("user " + userId + " is not allowed to approve this message");
 	}	
-
-	///////////////////////////////////////
-	//  setter for spring object daoService
-	//////////////////////////////////////	
-	/**
-	 * @param daoService the daoService to set
-	 */
-	public void setDaoService(final DaoService daoService) {
-		this.daoService = daoService;
-	}
-
-	//////////////////////////////////////////////////////////////
-	// Setter of spring object messageManager
-	//////////////////////////////////////////////////////////////
-	/**
-	 * @param messageManager
-	 */
-	public void setMessageManager(final MessageManager messageManager) {
-		this.messageManager = messageManager;
-	}
-
-	//////////////////////////////////////////////////////////////
-	// Setter of spring object sendSmsManager
-	//////////////////////////////////////////////////////////////
-	/**
-	 * @param ldapUtils
-	 */
-	public void setSendSmsManager(final SendSmsManager sendSmsManager) {
-		this.sendSmsManager = sendSmsManager;
-	}
 
 }

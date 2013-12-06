@@ -99,18 +99,9 @@ public class SendSMSController {
 		}
 	}
 	
-	
-	public void setSendSmsManager(SendSmsManager sendSmsManager) {
-		this.sendSmsManager = sendSmsManager;
-	}
-
 	@Required
 	public void setSmsMaxSize(final Integer smsMaxSize) {
 		this.smsMaxSize = smsMaxSize;
 	}
 
-	public void setSmtpServiceUtils(final SmtpServiceUtils smtpServiceUtils) {
-		this.smtpServiceUtils = smtpServiceUtils;
-	}
-	
 }

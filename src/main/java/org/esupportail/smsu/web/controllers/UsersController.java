@@ -113,12 +113,4 @@ public class UsersController {
 		this.phoneNumberPattern = phoneNumberPattern;
 	}
 
-	public void setLdapUtils(final LdapUtils ldapUtils) {
-		this.ldapUtils = ldapUtils;
-	}
-
-	public void setDomainService(DomainService domainService) {
-		this.domainService = domainService;
-	}
-
 }
