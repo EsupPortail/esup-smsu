@@ -73,6 +73,9 @@ public class Person  implements Serializable {
 	}
 
 
+	public Person(String login) {
+		this.setLogin(login);
+	}
 
 
 	/**

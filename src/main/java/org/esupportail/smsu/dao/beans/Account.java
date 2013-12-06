@@ -71,7 +71,9 @@ public class Account implements Serializable {
 		this.setLabel(label);
 	}
 
-
+	public Account(String label) {
+		this.setLabel(label);
+	}
 
 
 	/**
