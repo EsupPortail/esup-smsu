@@ -11,46 +11,46 @@ public class Member {
 	/**
 	 * user first name.
 	 */
-	private String firstName;
+	public String firstName;
 
 	/**
 	 * user last name.
 	 */
-	private String lastName;
+	public String lastName;
 
 	/**
 	 * user phone number.
 	 */
-	private String phoneNumber;
+	public String phoneNumber;
 
 	/**
 	 * available phone numbers.
 	 */
-	private List<String> availablePhoneNumbers;
+	public List<String> availablePhoneNumbers;
 	/**
 	 * validation code for membership activation.
 	 */
-	private String phoneNumberValidationCode;
+	public String phoneNumberValidationCode;
 	
 	/**
 	 * flag that indicates if the membership agrees with the general conditions.
 	 */
-	private Boolean validCG;
+	public Boolean validCG;
 	
 	/**
 	 * List of specific conditions.
 	 */
-	private List<String> validCP;
+	public List<String> validCP;
 
 	/**
 	 * user login.
 	 */
-	private String login;
+	public String login;
 
 	/**
 	 * flag that indicates if the member is in progress.
 	 */
-	private Boolean flagPending;
+	public Boolean flagPending;
 
 
 	private int hashCode = Integer.MIN_VALUE;
@@ -199,7 +199,7 @@ public class Member {
 	/**
 	 * @param isPending
 	 */
-	private void setFlagPending(final Boolean isPending) {
+	public void setFlagPending(final Boolean isPending) {
 		this.flagPending = isPending;
 	}
 	
