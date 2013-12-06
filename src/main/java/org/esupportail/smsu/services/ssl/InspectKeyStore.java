@@ -1,6 +1,5 @@
 package org.esupportail.smsu.services.ssl;
 
-import java.net.URL;
 import java.io.FileInputStream;
 import java.io.File;
 import java.util.ArrayList;
