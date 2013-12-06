@@ -1,6 +1,7 @@
 package org.esupportail.smsu.dao.beans;
 
 import java.io.Serializable;
+import java.util.Date;
 
 
 /**
@@ -67,6 +68,7 @@ public class PendingMember  implements Serializable {
 
 		this.setId(id);
 		this.setValidationCode(validationCode);
+		this.setDateSubscription(new Date());
 	}
 
 

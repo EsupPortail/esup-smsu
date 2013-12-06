@@ -2,6 +2,7 @@ package org.esupportail.smsu.business;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -138,6 +139,7 @@ public class SendSmsManager  {
 		message.setGroupRecipient(groupRecipient);			
 		message.setStateAsEnum(messageStatus);				
 		message.setSupervisors(mayGetSupervisorsOrNull(message));				
+		message.setDate(new Date());
 		if (msg.mailToSend != null) message.setMail(getMail(message, msg.mailToSend));
 		return message;
 	}
