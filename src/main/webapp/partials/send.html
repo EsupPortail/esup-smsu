@@ -1,0 +1,162 @@
+<div class="normalContent">
+
+ <form novalidate  name="myForm" ng-submit="submit()" class="form-horizontal">
+
+  <div class="form-group">
+    <label class="col-md-3 control-label" for="cgroup">Décompter du quota</label>
+    <div class="col-md-6">
+      <select name="cgroup" ng-model="msg.senderGroup" ng-options="cgroup.id as cgroup.name for cgroup in groupLeaves" class="form-control">
+      </select>
+    </div>  
+  </div>
+
+  <div class="form-group">
+    <label class="col-md-3 control-label" for="service">Thème/Partenaire</label>
+    <div class="col-md-6">
+      <select name="service" ng-model="msg.serviceKey" ng-options="service.key as service.name for service in services" class="form-control">
+	<option value="" ng-selected="selected">Aucun</option>
+      </select>
+    </div>  
+  </div>
+
+  <div class="form-group">
+    <label class="col-md-3 control-label" for="service">Type de destinataire</label>
+    <div class="col-md-6">
+      <select name="recipientType" ng-model="recipientType" ng-options="type as type | translate for type in recipientTypes" class="form-control">
+      </select>
+    </div>  
+  </div>
+  
+
+ <div class="form-group"
+      ng-class="{'has-error': submitted && myForm.destPhoneNumber.$invalid}">
+    <label class="col-md-3 control-label" for="fonctions">Destinataires</label>
+    <div class="col-md-6" ng-switch on="recipientType">
+
+      <input type="text" ng-model="wip.login" class="form-control" ng-switch-when="SMS_ENVOI_ADH"
+	     typeahead="e as e.name for e in searchUser($viewValue)" 
+	     typeahead-on-select="addDestLogin()"
+	     >
+      <span ng-show="wip.logins.length === 0" class="has-error"><span class="help-block">No match</span></span>
+
+      <input type="text" ng-model="wip.group" class="form-control" ng-switch-when="SMS_ENVOI_GROUPES"
+	     typeahead="e as e.name for e in searchGroup($viewValue)" 
+	     typeahead-on-select="addDestGroup()"
+	     >
+      <span ng-show="wip.groups.length === 0" class="has-error"><span class="help-block">No match</span></span>
+
+      <div class="input-group" ng-switch-when="SMS_ENVOI_NUM_TEL">
+         <input type="text" name="destPhoneNumber" ng-model="wip.phoneNumber" class="form-control" 
+	     my-validator="{ format : checkPhoneNumber }" >
+	 <span class="input-group-btn">
+           <button class="btn btn-default" type="button" 
+		   ng-click="addDestPhoneNumber()"
+		   ng-disabled="!wip.phoneNumber || myForm.destPhoneNumber.$invalid">
+	    <span class="glyphicon glyphicon-plus"></span>
+	   </button>
+	 </span>
+      </div>
+      <span ng-show="submitted && myForm.destPhoneNumber.$error.format" class="help-block">Invalide</span>
+
+      <div class="input-group" ng-switch-when="SMS_ENVOI_LISTE_NUM_TEL">
+        <textarea ng-model="wip.listPhoneNumbers" class="form-control" ></textarea>
+	 <span class="input-group-btn">
+           <button class="btn btn-default" type="button" 
+		   ng-click="addListDestPhoneNumber()">
+	    <span class="glyphicon glyphicon-plus"></span>
+	   </button>
+	 </span>
+      </div>
+
+      <ul class="not-inline multiSelectSelected">
+	<li ng-repeat="e in msg.destLogins">
+	  <a ng-click="removeRecipient(e)">
+	    <span class="glyphicon glyphicon-user"></span>
+	    {{e.name}}
+	    <span class="glyphicon glyphicon-remove"></span>
+	  </a>
+	</li>
+
+	<li ng-repeat="e in msg.destPhoneNumbers">
+	  <a ng-click="removeRecipient(e)">
+	    <span class="glyphicon glyphicon-earphone"></span>
+	    {{e}}
+	    <span class="glyphicon glyphicon-remove"></span>
+	  </a>
+	</li>
+
+	<li ng-if="msg.destGroup">
+	  <a ng-click="removeRecipient(msg.destGroup)">
+	    <span class="glyphicon glyphicon-list"></span>
+	    {{msg.destGroup.name}}
+	    <span class="glyphicon glyphicon-remove"></span>
+	  </a>
+	</li>
+
+      </ul>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="col-md-3 control-label" for="template">Modèle</label>
+    <div class="col-md-6">
+      <select name="template" ng-model="msg.template" ng-options="template as template.label for template in templates" class="form-control">
+	<option value="" ng-selected="selected">Aucun</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-group" ng-show="msg.template.heading">
+    <label class="col-md-3 control-label" for="heading">Préfixe</label>
+    <div class="col-md-6">
+      <p class="form-control-static">{{msg.template.heading}}</p>      
+    </div>  
+  </div>
+
+  <div class="form-group" ng-class="{'has-error': submitted && myForm.body.$invalid || myForm.body.$error.maxLength}">
+    <label class="col-md-3 control-label" for="body">Corps</label>
+    <div class="col-md-6">
+      <textarea type="text" name="body" ng-model="msg.body" rows="4" class="form-control" required
+		my-validator="{ maxLength: checkMaxSmsLength }"
+		></textarea>
+      <span ng-show="submitted && myForm.body.$error.required" class="help-block">Required</span>
+      <span ng-show="submitted && myForm.body.$error.maxLength" class="help-block">Message trop long</span>
+      <span class="help-block">Caractères restants {{nbMoreCharsAllowed(msg.body)}}</span>
+    </div>
+  </div>
+
+  <div class="form-group" ng-show="msg.template.signature">
+    <label class="col-md-3 control-label" for="signature">Signature</label>
+    <div class="col-md-6">
+      <p class="form-control-static">{{msg.template.signature}}</p>      
+    </div>  
+  </div>
+
+msg.mailToSend.isMailToRecipients
+msg.mailToSend.mailOtherRecipients
+msg.mailToSend.mailSubject
+msg.mailToSend.mailContent
+msg.mailToSend.mailTemplate
+<p>
+Accompagner le SMS d'un courriel
+	
+
+Envoyer le courriel aux destinataires du SMS
+Envoyer le courriel à d'autres destinataires (séparer les adresses par une virgule)
+Modèle	
+Objet	
+Préfixe	
+Corps	
+Signature	
+
+  <div class="form-group">
+    <div class="col-md-offset-3 col-md-6">
+      <button class="btn btn-primary" type="submit">
+	<span class="glyphicon glyphicon-send"></span>
+	Envoyer</button>
+    </div>
+  </div>
+
+ </form>
+
+</div>

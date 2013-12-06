@@ -19,27 +19,6 @@ app.directive('whenScrolled', function() {
     };
 });
 
-// for inputs with type 'file'
-app.directive('base64content', function ($compile) {
-  return {
-    scope: { base64content: '=' },
-    link: function (scope, element, attrs) {
-	element.bind('change', function () {
-	    // nb: we do not modify the content if the user did not choose a file
-	    if (!this.files[0]) return;
-
-	    var reader = new FileReader();
-	    reader.onload = function (env) {
-		scope.$apply(function () {
-		    scope.base64content = env.target.result.replace(/.*?;base64,/, '');
-		});
-	    };
-	    reader.readAsDataURL(this.files[0]);
-	});
-    }
-  };
-});
-
 app.directive('displayRequiredIfNeeded', function ($parse) {
     return { restrict: 'A', 
 	     template: '<span ng-show="$parent.submitted && inputName.$error.required" class="help-block">Required</span>',

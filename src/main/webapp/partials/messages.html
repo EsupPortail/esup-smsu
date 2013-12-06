@@ -1,0 +1,59 @@
+Filtre : <a href="" ng-click="showFilters = !showFilters">{{formattedFilter()}}</a>
+
+<div ng-if="showFilters">
+  <a class="btn btn-default" style="margin-top: 1em" ng-show="filter.sender" ng-click="setFilter({})"><span class="glyphicon glyphicon-remove"></span> Supprimer le filtre</a>
+
+  <h4 style="margin-top: 2em">Choisissez un filtre dans la liste ci-dessous</h4>
+
+ <form class="form-horizontal">
+
+  <div class="form-group">
+    <label class="col-md-3 control-label" for="sender">Expéditeur</label>
+    <div class="col-md-6">
+      <select name="sender" ng-model="filter.sender" 
+	      ng-change="setFilter(filter)"
+	      ng-options="login as name for (login, name) in senders" 
+	      class="form-control">
+      </select>
+    </div>  
+  </div>
+
+ </form>
+
+</div>
+
+<div style="margin-top: 1em" ng-show="messages && !showFilters">
+
+<table class="table table-striped">
+  <tr>
+    <th></th>
+    <th>Date</th>
+    <th>Nombre de SMS</th>
+    <th ng-if="showSender">Expéditeur</th>
+    <th>État</th>
+  </tr>
+  <tr ng-repeat-start="msg in messages" ng-click="toggleMsgDetails(msg)">
+      <td><span class="glyphicon" ng-class="{'glyphicon-expand': !msg.showDetails, 'glyphicon-collapse-up': msg.showDetails}"></span></td>
+      <td>{{msg.date | date:'short'}}</td>
+      <td>{{msg.nbRecipients}}</td>
+      <td ng-if="showSender"><a href="#/messages?sender={{msg.senderLogin}}">{{msg.senderName || msg.senderLogin}}</a></td>
+      <td>{{'MSG_STATE_' + msg.stateMessage | translate}}</td>
+  </tr>
+  <tr ng-if="msg.showDetails"></tr> <!-- for table-striped -->
+  <tr ng-if="msg.showDetails" ng-repeat-end>
+      <td colspan="5">
+	<div ng-include="getTemplateUrl('messages-detail-inc.html')"></div>
+	<a class="btn btn-default" href="#/messages/{{msg.id}}"><span class="glyphicon glyphicon-link"></span></a>
+      </td>
+  </tr>
+</table>
+
+<!-- margin-bottom is needed: -->
+<!-- * to make things more understable when the new results get displayed -->
+<!-- * on mobile phones, the onscroll event can be buggy, this blank fixes it -->
+<div style="margin-bottom: 8em" class="normalContent" when-scrolled="showMoreResults()" >
+  <a ng-hide="inProgress || noMoreResults" id="{{nbResults}}" ng-click="showMoreResults()">Voir plus</a>
+  <div ng-show="inProgress">En cours...</div>
+</div>
+
+</div>

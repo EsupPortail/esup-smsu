@@ -5,16 +5,21 @@ function computeRoutes(baseURL) {
   var templatesBaseURL = baseURL + "/partials";
   var l =
     [{ route: '/welcome', mainText: "Accueil", controller: 'EmptyCtrl' }, 
-     { route: '/applications', mainText: "Applications clientes", show: 'loggedUser.can.FCTN_API_CONFIG_APPLIS', controller: 'ApplicationsCtrl'},
-     { route: '/accounts', mainText: "Comptes d'imputation", show: 'loggedUser.can.FCTN_GESTION_CPT_IMPUT', controller: 'AccountsCtrl'},
-     { route: '/consolidatedSummary', mainText: "Relevé consolidé", show: 'loggedUser.can.FCTN_API_EDITION_RAPPORT', controller: 'ConsolidatedSummaryCtrl' },
-     { route: '/detailedSummary', mainText: "Relevé détaillé", show: 'loggedUser.can.FCTN_API_EDITION_RAPPORT', controller: 'DetailedSummaryCtrl' },
-     { route: '/users', mainText: "Gestion des utilisateurs", show: 'loggedUser.can.FCTN_MANAGE_USERS', controller: 'UsersCtrl' },
-     { route: '/logout', mainText: "Déconnexion", show: '!isPortlet', controller: 'EmptyCtrl' },
+     { route: '/membership', mainText: "Adhésion", controller: 'MembershipCtrl'},
+     { route: '/send', mainText: "Envoi SMS", controller: 'SendCtrl'},
+     { route: '/messages', mainText: "Suivi des envois", show: 'loggedUser.can.FCTN_SUIVI_ENVOIS_UTIL || loggedUser.can.FCTN_SUIVI_ENVOIS_ETABL', controller: 'MessagesCtrl'},
+     { route: '/approvals', mainText: "Approbation des envois", controller: 'ApprovalsCtrl'},
+     { route: '/templates', mainText: "Modèles", show: 'loggedUser.can.FCTN_GESTION_MODELES', controller: 'TemplatesCtrl'},
+     { route: '/roles', mainText: "Rôles", show: 'loggedUser.can.FCTN_GESTION_ROLES_CRUD', controller: 'RolesCtrl'},
+     { route: '/groups', mainText: "Groupes", show: 'loggedUser.can.FCTN_GESTION_GROUPE', controller: 'GroupsCtrl'},
+     { route: '/services', mainText: "Thèmes/partenaires", show: 'loggedUser.can.FCTN_GESTION_SERVICES_CP', controller: 'ServicesCtrl'},
+     { route: '/logout', mainText: "Déconnexion", show: 'allowLogout', controller: 'EmptyCtrl' },
      { route: '/about', mainText: "A propos de", title: "A propos de SMSU-U", controller: 'EmptyCtrl'},
-     { route: '/users/:id', parent: '/users', controller: 'UsersDetailCtrl', templateUrl: templatesBaseURL + '/users-detail.html'},
-     { route: '/applications/:id', parent: '/applications', controller: 'ApplicationsDetailCtrl', templateUrl: templatesBaseURL + '/applications-detail.html'},
-     { route: '/accounts/:id', parent: '/accounts', controller: 'AccountsDetailCtrl', templateUrl: templatesBaseURL + '/accounts-detail.html'}];
+     { route: '/messages/:id', text: "Détail", parent: '/messages', controller: 'MessagesDetailCtrl', templateUrl: templatesBaseURL + '/messages-detail.html'},
+     { route: '/templates/:id', parent: '/templates', controller: 'TemplatesDetailCtrl', templateUrl: templatesBaseURL + '/templates-detail.html'},
+     { route: '/roles/:id', parent: '/roles', controller: 'RolesDetailCtrl', templateUrl: templatesBaseURL + '/roles-detail.html'},
+     { route: '/groups/:id', parent: '/groups', controller: 'GroupsDetailCtrl', templateUrl: templatesBaseURL + '/groups-detail.html'},
+     { route: '/services/:id', parent: '/services', controller: 'ServicesDetailCtrl', templateUrl: templatesBaseURL + '/services-detail.html'}];
   angular.forEach(l, function (tab) {
     if (!tab.templateUrl) tab.templateUrl = templatesBaseURL + tab.route + '.html';
   });

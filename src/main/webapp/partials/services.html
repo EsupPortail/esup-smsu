@@ -1,0 +1,15 @@
+<div class="normalContent">
+   <a class="btn btn-default" href="#/services/new"><span class="glyphicon glyphicon-plus"></span> Créer un service</a>
+</div>
+
+<p>
+
+<div>
+  <table class="table table-striped">
+    <thead><tr><th>Clé</th><th>Description</th></tr></thead>
+    <tr ng-repeat="service in services">
+      <td><a href="#/services/{{service.id}}">{{service.key}}</a></td>
+      <td>{{service.name}}</td>
+    </tr>
+  </table>
+</div>

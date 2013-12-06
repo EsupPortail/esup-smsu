@@ -1,0 +1,87 @@
+<div class="normalContent" ng-show="group">
+
+ <a class="btn btn-default" ng-hide="group.isNew || !group.deletable" ng-click="delete()"><span class="glyphicon glyphicon-remove"></span> Supprimer l'application</a>
+
+ <h4 style="margin-top: 2em" ng-hide="group.isNew">Modifier</h4>
+
+
+ <form novalidate  name="myForm" ng-submit="submitted = 1; submit()" class="form-horizontal">
+
+  <div class="form-group" ng-class="{'has-error': submitted && myForm.label.$invalid}">
+    <label class="col-md-3 control-label" for="label">Label</label>
+    <div class="col-md-9">
+      <input type="text" name="label" ng-model="group.label" my-validator="{ unique: checkUniqueLabel }" required maxlength="30" class="form-control">
+      <span ng-show="submitted && myForm.label.$error.required" class="help-block">Required</span>
+      <span ng-show="submitted && myForm.label.$error.unique" class="help-block">Already in use</span>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="col-md-3 control-label" for="role">Sélectionnez un rôle</label>
+    <div class="col-md-9">
+      <select name="role" ng-model="group.role" ng-options="name as name for (name, role) in roles" class="form-control">
+      </select>
+
+      <span ng-show="roles[group.role].fonctions.length === 0" class="help-block">
+	NB : le rôle choisit ne donne aucun droit. Ce groupe servira uniquement à définir les superviseurs pour l'envoi au groupe {{group.name}}.
+      </span>
+
+    </div>  
+  </div>
+
+ <div class="form-group">
+    <label class="col-md-3 control-label" for="supervisors">Superviseurs</label>
+    <div class="col-md-9">
+
+      <ul class="list-inline multiSelectSelected">
+	<li ng-repeat="(id, name) in group.supervisors">
+	  <a class="btn btn-default" ng-click="removeSupervisor(id)">
+	    {{name}}
+	    <span class="glyphicon glyphicon-remove"></span>
+	  </a>
+	</li>
+      </ul>
+    </div>
+  </div>
+
+ <div ng-show="roles[group.role].fonctions.length">
+
+  <div class="form-group"
+       ng-class="{'has-error': submitted && myForm.quota.$invalid}">
+    <label class="col-md-3 control-label" for="quota">Quota</label>
+    <div class="col-md-9">
+      <input type="number" name="quota" ng-model="group.quotaSms" min="0" integer class="form-control">
+      <span ng-show="submitted && myForm.quota.$invalid" class="help-block">Nombre positif</span>
+    </div>
+  </div>
+
+  <div class="form-group"
+       ng-class="{'has-error': submitted && myForm.maxPerSms.$invalid}">
+    <label class="col-md-3 control-label" for="maxPerSms">Nb. max de destinataires/envoi</label>
+    <div class="col-md-9">
+      <input type="number" name="maxPerSms" ng-model="group.maxPerSms" min="0" integer class="form-control">
+      <span ng-show="submitted && myForm.maxPerSms.$invalid" class="help-block">Nombre positif</span>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="col-md-3 control-label" for="account">Compte d'imputation</label>
+    <div class="col-md-9">
+      <select name="account" ng-model="group.account" ng-options="acc for acc in accounts" class="form-control">
+      </select>
+    </div>  
+  </div>
+
+ </div>
+
+  <div class="form-group">
+    <div class="col-md-offset-3 col-md-9">
+      <button class="btn btn-primary" type="submit">
+	<span class="glyphicon" ng-class="{'glyphicon-plus': group.isNew, 'glyphicon-pencil': !group.isNew}"></span>
+	{{group.isNew && "Créer" || "Enregistrer"}}</button>
+    </div>
+  </div>
+
+ </form>
+
+</div>

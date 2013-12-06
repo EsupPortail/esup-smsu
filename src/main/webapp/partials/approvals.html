@@ -1,0 +1,41 @@
+
+<div class="normalContent" ng-show="approvals.length >= 0">
+
+<div ng-show="approvals.length === 0">
+{{'APPROVALS_NO_MESSAGES' | translate}}
+</div>
+
+<div ng-repeat="msg in approvals">
+  Le {{msg.date | date:"dd/MM/yyyy à HH:mm"}}, {{msg.senderName || msg.senderLogin}} a souhaité envoyer
+  le message suivant à {{msg.nbRecipients}} personne(s).
+
+  <blockquote><p>
+    <span ng-repeat='line in msg.content.split("\n") track by $index'>{{line}}<br></span>
+  </p></blockquote>
+
+  <dl class="dl-horizontal">
+    <dt ng-show="msg.groupSenderName"
+       >{{'MSG_GROUP_SENDER' | translate}}</dt><dd>{{msg.groupSenderName}}</dd>
+    <dt ng-show="msg.groupRecipientName"
+       >{{'MSG_GROUP_RECIPIENT' | translate}}</dt><dd>{{msg.groupRecipientName}}</dd>
+    <dt ng-show="msg.serviceName"
+       >{{'MSG_SERVICE'         | translate}}</dt><dd>{{msg.serviceName}}</dd>
+    <dt>{{'MSG_ACCOUNT'         | translate}}</dt><dd>{{msg.accountLabel}}</dd>
+    <dt>{{'MSG_SUPERVISORS'     | translate}}</dt><dd>{{msg.supervisors.join(", ")}}</dd>
+  </dl>
+
+   <button type="button" class="btn btn-default" ng-click="approve(msg)">
+     <span class="glyphicon glyphicon-ok"></span>
+     {{'APPROVALS_APPROVE' | translate}}
+   </button>
+
+   <button type="button" class="btn btn-default" ng-click="cancel(msg)">
+     <span class="glyphicon glyphicon-trash"></span>
+     {{'APPROVALS_CANCEL' | translate}}
+   </button>
+
+   <hr>
+
+</div>
+
+</div>

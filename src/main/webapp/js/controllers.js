@@ -3,12 +3,19 @@
 
 var app = angular.module('myApp');
 
-app.controller('MainCtrl', function($scope, h, $route, $parse, $location, routes) {
+var phoneNumberPatternOne = /^0[67]\d{8}$/;
+var phoneNumberPatternAll = /\s*\b0[67]\d{8}\b\s*/g;
 
-    $scope.isPortlet = true;
-    //if ($scope.isPortlet) h.cleanupUportalCss();
+app.filter('array_difference', function (h) {
+    return function (arr1, arr2) { 
+	return h.array_difference(arr1, arr2);
+    };
+});
 
-    //if (!$route.current) $location.path('/welcome');
+app.controller('MainCtrl', function($scope, h, $route, $parse, routes, globals) {
+
+    $scope.getTemplateUrl = h.getTemplateUrl;
+    $scope.allowLogout = false;//!globals.isWebWidget;
 
     $scope.$watch('loggedUser', function () {
 	$scope.mainVisibleTabs = $.grep(routes.routes, function(e) { 
@@ -37,199 +44,111 @@ app.controller('MainCtrl', function($scope, h, $route, $parse, $location, routes
 
 app.controller('EmptyCtrl', function($scope) {});
 
-app.controller('UsersCtrl', function($scope, h) {
-    h.getUsers($scope.roles).then(function (users) {
-	$scope.users = users;
-    });
-});
-
-app.controller('UsersDetailCtrl', function($scope, h, $routeParams, $location) {
+app.controller('GroupsDetailCtrl', function($scope, h, $routeParams, $location) {
     var id = $routeParams.id;
 
-    var updateCurrentTabTitle = function () {
-	$scope.currentTab.text = $scope.user && $scope.user.login || (id === 'new' ? 'Création' : 'Modification');
-    };
-    updateCurrentTabTitle();
-    $scope.$watch('user.login', updateCurrentTabTitle);
-
-    $scope.checkUniqueName = function (name) {
-	var user = $scope.login2user[name];
-	return !user || user === $scope.user;
-    };
-
-    var modify = function (method) {
-	var user = $scope.user;
-	user = { id: user.id, login: user.login, role: user.role }; // keep only modifiable fields
-	h.callRestModify(method, 'users', user).then(function () {
-	    $location.path('/users');
-	});
-    };
-    
-    $scope.submit = function () {
-	if (!$scope.myForm.$valid) return;
-	modify($scope.user.isNew ? 'post' : 'put');
-    };
-    $scope["delete"] = function () {
-	modify('delete');
-    };
-
-    h.getUsers($scope.roles).then(function (users) {
-	$scope.login2user = h.array2hash(h.objectValues(users), 'login');
-	if (id === "new") {
-	    $scope.user = { isNew: true };
-	} else if (id in users) {
-	    $scope.user = users[id];
-	} else {
-	    alert("invalid application " + id);
-	}
-    });	
-});
-
-app.controller('ApplicationsDetailCtrl', function($scope, h, $routeParams, $location) {
-    var id = $routeParams.id;
+    var allowSendFonctions = [
+	'FCTN_SMS_ENVOI_ADH',
+	'FCTN_SMS_ENVOI_GROUPES',
+	'FCTN_SMS_ENVOI_NUM_TEL',
+	'FCTN_SMS_ENVOI_LISTE_NUM_TEL',
+	'FCTN_SMS_REQ_LDAP_ADH',
+	'FCTN_SMS_ENVOI_SERVICE_CP' ];
 
     h.getAccounts().then(function (list) {
 	$scope.accounts = list;
-    });	
+    });
+
+    h.getRoles().then(function (roles) {
+	angular.forEach(roles, function (role) {
+	    role.allowSend = h.array_intersection(allowSendFonctions, role.fonctions).length;
+	});
+	$scope.roles = h.array2hash(roles, 'name');
+    });
 
     var updateCurrentTabTitle = function () {
-	$scope.currentTab.text = $scope.app && $scope.app.name || (id === 'new' ? 'Création' : 'Modification');
+	$scope.currentTab.text = $scope.group && $scope.group.label || (id === 'new' ? 'Création' : 'Modification');
     };
     updateCurrentTabTitle();
-    $scope.$watch('app.name', updateCurrentTabTitle);
+    $scope.$watch('group.label', updateCurrentTabTitle);
 
-    $scope.checkUniqueName = function (name) {
-	var app = $scope.name2app[name];
-	return !app || app === $scope.app;
+    $scope.checkUniqueLabel = function (label) {
+	var group = $scope.label2group[label];
+	return !group || group === $scope.group;
+    };
+    $scope.removeSupervisor = function (id) {
+	delete $scope.group.supervisors[id];
     };
 
     var modify = function (method, then) {
-	var app = angular.copy($scope.app);
-	delete app.isNew;
-	h.callRestModify(method, 'applications', app).then(function () {
-	    $location.url(then || '/applications');
+	var group = angular.copy($scope.group);
+	group.role = group.role.name;
+	delete group.isNew;
+	h.callRestModify(method, 'groups', group).then(function () {
+	    $location.url(then || '/groups');
 	});
     };    
     $scope.submit = function () {
 	if (!$scope.myForm.$valid) return;
-	var method = $scope.app.isNew ? 'post' : 'put';
-	if ($scope.app.accountName == null) {
-	    // must first create the account
-	    var accountNameSuggestion = $scope.app.name;
-	    h.createEmptyAccount(accountNameSuggestion, $scope.accounts).then(function (account) {
-		$scope.app.accountName = account.name;
-  		modify(method, '/accounts/' + account.id + '?isNew');
-	    });
-	} else {
-	    modify(method);
-	}
+	var method = $scope.group.isNew ? 'post' : 'put';
+	modify(method);
     };
     $scope["delete"] = function () {
 	modify('delete');
     };
 
-    h.getApplications().then(function (applications) {
-	$scope.name2app = h.array2hash(applications, 'name');
+    h.getGroups().then(function (groups) {
+	$scope.label2group = h.array2hash(groups, 'label');
 
 	if (id === "new") {
-	    $scope.app = { isNew: true, accountName: null, quota: 0 };
+	    $scope.group = { isNew: true, quotaSms: 0 };
 	} else {
-	    var id2app = h.array2hash(applications, 'id');
+	    var id2group = h.array2hash(groups, 'id');
 
-	    if (id in id2app) {
-		$scope.app = id2app[id];
+	    if (id in id2group) {
+		$scope.group = id2group[id];
 	    } else {
-		alert("invalid application " + id);
+		alert("invalid group " + id);
 	    }
 	}
     });	
 });
 
-app.controller('AccountsDetailCtrl', function($scope, h, $routeParams, $location) {
-    var id = $routeParams.id;
-    $scope.isNew = $routeParams.isNew;
-
-    var updateCurrentTabTitle = function () {
-	$scope.currentTab.text = $scope.account && $scope.account.name || ($scope.isNew ? 'Création' : 'Modification');
-    };
-    updateCurrentTabTitle();
-    $scope.$watch('account.name', updateCurrentTabTitle);
-
-    $scope.checkUniqueName = function (name) {
-	var account = $scope.name2account[name];
-	return !account || account === $scope.account;
-    };
-
-    var modify = function (method) {
-	var account = angular.copy($scope.account);
-	h.callRestModify(method, 'accounts', account).then(function () {
-	    $location.path('/accounts');
+app.controller('GroupsCtrl', function($scope, h) {
+    function setGroups(groups, name2role) {
+	$scope.groupsDestinations = [];
+	$scope.groups = h.simpleFilter(groups, function (group) {
+	    if (group.quotaSms > 0 ||
+		name2role[group.role].fonctions.length > 0) {
+		return true;
+	    } else {
+		$scope.groupsDestinations.push(group);
+		return false;
+	    }
 	});
-    };    
-    $scope.submit = function () {
-	if (!$scope.myForm.$valid) return;
-	modify('put');
-    };
-    $scope.disable = function () {
-	$scope.account.quota = 0;
-	modify('put');	
-    };
+	console.log($scope.groups);
+    }
 
-    h.getAccounts().then(function (accounts) {
-	$scope.name2account = h.array2hash(accounts, 'name');
-	var id2account = h.array2hash(accounts, 'id');
-
-	if (id in id2account) {
-	    $scope.accounts = accounts;
-	    $scope.account = id2account[id];
-	    $scope.appDisabled = $scope.account.quota == 0;
-	} else {
-	    alert("invalid account " + id);
-	}
-    });	
-});
-
-app.controller('AccountsCtrl', function($scope, h) {
-    h.getAccounts().then(function(list) {
-	$scope.accounts = list;
-	// tell ng-grid:
-        if (!$scope.$$phase) $scope.$apply();
-    });	
+    h.getRoles().then(function (roles) {
+	var name2role = h.array2hash(roles, 'name');
+	h.getGroups().then(function(groups) {
+	    setGroups(groups, name2role);
+	    // tell ng-grid:
+            if (!$scope.$$phase) $scope.$apply();
+	});
+    });
     $scope.warnConsumedRatio = 0.9;
-    $scope.consumedRatio = function (account) {
-	return account.consumedSms / account.quota;
+    $scope.consumedRatio = function (e) {
+	return e.consumedSms / e.quota;
     };
-    $scope.gridOptions = { data: 'accounts',
-			   sortInfo: {fields: ['name'], directions: ['asc', 'desc']},
+    $scope.gridOptions = { data: 'groups',
+			   sortInfo: {fields: ['label'], directions: ['asc', 'desc']},
 			   headerRowHeight: '50',
 			   multiSelect: false,
-			   columnDefs: [{field: 'name', displayName:"Compte d'imputation", width: '****', 
-					   cellTemplate: '<div class="ngCellText"><a href="#/accounts/{{row.entity.id}}">{{row.getProperty(col.field)}}</a></div>'},
-					{field: 'quota', displayName: 'Quota', width: '**'},
-					{field: 'consumedSms', displayName: 'Nombre de SMS consommés', width: '**',
-					 cellTemplate: '<div ng-class="{highConsumedRatio: consumedRatio(row.entity) > warnConsumedRatio}"><div class="ngCellText">{{row.entity.consumedSms}}</div></div>'
-					}]
-			 };
-
-});
-
-app.controller('ApplicationsCtrl', function($scope, h) {
-    h.getApplications().then(function(list) {
-	$scope.applications = list;
-	// tell ng-grid:
-        if (!$scope.$$phase) $scope.$apply();
-    });	
-    $scope.warnConsumedRatio = 0.9;
-    $scope.consumedRatio = function (account) {
-	return account.consumedSms / account.quota;
-    };
-    $scope.gridOptions = { data: 'applications',
-			   sortInfo: {fields: ['name'], directions: ['asc', 'desc']},
-			   headerRowHeight: '50',
-			   multiSelect: false,
-			   columnDefs: [{field: 'name', displayName:"Application", width: '***', 
-					   cellTemplate: '<div class="ngCellText"><a href="#/applications/{{row.entity.id}}">{{row.getProperty(col.field)}}</a></div>'},
-					{field: 'quota', displayName: 'Quota', width: '*'},
+			   columnDefs: [{field: 'label', displayName:"Group", width: '***', 
+					   cellTemplate: '<div class="ngCellText"><a href="#/groups/{{row.entity.id}}">{{row.getProperty(col.field)}}</a></div>'},
+					{field: 'role', displayName: 'Rôle', width: '*'},
+					{field: 'quotaSms', displayName: 'Quota', width: '*'},
 					{field: 'consumedSms', displayName: 'Nombre de \nSMS consommés', width: '*',
 					 cellTemplate: '<div ng-class="{highConsumedRatio: consumedRatio(row.entity) > warnConsumedRatio}"><div class="ngCellText">{{row.entity.consumedSms}}</div></div>'
 					} ]
@@ -237,108 +156,463 @@ app.controller('ApplicationsCtrl', function($scope, h) {
 
 });
 
-app.controller('ConsolidatedSummaryCtrl', function($scope, h) {
-    var computeTree = function (flatList) {
-	var tree = {};
-	angular.forEach(flatList, function (e) {
-	    var key1 = e.institution;
-	    var key2 = e.app + "+" + e.account;
-	    if (!tree[key1]) 
-		tree[key1] = {};
-	    if (!tree[key1][key2]) 
-		tree[key1][key2] = $.extend({ data: [] }, h.objectSlice(e, ['institution', 'app', 'account']));
-	    tree[key1][key2].data.unshift(e);
-	});
-	angular.forEach(tree, function (subtree, key1) {
-	    tree[key1] = $.map(h.objectKeys(subtree).sort(), function (k) { return subtree[k]; });
-	});
-	return tree;
-    };
-
-    h.callRest('summary/consolidated').then(function(flatList) {
-	angular.forEach(flatList, function (e) {
-	    $.extend(e, h.getInstAppAccount(e));
-	    e.nbReceived = e.nbSendedSMS - e.nbSMSInError;
-	    e.failureRate = Math.round(e.nbSMSInError / e.nbSendedSMS * 100) + "%";
-	});
-	$scope.appAccountsTree = computeTree(flatList);
+app.controller('TemplatesCtrl', function($scope, h) {
+    h.getTemplates().then(function (templates) {
+	$scope.templates = templates;
     });
-
-    $scope.setAppAccount = function(e) {
-	$scope.appAccount = e;
-    };
 });
 
-app.controller('DetailedSummaryCtrl', function($scope, h, $location, $route) {
+app.controller('TemplatesDetailCtrl', function($scope, h, $routeParams, $location) {
+    var id = $routeParams.id;
+
+    var updateCurrentTabTitle = function () {
+	$scope.currentTab.text = $scope.template && $scope.template.label || (id === 'new' ? 'Création' : 'Modification');
+    };
+    updateCurrentTabTitle();
+    $scope.$watch('template.label', updateCurrentTabTitle);
+
+    $scope.checkUniqueName = function (name) {
+	var template = $scope.label2template[name];
+	return !template || template === $scope.template;
+    };
+
+    var modify = function (method) {
+	var template = angular.copy($scope.template);
+	delete template.isNew;
+	h.callRestModify(method, 'templates', template).then(function () {
+	    $location.path('/templates');
+	});
+    };
+    
+    $scope.submit = function () {
+	if (!$scope.myForm.$valid) return;
+	modify($scope.template.isNew ? 'post' : 'put');
+    };
+    $scope["delete"] = function () {
+	modify('delete');
+    };
+
+    h.getTemplates().then(function (templates) {
+	$scope.label2template = h.array2hash(h.objectValues(templates), 'label');
+	if (id === "new") {
+	    $scope.template = { isNew: true, body: "" };
+	} else {
+	    var id2template = h.array2hash(templates, 'id');
+	    if (id in id2template) {
+		$scope.template = id2template[id];
+	    } else {
+		alert("invalid template " + id);
+	    }
+	}
+    });	
+});
+
+app.controller('RolesCtrl', function($scope, h) {
+    h.getRoles().then(function (roles) {
+	$scope.roles = roles;
+    });
+});
+
+app.controller('RolesDetailCtrl', function($scope, h, $routeParams, $location, $translate, $filter) {
+    var id = $routeParams.id;
+
+    $scope.forOrdering = $translate;
+    $scope.fonctionText = function (fonction) {
+	return $translate(fonction).replace(/^\d+ /, '');
+    };
+
+    h.callRest('roles/fonctions').then(function (list) {
+	$scope.allFonctions = list;
+    });
+
+    var updateCurrentTabTitle = function () {
+	$scope.currentTab.text = $scope.role && $scope.role.name || (id === 'new' ? 'Création' : 'Modification');
+    };
+    updateCurrentTabTitle();
+    $scope.$watch('role.name', updateCurrentTabTitle);
+
+    $scope.checkUniqueName = function (name) {
+	var role = $scope.name2role[name];
+	return !role || role === $scope.role;
+    };
+
+    $scope.removeFonction = function (fonction) {
+	h.array_remove_elt($scope.role.fonctions, fonction);
+    };
+    $scope.addFonction = function (fonction) {
+	$scope.role.fonctions.push(fonction);
+    };
+
+    var modify = function (method) {
+	var role = angular.copy($scope.role);
+	delete role.isNew;
+	h.callRestModify(method, 'roles', role).then(function () {
+	    $location.path('/roles');
+	});
+    };
+    
+    $scope.submit = function () {
+	if (!$scope.myForm.$valid) return;
+	modify($scope.role.isNew ? 'post' : 'put');
+    };
+    $scope["delete"] = function () {
+	modify('delete');
+    };
+
+    h.getRoles().then(function (roles) {
+	$scope.name2role = h.array2hash(roles, 'name');
+	if (id === "new") {
+	    $scope.role = { isNew: true, fonctions: [] };
+	} else {
+	    var id2role = h.array2hash(roles, 'id');
+	    if (id in id2role) {
+		$scope.role = id2role[id];
+		$scope.role.fonctions.sort();
+	    } else {
+		alert("invalid role " + id);
+	    }
+	}
+    });	
+});
+
+app.controller('ServicesCtrl', function($scope, h) {
+    h.getServices().then(function (services) {
+	$scope.services = services;
+    });
+});
+
+app.controller('ServicesDetailCtrl', function($scope, h, $routeParams, $location) {
+    var id = $routeParams.id;
+
+    var updateCurrentTabTitle = function () {
+	$scope.currentTab.text = $scope.service && $scope.service.key || (id === 'new' ? 'Création' : 'Modification');
+    };
+    updateCurrentTabTitle();
+    $scope.$watch('service.key', updateCurrentTabTitle);
+
+    $scope.checkUniqueName = function (name) {
+	var service = $scope.key2service[name];
+	return !service || service === $scope.service;
+    };
+
+    var modify = function (method) {
+	var service = angular.copy($scope.service);
+	delete service.isNew;
+	h.callRestModify(method, 'services', service).then(function () {
+	    $location.path('/services');
+	});
+    };
+    
+    $scope.submit = function () {
+	if (!$scope.myForm.$valid) return;
+	modify($scope.service.isNew ? 'post' : 'put');
+    };
+    $scope["delete"] = function () {
+	modify('delete');
+    };
+
+    h.getServices().then(function (services) {
+	$scope.key2service = h.array2hash(h.objectValues(services), 'key');
+	if (id === "new") {
+	    $scope.service = { isNew: true };
+	} else {
+	    var id2service = h.array2hash(services, 'id');
+	    if (id in id2service) {
+		$scope.service = id2service[id];
+	    } else {
+		alert("invalid service " + id);
+	    }
+	}
+    });	
+});
+
+app.controller('MembershipCtrl', function($scope, h) {
+    h.getServices().then(function (services) {
+	$scope.services = services;
+    });
+
+    var set_prev_membership = function () {
+	$scope.membership.prev_validCG = $scope.membership.validCG;
+    }
+
+    var modify = function (method) {
+	var membershipRaw = h.objectSlice($scope.membership, ['login','phoneNumber', 'validCG']); // keep only modifiable fields
+	membershipRaw.validCP = h.set2array($scope.membership.validCP);
+	h.callRestModify(method, 'membership', membershipRaw).then(function () {
+	    var prev = $scope.membership.prev_validCG;
+	    $scope.submitted_msg = 
+		!prev == !$scope.membership.validCG ? "Modifications enregistrées" :
+		$scope.membership.validCG ? "Adhésion enregistrée" : "Résiliation effectuée";
+	    set_prev_membership();
+	    $scope.myForm.$setPristine();
+	});
+    };
+    
+    $scope.submit = function () {
+	if (!$scope.myForm.$valid) return;
+	modify('post');
+    };
+
+    h.callRest('membership').then(function (membership) {
+	membership.validCP = h.array2set(membership.validCP);
+	$scope.membership = membership;
+	set_prev_membership();
+    });
+});
+
+app.controller('ApprovalsCtrl', function($scope, h) {
+
+    function get_approvals() {
+	h.callRest('approvals').then(function (approvals) {
+	    angular.forEach(approvals, function(msg) {
+		msg.date = new Date(msg.date);
+	    });
+	    $scope.approvals = approvals;
+	});
+    }
+
+    function modify(msg, status) {
+	msg = { id: msg.id, stateMessage: status };
+	h.callRestModify('put', 'approvals', msg).then(function () {
+	    get_approvals();
+	});
+    }
+
+    $scope.approve = function (msg) { modify(msg, "IN_PROGRESS"); };
+    $scope.cancel = function (msg) { modify(msg, "CANCEL"); };
+
+    get_approvals();
+});
+
+app.controller('SendCtrl', function($scope, h, $location) {
+    $scope.wip = { phoneNumber: null, login: null }; // temp
+    $scope.msg = {};
+    var allRecipientTypes = ['SMS_ENVOI_ADH', 'SMS_ENVOI_GROUPES', 'SMS_ENVOI_NUM_TEL', 'SMS_ENVOI_LISTE_NUM_TEL'];
+    $scope.$watch('loggedUser', function () {
+	$scope.recipientTypes = $.grep(allRecipientTypes, function (e) { 
+	    return $scope.loggedUser && $scope.loggedUser.can["FCTN_" + e];
+	});
+	$scope.recipientType = $scope.recipientTypes[0];
+	//$scope.recipientType = 'SMS_ENVOI_LISTE_NUM_TEL'; // TEST
+    });
+
+    h.callRest('messages/groupLeaves').then(function (groupLeaves) {
+	$scope.groupLeaves = groupLeaves;
+	$scope.msg.senderGroup = groupLeaves[0].id;
+    });
+    h.callRest('services').then(function (services) {
+	$scope.services = services;
+    });
+    h.callRest('templates').then(function (templates) {
+	$scope.templates = templates;
+    });
+
+    function computeContent(body, template) {
+	body = body || '';
+	if (template) {
+	    return template.heading + body + template.signature;
+	} else {
+	    return body;
+	}
+    }
+
+    $scope.$watch('msg.template', function () {
+	if ($scope.msg.template)
+	    $scope.msg.body = $scope.msg.template.body;
+    });
+
+    $scope.nbMoreCharsAllowed = function(body) {
+	var content = computeContent(body, $scope.msg.template);
+	content = content.replace(/[\[\]{}\\~^|\u20AC]/g, "xx"); // cf GSM's "Basic Character Set Extension". \u20AC is euro character
+	return 160 - content.length;
+    };
+    $scope.checkMaxSmsLength = function (body) {
+	return $scope.nbMoreCharsAllowed(body) >= 0;
+    };
+
+    $scope.checkPhoneNumber = function (nb) {
+	return !nb || nb.match(phoneNumberPatternOne);
+    };
+
+    $scope.msg.destLogins = [];
+    $scope.msg.destPhoneNumbers = [];
+
+    // TEST
+    //$scope.msg.destLogins.push({id:"aanli", name: "Aymar Anli"});
+    //$scope.msg.destGroup = {id:"foo", name: "Groupe Machin"};
+
+
+    var hash2array = function (h) {
+	return $.map(h, function (name, id) { return { id: id, name: name }; });
+    };
+
+    $scope.searchUser = function (token) {
+	if (token.length < 4) {
+	    $scope.wip.logins = null;
+	    return [];
+	}
+	return h.callRest('users/search', 
+			  { token: token, service: $scope.msg.serviceKey })
+	    .then(function (id2name) {
+		$scope.wip.logins = hash2array(id2name);
+		return $scope.wip.logins;
+	    });
+    };
+
+    $scope.searchGroup = function (token) {
+	if (token.length < 3) {
+	    $scope.wip.groups = null;
+	    return [];
+	}
+	return h.callRest('groups/search', { token: token })
+	    .then(function (groups) {
+		$scope.wip.groups = groups;
+		return $scope.wip.groups;
+	    });
+    };
+
+    $scope.addDestLogin = function () {
+	$scope.msg.destLogins.push($scope.wip.login);
+	$scope.wip.login = null;
+    };
+    $scope.addDestPhoneNumber = function () {
+	$scope.msg.destPhoneNumbers.push($scope.wip.phoneNumber);
+	$scope.wip.phoneNumber = null;
+    };
+    $scope.addDestGroup = function () {
+	$scope.msg.destGroup = $scope.wip.group;	
+    };
+    $scope.addListDestPhoneNumber = function () {
+	var s = $scope.wip.listPhoneNumbers;
+	var numbers = s.match(phoneNumberPatternAll);
+	if (numbers) {
+	    $scope.msg.destPhoneNumbers = 
+		$scope.msg.destPhoneNumbers.concat(numbers);
+	    $scope.wip.listPhoneNumbers =
+		s.replace(phoneNumberPatternAll, '');	    
+	}
+    };
+    
+
+    $scope.removeRecipient = function (e) {
+	var msg = $scope.msg;
+	if (e === msg.destGroup) {
+	    msg.destGroup = null;
+	} else {
+	    h.array_remove_elt(msg.destLogins, e);
+	    h.array_remove_elt(msg.destPhoneNumbers, e);
+	}
+    };
+
+    $scope.submit = function () {
+	if ($scope.wip.phoneNumber &&
+	    $scope.myForm.destPhoneNumber &&
+	    !$scope.myForm.destPhoneNumber.$invalid) {
+	    return $scope.addDestPhoneNumber();
+	}
+	if ($scope.wip.listPhoneNumbers &&
+	    $scope.msg.destPhoneNumbers.length === 0) {
+	    return $scope.addListDestPhoneNumber();
+	}
+
+	$scope.submitted = 1; 
+	if (!$scope.myForm.$valid) return;
+
+	function destIds(l) {
+	    var ids = h.array_map(l, function (e) { return e.id; });
+	    return ids.length ? ids : null;
+	}
+	var msg = $scope.msg;
+	var msgToSend = h.objectSlice($scope.msg, ['senderGroup','serviceKey']);
+	msgToSend.content = computeContent(msg.body, msg.template);
+	msgToSend.smsTemplate = msg.template && msg.template.label; // for statistics on templates usage
+	msgToSend.recipientLogins = destIds(msg.destLogins);
+	msgToSend.recipientPhoneNumbers = msg.destPhoneNumbers.length ? msg.destPhoneNumbers : null;
+	msgToSend.recipientGroup = msg.destGroup && msg.destGroup.id;
+
+	console.log("sending...");
+	console.log(msgToSend);
+	h.callRestModify('post', 'messages', msgToSend).then(function (resp) {
+	    var msg = resp.data;
+	    $location.path('messages/' + msg.id);
+	});
+
+    };
+
+});
+
+app.controller('MessagesCtrl', function($scope, h, $location, $route) {
     $scope.initialNbResults = 50;
     $scope.nbResults = $scope.initialNbResults;
-    $scope.accountFilter = $location.search();
+    $scope.filter = $location.search();
+    $scope.inProgress = false;
 
-    $scope.setAppAccount = function (e) {
-	e = h.objectSlice(e, ['institution', 'app', 'account']); // all but hashKey
+    h.callRest('messages/senders').then(function (senders) {
+	$scope.senders = senders;
+    });
+
+    $scope.setFilter = function (e) {
+	var e = h.objectSlice(e, ['sender']); // all but hashKey
 	$location.search(e);
 	$route.reload();
     };
 
-    h.callRest('summary/detailed/criteria').then(function(flatList) {
-	flatList = h.array_map(flatList, function (e) {
-	    return h.getInstAppAccount(e);
-	});
-	$scope.appAccountsTree = h.array2hashMulti(flatList, 'institution');
-    });
-
-    $scope.inProgress = false;
-
-    var nbSmsAndDetails = function (e) {
-	var details = [];
-	if (e.nbInProgress > 0) details.push(e.nbInProgress + " en cours");
-	if (e.errors > 0) details.push(e.errors + " " + (e.errors > 1 ? "erreurs" : "erreur"));
-	return e.nbSms + (details.length ? " dont " + details.join(" et ") : "");
+    var sender_name = function (login) {
+	return $scope.senders && $scope.senders[login] || login;
     };
 
-    var computeGroupedByRaw = function(flatList) {
-	var groupedBy = [];
-	var currentKey = null;
-	var current;
-	for (var i = 0; i < $scope.nbResults; i++) {
-	    var e = flatList[i];
-	    if (!e) break;
-	    var key = e.appName + "+" + e.accountName;
-	    if (currentKey !== key) {
-		currentKey = key;
-		current = $.extend({ list: [] }, h.getInstAppAccount(e));
-		groupedBy.push(current);
-	    }
-	    current.list.push({ date: new Date(e.date), nbSmsAndDetails: nbSmsAndDetails(e) });
+    $scope.formattedFilter = function () {
+	var f = $scope.filter;
+	var l = [];
+	if (f.sender) l.push("Expéditeur = " + sender_name(f.sender));
+	return l.length ? l.join(", ") : "aucun";
+    };
+
+    var msgWithDetails;
+    $scope.toggleMsgDetails = function (msg) {
+	if (msgWithDetails) msgWithDetails.showDetails = false;
+	if (msgWithDetails && msg === msgWithDetails) {
+	    msgWithDetails = null;
+	} else {
+	    msgWithDetails = msg;
+	    msg.showDetails = true;
+	    h.mayGetMsgStatuses(msg);
 	}
-	return groupedBy;
     };
 
-    var computeGroupedBy = function() {
+    var getResults = function() {
 	if ($scope.inProgress) return;
 	$scope.inProgress = true;
-	var fullFilter = angular.extend({ maxResults: $scope.nbResults }, $scope.accountFilter);
-	h.callRest('summary/detailed', fullFilter)
-	    .then(function (flatList) {
-		$scope.noMoreResults = flatList.length < fullFilter.maxResults;
-		$scope.groupedBy = computeGroupedByRaw(flatList);
+	var fullFilter = angular.extend({ maxResults: $scope.nbResults }, $scope.filter);
+	h.callRest('messages', fullFilter)
+	    .then(function (messages) {
+		$scope.noMoreResults = messages.length < fullFilter.maxResults;
+		$scope.messages = messages;
+		$scope.showSender = $scope.loggedUser.can.FCTN_SUIVI_ENVOIS_ETABL && !$scope.filter.sender;
 		$scope.inProgress = false;
-	    }, function (resp) {
-		// an error occured.
-		if (resp && resp.status == 404 && $scope.accountFilter.account) {
-		    // try removing accountFilter
-		    $scope.setAppAccount({});
-		}
 	    });
     };
 
     $scope.showMoreResults = function () {
 	if ($scope.noMoreResults) return;
 	$scope.nbResults = $scope.nbResults + $scope.initialNbResults;
-	computeGroupedBy();
+	getResults();
     };
 
-    computeGroupedBy();
+    getResults();
+});
+
+app.controller('MessagesDetailCtrl', function($scope, h, $routeParams, $location) {
+    var id = $routeParams.id;
+
+    $scope.getMsg = function () {
+	h.callRest('messages/' + id).then(function (msg) {
+	    $scope.msg = msg;
+	    h.mayGetMsgStatuses(msg);
+	});
+    };
+
+    $scope.getMsg();
 });
 
 })();

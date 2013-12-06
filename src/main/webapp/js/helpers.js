@@ -69,6 +69,36 @@ this.uniqWith = function (array, f) {
     });
     return h.objectValues(o);
 };
+this.array_remove_elt = function (array, searchElement) {
+    var i, length = array.length;
+    for (i = 0; i < length; i++) {
+      if (array[i] === searchElement) {
+	  array.splice(i, 1);
+          return;
+      }
+    }
+};
+
+this.array2set = function (array) {
+    var set = {}
+    angular.forEach(array, function (e) { set[e] = true; });
+    return set;
+};
+this.set2array = function (set) {
+    var array = [];
+    angular.forEach(set, function (bool, e) {
+	if (bool) array.push(e);
+    });
+    return array;
+};
+this.array_difference = function (array1, array2) {
+    var set2 = this.array2set(array2);
+    return this.simpleFilter(array1, function (e) { return !(e in set2); });
+};
+this.array_intersection = function (array1, array2) {
+    var set2 = this.array2set(array2);
+    return this.simpleFilter(array1, function (e) { return (e in set2); });
+};
 
 this.jsonpLogin = function () {
     console.log("jsonpLogin start");
@@ -130,16 +160,9 @@ this.jsonpFallbackWindowOpenLogin = function () {
 };
 
 this.setLoggedUser = function (loggedUser) {
-    console.log('user logged in: ' + loggedUser.login + " " + loggedUser.role);
+    console.log('user logged in: ' + loggedUser.id);
 
-    function setIt() {
-	$rootScope.loggedUser = h.userWithCapabilities(loggedUser, $rootScope.roles);
-    };
-    if ($rootScope.roles) {
-	setIt();
-    } else {
-	h.getRolesInScope($rootScope).then(setIt);
-    }
+    $rootScope.loggedUser = h.userWithCapabilities(loggedUser);
 };
 
 function fromJsonOrNull(json) {
@@ -244,18 +267,11 @@ this.callRestModify = function (method, restPath, o) {
     return xhrRequest(args);
 };
 
-var computeUserCapabilities = function (user, roles) {
-    var role = roles[user.role];
-    if (!role) console.log("user " + user.login + " has unknown role " + user.role);
-    var can = {};
-    angular.forEach(role.fonctions || [], function (c) {
-	can[c] = true;
+this.userWithCapabilities = function (user) {
+    user.can = {};
+    angular.forEach(user.rights || [], function (c) {
+	user.can[c] = true;
     });
-    return can;
-};
-
-this.userWithCapabilities = function (user, roles) {
-    user.can = computeUserCapabilities(user, roles);
     return user;
 };
 
@@ -272,56 +288,40 @@ this.findCurrentTab = function ($scope, templateUrl) {
     $scope.currentTab = tab;
 };
 
-this.getRolesInScope = function ($scope) {
-    return h.callRest('roles').then(function(roles) {
-	$scope.roles = h.array2hash(roles, 'role');
-    });
+this.getTemplateUrl = function (basename) {
+    return globals.baseURL + '/partials/' + basename;
 };
 
-this.getInstAppAccount = function (e) {
-    return { institution: e.institution, app: e.appName, account: e.accountName };
-};
-
-this.getUsers = function (roles) {
-    return h.callRest('users').then(function(users) {
-	return h.array2hash(users, 'id');
-    });
-};
-
-this.getApplications = function () {
-    return h.callRest('applications');
+this.getGroups = function () {
+    return h.callRest('groups');
 };
 
 this.getAccounts = function () {
-    return h.callRest('accounts');
+    return h.callRest('groups/accounts');
 };
 
-function findName(base, existingHash) {
-    var name = base;
-    var i = 2;
-    while (name in existingHash) {
-	name = base + ' ' + i++;
+this.getRoles = function () {
+    return h.callRest('roles');
+};
+
+this.getTemplates = function () {
+    return h.callRest('templates');
+};
+
+this.getTemplates = function () {
+    return h.callRest('templates');
+};
+
+this.getServices = function () {
+    return h.callRest('services');
+};
+
+this.mayGetMsgStatuses = function (msg) {
+    if (msg.stateMessage === "SENT") {
+	h.callRest('messages/' + msg.id + '/statuses').then(function (statuses) {
+	    msg.statuses = statuses;
+	});
     }
-    return name;
-}
-
-this.createEmptyAccount = function (accountNameSuggestion, accounts) {
-    var name = findName(accountNameSuggestion, h.array2hash(accounts, 'name'));
-    console.log("found free account name " + name);
-
-    return h.callRestModify('post', 'accounts', { name: name, quota: 0 }).then(function () {
-	return h.getAccounts();
-    }).then(function (accounts) {
-	return h.array2hash(accounts, 'name')[name];
-    });
-};
-
-this.cleanupUportalCss = function () {
-    // get rid of ugly stuff from uportal...
-    $('link[href*="/fss-framework-1.1.2.min.css"]').attr('disabled', 'disabled');
-    $('link[href*="/portlet.css"]').attr('disabled', 'disabled');
-    //$('link[href*="/fss-theme-mist.min.css"]').attr('disabled', 'disabled');
-    $('.fl-theme-mist').toggleClass('fl-theme-mist');
 };
 
 });

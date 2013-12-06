@@ -1,0 +1,14 @@
+<div class="normalContent">
+   <a class="btn btn-default" href="#/roles/new"><span class="glyphicon glyphicon-plus"></span> Créer un rôle</a>
+</div>
+
+<p>
+
+<div>
+  <table class="table table-striped">
+    <thead><tr><th>Nom</th></tr></thead>
+    <tr ng-repeat="role in roles">
+      <td><a href="#/roles/{{role.id}}">{{role.name}}</a></td>
+    </tr>
+  </table>
+</div>

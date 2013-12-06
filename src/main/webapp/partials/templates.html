@@ -1,0 +1,14 @@
+<div class="normalContent">
+   <a class="btn btn-default" href="#/templates/new"><span class="glyphicon glyphicon-plus"></span> Créer un modèle</a>
+</div>
+
+<p>
+
+<div>
+  <table class="table table-striped">
+    <thead><tr><th>Nom</th></tr></thead>
+    <tr ng-repeat="template in templates">
+      <td><a href="#/templates/{{template.id}}">{{template.label}}</a></td>
+    </tr>
+  </table>
+</div>

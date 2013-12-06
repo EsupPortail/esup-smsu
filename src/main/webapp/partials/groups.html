@@ -1,0 +1,31 @@
+<style>
+.ngHeaderText {
+  white-space: normal;
+}
+.gridStyle.loading {
+  opacity: 0.5;
+}
+.highConsumedRatio {
+  color: #f00;
+}
+</style>
+
+<div class="normalContent">
+   <a class="btn btn-default" href="#/groups/new"><span class="glyphicon glyphicon-plus"></span> Ajouter un groupe</a>
+</div>
+
+<h4>Groupes d'envoi</h4>
+
+<div class="gridStyle" ng-grid="gridOptions" ng-class="{loading: !groups}"></div>
+
+<h4>Groupes destination</h4>
+
+Groupes servant uniquement à définir les superviseurs pour l'envoi au groupe :
+<ul>
+<li ng-repeat="group in groupsDestinations">
+  <a href="#/groups/{{group.id}}">
+    <span class="glyphicon glyphicon-list"></span>
+    {{group.label}}
+</a>
+</li>
+</ul>

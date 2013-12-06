@@ -1,0 +1,35 @@
+  Le {{msg.date | date:"dd/MM/yyyy à HH:mm"}}, {{msg.senderName}} a 
+  {{msg.stateMessage === "SENT" ? "envoyé" : "souhaité envoyer"}}
+  le message suivant à {{msg.nbRecipients}} personne(s).
+
+  <blockquote><p>
+    <span ng-repeat='line in msg.content.split("\n") track by $index'>{{line}}<br></span>
+  </p></blockquote>
+
+  <dl class="dl-horizontal">
+    <dt ng-show="msg.groupSenderName"
+       >{{'MSG_GROUP_SENDER' | translate}}</dt><dd>{{msg.groupSenderName}}</dd>
+    <dt ng-show="msg.groupRecipientName"
+       >{{'MSG_GROUP_RECIPIENT' | translate}}</dt><dd>{{msg.groupRecipientName}}</dd>
+    <dt ng-show="msg.serviceName"
+       >{{'MSG_SERVICE'         | translate}}</dt><dd>{{msg.serviceName}}</dd>
+    <dt>{{'MSG_ACCOUNT'         | translate}}</dt><dd>{{msg.accountLabel}}</dd>
+    <dt ng-show="msg.supervisors"
+       >{{'MSG_SUPERVISORS'     | translate}}</dt><dd>{{msg.supervisors.join(", ")}}</dd>
+    <dt>{{'MSG_STATE'           | translate}}</dt><dd>{{'MSG_STATE_' + msg.stateMessage | translate}}</dd>
+    <dt ng-show="msg.stateMail"
+       >{{'MSG_MAIL_STATE'      | translate}}</dt><dd>{{msg.stateMail}}</dd>
+  </dl>
+
+  <dl class="dl-horizontal">
+    <dt>{{'MSG_RECIPIENTS'      | translate}}</dt><dd>{{msg.recipients.join(", ")}}</dd>
+  </dl>
+
+  <dl class="dl-horizontal" ng-if="msg.statuses">
+    <dt ng-show="msg.statuses"
+       >{{'MSG_INFO_NBR_RECIPIENTS' | translate}}</dt><dd>{{msg.statuses.nbDestTotal}}</dd>
+    <dt ng-show="msg.statuses"
+       >{{'MSG_INFO_NBR_SENT' | translate}}</dt><dd>{{msg.statuses.nbSentSMS}}</dd>
+    <dt ng-show="msg.statuses"
+       >{{'MSG_INFO_NBR_BLACKLIST' | translate}}</dt><dd>{{msg.statuses.nbDestBlackList}}</dd>
+  </dl>
