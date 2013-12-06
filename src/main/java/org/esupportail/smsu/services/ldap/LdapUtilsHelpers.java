@@ -10,11 +10,12 @@ import org.esupportail.commons.services.ldap.LdapUserAndGroupService;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
-import org.springframework.ldap.support.filter.AndFilter;
-import org.springframework.ldap.support.filter.EqualsFilter;
-import org.springframework.ldap.support.filter.Filter;
-import org.springframework.ldap.support.filter.OrFilter;
-import org.springframework.ldap.support.filter.WhitespaceWildcardsFilter;
+import org.springframework.beans.factory.annotation.Required;
+import org.springframework.ldap.filter.AndFilter;
+import org.springframework.ldap.filter.EqualsFilter;
+import org.springframework.ldap.filter.Filter;
+import org.springframework.ldap.filter.OrFilter;
+import org.springframework.ldap.filter.WhitespaceWildcardsFilter;
 
 /**
  * SMSU implementation of the LdapUserAndGroupService.

@@ -18,7 +18,7 @@ import org.esupportail.commons.services.ldap.LdapAttributesModificationException
 import org.esupportail.commons.services.ldap.LdapUserService;
 import org.esupportail.commons.services.ldap.LdapUserAndGroupService;
 import org.esupportail.commons.exceptions.UserNotFoundException;
-import org.springframework.ldap.support.DirContextAdapter;
+import org.springframework.ldap.core.DirContextAdapter;
 
 /**
  * SMSU implementation of the WriteableLdapUserServiceImpl.
