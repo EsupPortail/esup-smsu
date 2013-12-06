@@ -14,6 +14,7 @@ import org.esupportail.smsu.exceptions.CreateMessageException.UnknownCustomizedT
 import org.esupportail.smsu.exceptions.CreateMessageException.CustomizedTagValueNotFound;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
 import org.esupportail.smsu.services.ldap.LdapUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author xphp8691
@@ -21,10 +22,7 @@ import org.esupportail.smsu.services.ldap.LdapUtils;
  */
 public class ContentCustomizationManager {
 
-	/**
-	 * LDAP utils.
-	 */
-	private LdapUtils ldapUtils;
+	@Autowired private LdapUtils ldapUtils;
 
 	/**
 	 * defaultNotFoundData.

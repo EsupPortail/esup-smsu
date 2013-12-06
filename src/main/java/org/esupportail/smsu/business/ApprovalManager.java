@@ -25,20 +25,9 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class ApprovalManager {
 	
-	/**
-	 * {@link DaoService}.
-	 */
-	private DaoService daoService;
-
-	/**
-	 * {@link MessageManager}.
-	 */
-	private MessageManager messageManager;
-
-	/**
-	 * {@link DaoService}.
-	 */
-	private SendSmsManager sendSmsManager;
+	@Autowired private DaoService daoService;
+	@Autowired private MessageManager messageManager;
+	@Autowired private SendSmsManager sendSmsManager;
 
 	/**
 	 * Log4j logger.

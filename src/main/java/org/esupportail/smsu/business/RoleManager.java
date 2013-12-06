@@ -20,20 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class RoleManager {
 	
-	/**
-	 * {@link DaoService}.
-	 */
-	private DaoService daoService;
-	
-	/**
-	 * isDeletable.
-	 */
-	private Boolean isDeletable;
-	
-	/**
-	 * isUpdateable.
-	 */
-	private Boolean isUpdateable;
+	@Autowired private DaoService daoService;
 	
 	/**
 	 * Log4j logger.

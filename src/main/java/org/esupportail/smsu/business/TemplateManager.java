@@ -10,6 +10,7 @@ import org.esupportail.smsu.dao.beans.Mail;
 import org.esupportail.smsu.dao.beans.Message;
 import org.esupportail.smsu.dao.beans.Template;
 import org.esupportail.smsu.web.beans.UITemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 
@@ -19,10 +20,7 @@ import org.esupportail.smsu.web.beans.UITemplate;
  */
 public class TemplateManager {
 
-	/**
-	 * {@link DaoService}.
-	 */
-	private DaoService daoService;
+	@Autowired private DaoService daoService;
 
 	/**
 	 * Log4j logger.

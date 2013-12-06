@@ -7,6 +7,7 @@ import java.util.GregorianCalendar;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.dao.DaoService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * This class manages the periodic purge.
@@ -26,13 +27,8 @@ public class PeriodicPurge {
 	 */
 	private int seniorityDay;
 	
+	@Autowired private DaoService daoService;
 
-	/**
-	 * provides tools to manage db.
-	 */
-	private DaoService daoService;
-
-	
 	
 	/**
 	 * launch the periodic purge. 

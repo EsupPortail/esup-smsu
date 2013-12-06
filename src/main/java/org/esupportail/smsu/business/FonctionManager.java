@@ -16,10 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class FonctionManager {
 	
-	/**
-	 * {@link DaoService}.
-	 */
-	private DaoService daoService;
+	@Autowired private DaoService daoService;
 	
 	/**
 	 * Log4j logger.

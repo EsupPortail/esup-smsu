@@ -7,6 +7,7 @@ import java.util.GregorianCalendar;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.dao.DaoService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *  Manage the purge in table PendingMember.
@@ -26,11 +27,7 @@ public class PurgePendingMember {
 	 */
 	private int seniorityDay;
 	
-	/**
-	 * Used to manage db.
-	 */
-	private DaoService daoService;
-	
+	@Autowired private DaoService daoService;
 	
 
 	/**

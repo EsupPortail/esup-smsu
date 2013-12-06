@@ -9,10 +9,6 @@
 	<bean id="memberManager"
 		class="org.esupportail.smsu.business.MemberManager">
 		<description>The business layer concerning smsu member.</description>
-		<property name="ldapUtils" ref="ldapUtils" />
-		<property name="daoService" ref="daoService" />
-		<property name="sendSmsClient" ref="sendSmsClient" />
-		<property name="notificationPhoneNumberInBlackListClient" ref="notificationPhoneNumberInBlackListClient" />
 		<property name="maxNumberCodeValidation"> 
 			<value type="java.lang.Integer">${adhesion.maxNumberCodeValidation}</value>
 		</property>
@@ -38,51 +34,32 @@
 	<bean id="sendSmsManager"
 		class="org.esupportail.smsu.business.SendSmsManager">
 		<description>The business layer concerning the sending.</description>
-		<property name="i18nService" ref="i18nService">
-			<description>
-				The i18nService, used for statistics.
-			</description>
-		</property>
-		<property name="daoService" ref="daoService" />
-		<property name="customizer" ref="customizer" />
-		<property name="sendSmsClient" ref="sendSmsClient" />
-		<property name="usingBasicAuth" value="${smsuapi.ws.basic.auth.username}" />
 		<property name="defaultSupervisorLogin" value="${sms.defaultSupervisorLogin}"/>
-		<property name="schedulerUtils" ref="schedulerUtils"/>
-		<property name="ldapUtils" ref="ldapUtils"/>
-		<property name="smtpServiceUtils" ref="smtpServiceUtils"/>
-		<property name="urlGenerator" ref="servletUrlGenerator"/>
 		<property name="smsMaxSize" value="${sms.maxLength}"/>
 		<property name="defaultAccount" value="${sms.defaultAccount}"/>
 		<property name="phoneNumberPattern" value="${recipient.phoneNumberPattern}"></property>
 		<property name="userEmailAttribute" value="${ldap.emailAttribute}"/>
-		<property name="smsuPersonAttributesGroupStore" ref="personAttributesGroupStore" />
 	</bean>
 	
 	<bean id="customizer"
 		class="org.esupportail.smsu.business.ContentCustomizationManager">
 		<description>The business layer concerning the sending.</description>
-		<property name="ldapUtils" ref="ldapUtils" />
 		<property name="defaultNotFoundData" value="${sms.nodatafound}"/>
 	</bean>
 	
 	<bean id="serviceManager"
 		class="org.esupportail.smsu.business.ServiceManager">
 		<description>The business layer concerning the smsu service.</description>
-		<property name="daoService" ref="daoService" />
 	</bean>
 	
 	<bean id="templateManager"
 		class="org.esupportail.smsu.business.TemplateManager">
 		<description>The business layer concerning the templates.</description>
-		<property name="daoService" ref="daoService" />
 	</bean>
 	
 	<bean id="securityManager"
 		class="org.esupportail.smsu.business.SecurityManager">
 		<description>The business layer concerning the templates.</description>
-		<property name="daoService" ref="daoService" />
-		<property name="ldapUtils" ref="ldapUtils" />
 	</bean>
 	
 	<bean id="messageManager"
@@ -93,17 +70,11 @@
 	<bean id="roleManager"
 		class="org.esupportail.smsu.business.RoleManager">
 		<description>The business layer concerning the smsu role.</description>
-		<property name="daoService" ref="daoService" />
 	</bean>
 	
 	<bean id="approvalManager"
 		class="org.esupportail.smsu.business.ApprovalManager">
 		<description>The business layer concerning the smsu approval.</description>
-		<property name="messageManager" ref="messageManager" />
-		<property name="sendSmsManager" ref="sendSmsManager">
-			<description>The SendSmsManager service.</description>
-		</property>
-		<property name="daoService" ref="daoService" />
 	</bean>
 	
 	<bean id="groupManager"
@@ -118,7 +89,6 @@
 	
 	<bean id="purgePendingMember"
 		class="org.esupportail.smsu.business.purge.PurgePendingMember">
-		<property name="daoService" ref="daoService" />
 		<property name="seniorityDay">
 			<value type="int">${purge.pendingMember.seniorityDay}</value>
 		</property>
@@ -126,7 +96,6 @@
 	
 	<bean id="periodicPurge"
 		class="org.esupportail.smsu.business.purge.PeriodicPurge">
-		<property name="daoService" ref="daoService"/>
 		<property name="seniorityDay">
 			<value type="int">${purge.periodic.seniorityDay}</value>
 		</property>
