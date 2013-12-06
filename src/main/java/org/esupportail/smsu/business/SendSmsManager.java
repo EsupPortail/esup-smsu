@@ -247,7 +247,7 @@ public class SendSmsManager  {
 	private void sendMailToSupervisors(final Message message, MessageStatus status, User currentUser) {
 		CustomizedGroup cGroup = getSupervisorCustomizedGroup(message);
 		List<String> toList = getSupervisorsMails(getSupervisors(cGroup));
-		if (toList == null) {
+		if (toList == null || toList.isEmpty()) {
 			logger.error("no supervisors??");
 			return;
 		}
@@ -278,6 +278,10 @@ public class SendSmsManager  {
 
 	private void sendMailToSenderMessageApprovedOrCanceled(final Message message, MessageStatus status, User currentUser) {
 		List<String> toList = ldapUtils.getUserEmailsAdressByUids(Collections.singleton(message.getSender().getLogin()));
+		if (toList.isEmpty()) {
+			logger.error("no way to notify sender that message has been approved");
+			return;
+		}
 
 		String subjectKey;
 		String textBodyKey;
