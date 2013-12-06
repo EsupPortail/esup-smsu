@@ -5,11 +5,9 @@ package org.esupportail.smsu.domain.beans;
 
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 import org.esupportail.commons.utils.strings.StringUtils;
-import org.esupportail.smsu.domain.beans.fonction.FonctionName;
 
 /**
  * The class that represent users.
@@ -30,16 +28,13 @@ public class User implements Serializable {
 	 * Display Name of the user.
 	 */
     private String displayName;
-    
-    /**
-	 * fonctions list.
-	 */
-	private List<String> fonctions = new ArrayList<String>();
     	
     /**
      * The prefered language.
      */
     private String language;
+
+	public Set<String> rights;
     
 	/**
 	 * Bean constructor.
