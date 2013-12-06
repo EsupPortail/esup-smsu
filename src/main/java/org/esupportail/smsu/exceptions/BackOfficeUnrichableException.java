@@ -4,7 +4,7 @@ package org.esupportail.smsu.exceptions;
  * @author xphp8691
  *
  */
-public class BackOfficeUnrichableException extends Exception {
+public class BackOfficeUnrichableException extends RuntimeException {
 
 	/**
 	 * 

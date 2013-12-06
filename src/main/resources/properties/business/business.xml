@@ -88,18 +88,6 @@
 	<bean id="messageManager"
 		class="org.esupportail.smsu.business.MessageManager">
 		<description>The business layer concerning the messages.</description>
-		<property name="ldapUtils" ref="ldapUtils">
-			<description>The LDAP service.</description>
-		</property>
-		<property name="daoService" ref="daoService" />
-		<property name="displayNameAttributeAsString"> 
-			<value type="java.lang.String">${ldap.displayNameAttribute}</value>
-		</property>
-		<property name="i18nService" ref="i18nService">
-			<description>
-				The i18nService, used for statistics.
-			</description>
-		</property>
 	</bean>
 	
 	<bean id="roleManager"
@@ -121,31 +109,11 @@
 	<bean id="groupManager"
 		class="org.esupportail.smsu.business.GroupManager">
 		<description>The business layer concerning the smsu group.</description>
-		<property name="ldapUtils" ref="ldapUtils">
-			<description>The LDAP service.</description>
-		</property>
-		<property name="daoService" ref="daoService" />
-		<property name="userDisplayName" value="${ldap.displayNameAttribute}"/>
-	
 	</bean>
 	
 	<bean id="fonctionManager"
 		class="org.esupportail.smsu.business.FonctionManager">
 		<description>The business layer concerning the smsu fonction.</description>
-		<property name="daoService" ref="daoService" />
-	</bean>
-	
-	<bean id="notificationByMailForInvalidPhoneManager"
-		class="org.esupportail.smsu.business.NotificationByMailForInvalidPhoneManager">
-		<description>The business layer concerning smsu member.</description>
-		<property name="ldapUtils" ref="ldapUtils" />
-		<property name="listPhoneNumbersInBlackListClient" ref="listPhoneNumbersInBlackListClient" />
-		<property name="smtpServiceUtils" ref="smtpServiceUtils" />
-		<property name="i18nService" ref="i18nService">
-			<description>
-				The i18nService, used for statistics.
-			</description>
-		</property>
 	</bean>
 	
 	<bean id="purgePendingMember"

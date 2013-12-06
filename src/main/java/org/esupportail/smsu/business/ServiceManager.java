@@ -1,7 +1,9 @@
 package org.esupportail.smsu.business;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
@@ -9,6 +11,8 @@ import org.esupportail.smsu.dao.DaoService;
 import org.esupportail.smsu.dao.beans.Message;
 import org.esupportail.smsu.dao.beans.Service;
 import org.esupportail.smsu.web.beans.UIService;
+import org.springframework.beans.factory.annotation.Autowired;
+
 
 /**
  * Business layer concerning smsu service.
@@ -16,122 +20,56 @@ import org.esupportail.smsu.web.beans.UIService;
  */
 public class ServiceManager {
 	
-	/**
-	 * {@link DaoService}.
-	 */
-	private DaoService daoService;
+	@Autowired private DaoService daoService;
 	
 	/**
 	 * Log4j logger.
 	 */
 	private final Logger logger = new LoggerImpl(getClass());
 
-	///////////////////////////////////////
-	//  constructor
-	//////////////////////////////////////
-	/**
-	 * constructor.
-	 */
-	public ServiceManager() {
-		super();
+	public Map<String, String> getUIServices() {
+		Map<String, String> result = new HashMap<String,String>();
+		for (Service service : daoService.getServices())
+			result.put(service.getKey(), service.getName());
+		return result;
 	}
 
-	///////////////////////////////////////
-	//  Principal methods
-	//////////////////////////////////////
-	/**
-	 * retrieve all the service defined in smsu database.
-	 * @return
-	 */
-	public List<Service> getAllServices() {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Retrieve the smsu services from the database");
-		}
-		List<Service> allServices = daoService.getServices();
-		return allServices;
-	}
-	
 	/**
 	 * retrieve all the service defined in smsu database.
 	 * @return
 	 */
 	public List<UIService> getAllUIServices() {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Retrieve the smsu services from the database");
-		}
 		List<UIService> allUiServices = new ArrayList<UIService>();
-		List<Service> allServices = daoService.getServices();
-		
-		for (Service service : allServices) {
-			Boolean isDeletable = canServiceBeDeleted(service);
-			UIService ui = new UIService(service.getId(), service.getName(), service.getKey(), isDeletable);
-			allUiServices.add(ui);
+		for (Service service : daoService.getServices()) {
+			allUiServices.add(convertToUI(service));
 		}
 		return allUiServices;
 	}
-
-
-	/**
-	 * @param service
-	 */
+ 
 	public void updateUIService(final UIService service) {
-		final Service svc = new Service(service.getId(), service.getName().trim(), service.getKey());
-		daoService.updateService(svc);
+		daoService.updateService(convertFromUI(service));
 	}
 	
 	/**
 	 * @param service
 	 */
 	public void addUIService(final UIService service) {
-		final Service svc = new Service(service.getId(), service.getName().trim(), service.getKey());
-		daoService.addService(svc);
+		daoService.addService(convertFromUI(service));
 	}
 	
-	/**
-	 * @param service
-	 */
-	public void deleteUIService(final UIService service) {
-		final Service svc = new Service(service.getId(), service.getName(), service.getKey());
-		daoService.deleteService(svc);
+	public void deleteUIService(final int id) {
+		daoService.deleteService(daoService.getServiceById(id));
 	}
-	
-	/**
-	 * @param name
-	 * @return a service
-	 */
-	public Service getServiceByName(final String name) {
-		return daoService.getServiceByName(name);
-	}
-	
-	/**
-	 * @param key
-	 * @return a service
-	 */
-	public Service getServiceByKey(final String key) {
-		return daoService.getServiceByKey(key);
-	}
-	
+
 	/**
 	 * @param key
 	 * @param id 
-	 * @return true if no other service has the same key.
+	 * @return true if no other service has the same key or if key unmodified
 	 */
 	public Boolean isKeyAvailable(final String key, final Integer id) {
-		Service service = getServiceByKey(key);
-		Boolean bReturn = true;
-		
-		if (service != null) {
-			if (id != null) {
-				Integer tId = service.getId();
-				if (!tId.equals(id)) {
-					bReturn = false;
-				}
-			} else {
-				bReturn = false;
-			}
-		}
-		
-		return bReturn;
+		Service existingService = daoService.getServiceByKey(key);
+		return existingService == null 
+				|| id != null && id.equals(existingService.getId());
 	}
 	
 	/**
@@ -140,23 +78,24 @@ public class ServiceManager {
 	 * @return true if no other service has the same key.
 	 */
 	public Boolean isNameAvailable(final String name, final Integer id) {
-		Service service = getServiceByName(name);
-		Boolean bReturn = true;
-		
-		if (service != null) {
-			if (id != null) {
-				Integer tId = service.getId();
-				if (!tId.equals(id)) {
-					bReturn = false;
-				}
-			} else {
-				bReturn = false;
-			}
-		}
-		
-		return bReturn;
+		Service existingService = daoService.getServiceByName(name);
+		return existingService == null 
+				|| id != null && id.equals(existingService.getId());
 	}
-	
+
+	private UIService convertToUI(Service service) {
+		UIService result = new UIService();
+		result.id = service.getId();
+		result.name = service.getName();
+		result.key = service.getKey();
+		result.isDeletable = canServiceBeDeleted(service);
+		return result;
+	}
+ 
+	private Service convertFromUI(final UIService service) {
+		return new Service(service.id, service.name.trim(), service.key);
+	}
+
 	/**
 	 * @param service 
 	 * @return true if the service can be deleted.

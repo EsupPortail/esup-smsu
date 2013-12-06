@@ -14,9 +14,10 @@ import org.esupportail.smsu.dao.beans.PendingMember;
 import org.esupportail.smsu.dao.beans.Role;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
 import org.esupportail.smsu.exceptions.ldap.LdapWriteException;
-import org.esupportail.smsu.services.client.NotificationPhoneNumberInBlackListClient;
-import org.esupportail.smsu.services.client.SendSmsClient;
+import org.esupportail.smsu.services.client.SmsuapiWS;
 import org.esupportail.smsu.services.ldap.LdapUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.StringUtils;
 
 /**
@@ -25,25 +26,9 @@ import org.springframework.util.StringUtils;
  */
 public class MemberManager {
 
-	/**
-	 * {@link LdapUtils}.
-	 */
-	private LdapUtils ldapUtils;
-
-	/**
-	 * {@link DaoService}.
-	 */
-	private DaoService daoService;
-
-	/**
-	 * {@link SendSmsClient}.
-	 */
-	private SendSmsClient sendSmsClient;
-
-	/**
-	 * {@link NotificationPhoneNumberInBlackListClient}.
-	 */
-	private NotificationPhoneNumberInBlackListClient notificationPhoneNumberInBlackListClient;
+	@Autowired private LdapUtils ldapUtils;
+	@Autowired private DaoService daoService;
+	@Autowired private SmsuapiWS smsuapiWS;
 
 	/**
 	 * list of the ldap phone attributes.
@@ -123,59 +108,59 @@ public class MemberManager {
 	 * @param memberPhoneNumber
 	 */
 	private void sendCodeBySMS(final String code, final String memberPhoneNumber) {
-		if (logger.isDebugEnabled()) {
 			logger.debug("Send the sms to " + memberPhoneNumber
 					+ " containing the validation code " + code);
-		}
-
 
 		String smsCode = titleSmsValidation + "\n" + code;
-		sendSmsClient.sendSMS(null, null, null, null, memberPhoneNumber,
-				accountValidation , smsCode);
+		smsuapiWS.sendSMS(null, null, memberPhoneNumber, accountValidation, smsCode);
 
-		CustomizedGroup cg = daoService.getCustomizedGroupByLabel(accountValidation);
-		// the sms is sent, the goup is consumption is updated.
-		if (cg == null) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("Create the customized group corresponding to : " + accountValidation );
-			}
-			cg = new CustomizedGroup();
-			cg.setLabel(accountValidation);
-
-			Account acc = daoService.getAccountByLabel(accountValidation);
-			if (acc == null) {
-				acc = new Account();
-				acc.setLabel(accountValidation);
-				daoService.saveAccount(acc);
-			}
-
-			cg.setAccount(acc);
-
-			cg.setQuotaOrder(Long.parseLong("1"));
-
-			//this value is actually not used, all validation sms are sent.
-			cg.setQuotaSms(Long.parseLong("1"));
-
-			cg.setConsumedSms(Long.parseLong("0"));
-
-			Role role = daoService.getRoleByName(validationRoleName);
-			if (role == null) {
-				if (logger.isDebugEnabled()) {
-					logger.debug("Create the role : " + validationRoleName);
-				}
-				role = new Role();
-				role.setName(validationRoleName);
-				daoService.saveRole(role);
-			}
-
-			cg.setRole(role);
-
-			daoService.addCustomizedGroup(cg);
-		}
-
+		// the sms is sent, the group is consumption is updated.
+		CustomizedGroup cg = getOrCreateValidationCustomizedGroup();
 		cg.setConsumedSms(cg.getConsumedSms() + 1);
 		daoService.updateCustomizedGroup(cg);
 
+	}
+
+	private CustomizedGroup getOrCreateValidationCustomizedGroup() {
+		CustomizedGroup cg = daoService.getCustomizedGroupByLabel(accountValidation);
+		if (cg == null) {
+			cg = newValidationCustomizedGroup();
+			daoService.addCustomizedGroup(cg);
+		}
+		return cg;
+	}
+
+	private CustomizedGroup newValidationCustomizedGroup() {
+		logger.debug("Create the customized group corresponding to : " + accountValidation );
+		CustomizedGroup cg = new CustomizedGroup();
+		cg.setLabel(accountValidation);
+		cg.setQuotaOrder(Long.parseLong("1"));
+		cg.setQuotaSms(Long.parseLong("1")); // this value is actually not used, all validation sms are sent.
+		cg.setConsumedSms(Long.parseLong("0"));
+		cg.setAccount(getOrCreateValidationAccount());
+		cg.setRole(getOrCreateValidationRole());
+		return cg;
+	}
+
+	private Role getOrCreateValidationRole() {
+		Role role = daoService.getRoleByName(validationRoleName);
+		if (role == null) {
+			logger.debug("Create the role : " + validationRoleName);
+			role = new Role();
+			role.setName(validationRoleName);
+			daoService.saveRole(role);
+		}
+		return role;
+	}
+
+	private Account getOrCreateValidationAccount() {
+		Account acc = daoService.getAccountByLabel(accountValidation);
+		if (acc == null) {
+			acc = new Account();
+			acc.setLabel(accountValidation);
+			daoService.saveAccount(acc);
+		}
+		return acc;
 	}
 
 	private void sendCodeBySMSAndAddPendingMember(final Member member) {
@@ -216,25 +201,16 @@ public class MemberManager {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Get the member " + userIdentifier);
 		}
-		final String firstName = ldapUtils.getUserFirstNameByUid(userIdentifier);
-		final String lastName = ldapUtils.getUserLastNameByUid(userIdentifier);
-		final String phoneNumber = getPhoneNumber(userIdentifier);
-		final List<String> availablePhoneNumbers = getAvailablePhoneNumbers(userIdentifier);
-		boolean validCG = ldapUtils.isGeneralConditionValidateByUid(userIdentifier);
-		final List<String> validCP = ldapUtils.getSpecificConditionsValidateByUid(userIdentifier);
-		boolean isPending = false;
-		if (isActivateValidation()) {
-			isPending = daoService.isPendingMember(userIdentifier);
-			if (isPending) {
-				validCG = true;
-			}
-		} else {
-			isPending = false;
-		}
-		String phoneNumberValidationCode = null;
-		final Member member = new Member(userIdentifier, firstName, lastName, 
-				phoneNumber, validCG, validCP, 
-				isPending, phoneNumberValidationCode, availablePhoneNumbers);
+		Member member = new Member();
+		member.login = userIdentifier;
+		member.firstName = ldapUtils.getUserFirstNameByUid(userIdentifier);
+		member.lastName = ldapUtils.getUserLastNameByUid(userIdentifier);
+		member.phoneNumber = ldapUtils.getUserPagerByUid(userIdentifier);
+		member.availablePhoneNumbers = getAvailablePhoneNumbers(userIdentifier);
+		member.validCP = ldapUtils.getSpecificConditionsValidateByUid(userIdentifier);
+		member.flagPending = activateValidation && daoService.isPendingMember(userIdentifier);
+		member.validCG = member.flagPending || ldapUtils.isGeneralConditionValidateByUid(userIdentifier);
+		member.phoneNumberValidationCode = null;
 		return member;
 	}
 
@@ -246,45 +222,35 @@ public class MemberManager {
 	 */
 	private List<String> getAvailablePhoneNumbers(final String userIdentifier) throws LdapUserNotFoundException {
 		List<String> phoneNumbers = new ArrayList<String>();
-		List<String> values;
 		for (String attribute : this.phoneAttribute) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("Search phone number with attribute " + attribute);
-			}
-			values = ldapUtils.getLdapAttributesByUidAndName(userIdentifier, attribute);
-			for (String value : values) {
-				String nValue = value.replaceAll(" ", "");
-				if (!phoneNumberPrefixToRemove.equals("")) {
-					if (logger.isDebugEnabled()) {
-						logger.debug("phone Number Prefix To Remove " + phoneNumberPrefixToRemove);
-					}
-					nValue = nValue.replaceAll(phoneNumberPrefixToRemove, "0");
-				}
-				if (logger.isDebugEnabled()) {
-					logger.debug("test pattern with value " + nValue);
-				}
-				if (nValue.matches(this.phoneNumberPattern)) {
-					phoneNumbers.add(nValue);
-					if (logger.isDebugEnabled()) {
-						logger.debug("phone number found from attribute " + attribute);
-					}
-				}
-			}
+			getAvailablePhoneNumbers(phoneNumbers, userIdentifier, attribute);
 		}	
-
 		return phoneNumbers;
 	}
-	/**
-	 * @param userIdentifier
-	 * @return the phone number from the pager ldap field, or from a parametric ldap field if no pager is found
-	 * @throws LdapUserNotFoundException
-	 */
-	private String getPhoneNumber(final String userIdentifier) throws LdapUserNotFoundException {
-		logger.debug("Get phone number of member " + userIdentifier);
-		String phoneNumber = ldapUtils.getUserPagerByUid(userIdentifier);
-		logger.debug("Phone number of member " + userIdentifier + ": " + phoneNumber);
-		return phoneNumber;
+
+	private void getAvailablePhoneNumbers(List<String> phoneNumbers, String userIdentifier, String attribute)
+			throws LdapUserNotFoundException {
+		logger.debug("Search phone number with attribute " + attribute);
+		List<String> values = ldapUtils.getLdapAttributesByUidAndName(userIdentifier, attribute);
+		for (String value : values) {
+			String nValue = normalizePhoneNumber(value);
+			logger.debug("test pattern with value " + nValue);
+			if (nValue.matches(this.phoneNumberPattern)) {
+				phoneNumbers.add(nValue);
+				logger.debug("phone number found from attribute " + attribute);
+			}
+		}
 	}
+
+	private String normalizePhoneNumber(String phoneNumber) {
+		String s = phoneNumber.replaceAll(" ", "");
+		if (!phoneNumberPrefixToRemove.equals("")) {
+				logger.debug("phone Number Prefix To Remove " + phoneNumberPrefixToRemove);
+			s = s.replaceAll(phoneNumberPrefixToRemove, "0");
+		}
+		return s;
+	}
+
 	/**
 	 * save the member.
 	 * @param member
@@ -302,7 +268,7 @@ public class MemberManager {
 		List<String> memberValidCP = member.getValidCP();
 		boolean validCG = member.getValidCG();
 		if (validCG) {
-			if (numberPhoneChanged && isActivateValidation()) {
+			if (numberPhoneChanged && activateValidation) {
 				sendCodeBySMSAndAddPendingMember(member);
 				// do not store the validated CG for now, it will be done once validated
 				validCG = false;
@@ -310,7 +276,7 @@ public class MemberManager {
 		} else {
 			// also remove subscriptions to services
 			memberValidCP = null;
-			if (isActivateValidation() && daoService.isPendingMember(memberLogin)) {
+			if (activateValidation && daoService.isPendingMember(memberLogin)) {
 				// user asks to unsubscribe after asking to subscribe
 				daoService.deletePendingMember(memberLogin);
 			}
@@ -360,23 +326,26 @@ public class MemberManager {
 	 * @return return true if the phone number is in the bl, false otherwise
 	 */
 	public boolean isPhoneNumberInBlackList(final String phoneNumber) {
-		if (logger.isDebugEnabled()) {
 			logger.debug("Request in memberManager : " + phoneNumber);
-		}
-		Boolean retVal = notificationPhoneNumberInBlackListClient.isPhoneNumberInBlackList(phoneNumber); 
-		if (logger.isDebugEnabled()) {
+		Boolean retVal = smsuapiWS.isPhoneNumberInBlackList(phoneNumber); 
 			logger.debug("Response return in memberManager for : " 
 					+ phoneNumber + " is : " + retVal);
-		}
-
 		return retVal;
 	}
 
 	/**
 	 * @return true or false
 	 */
-	public Boolean isActivateValidation() {
-		return activateValidation;
+	public void setPhoneAttributesAsString(final String attributes) {
+		final List<String> list = new LinkedList<String>();
+		for (String attribute : attributes.split(",")) {
+			if (StringUtils.hasText(attribute)) {
+				if (!list.contains(attribute)) {
+					list.add(attribute);
+				}
+			}
+		}
+		setPhoneAttribute(list);
 	}
 
 

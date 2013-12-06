@@ -21,7 +21,7 @@ public abstract class CreateMessageException extends Exception {
 		}
 
 		public String toString() {
-			return errorMsg;
+			return errorMsg == null ? this.getClass().getName() : errorMsg;
 		}
 
 		public String toI18nString(I18nService i18nService) {

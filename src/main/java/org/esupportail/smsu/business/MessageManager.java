@@ -2,10 +2,13 @@ package org.esupportail.smsu.business;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.esupportail.commons.services.i18n.I18nService;
@@ -16,11 +19,13 @@ import org.esupportail.smsu.dao.DaoService;
 import org.esupportail.smsu.dao.beans.BasicGroup;
 import org.esupportail.smsu.dao.beans.Mail;
 import org.esupportail.smsu.dao.beans.Message;
+import org.esupportail.smsu.dao.beans.Person;
+import org.esupportail.smsu.dao.beans.Recipient;
 import org.esupportail.smsu.domain.beans.mail.MailStatus;
 import org.esupportail.smsu.domain.beans.message.MessageStatus;
-import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.web.beans.UIMessage;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 /**
@@ -28,35 +33,11 @@ import org.esupportail.smsu.web.beans.UIMessage;
  *
  */
 public class MessageManager {
-	
-	/**
-	 * const.
-	 */
-	private static final String NONE = "";
-	
-	/**
-	 * {@link DaoService}.
-	 */
-	private DaoService daoService;
 
-	/**
-	 * {@link i18nService}.
-	 */
-	private I18nService i18nService;
+	@Autowired private DaoService daoService;
+	@Autowired private I18nService i18nService;
+	@Autowired private LdapUtils ldapUtils;
 	
-	/**
-	 * {@link LdapUtils}.
-	 */
-	private LdapUtils ldapUtils;
-
-	/**
-	 * displayName.
-	 */
-	private String displayNameAttributeAsString;
-
-	/**
-	 * Log4j logger.
-	 */
 	private final Logger logger = new LoggerImpl(getClass());
 
 	//////////////////////////////////////////////////////////////
@@ -90,22 +71,63 @@ public class MessageManager {
 	
 		List<Message> messages = daoService.getMessages(userGroupId, userAccountId, userServiceId, 
 								 userTemplateId, userUserId, beginDateSQL, endDateSQL);
-		return toUIMessages(messages);
+		return convertToUI(messages);
 	}
 
-	public List<UIMessage> toUIMessages(List<Message> messages) {
-		Map<String, LdapUser> ldapUserByUid = getLdapUserByUid(senderLogins(messages));
+	public List<String> getUIRecipients(int messageId) {
+		Message message = getMessage(messageId);
+		Set<Recipient> recipients = message.getRecipients();	
+		if (recipients == null) return null;
+		
+		List<String> result = new LinkedList<String>();
+		for (Recipient r : recipients) {
+		    result.add(r.getLogin() != null ? r.getLogin() : r.getPhone());
+		}
+		return result;
+	}
+
+	/**
+	 * @param messageId
+	 * @return a message
+	 */
+	public Message getMessage(final Integer messageId) {
+		return daoService.getMessageById(messageId);
+	}
+
+	public UIMessage getUIMessage(final Integer messageId) {
+		return convertToUI(Collections.singletonList(getMessage(messageId))).get(0);
+	}
+	
+	public List<UIMessage> convertToUI(List<Message> messages) {
+		Map<String, String> id2displayName = getIdToDisplayName(senderLogins(messages));
 
 		List<UIMessage> uimessages = new ArrayList<UIMessage>();
 		for (Message mess : messages) {
-			String senderName = retreiveNiceDisplayName(ldapUserByUid, mess.getSender().getLogin());
-			String groupSenderName = retreiveNiceGroupName(mess.getGroupSender());
-			String groupRecipientName = retreiveNiceGroupName(mess.getGroupRecipient());
-			String stateMessage = messageStatusI18nMessage(mess.getStateAsEnum());
-			String stateMail = mailStatusI18nMessage(mess.getMail());
-			uimessages.add(new UIMessage(stateMessage, stateMail, senderName, groupSenderName, groupRecipientName, mess));
+			uimessages.add(convertToUI(mess, id2displayName));
 		}
 		return uimessages;
+	}
+
+	private UIMessage convertToUI(Message mess,
+			Map<String, String> id2displayName) {
+		UIMessage r = new UIMessage();
+		r.id = mess.getId();
+		r.nbRecipients = mess.getRecipients().size();
+		r.supervisors= convertToUI(mess.getSupervisors());
+		r.senderName = retreiveNiceDisplayName(id2displayName, mess.getSender().getLogin());
+		r.groupSenderName = retreiveNiceGroupName(mess.getGroupSender());
+		r.groupRecipientName = retreiveNiceGroupName(mess.getGroupRecipient());
+		r.stateMessage = messageStatusI18nMessage(mess.getStateAsEnum());
+		r.stateMail = mailStatusI18nMessage(mess.getMail());
+		return r;
+	}
+	
+	private List<String> convertToUI(Set<Person> supervisors) {
+		if (supervisors == null) return null;
+		List<String> t = new LinkedList<String>();
+		for (Person p : supervisors)
+			t.add(p.getLogin());
+		return t;
 	}
 
 	private Date addOneDay(Date d) {
@@ -122,19 +144,18 @@ public class MessageManager {
 		return l;
 	}
 
-	private Map<String, LdapUser> getLdapUserByUid(Iterable<String> uids) {
-		Map<String, LdapUser> ldapUserByUid = new TreeMap<String, LdapUser>();
+	private Map<String, String> getIdToDisplayName(Iterable<String> uids) {
+		Map<String, String> result = new TreeMap<String, String>();
 		for (LdapUser u : ldapUtils.getUsersByUids(uids))
-		    ldapUserByUid.put(u.getId(), u);
-		return ldapUserByUid;
+		    result.put(u.getId(), ldapUtils.getUserDisplayName(u));
+		return result;
 	}
 
-	private String retreiveNiceDisplayName(Map<String, LdapUser> ldapUserByUid, String senderLogin) {
+	private String retreiveNiceDisplayName(Map<String, String> id2displayName, String senderLogin) {
 		logger.debug("mess.getSender.getLogin is: " + senderLogin);
 		
-		LdapUser ldapUser = ldapUserByUid.get(senderLogin);
-		if (ldapUser != null) {
-			String displayName = ldapUser.getAttribute(displayNameAttributeAsString);
+		String displayName = id2displayName.get(senderLogin);
+		if (displayName != null) {
 			logger.debug("displayName is: " + displayName);
 			return displayName + "  (" + senderLogin + ")"; 
 		} else {
@@ -144,11 +165,11 @@ public class MessageManager {
 
 	private String retreiveNiceGroupName(BasicGroup recipientGroup) {
 		return recipientGroup != null ?
-			ldapUtils.getGroupDisplayName(recipientGroup.getLabel()) : NONE;
+			ldapUtils.getGroupDisplayName(recipientGroup.getLabel()) : "";
 	}
 
 	private String i18nMessageKeyToMessage(String i18nKey) {
-		return getI18nService().getString(i18nKey, getI18nService().getDefaultLocale());
+		return i18nService.getString(i18nKey, i18nService.getDefaultLocale());
 	}
 
 	private String messageStatusI18nMessage(MessageStatus messageStatus) {

@@ -102,12 +102,12 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 		List<String> where = new LinkedList<String>();
 		
 		// Filter on sender group
-		if (userGroupId != 0) {
+		if (userGroupId != null) {
 			where.add("message." + Message.PROP_GROUP_SENDER + "." + BasicGroup.PROP_ID + "=" + userGroupId);
 		}
 		
 		// Filter on account
-		if (userAccountId != 0) {
+		if (userAccountId != null) {
 			where.add("message." + Message.PROP_ACCOUNT + "." + Account.PROP_ID + "=" + userAccountId);
 		}
 		
@@ -121,12 +121,12 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 		}
 		
 		// Filter on template
-		if (userTemplateId != 0) {
+		if (userTemplateId != null) {
 			where.add("message." + Message.PROP_TEMPLATE + "." + Template.PROP_ID + "=" + userTemplateId);
 		}
 		
 		// filter on send
-		if (userUserId != 0) {
+		if (userUserId != null) {
 			where.add("message." + Message.PROP_SENDER + "." + Person.PROP_ID + "=" + userUserId);
 		}
 		
@@ -674,16 +674,13 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 		return customizedGroup;
 	}
 
-	/**
-	 * @see org.esupportail.smsu.dao.DaoService#getCustomizedGroupByRole
-	 */
-	public CustomizedGroup getCustomizedGroupByRole(final Role role) {
+	public boolean isRoleInUse(final Role role) {
 		CustomizedGroup customizedGroup = new CustomizedGroup();
 		Session currentSession = getCurrentSession();
 		Criteria criteria = currentSession.createCriteria(CustomizedGroup.class);
 		criteria.add(Restrictions.eq(CustomizedGroup.PROP_ROLE, role));
 		customizedGroup = (CustomizedGroup) getFirstResult(criteria);
-		return customizedGroup;
+		return customizedGroup != null;
 	}
 	
 	/**
@@ -890,6 +887,12 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 
 	public Fonction getFonctionById(final Integer id) {
 		return (Fonction) getHibernateTemplate().get(Fonction.class, id);
+	}
+
+	public Fonction getFonctionByName(final String name) {
+		Criteria criteria = getCurrentSession().createCriteria(Fonction.class);
+		criteria.add(Restrictions.eq(Fonction.PROP_NAME, name));
+		return (Fonction) criteria.uniqueResult();
 	}
 	
 	/* (non-Javadoc)

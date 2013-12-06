@@ -4,15 +4,15 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-
 import org.esupportail.commons.services.i18n.I18nService;
 import org.esupportail.commons.services.ldap.LdapUser;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
-import org.esupportail.smsu.services.client.ListPhoneNumbersInBlackListClient;
+import org.esupportail.smsu.services.client.SmsuapiWS;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.services.smtp.SmtpServiceUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Business layer concerning smsu notification invalid mail.
@@ -20,26 +20,10 @@ import org.esupportail.smsu.services.smtp.SmtpServiceUtils;
  */
 public class NotificationByMailForInvalidPhoneManager {
 	
-	
-	/**
-	 * {@link i18nService}.
-	 */
-	private I18nService i18nService;
-	
-	/**
-	 *  {@link ldapUtils}.
-	 */
-	private LdapUtils ldapUtils;
-	
-	/**
-	 * {@link smtpServiceUtils}.
-	 */
-	private SmtpServiceUtils smtpServiceUtils;
-	
-	/**
-	 * {@link listPhoneNumbersInBlackListClient}.
-	 */
-	private ListPhoneNumbersInBlackListClient listPhoneNumbersInBlackListClient;
+	@Autowired private I18nService i18nService;
+	@Autowired private LdapUtils ldapUtils;
+	@Autowired private SmtpServiceUtils smtpServiceUtils;
+	@Autowired private SmsuapiWS smsuapiWS;
 
 	/**
 	 * Log4j logger.
@@ -64,30 +48,7 @@ public class NotificationByMailForInvalidPhoneManager {
 	 * @return return set of phone numbers 
 	 */
 	private Set<String> getListePhoneNumberInBlackList() {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Request getListePhoneNumberInBlackList in " 
-					+ "NotificationByMailForInvalidPhoneManager");
-		}
-		
-		Set<String> retVal = null;
-		try {
-		 retVal = listPhoneNumbersInBlackListClient.getListPhoneNumbersInBlackList(); 
-		 if (logger.isDebugEnabled()) {
-				final StringBuilder sb = new StringBuilder(500);
-				sb.append("Response for getListPhoneNumbersInBlackList request " 
-						+ "in NotificationByMailForInvalidPhoneManager: ");
-				for (String nb : retVal) {
-				sb.append(" - phone number in blacklist = ").append(nb);	
-				}
-				logger.debug(sb.toString());
-			}
-		} catch (Exception e) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("Probleme de connexion Web Service !!!");
-			}
-		}
-		
-		return retVal;
+		return smsuapiWS.getListPhoneNumbersInBlackList(); 
 	}
 	
 	/**

@@ -57,56 +57,25 @@ public class TemplateManager {
 	 * @return a template
 	 */
 	public Template getTemplateById(final Integer id) {
-		Template tpl = this.daoService.getTemplateById(id);
-		return tpl;
-	}
-	
-	/**
-	 * @return all templates
-	 */
-	public List<Template> getTemplates() {
-		return this.daoService.getTemplates();
+		return daoService.getTemplateById(id);
 	}
 	
 	/**
 	 * @param template
 	 */
 	public void updateUITemplate(final UITemplate template) {
-		Template tpl = new Template(template.getId(), template.getLabel().trim()); 
-		tpl.setHeading(template.getHeading());
-		tpl.setBody(template.getBody());
-		tpl.setSignature(template.getSignature());
-		daoService.updateTemplate(tpl);
+		daoService.updateTemplate(convertFromUI(template));
 	}
 	
 	/**
 	 * @param template
 	 */
 	public void addUITemplate(final UITemplate template) {
-		Template tpl = new Template(template.getId(), template.getLabel().trim()); 
-		tpl.setHeading(template.getHeading());
-		tpl.setBody(template.getBody());
-		tpl.setSignature(template.getSignature());
-		daoService.addTemplate(tpl);
+		daoService.addTemplate(convertFromUI(template));
 	}
 	
-	/**
-	 * @param template
-	 */
-	public void deleteUITemplate(final UITemplate template) {
-		Template tpl = new Template(template.getId(), template.getLabel()); 
-		tpl.setHeading(template.getHeading());
-		tpl.setBody(template.getBody());
-		tpl.setSignature(template.getSignature());
-		daoService.deleteTemplate(tpl);
-	}
-	
-	/**
-	 * @param label
-	 * @return a template
-	 */
-	public Template getTemplateByLabel(final String label) {
-		return daoService.getTemplateByLabel(label);
+	public void deleteTemplate(int id) {
+		daoService.deleteTemplate(daoService.getTemplateById(id));
 	}
 	
 	/**
@@ -115,77 +84,64 @@ public class TemplateManager {
 	 * @return true if no other template has the same key.
 	 */
 	public Boolean isLabelAvailable(final String label, final Integer id) {
-		Template template = getTemplateByLabel(label);
-		Boolean bReturn = true;
-		
-		if (template != null) {
-			if (id != null) {
-				Integer tId = template.getId();
-				if (!tId.equals(id)) {
-					bReturn = false;
-				}
-			} else {
-				bReturn = false;
-			}
-		}
-		
-		return bReturn;
+		Template template = daoService.getTemplateByLabel(label);
+		return template == null 
+				|| id != null && id.equals(template.getId());
+	}
+
+	public List<UITemplate> getUITemplates() {
+		List<UITemplate> listUiTemplates = new ArrayList<UITemplate>();
+		for (Template template : daoService.getTemplates()) {
+			listUiTemplates.add(convertToUI(template));
+		}	
+		return listUiTemplates;
 	}
 	
 	/**
 	 * @param template 
 	 * @return true if no message is linked to 
 	 */
-	public Boolean testMessagesBeforeDeleteTemplate(final Template template) {
-		List<Message> listMessages = new ArrayList<Message>();
-		listMessages = daoService.getMessagesByTemplate(template);
-		
-		if (listMessages.isEmpty()) {
-			return true;
-		}
-		
-		return false;
+	private Boolean testMessagesBeforeDeleteTemplate(final Template template) {
+		List<Message> listMessages = daoService.getMessagesByTemplate(template);		
+		return listMessages.isEmpty();
 	}
 	
-	/**
-	 * @param template
-	 * @return
-	 */
-	public Boolean testMailsBeforeDeleteTemplate(final Template template) {
-		List<Mail> listMails = new ArrayList<Mail>();
-		listMails = daoService.getMailsByTemplate(template);
-		
-		if (listMails.isEmpty()) {
-			logger.debug("listMails in method testMailsBeforeDeleteTemplate is empty");
-			return true;
-		}
-		
-		return false;
+	private Boolean testMailsBeforeDeleteTemplate(final Template template) {
+		List<Mail> listMails = daoService.getMailsByTemplate(template);
+		return listMails.isEmpty();
+	}
+
+	private Template convertFromUI(final UITemplate template) {
+		Template tpl = new Template(template.id, template.label.trim()); 
+		tpl.setHeading(template.heading);
+		tpl.setBody(template.body);
+		tpl.setSignature(template.signature);
+		return tpl;
 	}
 	
-	/**
-	 * @return the list of UI templates.
-	 */
-	public List<UITemplate> getUITemplates() {
-		List<UITemplate> listUiTemplates = new ArrayList<UITemplate>();
-		List<Template> listTemplates = daoService.getTemplates();
-		
-		for (Template template : listTemplates) {
-			Boolean isDeletable = false;
-			Boolean testMail = testMailsBeforeDeleteTemplate(template);
-			Boolean testMessage = testMessagesBeforeDeleteTemplate(template);
-			
-			if (testMail && testMessage) {
-				isDeletable = true;
-			}
-			UITemplate tpl = new UITemplate(template.getId(), template.getLabel(), isDeletable);
-			tpl.setHeading(template.getHeading());
-			tpl.setBody(template.getBody());
-			tpl.setSignature(template.getSignature());
-			listUiTemplates.add(tpl);
-		}
-		
-		
-		return listUiTemplates;
+	private UITemplate convertToUI(Template template) {
+		UITemplate tpl = new UITemplate();
+		tpl.id = template.getId();
+		tpl.label = template.getLabel();
+		tpl.isDeletable = isDeletable(template);
+		tpl.heading = template.getHeading();
+		tpl.body = template.getBody();
+		tpl.signature = template.getSignature();
+		return tpl;
 	}
+
+	private Boolean isDeletable(Template template) {
+		Boolean isDeletable = false;
+		Boolean testMail = testMailsBeforeDeleteTemplate(template);
+		Boolean testMessage = testMessagesBeforeDeleteTemplate(template);
+		
+		if (testMail && testMessage) {
+			isDeletable = true;
+		}
+		return isDeletable;
+	}
+	
+	public void setDaoService(final DaoService daoService) {
+		this.daoService = daoService;
+	}	
 }

@@ -1,15 +1,8 @@
 package org.esupportail.smsu.services.ldap;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
-import org.apache.commons.lang.StringUtils;
 import org.esupportail.commons.exceptions.UserNotFoundException;
 import org.esupportail.commons.services.ldap.LdapException;
 import org.esupportail.commons.services.ldap.LdapGroup;
@@ -184,6 +177,10 @@ public class LdapUtils {
 	 */
 	public String getUserPagerByUser(LdapUser user) {
 		return user.getAttribute(userPagerAttribute);
+	}
+
+	public String getUserDisplayName(LdapUser user) {
+		return user.getAttribute(userDisplayName);
 	}
 	
 	/**

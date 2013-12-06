@@ -2,10 +2,15 @@ package org.esupportail.smsu.business;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.text.DateFormat;
 import java.lang.reflect.UndeclaredThrowableException;
 
@@ -37,16 +42,16 @@ import org.esupportail.smsu.exceptions.CreateMessageException;
 import org.esupportail.smsu.exceptions.InsufficientQuotaException;
 import org.esupportail.smsu.exceptions.UnknownIdentifierApplicationException;
 import org.esupportail.smsu.exceptions.CreateMessageException.EmptyGroup;
-import org.esupportail.smsu.exceptions.CreateMessageException.PAGSGroupStoreConfigNotSynchronizedException;
-import org.esupportail.smsu.groups.pags.SmsuPersonAttributesGroupStore;
-import org.esupportail.smsu.groups.pags.SmsuPersonAttributesGroupStore.GroupDefinition;
-import org.esupportail.smsu.services.client.SendSmsClient;
+import org.esupportail.smsu.services.client.SmsuapiWS;
 import org.esupportail.smsu.services.ldap.LdapUtils;
+import org.esupportail.smsu.services.ldap.beans.UserGroup;
 import org.esupportail.smsu.services.scheduler.SchedulerUtils;
 import org.esupportail.smsu.services.smtp.SmtpServiceUtils;
-import org.esupportail.smsu.web.beans.GroupRecipient;
 import org.esupportail.smsu.web.beans.MailToSend;
-import org.esupportail.smsu.web.beans.UiRecipient;
+import org.esupportail.smsu.web.beans.UINewMessage;
+import org.esupportail.smsu.web.controllers.InvalidParameterException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 
 
 
@@ -56,51 +61,20 @@ import org.esupportail.smsu.web.beans.UiRecipient;
  */
 public class SendSmsManager  {
 
+	@Autowired private DaoService daoService;
+	@Autowired private I18nService i18nService;
+	@Autowired private SmsuapiWS smsuapiWS;
+	@Autowired private SmtpServiceUtils smtpServiceUtils;
+	@Autowired private LdapUtils ldapUtils;
+	@Autowired private SchedulerUtils schedulerUtils;
+	private UrlGenerator urlGenerator; //TODO
+	@Autowired private ContentCustomizationManager customizer;
 
-	/**
-	 * {@link DaoService}.
-	 */
-	private DaoService daoService;
-
-	/**
-	 * {@link I18nService}.
-	 */
-	private I18nService i18nService;
-
-	/**
-	 * link to access to the sms client layer.
-	 */
-	private SendSmsClient sendSmsClient;
 	
-	/**
-	 * wether sendSmsClient is using basic auth or certificate auth
-	 */
-	private boolean usingBasicAuth;
-
 	/**
 	 * the default Supervisor login when the max SMS number is reach.
 	 */
 	private String defaultSupervisorLogin;
-
-	/**
-	 * {@link SmtpServiceUtils}.
-	 */
-	private SmtpServiceUtils smtpServiceUtils;
-
-	/**
-	 *  {@link LdapUtils}.
-	 */
-	private LdapUtils ldapUtils;
-
-	/**
-	 * Used to launch task.
-	 */
-	private SchedulerUtils schedulerUtils;
-
-	/**
-	 * The URL generator.
-	 */
-	private UrlGenerator urlGenerator;
 
 	/**
 	 * The SMS max size.
@@ -113,11 +87,6 @@ public class SendSmsManager  {
 	private String defaultAccount;
 
 	/**
-	 * used to customize the content.
-	 */
-	private ContentCustomizationManager customizer;
-
-	/**
 	 * the phone number validation pattern.
 	 */
 	private String phoneNumberPattern;
@@ -126,8 +95,6 @@ public class SendSmsManager  {
 	 * the LDAP Email attribute.
 	 */
 	private String userEmailAttribute;
-
-	private SmsuPersonAttributesGroupStore smsuPersonAttributesGroupStore;
 	
 	/**
 	 * Log4j logger.
@@ -137,53 +104,48 @@ public class SendSmsManager  {
 	//////////////////////////////////////////////////////////////
 	// Constructors
 	//////////////////////////////////////////////////////////////
-	/**
-	 * Bean constructor.
-	 */
-	public SendSmsManager() {
-		super();
+	public int sendMessage(UINewMessage msg) throws CreateMessageException {
+		Message message = composeMessage(msg);
+
+		//TODO verify unneeded 
+		// by default, a SMS is considered as a sent one.
+		//message.setStateAsEnum(MessageStatus.IN_PROGRESS);
+
+		treatMessage(message);
+
+		return message.getId();
 	}
 
-	//////////////////////////////////////////////////////////////
-	// Pricipal methods
-	//////////////////////////////////////////////////////////////
-	/**
-	 * @param uiRecipients 
-	 * @param login 
-	 * @param content 
-	 * @param smsTemplate 
-	 * @param userGroup 
-	 * @param serviceId 
-	 * @param mailToSend 
-	 * @return a message.
-	 * @throws CreateMessageException 
-	 */
-	public Message createMessage(final List<UiRecipient> uiRecipients,
-			final String login, final String content, final String smsTemplate,
-			final String userGroup, final Integer serviceId,
-			final MailToSend mailToSend) throws CreateMessageException {
-		Service service = getService(serviceId);
-		Set<Recipient> recipients = getRecipients(uiRecipients, service);
-		BasicGroup groupRecipient = getGroupRecipient(uiRecipients);
-		BasicGroup groupSender = getGroupSender(userGroup);
+	public Message composeMessage(UINewMessage msg) throws CreateMessageException {
+		Message message = createMessage(msg);
+		daoService.addMessage(message);
+		return message;
+	}
+
+	private Message createMessage(UINewMessage msg) throws CreateMessageException  {
+		Service service = getService(msg.serviceKey);
+
+		Set<Recipient> recipients = getRecipients(msg, msg.serviceKey);
+		BasicGroup groupRecipient = getGroupRecipient(msg.recipientGroup);
+		BasicGroup groupSender = getGroupSender(msg.senderGroup);
 		MessageStatus messageStatus = getWorkflowState(recipients.size(), groupSender, groupRecipient);
-		Person sender = getSender(login);
+		Person sender = getSender(msg.login);
 
 		// test if customizeExpContent raises a CreateMessageException
-		customizer.customizeExpContent(content, groupSender.getLabel(), sender.getLogin());
+		customizer.customizeExpContent(msg.content, groupSender.getLabel(), sender.getLogin());
 				
 		Message message = new Message();
-		message.setContent(content);
-		if (smsTemplate != null) message.setTemplate(getMessageTemplate(smsTemplate));
+		message.setContent(msg.content);
+		if (msg.smsTemplate != null) message.setTemplate(getMessageTemplate(msg.smsTemplate));
 		message.setSender(sender);
-		message.setAccount(getAccount(userGroup));
+		message.setAccount(getAccount(msg.senderGroup));
 		message.setService(service);
 		message.setGroupSender(groupSender);
 		message.setRecipients(recipients);
 		message.setGroupRecipient(groupRecipient);			
 		message.setStateAsEnum(messageStatus);				
 		message.setSupervisors(mayGetSupervisorsOrNull(message));				
-		if (mailToSend != null) message.setMail(getMail(message, mailToSend));
+		if (msg.mailToSend != null) message.setMail(getMail(message, msg.mailToSend));
 		return message;
 	}
 
@@ -552,6 +514,7 @@ public class SendSmsManager  {
 	 * @param groupLabel
 	 * @return the current customized group if it has supervisors or the first parent with supervisors.
 	 */
+	@SuppressWarnings("unused") //TODO
 	private CustomizedGroup getSupervisorCustomizedGroupByLabel(final String groupLabel) {
 		if (logger.isDebugEnabled()) {
 			logger.debug("getSupervisorCustomizedGroupByLabel for group [" + groupLabel + "]");
@@ -565,32 +528,39 @@ public class SendSmsManager  {
 			if (logger.isDebugEnabled())
 				logger.debug("Customized group without supervisor found : [" + cGroup.getLabel() + "]");
 			
-			String parentGroup = getSafeParentGroupIdByGroupId(cGroup.getLabel());
+			String parentGroup = null;
 			if (parentGroup == null) return null;
 			return getSupervisorCustomizedGroupByLabel(parentGroup);
 		}
 	}
 
-	/**
-	 * @param uiRecipients
-	 * @return the recipients list.
-	 * @throws EmptyGroup 
-	 */
-	private Set<Recipient> getRecipients(final List<UiRecipient> uiRecipients, final Service service) throws EmptyGroup, PAGSGroupStoreConfigNotSynchronizedException {
-
+	private Set<Recipient> getRecipients(UINewMessage msg, String serviceKey) throws EmptyGroup {
 		Set<Recipient> recipients = new HashSet<Recipient>();
+		if (msg.recipientPhoneNumbers != null) addPhoneNumbersRecipients(recipients, msg.recipientPhoneNumbers);
+		addLoginsRecipients(recipients, msg.recipientLogins, serviceKey);
+		addGroupRecipients(recipients, msg.recipientGroup, serviceKey);
+		return recipients;
+	}
 
-		// determines all the recipients.
-		for (UiRecipient uiRecipient : uiRecipients) {
+	private void addPhoneNumbersRecipients(Set<Recipient> recipients, List<String> phoneNumbers) {
+		for (String phoneNumber : phoneNumbers)
+			mayAdd(recipients, phoneNumber, null);
+	}
 
-			// single users and phone numbers can be directly added to the message.
-			if (!uiRecipient.getClass().equals(GroupRecipient.class)) {
-				mayAdd(recipients, uiRecipient.getPhone(), uiRecipient.getLogin());
-			} else {
-				String serviceKey = service != null ? service.getKey() : null;
+	private void addLoginsRecipients(Set<Recipient> recipients, List<String> logins, String serviceKey) {
+		List<LdapUser> users = ldapUtils.getConditionFriendlyLdapUsersFromUid(logins, serviceKey);
+		for (LdapUser user : users) {
+			String phoneNumber = ldapUtils.getUserPagerByUser(user);
+			if (phoneNumber == null)
+				throw new InvalidParameterException("user " + user.getId()+ " has no phone number to send SMS to");
+			mayAdd(recipients, phoneNumber, user.getId());
+		}
+	}
 
+	private void addGroupRecipients(Set<Recipient> recipients, final String groupName, String serviceKey) throws EmptyGroup {
+		if (groupName == null) return;
+		
 				// Group users are search from the portal.
-				String groupName = uiRecipient.getDisplayName();
 				List<LdapUser> groupUsers = getUsersByGroup(groupName,serviceKey);
 				// users are filtered to keep only service compliant ones.
 				List<LdapUser> filteredUsers = filterUsers(groupUsers, serviceKey);
@@ -603,11 +573,6 @@ public class SendSmsManager  {
 					String login = ldapUser.getId();
 					mayAdd(recipients, phone, login);
 				}
-
-			}
-		}
-
-		return recipients;
 	}
 
 	private void mayAdd(Set<Recipient> recipients, String phone, String login) {
@@ -642,14 +607,13 @@ public class SendSmsManager  {
 	 * @param serviceKey 
 	 * @return the user list.
 	 */
-	public List<LdapUser> getUsersByGroup(final String groupName, String serviceKey) throws PAGSGroupStoreConfigNotSynchronizedException {
+	@SuppressWarnings("null")
+	public List<LdapUser> getUsersByGroup(final String groupName, String serviceKey) {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Search users for group [" + groupName + "]");
 		}
 		//get the recipient group hierarchy
-		PortalGroupHierarchy groupHierarchy = ldapUtils.getPortalGroupHierarchyByGroupName(groupName);
-		//get all users from the group hierarchy
-		List<LdapUser> members = getMembers(groupHierarchy, serviceKey);
+		List<LdapUser> members = null;
 
 		logger.info("Found " + members.size() + " ldap users in group " + groupName + " (including duplicates)");
 
@@ -662,14 +626,15 @@ public class SendSmsManager  {
 	 * @param serviceKey 
 	 * @return the list of the unique sub-members of a group (recursive)
 	 */
-	private List<LdapUser> getMembers(final PortalGroupHierarchy groupHierarchy, String serviceKey) throws PAGSGroupStoreConfigNotSynchronizedException {
+	@SuppressWarnings({ "null", "unused" }) // TODO
+	private List<LdapUser> getMembers(final PortalGroupHierarchy groupHierarchy, String serviceKey) {
 		final PortalGroup currentGroup = groupHierarchy.getGroup();
 		if (logger.isDebugEnabled()) {
 			logger.debug("Search users for subgroup [" + currentGroup.getName()
 				     + "] [" + currentGroup.getId() + "]");
 		}
 
-		List<LdapUser> members = getMembersNonRecursive(currentGroup, serviceKey);
+		List<LdapUser> members = null; //TODO getMembersNonRecursive(currentGroup, serviceKey);
 		if (!members.isEmpty()) return members;
 
 		// hum, the group is empty, it may mean that the group is using RegexTester.
@@ -747,7 +712,7 @@ public class SendSmsManager  {
 	/**
 	 * get the message sender.
 	 */
-	private Person getSender(final String strLogin) {
+	public Person getSender(final String strLogin) {
 		Person sender = daoService.getPersonByLogin(strLogin);
 		if (sender == null) {
 			sender = new Person();
@@ -765,9 +730,11 @@ public class SendSmsManager  {
 		if (logger.isDebugEnabled()) logger.debug("nbRecipients: " + nbRecipients);
 
 		final CustomizedGroup cGroup = getRecurciveCustomizedGroupByLabel(groupSender.getLabel());
+		if (cGroup == null)
+			throw new InvalidParameterException("invalid sender group");
 
 		if (nbRecipients.equals(0)) {
-			return MessageStatus.NO_RECIPIENT_FOUND;
+			throw new InvalidParameterException("NO_RECIPIENT_FOUND");
 		}
 		checkFrontOfficeQuota(nbRecipients, cGroup, groupSender);
 		if (groupRecipient != null || !checkMaxSmsGroupQuota(nbRecipients, cGroup, groupSender)) {
@@ -778,16 +745,14 @@ public class SendSmsManager  {
 	}
 
 	/**
-	 * @param uiRecipients
 	 * @return the recipient group, or null.
 	 */
-	private BasicGroup getGroupRecipient(final List<UiRecipient> uiRecipients) {
+	private BasicGroup getGroupRecipient(String label) {
+		if (label == null) return null;
 		if (logger.isDebugEnabled()) logger.debug("get recipient group");
 
-		for (UiRecipient uiRecipient : uiRecipients) {
-			if (uiRecipient.getClass().equals(GroupRecipient.class)) {
-				String label = uiRecipient.getDisplayName();
-				PortalGroup pGroup = ldapUtils.getPortalGroupByName(label);
+				PortalGroup pGroup = null;
+				@SuppressWarnings("null")
 				String portalId = pGroup.getId();
 				BasicGroup groupRecipient = daoService.getGroupByLabel(portalId);
 				if (groupRecipient == null) {
@@ -795,9 +760,6 @@ public class SendSmsManager  {
 					groupRecipient.setLabel(portalId);
 				}
 				return groupRecipient;
-			}
-		}
-		return null;
 	}
 
 	/**
@@ -872,8 +834,7 @@ public class SendSmsManager  {
 		}
 		// send the message to the back office
 
-		sendSmsClient.sendSMS(messageId, senderId, groupSenderId, serviceId, 
-				recipiendPhoneNumber,	userLabelAccount, message);
+		smsuapiWS.sendSMS(messageId, senderId, recipiendPhoneNumber, userLabelAccount, message);
 
 	}
 
@@ -937,16 +898,12 @@ public class SendSmsManager  {
 						+ "accountLabel = " + accountLabel);
 			}
 
-			sendSmsClient.mayCreateAccountCheckQuotaOk(nbToSend, accountLabel);
-
+			smsuapiWS.mayCreateAccountCheckQuotaOk(nbToSend, accountLabel);
+			
 			if (logger.isDebugEnabled()) {
 				logger.debug("checkQuotaOk: quota is ok to send all our messages"); 
 			}
 
-		} catch (UnknownIdentifierApplicationException e) {
-			throw new UnknownIdentifierApplicationException(e.getMessage());
-		} catch (InsufficientQuotaException e) {
-			throw new InsufficientQuotaException(e.getMessage());
 		} catch (UndeclaredThrowableException e) {
 			String msg = checkWhySmsuapiFailed(e.getCause());
 			throw new BackOfficeUnrichableException(msg);
@@ -991,6 +948,59 @@ public class SendSmsManager  {
 		return count;
 	}
 
+	
+	public List<UserGroup> getUserGroupLeaves(String uid) {
+		Map<String, UserGroup> idToGroup = new HashMap<String, UserGroup>();
+		for (UserGroup group : ldapUtils.getUserGroupsByUid(uid))
+			idToGroup.put(group.getLdapId(), group);
+		List<UserGroup> l = new LinkedList<UserGroup>();
+		for (String id : keepGroupLeaves(idToGroup.keySet())) {
+			l.add(idToGroup.get(id));
+		}
+		return l;
+	}
+
+	private List<String> keepGroupLeaves(Set<String> ids) {
+		logger.debug("keepGroupLeaves: given ids " + ids);
+
+		SortedMap<String, String> pathToId = new TreeMap<String, String>();
+		for (String id : ids) {
+			String path = getRecursiveGroupPathByLabel(id);
+			if (path != null) pathToId.put(path, id);
+		}
+		logger.debug("keepGroupLeaves: pathToId: " + pathToId);
+
+		List<String> keptIds = new LinkedList<String>();
+		for (String path : keepLeaves(pathToId.keySet().iterator()))
+			keptIds.add(pathToId.get(path));
+		logger.debug("keepGroupLeaves: keptIds: " + keptIds);
+		return keptIds;
+	}
+
+	/**
+	 * @param it iterator on a sorted collection of strings 
+	 * @return the strings without the prefix strings
+	 * 
+	 * example: { "a/b", "a", "c" } returns { "a/b", "c" }
+	 */
+	private List<String> keepLeaves(Iterator<String> it) {
+		List<String> keptIds = new LinkedList<String>();
+		String prev = null;
+		while (it.hasNext()) {
+			String current = it.next();
+			if (prev != null && prev.startsWith(current)) 
+				; // skip current
+			else if (prev == null || current.startsWith(prev))					
+				prev = current; // skip prev
+			else {
+				keptIds.add(prev);
+				prev = current;
+			}
+		}
+		if (prev != null) keptIds.add(prev);
+		return keptIds;
+	}
+
 	/**
 	 * @param groupId
 	 * @return the customized group corresponding to a group
@@ -1031,27 +1041,14 @@ public class SendSmsManager  {
 			logger.debug("Customized group not found : " + portalGroupId);
 
 		    // if a parent group is found, search the corresponding customized group
-		    String parentGroup = getSafeParentGroupIdByGroupId(portalGroupId);
+		    String parentGroup = null;
 		    if (parentGroup == null) return groupSender;
-		    portalGroupId = parentGroup;
 		}
 	}
 
-	private String getSafeParentGroupIdByGroupId(String portalGroupId) {
-		String parentGroup = ldapUtils.getParentGroupIdByGroupId(portalGroupId);
-		if (parentGroup == null || parentGroup.equals(portalGroupId))
-			return null;
-		else
-			return parentGroup;
-	}
-
-	/**
-	 * @param id
-	 * @return the service.
-	 */
-	private Service getService(final Integer id) {
-		if (id != null)
-			return daoService.getServiceById(id);
+	private Service getService(final String key) {
+		if (key != null)
+			return daoService.getServiceByKey(key);
 		else
 			return null;
 	}

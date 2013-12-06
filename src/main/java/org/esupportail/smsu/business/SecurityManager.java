@@ -4,14 +4,14 @@ package org.esupportail.smsu.business;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.dao.DaoService;
 import org.esupportail.smsu.dao.beans.CustomizedGroup;
 import org.esupportail.smsu.dao.beans.Fonction;
-import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.services.ldap.beans.UserGroup;
-import org.esupportail.smsu.domain.beans.fonction.FonctionName;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 /**
@@ -19,20 +19,8 @@ import org.esupportail.smsu.domain.beans.fonction.FonctionName;
  *
  */
 public class SecurityManager {
+	@Autowired private DaoService daoService;
 
-	/**
-	 * {@link DaoService}.
-	 */
-	private DaoService daoService;
-
-	/**
-	 * ldap service.
-	 */
-	private LdapUtils ldapUtils;
-
-	/**
-	 * Log4j logger.
-	 */
 	private final Logger logger = new LoggerImpl(getClass());
 
 	//////////////////////////////////////////////////////////////
@@ -77,7 +65,7 @@ public class SecurityManager {
 	private List<UserGroup> getUserGroupsPlusSelfGroup(String login) {
 		List<UserGroup> groups = new ArrayList<UserGroup>();
 		try {
-		    groups = ldapUtils.getUserGroupsByUid(login);
+		    //TODO groups = ldapUtils.getUserGroupsByUid(login);
 		} catch (Exception e) {
 		    logger.debug("" + e, e); // nb: exception already logged in SmsuCachingUportalServiceImpl
 		    // go on, things can still work using only the self group

@@ -309,11 +309,7 @@ public interface DaoService extends Serializable {
 	 */
 	CustomizedGroup getCustomizedGroupByLabel(String label);
 	
-	/**
-	 * @param role
-	 * @return the customized group
-	 */
-	CustomizedGroup getCustomizedGroupByRole(Role role);
+	boolean isRoleInUse(Role role);
 	
 	/**
 	 * @return the first customized group from the table.
@@ -432,6 +428,7 @@ public interface DaoService extends Serializable {
 	 */
 	List<Fonction> getFonctions();
 	Fonction getFonctionById(Integer id);
+	Fonction getFonctionByName(String name);
 	
 	//////////////////////////////////////////////////////////////
 	// Mails
