@@ -1,228 +1,74 @@
 package org.esupportail.smsu.web.controllers;
 
-import javax.faces.component.html.HtmlInputTextarea;
+import java.util.List;
+
+import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
-import org.esupportail.smsu.domain.beans.User;
-import org.esupportail.smsu.domain.beans.fonction.FonctionName;
-import org.esupportail.smsu.web.beans.TemplatesPaginator;
+import org.esupportail.smsu.business.TemplateManager;
 import org.esupportail.smsu.web.beans.UITemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 
-/**
- * @author xphp8691
- *
- */
-public class TemplateManagerController extends AbstractContextAwareController {
+@RolesAllowed("FCTN_GESTION_MODELES")
+@Path("/templates")
+public class TemplateManagerController {
 
-	/**
-	 * Serial Id.
-	 */
-	private static final long serialVersionUID = 3184009274703988880L;
-
-	/**
-	 * 
-	 */
 	private static final int LENGHTBODY = 160;
 	
-	/**
-	 * a paginator.
-	 */
-	private TemplatesPaginator paginator;
+	@Autowired private TemplateManager templateManager;
 	
-	/**
-	 * the template body.
-	 */	
-	private HtmlInputTextarea templateBody;
-	
-	/**
-	 * a template.
-	 */
-	private UITemplate uiTemplate;
-	
-	/**
-	 * Log4j logger.
-	 */
 	private final Logger logger = new LoggerImpl(getClass());
 	
-	//////////////////////////////////////////////////////////////
-	// Constructors
-	//////////////////////////////////////////////////////////////
-	/**
-	 * a constructor.
-	 */
-	public TemplateManagerController() {
-		super();
-	}
-
-	//////////////////////////////////////////////////////////////
-	// Access control method 
-	//////////////////////////////////////////////////////////////
-	/**
-	 * @return true
-	 */
-	public boolean isPageAuthorized() {
-		//an access control is required for this page.
-		User currentUser = getCurrentUser();
-		if (currentUser == null) {
-			return false;
-		}
-		return currentUser.hasFonction(FonctionName.FCTN_GESTION_MODELES);
-	}
-
-	//////////////////////////////////////////////////////////////
-	// Enter method (for Initialazation)
-	//////////////////////////////////////////////////////////////
-	/**
-	 * JSF callback.
-	 * @return A String.
-	 */
-	public String enter() {
-		if (!isPageAuthorized()) {
-			addUnauthorizedActionMessage();
-			return null;
-		}
-		init();
-		
-		return "navigationManageTemplates";
-	}
-
-	//////////////////////////////////////////////////////////////
-	// Init methods 
-	//////////////////////////////////////////////////////////////
-	/**
-	 * initialize the page.
-	 */
-	private void init() {
-		//can be used to initialize the page.
-		paginator = new TemplatesPaginator(getDomainService());
-		templateBody = new HtmlInputTextarea();
-	}
-	
-	//////////////////////////////////////////////////////////////
-	// Principal methods 
-	//////////////////////////////////////////////////////////////
-	/**
-	 * @return a navigation rule.
-	 */
-	public String delete() {
-		getDomainService().deleteUITemplate(uiTemplate);
-		reset();
-		return null;
-	}
-	/**
-	 * @see org.esupportail.smsu.web.controllers.AbstractContextAwareController#reset()
-	 */
-	@Override
-	public void reset() {
-		super.reset();
-		paginator = new TemplatesPaginator(getDomainService());
-		
+	@GET
+	@Produces("application/json")
+	public List<UITemplate> getTemplates() {
+		return templateManager.getUITemplates();
 	}
 	 
-	/**
-	 * @return a navigation rule.
-	 */
-	public String save() {
+	@POST
+	public void create(UITemplate uiTemplate) {
+		createOrModify(uiTemplate, true);
+	}
 
-		Boolean bTemplateOk = true;
-		String label = uiTemplate.getLabel();
-		Integer id = uiTemplate.getId();
-		String body = templateBody.getValue().toString();
+	@PUT
+	@Path("/{id:\\d+}")
+	public void modify(UITemplate uiTemplate, @PathParam("id") int id) {
+		uiTemplate.id = id;
+		createOrModify(uiTemplate, false);
+	}
+
+	@DELETE
+	@Path("/{id:\\d+}")
+	public void delete(@PathParam("id") int id) {
+		templateManager.deleteTemplate(id);
+	}
+	
+	private void createOrModify(UITemplate uiTemplate, boolean isAddMode) {
+		String body = uiTemplate.body;
 		if (body.length() > LENGHTBODY) {
 			logger.error("Error lenght Body: " + body.length() + " longer than: " + LENGHTBODY);
-			addErrorMessage("createModifyTemplateForm:templateBody", "TEMPLATE.BODY.ERROR");
-			bTemplateOk = false;
-		} else {
-			uiTemplate.setBody(body);	
+			throw new InvalidParameterException("TEMPLATE.BODY.ERROR");
 		}
-		if (!getDomainService().isTemplateLabelAvailable(label, id)) {
-			addErrorMessage("createModifyTemplateForm:templateLabel", "TEMPLATE.LABEL.ERROR");
-			bTemplateOk = false;
+		if (!templateManager.isLabelAvailable(uiTemplate.label, uiTemplate.id)) {
+			throw new InvalidParameterException("TEMPLATE.LABEL.ERROR");
 		}
-		if (bTemplateOk) {
-			if (uiTemplate.getId() == null) {
-				getDomainService().addUITemplate(uiTemplate);
+		
+			if (isAddMode) {
+				templateManager.addUITemplate(uiTemplate);
 			} else {
-				getDomainService().updateUITemplate(uiTemplate);
+				templateManager.updateUITemplate(uiTemplate);
 			}
-			return "navigationManageTemplates";
-		}
-		return null;
-	}
-	
-	/**
-	 * @return navigationCreateTemplate
-	 */
-	public String createTemplateButton() {
-
-		init();
-		//the template is initialized.
-		uiTemplate = new UITemplate();
-		
-		//the creation page is displayed.
-		return "navigationCreateTemplate";
-	}
-	
-	/**
-	 * @return navigationModifyTemplate
-	 */
-	public String modifyTemplateButton() {
-		//templateBody = new HtmlInputTextarea();
-		templateBody.setValue(uiTemplate.getBody());
-		
-		return "navigationModifyTemplate";
-	}
-	
-    //////////////////////////////////////////////////////////////
-	// Getter and Setter of paginator
-	//////////////////////////////////////////////////////////////
-	/**
-	 * @param paginator
-	 */
-	public void setPaginator(final TemplatesPaginator paginator) {
-		this.paginator = paginator;
 	}
 
-	/**
-	 * @return paginator
-	 */
-	public TemplatesPaginator getPaginator() {
-		return paginator;
-	}
-
-    //////////////////////////////////////////////////////////////
-	// Getter and Setter of uiTemplate
-	//////////////////////////////////////////////////////////////
-	/**
-	 * @param template
-	 */
-	public void setUiTemplate(final UITemplate uiTemplate) {
-		this.uiTemplate = uiTemplate;
-	}
-
-	/**
-	 * @return template
-	 */
-	public UITemplate getUiTemplate() {
-		return uiTemplate;
-	}
-
-	//////////////////////////////////////////////////////////////
-	// Getter and Setter of templateBody
-	//////////////////////////////////////////////////////////////
-	/**
-	 * @param templateBody
-	 */
-	public void setTemplateBody(final HtmlInputTextarea templateBody) {
-		this.templateBody = templateBody;
-	}
-
-	/**
-	 * @return the template body
-	 */
-	public HtmlInputTextarea getTemplateBody() {
-		return templateBody;
-	}
-	
+	public void setTemplateManager(TemplateManager templateManager) {
+		this.templateManager = templateManager;
+	}	
 }

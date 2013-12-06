@@ -4,96 +4,30 @@
  */
 package org.esupportail.smsu.web.controllers;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import javax.faces.model.SelectItem;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 
-//import org.esupportail.commons.services.logging.Logger;
-//import org.esupportail.commons.services.logging.LoggerImpl;
-import org.esupportail.smsu.dao.beans.Account;
-/**
- * A bean to manage user preferences.
- */
-public class AccountsController extends AbstractContextAwareController {
+import org.esupportail.smsu.domain.DomainService;
+import org.springframework.beans.factory.annotation.Autowired;
 
-	/**
-	 * The serialization id.
-	 */
-	private static final long serialVersionUID = 2503649603430502319L;
+@Path("/accounts")
+public class AccountsController {
 
-	/**
-	 * A logger.
-	 */
 	//private final Logger logger = new LoggerImpl(this.getClass());
-	
-	/**
-	 * The id of the selected account in "search_sms.jsp" page.
-	 */	
-	private String userAccountId;
-	
-	//////////////////////////////////////////////////////////////
-	// Constructors
-	//////////////////////////////////////////////////////////////
-	/**
-	 * Bean constructor.
-	 */
-	public AccountsController() {
-		super();
-	}
-	
-	//////////////////////////////////////////////////////////////
-	// Getter and Setter of userAccountId
-	//////////////////////////////////////////////////////////////
-	
-	/**
-	 * A Getter method for userAccountId parameter. 
-	 */
-	public String getUserAccountId() {
-		return this.userAccountId;
-	}
-	
-	/**
-	 * @param String the accountId to setter
-	 */
-	public void setUserAccountId(final String accountId) {
-		this.userAccountId = accountId;
-	}
-	
-	
-	//////////////////////////////////////////////////////////////
-	// Others
-	//////////////////////////////////////////////////////////////
-	/**
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "#" + hashCode();
+
+	@Autowired private DomainService domainService;
+
+	@GET
+	@Produces("application/json")
+	public List<String> getAccounts() {
+		return domainService.getAccounts();
 	}
 
-	/**
-	 * @return true if the current user is allowed to view the page.
-	 */
-	public boolean isPageAuthorized() {
-		return getCurrentUser() != null;
+	public void setDomainService(DomainService domainService) {
+		this.domainService = domainService;
 	}
 
-	/**
-	 * @return the userAccountItems
-	 */
-	public List<SelectItem> getUserAccountItems() {
-		List<SelectItem> accountItems = new ArrayList<SelectItem>();
-		accountItems.clear();
-		accountItems.add(new SelectItem("0", ""));
-		List<Account> accounts = getDomainService().getAccounts();
-		if (accounts != null) {
-		for (Account acc : accounts) {
-			accountItems.add(new SelectItem(acc.getId().toString(), acc.getLabel()));
-		}
-		}
-		return accountItems;
-	}
-
-	
 }

@@ -1,244 +1,33 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<beans 	xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd ">
+<beans 
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-	<!-- 
-		/properties/web/controllers.xml
-		This file declares the visual beans used by the web interface.
-		It should not be modified but by the developers.
-		This file is referenced by /properties/applicationContext.xml.
-	-->
+   <bean id="RoleWrapperFilter" class="org.esupportail.smsu.web.RoleWrapperFilter" />
 
-	<bean id="sessionController" class="org.esupportail.smsu.web.controllers.SessionController"
-		parent="abstractDomainAwareBean" scope="session">
-		<description>
-			A bean to store the context of the application.
-		</description>
-		<property name="exceptionController" ref="exceptionController">
-			<description>The exception controller.</description>
-		</property>
-		<property name="authenticator" ref="authenticator">
-			<description>The authenticator.</description>
-		</property>
-        <property name="casLogoutUrl" value="${cas.url}/logout?service=%s">
-            <description>The CAS logout URL.</description>
-        </property>
+   <bean id="StartPage" class="org.esupportail.smsu.web.StartPage">
+  	  <property name="serviceURL" value="${serviceURL}" />
 	</bean>
-
-	<bean id="abstractContextAwareController" 
-		abstract="true"
-		parent="abstractDomainAwareBean"
-		scope="session"
-		>
-		<description>
-			An abstract bean to factorize the declaration of beans of
-			which class inherits from AbstractContextAwareController.
-		</description>
-		<property name="sessionController" ref="sessionController">
-			<description>The session controller.</description>
-		</property>
-	</bean>
-
-	<bean id="preferencesController"
-		class="org.esupportail.smsu.web.controllers.PreferencesController"
-		parent="abstractContextAwareController"
-		scope="session"
-    	>
-		<description>A bean to manage user preferences.</description>
-	</bean>
-	
-	<bean id="welcomeController"
-		class="org.esupportail.smsu.web.controllers.WelcomeController"
-		parent="abstractContextAwareController"
-		scope="session"
-    	>
-		<description>A bean to manage the welcome page.</description>
-		<property name="isConnexionTested" value="${welcome.isConnexionTested}" />
-	</bean>
-
-	<bean id="aboutController"
-		class="org.esupportail.smsu.web.controllers.AboutController"
-		parent="abstractContextAwareController"
-		scope="session"
-    	>
-		<description>A bean to manage the about page.</description>
-	</bean>
-
-	<bean id="membershipController"
-		class="org.esupportail.smsu.web.controllers.MembershipController"
-		parent="abstractContextAwareController" scope="session">
-		<description>A bean to manage the membership page.</description>
-		<property name="phoneNumberPattern" value="${adhesion.phoneNumberPattern}"></property>
-		<property name="activateValidation"> 
-			<value type="java.lang.Boolean">${adhesion.activateValidation}</value>
-		</property>
-	</bean>
-
-	<bean id="sendSMSController" class="org.esupportail.smsu.web.controllers.SendSMSController"
-		parent="abstractContextAwareController"	scope="session">
-		<description>A bean to manage the send SMS page.</description>
-		<property name="ldapUtils" ref="ldapUtils" />
-		<property name="smsRecipientController" ref="smsRecipientController" />
-	</bean>
-	
-	<bean id="treeController"
-		class="org.esupportail.smsu.web.controllers.TreeController"
-		parent="abstractContextAwareController"
-		scope="session"
-    	>
-		<description>A bean to manage tree.</description>
-		<property name="ldapUtils" ref="ldapUtils" />
-	</bean>
-	
-	<bean id="smsRecipientController"
-		class="org.esupportail.smsu.web.controllers.SmsRecipientController"
-		parent="abstractContextAwareController" scope="session">
-		<description>A bean to manage the send SMS page.</description>
-		<property name="phoneNumberPattern" value="${recipient.phoneNumberPattern}"></property>
-		<property name="ldapUtils" ref="ldapUtils" />
-		<property name="userSearchController" ref="usersSearchController"/>
-	</bean>
-		
-
-	<bean id="usersSearchController"
-		class="org.esupportail.smsu.web.controllers.UsersSearchController"
-		parent="abstractContextAwareController" scope="session">
-		<description>A bean to manage the send SMS page.</description>
-		<property name="ldapUtils" ref="ldapUtils">
-			<description>The LDAP service.</description>
-		</property>
-		<property name="userPagerAttribute" value="${ldap.pagerAttribute}"/>
-		<property name="userDisplayName" value="${ldap.displayNameAttribute}"/>
-		<property name="phoneNumberPattern" value="${recipient.phoneNumberPattern}"></property>
-	</bean>
-
-	<bean id="performSendSmsController"
-		class="org.esupportail.smsu.web.controllers.PerformSendSmsController"
-		parent="abstractContextAwareController" scope="session">
-		<description>A bean to send a SMS</description>
-		<property name="sendSMSController" ref="sendSMSController">
-			<description>The sendSMSController.</description>
-		</property>
-		<property name="smsRecipientController" ref="smsRecipientController">
-			<description>The smsRecipientController.</description>
-		</property>
-		<property name="smsMaxSize" value="${sms.maxLength}">
-			<description>The max size of a SMS.</description>
-		</property>
-		<property name="smtpServiceUtils" ref="smtpServiceUtils" />
-	</bean>
-
-	<bean id="exceptionController"
-		class="org.esupportail.commons.web.controllers.ExceptionController"
-		scope="session"
-    	>
-		<description>A bean to manage exception reports.</description>
-	</bean>
-
-
-	<bean id="groupsController"
-		class="org.esupportail.smsu.web.controllers.GroupsController"
-		parent="abstractContextAwareController"
-		scope="session"
-    	>
-		<description>A bean to manage groups.</description>
-		<property name="ldapUtils" ref="ldapUtils">
-			<description>The LDAP service.</description>
-		</property>
-	</bean>
-	
-	<bean id="accountsController"
-		class="org.esupportail.smsu.web.controllers.AccountsController"
-		parent="abstractContextAwareController"
-		scope="session"
-    	>
-		<description>A bean to manage accounts.</description>
-	</bean>
-	
-	<bean id="servicesController"
-		class="org.esupportail.smsu.web.controllers.ServicesController"
-		parent="abstractContextAwareController"
-		scope="session"
-    	>
-		<description>A bean to manage services.</description>
-	</bean>
-	
-	<bean id="templatesController"
-		class="org.esupportail.smsu.web.controllers.TemplatesController"
-		parent="abstractContextAwareController"
-		scope="session"
-    	>
-		<description>A bean to manage templates.</description>
-	</bean>
-	
-	<bean id="usersController"
-		class="org.esupportail.smsu.web.controllers.PersonsController"
-		parent="abstractContextAwareController"
-		scope="session"
-    	>
-		<description>A bean to manage persons.</description>
-		<property name="ldapUtils" ref="ldapUtils">
-			<description>The LDAP service.</description>
-		</property>
-		<property name="displayNameAttributeAsString"> 
-			<value type="java.lang.String">${ldap.displayNameAttribute}</value>
-		</property>
-		
-	</bean>
-	
-	<bean id="messagesController"
-		class="org.esupportail.smsu.web.controllers.MessagesController"
-		parent="abstractContextAwareController"
-		scope="session"
-    	>
-		<description>A bean to manage messages.</description>
-	</bean>
-	
-	<bean id="rolesController"
-		class="org.esupportail.smsu.web.controllers.RolesController"
-		parent="abstractContextAwareController"
-		scope="session"
-    	>
-		<description>A bean to manage roles.</description>
-	</bean>
-	
-	<bean id="approvalController"
-		class="org.esupportail.smsu.web.controllers.ApprovalController"
-		parent="abstractContextAwareController"
-		scope="session"
-    	>
-		<description>A bean to manage roles.</description>
-	</bean>
-	
-	<bean id="groupsManagerController"
-		class="org.esupportail.smsu.web.controllers.GroupsManagerController"
-		parent="abstractContextAwareController"
-		scope="session"
-    	>
-		<description>A bean to manage roles.</description>
-		<property name="usersSearchController" ref="usersSearchController" />
-		<property name="ldapUtils" ref="ldapUtils" />
-	</bean>
-	
-	<bean id="servicesSmsuController"
-		class="org.esupportail.smsu.web.controllers.ServicesSmsuController"
-		parent="abstractContextAwareController"
-		scope="session"
-    	>
-		<description>A bean to manage services.</description>
-	</bean>
-	
-	<bean id="templateManagerController"
-		class="org.esupportail.smsu.web.controllers.TemplateManagerController"
-		parent="abstractContextAwareController"
-		scope="session"
-    	>
-		<description>A bean to manage templates.</description>
-	</bean>
-  	
-  	
   
-  
+  <bean id="loginController"		class="org.esupportail.smsu.web.controllers.LoginController" />
+  <bean id="AccountsController"		class="org.esupportail.smsu.web.controllers.AccountsController" />
+  <bean id="ApprovalController"		class="org.esupportail.smsu.web.controllers.ApprovalController" />
+  <bean id="GroupsManagerController"	class="org.esupportail.smsu.web.controllers.GroupsManagerController" />
+  <bean id="LoginController"		class="org.esupportail.smsu.web.controllers.LoginController" />
+  <bean id="RolesController"		class="org.esupportail.smsu.web.controllers.RolesController" />
+  <bean id="ServicesSmsuController"	class="org.esupportail.smsu.web.controllers.ServicesSmsuController" />
+
+  <bean id="MembershipController"	class="org.esupportail.smsu.web.controllers.MembershipController" />
+  <bean id="MessagesController"		class="org.esupportail.smsu.web.controllers.MessagesController" />
+  <bean id="SendSMSController"		class="org.esupportail.smsu.web.controllers.SendSMSController">
+  	<property name="smsMaxSize" value="${sms.maxLength}" />
+  </bean>
+  <bean id="TemplateManagerController"	class="org.esupportail.smsu.web.controllers.TemplateManagerController" />
+  <bean id="UsersController"	class="org.esupportail.smsu.web.controllers.UsersController">
+		<property name="phoneNumberPattern" value="${recipient.phoneNumberPattern}"></property>
+  </bean>
 </beans>

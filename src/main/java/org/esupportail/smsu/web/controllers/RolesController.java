@@ -1,267 +1,68 @@
 package org.esupportail.smsu.web.controllers;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
-import org.esupportail.smsu.dao.beans.Fonction;
-import org.esupportail.smsu.domain.beans.User;
-import org.esupportail.smsu.domain.beans.fonction.FonctionName;
-import org.esupportail.smsu.web.beans.RolePaginator;
-import org.esupportail.smsu.web.beans.UIFonction;
+import org.esupportail.smsu.business.FonctionManager;
+import org.esupportail.smsu.business.RoleManager;
 import org.esupportail.smsu.web.beans.UIRole;
+import org.springframework.beans.factory.annotation.Autowired;
 
-/**
- * A bean to manage files.
- */
-public class RolesController extends AbstractContextAwareController {
 
-	/**
-	 * The serialization id.
-	 */
-	private static final long serialVersionUID = -1149078913806276304L;
-	
-	/**
-	 * The role.
-	 */
-	private UIRole role;
-	
-	/**
-	 * The role paginator.
-	 */
-	private RolePaginator paginator;
-		
-	/**
-	 * list of the fonctions.
-	 */
-	private List<Fonction> allFonctions;
-	
-	/**
-	 * list of the fonctions.
-	 */
-	private List<UIFonction> allBundleFonctions;
-	
-	/**
-	 * list of the selected fonctions.
-	 */
-	private List<String> selectedValues; 
-	
-	/**
-	 * Log4j logger.
-	 */
+@Path("/roles")
+@RolesAllowed("FCTN_GESTION_ROLES_CRUD")
+public class RolesController {
+
+	@SuppressWarnings("unused")
 	private final Logger logger = new LoggerImpl(getClass());
-	
-	//////////////////////////////////////////////////////////////
-	// Constructors
-	//////////////////////////////////////////////////////////////
-	/**
-	 * Bean constructor.
-	 */
-	public RolesController() {
-		super();
-	}
-	
 
-	//////////////////////////////////////////////////////////////
-	// Acces control method
-	//////////////////////////////////////////////////////////////
-	/**
-	 * @return true if the current user is allowed to view the page.
-	 */
-	public boolean isPageAuthorized() {
-		//an access control is required for this page.
-		User currentUser = getCurrentUser();
-		if (currentUser == null) {
-			return false;
-		}
-		return currentUser.hasFonction(FonctionName.FCTN_GESTION_ROLES_CRUD);
+	@Autowired private FonctionManager fonctionManager;
+	@Autowired private RoleManager roleManager;
+
+	@GET
+	@Produces("application/json")
+	@RolesAllowed({"FCTN_GESTION_ROLES_CRUD","FCTN_GESTION_ROLES_AFFECT"})
+	public List<UIRole> getAllRoles() {
+		return roleManager.getAllRoles();
 	}
 	
-	//////////////////////////////////////////////////////////////
-	// Enter method (for Initialazation)
-	//////////////////////////////////////////////////////////////
-	/**
-	 * JSF callback.
-	 * @return A String.
-	 * @throws LdapUserNotFoundException 
-	 */
-	public String enter()  {
-		if (!isPageAuthorized()) {
-			addUnauthorizedActionMessage();
-			return null;
-		}
-		// initialize data in the page
-		init();
-		return "navigationAdminRoles";
+	@POST
+	public void save(UIRole role) {
+		roleManager.saveRole(role);
 	}
 	
-	//////////////////////////////////////////////////////////////
-	// Init method
-	//////////////////////////////////////////////////////////////
-	/**
-	 * initialize data in the page.
-	 * @throws LdapUserNotFoundException 
-	 */
-	private void init()  {
-		paginator = new RolePaginator(getDomainService());
+	@PUT
+	@Path("/{id:\\d+}")
+	public void update(@PathParam("id") int id, UIRole role) {
+		role.id = id;
+		roleManager.updateRole(role);
+	}
+
+	@DELETE
+	@Path("/{id:\\d+}")
+	public void delete(@PathParam("id") int id)  {
+		roleManager.deleteRole(id);
+	}
+	
+	@GET
+	@Produces("application/json")
+	@Path("/fonctions")
+	public List<String> allFonctions() {
+		return fonctionManager.getAllFonctions();
+	}
+	
+	public void setFonctionManager(FonctionManager fonctionManager) {
+		this.fonctionManager = fonctionManager;
+	}
 		
-		this.allFonctions = getDomainService().getAllFonctions();
-		
-		initFunctionsUsingBundles();
-	}
-
-	//////////////////////////////////////////////////////////////
-	// Principal methods
-	//////////////////////////////////////////////////////////////
-	/**
-	 * save action.
-	 * @return A String
-	 */
-	public String save() {
-		getDomainService().saveRole(role, this.selectedValues);
-		return "navigationAdminRoles";
-	}
-	
-	/**
-	 * update action.
-	 * @return A String
-	 */
-	public String update() {
-		getDomainService().updateRole(role, this.selectedValues);
-		return "navigationAdminRoles";
-	}
-	
-	/**
-	 * delete action and reload paginator.
-	 * @return A String
-	 */
-	public String delete()  {
-		getDomainService().deleteRole(role);
-		reset();
-		return "navigationAdminRoles";
-	}
-	
-	/**
-	 * create action.
-	 * @return A String
-	 */
-	public String create() {
-		this.role = new UIRole();
-		this.selectedValues = new ArrayList<String>();
-		return "navigationCreateRole";
-	}
-	
-	public String display() {
-		selectedValues = getDomainService().getIdFctsByRole(role);
-		return "navigationDetailRole";
-	}
-	
-	//////////////////////////////////////////////////////////////
-	// Others
-	//////////////////////////////////////////////////////////////
-	/**
-	 * @see org.esupportail.smsu.web.controllers.AbstractContextAwareController#reset()
-	 */
-	@Override
-	public void reset() {
-		super.reset();
-		paginator = new RolePaginator(getDomainService());
-	}
-	
-	private void initFunctionsUsingBundles() {
-		this.allBundleFonctions = new ArrayList<UIFonction>();
-		
-		// Init Fonctions using Bundle
-		if (this.allFonctions != null) {
-			for (Fonction fct : this.allFonctions) {
-				if (toFonctionName(fct.getName()) != null) // filter obsolete Fonctions (eg: FCTN_APPROBATION_ENVOI)
-					this.allBundleFonctions.add(toUIFonction(fct));
-			}
-		}
-	}
-
-	private FonctionName toFonctionName(String name) {
-		for (FonctionName n : FonctionName.values()) {
-			if (name.equals(n.name())) return n;
-		}
-		return null;
-	}
-
-	private UIFonction toUIFonction(Fonction fct) {
-		String msg = getI18nService().getString("MSG." + fct.getName().trim(), 
-							getI18nService().getDefaultLocale());			
-		return new UIFonction(fct.getId().toString(), msg);
-	}
-	
-	/**
-	 * For treatments.
-	 * @return the paginator
-	 */
-	public RolePaginator getPaginator() {
-		return paginator;
-	}
-
-	/**
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + "#" + hashCode();
-	}
-
-	//////////////////////////////////////////////////////////////
-	// Getter and Setter of role
-	//////////////////////////////////////////////////////////////
-    /**
-	 *  the role to get.
-	 */
-	public UIRole getRole() {
-		return role;
-	}
-	/**
-	 * @param role the role to set
-	 */
-	public void setRole(final UIRole role) {
-		this.role = role;
-	}
-	
-	//////////////////////////////////////////////////////////////
-	// Getter of allFonctions
-	//////////////////////////////////////////////////////////////
-	/**
-	 * @return the allFonctions
-	 */
-	public List<Fonction> getAllFonctions() {
-		return allFonctions;
-	}
-
-	//////////////////////////////////////////////////////////////
-	// Getter of allBundleFonctions
-	//////////////////////////////////////////////////////////////
-	/**
-	 * @return the allBundleFonctions
-	 */
-	public List<UIFonction> getAllBundleFonctions() {
-		return allBundleFonctions;
-	}
-
-	//////////////////////////////////////////////////////////////
-	// Getter and Setter of selected values
-	//////////////////////////////////////////////////////////////
-	/**
-	 * @param selectedFonctions the selectedFonctions to set
-	 */
-	public void setSelectedValues(final List<String> values) {
-		this.selectedValues = values;
-	}
-
-	/**
-	 * @return the selectedFonctions
-	 */
-	public List<String> getSelectedValues() {
-			return selectedValues;
-	}
-	
-	
 }
