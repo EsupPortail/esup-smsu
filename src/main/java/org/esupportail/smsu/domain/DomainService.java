@@ -18,7 +18,6 @@ import org.esupportail.commons.services.ldap.LdapException;
 import org.esupportail.commons.services.ldap.LdapUser;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
-import org.esupportail.commons.utils.Assert;
 import org.esupportail.smsu.business.SecurityManager;
 import org.esupportail.smsu.dao.DaoService;
 import org.esupportail.smsu.dao.beans.Account;
@@ -31,12 +30,11 @@ import org.esupportail.smsu.domain.beans.User;
 import org.esupportail.smsu.services.client.SmsuapiWS;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.ws.remote.beans.TrackInfos;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 
-public class DomainService implements InitializingBean {
+public class DomainService {
 
 	@Autowired private DaoService daoService;
 	@Autowired private LdapUtils ldapUtils;	
@@ -44,21 +42,6 @@ public class DomainService implements InitializingBean {
 	@Autowired private SmsuapiWS smsuapiWS;
 
 	private final Logger logger = new LoggerImpl(getClass());
-
-	//////////////////////////////////////////////////////////////
-	// Constructors
-	//////////////////////////////////////////////////////////////
-	public DomainService() {
-		super();
-	}
-
-	//////////////////////////////////////////////////////////////
-	// Other
-	//////////////////////////////////////////////////////////////
-	public void afterPropertiesSet() throws Exception {
-		Assert.notNull(this.daoService, 
-				"property daoService of class " + this.getClass().getName() + " can not be null");
-	}
 
 	/**
 	 * create user from a LDAP search or create a simple one
@@ -72,15 +55,12 @@ public class DomainService implements InitializingBean {
 				displayName = id;
 			}
 			user.setDisplayName(displayName);
+			user.rights = securityManager.loadUserRightsByUsername(id);
 		} catch (LdapException e) {
 		}
 		return user;
 	}
 		
-	public List<String> getUserRights(String id) {
-		return securityManager.loadUserRightsByUsername(id);
-	}	
-
 	//////////////////////////////////////////////////////////////
 	// Message
 	//////////////////////////////////////////////////////////////
