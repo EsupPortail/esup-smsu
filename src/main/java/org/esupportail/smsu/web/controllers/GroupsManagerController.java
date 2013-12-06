@@ -95,6 +95,12 @@ public class GroupsManagerController {
 		groupManager.deleteCustomizedGroup(id);
 	}
 	
+	@GET
+	@Produces("application/json")
+	@Path("/accounts")
+	public List<String> getAccounts() {
+		return domainService.getAccounts();
+	}
 
 	//////////////////////////////////////////////////////////////
 	private void checkMandatoryUIParameters(UICustomizedGroup uiCGroup) {
