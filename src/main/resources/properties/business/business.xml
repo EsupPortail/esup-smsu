@@ -59,20 +59,6 @@
 		<property name="smsuPersonAttributesGroupStore" ref="personAttributesGroupStore" />
 	</bean>
 	
-  
-	<bean id="sendTrackManager"
-		class="org.esupportail.smsu.business.SendTrackManager">
-		<description>The business layer concerning the sending.</description>
-		<property name="daoService" ref="daoService" />
-		<property name="sendTrackClient" ref="sendTrackClient" />
-	</bean>
-
-	<bean id="phoneNumbersInBlackListManager"
-		class="org.esupportail.smsu.business.PhoneNumbersInBlackListManager">
-		<description>The business layer concerning the sending.</description>
-		<property name="listPhoneNumbersInBlackListClient" ref="listPhoneNumbersInBlackListClient" />
-	</bean>
-	
 	<bean id="customizer"
 		class="org.esupportail.smsu.business.ContentCustomizationManager">
 		<description>The business layer concerning the sending.</description>
