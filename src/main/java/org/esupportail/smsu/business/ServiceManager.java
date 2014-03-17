@@ -1,10 +1,7 @@
 package org.esupportail.smsu.business;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.dao.DaoService;
@@ -20,13 +17,6 @@ public class ServiceManager {
 	
 	@SuppressWarnings("unused")
 	private final Logger logger = new LoggerImpl(getClass());
-
-	public Map<String, String> getUIServices() {
-		Map<String, String> result = new HashMap<String,String>();
-		for (Service service : daoService.getServices())
-			result.put(service.getKey(), service.getName());
-		return result;
-	}
 
 	/**
 	 * retrieve all the service defined in smsu database.

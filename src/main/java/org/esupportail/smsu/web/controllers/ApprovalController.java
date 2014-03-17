@@ -38,13 +38,14 @@ public class ApprovalController {
     
 	@PUT
 	@Path("/{id:\\d+}")
-	public void modify(@PathParam("id") int id, @Context HttpServletRequest request, MessageStatus status) throws CreateMessageException {
-		User currentUser = domainService.getUser(request.getRemoteUser());
-		if (!MessageStatus.CANCEL.equals(status) && !MessageStatus.IN_PROGRESS.equals(status)) {
+	public void modify(@PathParam("id") int id, @Context HttpServletRequest request, UIMessage msg) throws CreateMessageException {
+		String status = msg.stateMessage;
+		if (status.equals("CANCEL") && status.equals("IN_PROGRESS")) {
 			throw new InvalidParameterException("unknown status " + status);
 		}
-		logger.info("" + currentUser + " " + (MessageStatus.CANCEL.equals(status) ? "cancel" : "approve") + " message " + id);
-		approvalManager.cancelOrApproveMessage(id, currentUser, status);
+		User currentUser = domainService.getUser(request.getRemoteUser());
+		logger.info("" + currentUser + " " + (status.equals("CANCEL") ? "cancel" : "approve") + " message " + id);
+		approvalManager.cancelOrApproveMessage(id, currentUser, MessageStatus.valueOf(status));
 	}
 
 }

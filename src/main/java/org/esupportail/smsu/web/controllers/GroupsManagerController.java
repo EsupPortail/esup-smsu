@@ -113,8 +113,4 @@ public class GroupsManagerController {
 		}
 	}
 
-	public String getGroupDisplayName(String groupId) {
-		return ldapUtils.getGroupDisplayName(groupId);
-	}
-
 }

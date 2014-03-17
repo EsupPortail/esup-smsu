@@ -103,8 +103,11 @@ public class MessagesController {
 		return messageManager.getUIMessage(messageId);
 	}
 
-	public List<UserGroup> getUserGroupLeaves(String uid) {
-		return sendSmsManager.getUserGroupLeaves(uid);
+	@GET
+	@Produces("application/json")
+	@Path("/groupLeaves")
+	public List<UserGroup> getUserGroupLeaves(@Context HttpServletRequest request) {
+		return sendSmsManager.getUserGroupLeaves(request.getRemoteUser());
 	}
 
 	private void userGroupValidation(String userGroup, String login) {

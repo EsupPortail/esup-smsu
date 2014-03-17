@@ -1,10 +1,13 @@
 package org.esupportail.smsu.web.beans;
 
+import java.util.Date;
 import java.util.List;
 
 public class UIMessage {
 
 	public Integer id;
+	public Date date;
+	public String content;
 	public Integer nbRecipients;
 
 	/**
@@ -17,13 +20,15 @@ public class UIMessage {
 	 */
 	public String groupSenderName;
 	public String groupRecipientName;
+
+	public String accountLabel;
+	public String serviceName;
 	
 	public String stateMessage;
 	
 	public String stateMail;
 	public List<String> supervisors;
 
-	
 	public Integer getId() {
 		return id;
 	}

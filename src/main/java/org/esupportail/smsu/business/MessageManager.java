@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.esupportail.commons.services.i18n.I18nService;
 import org.esupportail.commons.services.ldap.LdapUser;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
@@ -21,7 +20,6 @@ import org.esupportail.smsu.dao.beans.Mail;
 import org.esupportail.smsu.dao.beans.Message;
 import org.esupportail.smsu.dao.beans.Person;
 import org.esupportail.smsu.dao.beans.Recipient;
-import org.esupportail.smsu.domain.beans.mail.MailStatus;
 import org.esupportail.smsu.domain.beans.message.MessageStatus;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.web.beans.UIMessage;
@@ -31,7 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class MessageManager {
 
 	@Autowired private DaoService daoService;
-	@Autowired private I18nService i18nService;
 	@Autowired private LdapUtils ldapUtils;
 	
 	private final Logger logger = new LoggerImpl(getClass());
@@ -96,13 +93,17 @@ public class MessageManager {
 			Map<String, String> id2displayName) {
 		UIMessage r = new UIMessage();
 		r.id = mess.getId();
+		r.date = mess.getDate();
+		r.content = mess.getContent();
 		r.nbRecipients = mess.getRecipients().size();
 		r.supervisors= convertToUI(mess.getSupervisors());
 		r.senderName = retreiveNiceDisplayName(id2displayName, mess.getSender().getLogin());
+		r.accountLabel = mess.getAccount().getLabel();
 		r.groupSenderName = retreiveNiceGroupName(mess.getGroupSender());
 		r.groupRecipientName = retreiveNiceGroupName(mess.getGroupRecipient());
-		r.stateMessage = messageStatusI18nMessage(mess.getStateAsEnum());
-		r.stateMail = mailStatusI18nMessage(mess.getMail());
+		r.serviceName = mess.getService() != null ? mess.getService().getName() : null;
+		r.stateMessage = convertToUI(mess.getStateAsEnum());
+		r.stateMail = convertToUI(mess.getMail());
 		return r;
 	}
 	
@@ -149,66 +150,16 @@ public class MessageManager {
 
 	private String retreiveNiceGroupName(BasicGroup recipientGroup) {
 		return recipientGroup != null ?
-			ldapUtils.getGroupDisplayName(recipientGroup.getLabel()) : "";
+			ldapUtils.getGroupDisplayName(recipientGroup.getLabel()) : null;
 	}
 
-	private String i18nMessageKeyToMessage(String i18nKey) {
-		return i18nService.getString(i18nKey, i18nService.getDefaultLocale());
+	private String convertToUI(MessageStatus messageStatus) {
+		logger.debug("mess.getStateAsEnum : " + messageStatus);
+		return messageStatus != null ? messageStatus.name() : null;
 	}
 
-	private String messageStatusI18nMessage(MessageStatus messageStatus) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("mess.getStateAsEnum : " + messageStatus);
-		}				
-		String i18nKey = messageStatusI18nMessageKey(messageStatus);
-		return i18nKey != null ? i18nMessageKeyToMessage(i18nKey) : "";
+	private String convertToUI(Mail mail) {
+		return mail != null ? mail.getStateAsEnum().name() : null;
 	}
-
-	private String mailStatusI18nMessage(Mail mail) {
-		return mail != null ? mailStatusI18nMessage(mail.getStateAsEnum()) : "";
-	}
-
-	private String mailStatusI18nMessage(MailStatus mailStatus) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("mess.getMail.getStateAsEnum : " + mailStatus);
-		}
-		String i18nKey = mailStatusI18nMessageKey(mailStatus);
-		return i18nKey != null ? i18nMessageKeyToMessage(i18nKey) : "";
-	}
-
-	private String messageStatusI18nMessageKey(MessageStatus messageStatus) {
-		switch (messageStatus) {
-		case IN_PROGRESS:
-			return "MSG.STATE.IN.PROGRESS";
-		case WAITING_FOR_APPROVAL:
-			return "MSG.STATE.IN.APPROVAL";
-		case WAITING_FOR_SENDING:
-			return "MSG.STATE.IN.SENDING";
-		case SENT:
-			return "MSG.STATE.SENT";
-		case WS_ERROR:
-			return "MSG.STATE.WS.ERROR";
-		case LDAP_ERROR:
-			return "MSG.STATE.LDAP.ERROR";
-		case WS_QUOTA_ERROR:
-			return "MSG.STATE.WS.QUOTA.ERROR";
-		case CANCEL:
-			return "MSG.STATE.CANCEL";
-		case NO_RECIPIENT_FOUND:
-			return "MSG.STATE.NO.RECIPIENT.FOUND";
-		}
-		return null;
-	}
-
-	private String mailStatusI18nMessageKey(MailStatus mailStatus) {
-		switch (mailStatus) {
-		case SENT:
-		    return "MSG.STATE.MAIL.SENT";
-		case WAITING:
-		    return "MSG.STATE.MAIL.WAITING";
-		case ERROR:
-		    return "MSG.STATE.MAIL.ERROR";
-		}
-		return null;
-	}
+	
 }

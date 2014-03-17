@@ -1,6 +1,11 @@
 package org.esupportail.smsu.web.controllers;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
@@ -22,11 +27,14 @@ public class MembershipController {
 	private String phoneNumberPattern;
 	
 	private final Logger logger = new LoggerImpl(getClass());
-	
-	/**
-	 * save action.
-	 * @return "pending" or "ok"
-	 */
+
+	@GET
+	@Produces("application/json")
+	public Member getCurrentMember(@Context HttpServletRequest request) throws LdapUserNotFoundException {
+		return memberManager.getMember(request.getRemoteUser());
+	}
+
+	@POST
 	public String save(Member member) throws LdapUserNotFoundException, LdapWriteException {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Save data of a member");
