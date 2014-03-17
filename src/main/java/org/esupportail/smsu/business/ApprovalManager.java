@@ -40,7 +40,7 @@ public class ApprovalManager {
 			throw new InvalidParameterException("unknown message " + messageId);
 		if (!message.getStateAsEnum().equals(MessageStatus.WAITING_FOR_APPROVAL))
 			throw new InvalidParameterException("message is not waiting for approval");
-		checkCanApprove(message, currentUser.getId());
+		checkCanApprove(message, currentUser);
 
 		sendSmsManager.sendMailMessageApprovedOrCanceled(message, newStatus, currentUser);
 		message.setStateAsEnum(newStatus);
@@ -60,10 +60,13 @@ public class ApprovalManager {
 		return messages;
 	}
 	
-	private void checkCanApprove(Message msg, String userId) {
-		Person p = daoService.getPersonByLogin(userId);
+	private void checkCanApprove(Message msg, User user) {
+		if (user.rights.contains("FCTN_GESTIONS_RESPONSABLES"))
+			return;
+		
+		Person p = daoService.getPersonByLogin(user.getId());
 		if (!msg.getSupervisors().contains(p))
-			throw new InvalidParameterException("user " + userId + " is not allowed to approve this message");
+			throw new InvalidParameterException("user " + user.getId() + " is not allowed to approve this message");
 	}	
 
 }
