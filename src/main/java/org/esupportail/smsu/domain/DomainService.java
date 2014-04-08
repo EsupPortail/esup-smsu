@@ -109,7 +109,7 @@ public class DomainService {
 			String displayName = ldapUtils.getUserDisplayName(ldapUser);
 			if (!StringUtils.isEmpty(displayName)) {
 				logger.debug("displayName is: " + displayName);	
-				result.put(ldapUser.getId(), displayName + "  (" + ldapUser.getId() + ")");
+				result.put(ldapUser.getId(), displayName);
 			}
 		}
 		return result;
