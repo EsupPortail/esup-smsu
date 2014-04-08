@@ -2,10 +2,11 @@ package org.esupportail.smsu.business;
 
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -91,10 +92,10 @@ public class GroupManager {
 		return result;
 	}
 	
-	public List<String> convertToUI(Set<Person> persons) {
-		List<String> result = new ArrayList<String>(); 
+	public Map<String,String> convertToUI(Set<Person> persons) {
+		Map<String,String> result = new HashMap<String,String>(); 
 		for (Person person : persons) {
-			result.add(person.getLogin());
+			result.put(person.getLogin(), ldapUtils.getUserDisplayName(person));
 		}
 		return result;
 	}
@@ -121,15 +122,15 @@ public class GroupManager {
 		}
 		result.setAccount(daoService.getAccountByLabel(account));
 		
-		if (request.isUserInRole("FCTN_GESTIONS_RESPONSABLES"))
+		if (uiCGroup.supervisors != null && request.isUserInRole("FCTN_GESTIONS_RESPONSABLES"))
 			result.setSupervisors(convertFromUI(uiCGroup.supervisors));
 	
 		return result;
 	}
 
-	private Set<Person> convertFromUI(List<String> supervisors) {
+	private Set<Person> convertFromUI(Map<String, String> supervisors) {
 		Set<Person> personsToAdd = new HashSet<Person>();
-		for (String uip : supervisors) {			
+		for (String uip : supervisors.keySet()) {			
 			if (daoService.getPersonByLogin(uip) == null) { 
 				// add new persons in Person DataBase
 				daoService.addPerson(new Person(uip)); 
