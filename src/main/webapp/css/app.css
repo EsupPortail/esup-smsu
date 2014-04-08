@@ -67,6 +67,40 @@ ul.breadcrumb { margin-left: 0; }
     opacity: 0.2;
 }
 
+.not-inline.multiSelectSelected, .not-inline.multiSelectAvailable {
+  padding-top: 7px !important; /* make it same as .control-label */
+  padding-left: 14px !important; /* reduce it */
+  margin-bottom: 0 !important; /* unneeded, .form-group has some already */
+}
+.list-inline.multiSelectSelected, .list-inline.multiSelectAvailable {
+  padding-left: 0 !important;
+  margin-bottom: 0 !important; /* unneeded, .form-group has some already */
+}
+
+.list-inline.multiSelectSelected li, .list-inline.multiSelectAvailable li {
+  padding-left: 0;
+  padding-bottom: 7px;
+}
+
+.not-inline.multiSelectSelected li, .not-inline.multiSelectAvailable li {
+  min-width: 30em;
+}
+.multiSelectSelected a, .multiSelectAvailable a {
+  color: black !important;
+}
+.multiSelectSelected .glyphicon-remove {
+  color: red !important;
+}
+.multiSelectSelected a:hover {
+  color: red !important;
+  text-decoration: line-through !important;
+}
+
+.multiSelectAvailable .glyphicon {
+  color: green !important;
+}
+
+
 @media (max-width: 767px) {
   .row {
     margin-right: 0;
