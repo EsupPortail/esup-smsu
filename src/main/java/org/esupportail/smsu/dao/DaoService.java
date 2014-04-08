@@ -56,7 +56,7 @@ public interface DaoService extends Serializable {
 	 * @param[userGroupId, userAccountId, userServiceId, userTemplateId, userUserId, beginDate, endDate]
 	 */
 	List<Message> getMessages(Integer userGroupId, Integer userAccountId, Integer userServiceId, 
-			Integer userTemplateId, Integer userUserId, java.sql.Date beginDate, java.sql.Date endDate);
+			Integer userTemplateId, Person sender, java.sql.Date beginDate, java.sql.Date endDate, int maxResults);
 
 	/**
 	 * @param message

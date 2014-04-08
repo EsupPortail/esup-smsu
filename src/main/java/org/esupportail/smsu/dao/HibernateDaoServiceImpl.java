@@ -6,7 +6,6 @@ package org.esupportail.smsu.dao;
 
 import java.util.Date;
 import java.util.List;
-import java.util.LinkedList;
 import java.util.Set;
 
 import org.esupportail.commons.services.logging.Logger;
@@ -91,71 +90,49 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Message> getMessages(final Integer userGroupId, final Integer userAccountId, 
-			final Integer userServiceId, final Integer userTemplateId, final Integer userUserId, 
-			final java.sql.Date beginDate, final java.sql.Date endDate) {
+			final Integer userServiceId, final Integer userTemplateId, final Person sender, 
+			final java.sql.Date beginDate, final java.sql.Date endDate, int maxResults) {
 
-		StringBuffer select = new StringBuffer();
-		select.append("SELECT DISTINCT message ");
+		Criteria criteria = getCurrentSession().createCriteria(Message.class);
 		
-		String from = " FROM Message message";
-		
-		List<String> where = new LinkedList<String>();
-		
-		// Filter on sender group
 		if (userGroupId != null) {
-			where.add("message." + Message.PROP_GROUP_SENDER + "." + BasicGroup.PROP_ID + "=" + userGroupId);
+			criteria.createCriteria(Message.PROP_GROUP_SENDER).add(Restrictions.eq(BasicGroup.PROP_ID, userGroupId));
 		}
 		
-		// Filter on account
 		if (userAccountId != null) {
-			where.add("message." + Message.PROP_ACCOUNT + "." + Account.PROP_ID + "=" + userAccountId);
+			criteria.createCriteria(Message.PROP_ACCOUNT).add(Restrictions.eq(Account.PROP_ID, userAccountId));
 		}
 		
-		// Filter on Service
 		if (userServiceId != null) {		
 			if (userServiceId != 0) {
-				where.add("message." + Message.PROP_SERVICE + "." + Service.PROP_ID + "=" + userServiceId);
+				criteria.createCriteria(Message.PROP_SERVICE).add(Restrictions.eq(Service.PROP_ID, userServiceId));				
 			} 			
 		} else {
-			where.add("message." + Message.PROP_SERVICE + "." + Service.PROP_ID + " IS NULL");
+			//criteria.createCriteria(Message.PROP_SERVICE).add(Restrictions.isNull(Service.PROP_ID));				
 		}
 		
-		// Filter on template
 		if (userTemplateId != null) {
-			where.add("message." + Message.PROP_TEMPLATE + "." + Template.PROP_ID + "=" + userTemplateId);
+			criteria.createCriteria(Message.PROP_TEMPLATE).add(Restrictions.eq(Template.PROP_ID, userTemplateId));				
 		}
 		
-		// filter on send
-		if (userUserId != null) {
-			where.add("message." + Message.PROP_SENDER + "." + Person.PROP_ID + "=" + userUserId);
-		}
-		
-		// Begin date filter
-		if (beginDate != null) {
-			where.add("message." + Message.PROP_DATE + ">='" + beginDate + "'");
-		}
-		
-		// End date filter
-		if (endDate != null) {
-			where.add("message." + Message.PROP_DATE + "<'" + endDate + "'");
-		}
-		
-		// Order by 
-		String orderBy = " ORDER BY message." + Message.PROP_ID + " ASC ";
-		
-		select.append(from);	
-		if (!where.isEmpty()) select.append(" WHERE ").append(join(where, " AND "));
-		select.append(orderBy);
-		String queryString = select.toString();
-		
-		if (logger.isDebugEnabled()) {
-			logger.debug("queryString : " + queryString);
-		}
-		List<Message> result = getHibernateTemplate().find(queryString);
-		
-		//criteria.addOrder(Order.asc(Message.PROP_ID));
+		if (sender != null) {
+			criteria.add(Restrictions.eq(Message.PROP_SENDER, sender));
+		}				
 
-		//return getHibernateTemplate().findByCriteria(criteria);
+		if (beginDate != null) {
+			criteria.add(Restrictions.ge(Message.PROP_DATE, beginDate));
+		}
+		
+		if (endDate != null) {
+			criteria.add(Restrictions.lt(Message.PROP_DATE, endDate));
+		}
+		
+		criteria.addOrder(Order.desc(Message.PROP_DATE));
+
+		if (maxResults > 0) criteria.setMaxResults(maxResults);
+		
+		List<Message> result = criteria.list();
+
 		return result;
 	}
 
