@@ -536,7 +536,7 @@ public class SendSmsManager  {
 	private Set<Recipient> getRecipients(UINewMessage msg, String serviceKey) throws EmptyGroup {
 		Set<Recipient> recipients = new HashSet<Recipient>();
 		if (msg.recipientPhoneNumbers != null) addPhoneNumbersRecipients(recipients, msg.recipientPhoneNumbers);
-		addLoginsRecipients(recipients, msg.recipientLogins, serviceKey);
+		if (msg.recipientLogins != null) addLoginsRecipients(recipients, msg.recipientLogins, serviceKey);
 		addGroupRecipients(recipients, msg.recipientGroup, serviceKey);
 		return recipients;
 	}
