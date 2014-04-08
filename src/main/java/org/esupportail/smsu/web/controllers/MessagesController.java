@@ -6,14 +6,17 @@ package org.esupportail.smsu.web.controllers;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 
 import org.esupportail.commons.services.logging.Logger;
@@ -31,6 +34,7 @@ import org.esupportail.smsu.web.beans.UINewMessage;
 import org.esupportail.ws.remote.beans.TrackInfos;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.util.StringUtils;
 
 /**
  * A bean to manage user preferences.
@@ -51,34 +55,36 @@ public class MessagesController {
 	
 	@GET
 	@Produces("application/json")
-	public List<UIMessage> getMessages() {
-		return messageManager.getMessages(null, null, null, null, null, null, null);
+	public List<UIMessage> getMessages(
+			@QueryParam("sender") String senderLogin,
+			@QueryParam("maxResults") @DefaultValue("0" /* no limit */) int maxResults,
+			@Context HttpServletRequest request) {
+		senderLogin = allowedSender(request, senderLogin);
+		Date beginDate = null;
+		Date endDate = null;
+		return messageManager.getMessages(null, null, null, null, senderLogin, beginDate, endDate, maxResults);
 	}
 		
 	@GET
 	@Produces("application/json")
 	@Path("/{id:\\d+}")
-	public UIMessage getMessage(@PathParam("id") int messageId) {
-		return messageManager.getUIMessage(messageId);
+	public UIMessage getMessage(
+			@PathParam("id") int messageId,
+			@Context HttpServletRequest request) {			
+		return messageManager.getUIMessage(messageId, allowedSender(request));
 	}
 	
 	@GET
 	@Produces("application/json")
 	@Path("/{id:\\d+}/statuses")
-	public TrackInfos getMessageStatuses(@PathParam("id") int messageId) {
-		Message message = messageManager.getMessage(messageId);
+	public TrackInfos getMessageStatuses(
+			@PathParam("id") int messageId,
+			@Context HttpServletRequest request) {			
+		Message message = messageManager.getMessage(messageId, allowedSender(request));
 		if (MessageStatus.SENT.name().equals(message.getStateAsEnum().name())) {
 			return domainService.getMessageStatuses(messageId);
 		}
 		return null;
-	}
-
-	/* return a list of phones / logins */
-	@GET
-	@Produces("application/json")
-	@Path("/{id:\\d+}/recipients")
-	public List<String> getRecipients(@PathParam("id") int messageId) {
-		return messageManager.getUIRecipients(messageId);
 	}
 
 	@RolesAllowed(
@@ -94,6 +100,7 @@ public class MessagesController {
 		if (login == null) throw new InvalidParameterException("SERVICE.CLIENT.NOTDEFINED");
 		msg.login = login;
 
+		recipientsValidation(msg, request, login);
 		userGroupValidation(msg.senderGroup, login);
 		contentValidation(msg.content);
 		if (msg.mailToSend != null)
@@ -110,10 +117,56 @@ public class MessagesController {
 		return sendSmsManager.getUserGroupLeaves(request.getRemoteUser());
 	}
 
+	@GET
+	@Produces("application/json")
+	@Path("/senders")
+	public Map<String,String> getUsersHavingSentASms(@Context HttpServletRequest request) {
+		if (request.isUserInRole("FCTN_SUIVI_ENVOIS_ETABL")) {
+			return domainService.getPersons();
+		} else {
+			return domainService.fakePersonsWithCurrentUser(request.getRemoteUser());
+		}
+	}
+
+	private String allowedSender(HttpServletRequest request) {
+		if (request.isUserInRole("FCTN_SUIVI_ENVOIS_ETABL")) {
+			return null;
+		} else {
+			// only return the messages sent by this user
+			return request.getRemoteUser();				
+		} 
+	}
+	
+	private String allowedSender(HttpServletRequest request, String wanted) {
+		String allowedSender = allowedSender(request);
+		
+		if (allowedSender == null) {
+			return wanted;
+		} else if (wanted == null || wanted.equals(allowedSender)) {
+			return allowedSender;
+		} else {
+			throw new InvalidParameterException(allowedSender + " is not allowed to view messages sent by " + wanted);
+		}
+	}
+
+	private void recipientsValidation(UINewMessage msg, HttpServletRequest request, String login) {
+		if (msg.recipientLogins != null)
+			if (!request.isUserInRole("FCTN_SMS_ENVOI_ADH"))
+				throw new InvalidParameterException("user " + login + " is not allowed to send SMS");
+		if (msg.recipientPhoneNumbers != null)
+			if (!request.isUserInRole("FCTN_SMS_ENVOI_NUM_TEL"))
+				throw new InvalidParameterException("user " + login + " is not allowed to send to phone numbers");
+		if (!StringUtils.isEmpty(msg.recipientGroup))
+			if (!request.isUserInRole("FCTN_SMS_ENVOI_GROUPES"))
+				throw new InvalidParameterException("user " + login + " is not allowed to send SMS to groups");
+	}
+
 	private void userGroupValidation(String userGroup, String login) {
-		//TODO
-		//sendSmsManager.getUserGroupLeaves(login).contains(userGroup))
-		//	throw new InvalidParameterException("invalid userGroup " + userGroup + " for user " + login);
+		for (UserGroup g : sendSmsManager.getUserGroupLeaves(login))
+ 			if (g.id.equals(userGroup)) return; // OK
+
+		// not found
+		throw new InvalidParameterException("user " + login + " is not in group " + userGroup);
 	}
 
 	/**

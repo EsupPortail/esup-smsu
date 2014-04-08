@@ -4,14 +4,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-
 import org.apache.commons.lang.StringUtils;
 import org.esupportail.commons.services.ldap.LdapException;
 import org.esupportail.commons.services.ldap.LdapUser;
@@ -36,16 +33,6 @@ public class UsersController {
 	private String phoneNumberPattern;
 	
 	private final Logger logger = new LoggerImpl(getClass());
-
-	@GET
-	@Produces("application/json")
-	public Map<String,String> getUsersHavingSentASms(@Context HttpServletRequest request) {
-		if (request.isUserInRole("FCTN_SUIVI_ENVOIS_ETABL")) {
-			return domainService.getPersons();
-		} else {
-			return domainService.fakePersonsWithCurrentUser(request.getRemoteUser());
-		}
-	}
 
 	@GET
 	@Produces("application/json")
