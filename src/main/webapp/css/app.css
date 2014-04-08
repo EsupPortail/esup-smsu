@@ -67,6 +67,24 @@ ul.breadcrumb { margin-left: 0; }
     opacity: 0.2;
 }
 
+.input-group-long-addons {
+    width: 100%;
+}
+
+@media (max-width: 1200px) {
+.input-group-long-addons .input-group-addon {
+    display: block !important;
+    width: 100%;
+}
+}
+@media (min-width: 1200px) {
+.input-group-long-addons .input-group-addon {
+    white-space: normal !important;
+    word-wrap: break-word;
+    max-width: 10em;
+}
+}
+
 .not-inline.multiSelectSelected, .not-inline.multiSelectAvailable {
   padding-top: 7px !important; /* make it same as .control-label */
   padding-left: 14px !important; /* reduce it */

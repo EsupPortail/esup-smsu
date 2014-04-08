@@ -106,30 +106,23 @@
     </div>
   </div>
 
-  <div class="form-group" ng-show="msg.template.heading">
-    <label class="col-md-3 control-label" for="heading">Préfixe</label>
-    <div class="col-md-6">
-      <p class="form-control-static">{{msg.template.heading}}</p>      
-    </div>  
-  </div>
-
   <div class="form-group" ng-class="{'has-error': submitted && myForm.body.$invalid || myForm.body.$error.maxLength}">
-    <label class="col-md-3 control-label" for="body">Corps</label>
-    <div class="col-md-6">
-      <textarea type="text" name="body" ng-model="msg.body" rows="4" class="form-control" required
+    <label class="col-md-3 control-label" for="body">Message</label>
+    <div class="col-md-9">
+
+      <div class="input-group input-group-long-addons">
+       <span class="input-group-addon" ng-if="msg.template.heading">
+	 {{msg.template.heading}}</span>
+       <textarea type="text" name="body" ng-model="msg.body" rows="4" class="form-control" required
 		my-validator="{ maxLength: checkMaxSmsLength }"
 		></textarea>
+       <span class="input-group-addon" ng-if="msg.template.signature">
+	 {{msg.template.signature}}</span>
+      </div>
       <span ng-show="submitted && myForm.body.$error.required" class="help-block">Required</span>
       <span ng-show="submitted && myForm.body.$error.maxLength" class="help-block">Message trop long</span>
       <span class="help-block">Caractères restants {{nbMoreCharsAllowed(msg.body)}}</span>
     </div>
-  </div>
-
-  <div class="form-group" ng-show="msg.template.signature">
-    <label class="col-md-3 control-label" for="signature">Signature</label>
-    <div class="col-md-6">
-      <p class="form-control-static">{{msg.template.signature}}</p>      
-    </div>  
   </div>
 
 msg.mailToSend.isMailToRecipients
