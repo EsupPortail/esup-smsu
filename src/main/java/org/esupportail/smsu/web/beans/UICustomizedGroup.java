@@ -1,6 +1,6 @@
 package org.esupportail.smsu.web.beans;
 
-import java.util.List;
+import java.util.Map;
 
 public class UICustomizedGroup {
 	public Integer id;
@@ -11,5 +11,5 @@ public class UICustomizedGroup {
 	public long consumedSms;
 	public String role; 
 	public String account;
-	public List<String> supervisors;
+	public Map<String, String> supervisors;
 }
