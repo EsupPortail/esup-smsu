@@ -98,7 +98,7 @@ public class UsersController {
 			if (phone == null
 				|| !StringUtils.isEmpty(this.phoneNumberPattern) 
 			       && !phone.matches(this.phoneNumberPattern)) {
-				userId = null; // unselectable user			    
+				continue;			    
 			}
 			result.put(userId, displayName);
 		}
