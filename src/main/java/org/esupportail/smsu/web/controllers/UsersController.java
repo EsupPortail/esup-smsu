@@ -88,7 +88,7 @@ public class UsersController {
 		Map<String, String> result = new HashMap<String,String>();
 		for (LdapUser user : list) {
 			String userId = user.getId();
-			String displayName = ldapUtils.getUserDisplayName(user) + " (" + user.getId() + ")";
+			String displayName = ldapUtils.getUserDisplayName(user);
 			String phone = ldapUtils.getUserPagerByUser(user);
 
 			logger.debug("ajout de la personne : uid =" + userId 
