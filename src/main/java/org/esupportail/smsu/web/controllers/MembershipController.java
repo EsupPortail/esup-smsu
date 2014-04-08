@@ -7,6 +7,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 
+import org.apache.axis.utils.StringUtils;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.business.MemberManager;
@@ -35,22 +36,28 @@ public class MembershipController {
 	}
 
 	@POST
-	public String save(Member member) throws LdapUserNotFoundException, LdapWriteException {
+	public String save(Member member, @Context HttpServletRequest request) throws LdapUserNotFoundException, LdapWriteException {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Save data of a member");
 		}
-		if (member.getValidCG()) {
-			if (member.getPhoneNumber().equals(""))
-					throw new InvalidParameterException("ADHESION.ERROR.PHONEREQUIRED");
+		if (member.login == null)
+			member.login = request.getRemoteUser();
+		if (!member.login.equals(request.getRemoteUser()))
+			throw new InvalidParameterException("ADHESION.ERROR.INVALIDLOGIN");		
+		
+		if (StringUtils.isEmpty(member.getPhoneNumber())) {
+			if (member.getValidCG()) throw new InvalidParameterException("ADHESION.ERROR.PHONEREQUIRED");
+		} else { 
 			validatePhoneNumber(member.getPhoneNumber());
 			
 			if (memberManager.isPhoneNumberInBlackList(member.getPhoneNumber()))
-					throw new InvalidParameterException("ADHESION.MESSAGE.PHONEINBLACKLIST");
+				throw new InvalidParameterException("ADHESION.MESSAGE.PHONEINBLACKLIST");
 		}
-		// save datas into LDAP
-		memberManager.saveOrUpdateMember(member);
 
-		return member.getFlagPending() ? "pending" : "ok";
+		// save datas into LDAP
+		boolean pending = memberManager.saveOrUpdateMember(member);
+
+		return pending ? "pending" : "ok";
 	}
 	
 	/**

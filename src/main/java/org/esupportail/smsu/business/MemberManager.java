@@ -244,7 +244,7 @@ public class MemberManager {
 	 * @throws LdapUserNotFoundException 
 	 * @throws LdapWriteException 
 	 */
-	public void saveOrUpdateMember(final Member member) throws LdapUserNotFoundException, LdapWriteException {
+	public boolean saveOrUpdateMember(final Member member) throws LdapUserNotFoundException, LdapWriteException {
 		logger.debug("Save a member ");
 		boolean numberPhoneChanged = savePhoneNumber(member);
 
@@ -267,6 +267,8 @@ public class MemberManager {
 		}	
 		// save in LDAP
 		ldapUtils.setUserTermsOfUse(memberLogin, validCG, memberValidCP);
+		
+		return daoService.isPendingMember(memberLogin); 
 	}
 
 	/**
