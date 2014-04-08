@@ -122,7 +122,8 @@ function windowOpenLoginOnMessage(state) {
 
 	windowOpenLoginCleanup(state);
 	$rootScope.$apply(function () { 
-	    state.deferred.resolve(angular.fromJson(m[1]));
+	    state.deferredLogin.resolve(angular.fromJson(m[1]));
+	    angular.forEach(state.deferredQueue, function (deferred) { deferred.resolve() });
 	});
     };
     $window.addEventListener("message", onmessage);  
@@ -143,21 +144,58 @@ this.windowOpenLogin = function () {
     windowOpenLoginCleanup(windowOpenLoginState);
     var state = windowOpenLoginState = {};
 
-    state.deferred = $q.defer();
+    state.deferredLogin = $q.defer();
+    state.deferredQueue = [];
     state.div = windowOpenLoginDivCreate();
     state.div.bind("click", function () {
 	state.listener = windowOpenLoginOnMessage(state); 
 	state.window = $window.open(globals.baseURL + '/rest/login');
     });
-    return state.deferred.promise;
+    return state.deferredLogin.promise;
 };
 
-this.jsonpFallbackWindowOpenLogin = function () {
-    return h.jsonpLogin().then(null, function () {
+this.loginMayRedirect = function () {
+    if (globals.isWebWidget) {
+	// we can't redirect
 	console.log("jsonpLogin failed, trying windowOpenLogin");
 	return h.windowOpenLogin();
+    } else {
+	console.log("jsonpLogin failed, trying redirect");
+	var then = $window.location.hash && $window.location.hash.replace(/^#/, '');
+	$window.location.href = globals.baseURL + '/rest/login?then=' + encodeURIComponent(then);
+    }
+}
+
+function tryRelog() {
+
+    function relogSuccess(loggedUser) {
+	console.log('relog success');
+	h.setLoggedUser(loggedUser);
+	return null;
+    }
+    function queueXhrRequest() {
+	console.log('queuing request');
+	var deferred = $q.defer();
+	windowOpenLoginState.deferredQueue.push(deferred);
+	return deferred.promise;
+    }
+
+    if (windowOpenLoginState.deferredQueue) {
+	return queueXhrRequest();
+    }
+    return h.jsonpLogin().then(relogSuccess, function () {
+	if (windowOpenLoginState.deferredQueue) {
+	    return queueXhrRequest();
+	}
+	console.log("jsonpLogin failed, going to windowOpenLogin");
+	return h.windowOpenLogin().then(relogSuccess, function (resp) {
+	    console.log('relog failed');
+	    console.log(resp);
+	    alert("relog failed");
+	    return $q.reject("needIframe");
+	});
     });
-};
+}
 
 this.setLoggedUser = function (loggedUser) {
     console.log('user logged in: ' + loggedUser.id);
@@ -181,24 +219,11 @@ function setHttpHeader(methods, name, val) {
     });
 }
 
-var xhrRequest401State = false;
 var xhrRequestInvalidCsrfState = false;
 function xhrRequest(args) {
     var onError401 = function (resp) {
-	if (xhrRequest401State) {
-	    alert("fatal, relog failed");
-	    return $q.reject(resp);
-	}
-	xhrRequest401State = true;
-	return h.jsonpFallbackWindowOpenLogin().then(function (loggedUser) {
-	    console.log('relog success');
-	    h.setLoggedUser(loggedUser);
-	    return xhrRequest(args);
-	}, function (resp) {
-	    console.log('relog failed');
-	    console.log(resp);
-	    alert("relog failed");
-	    return $q.reject("needIframe");
+	return tryRelog().then(function () { 
+	    return xhrRequest(args);;
 	});
     };
     var onErrorCsrf = function (resp, err) {
@@ -236,8 +261,6 @@ function xhrRequest(args) {
 	return $q.reject(resp);
     };
     return $http(args).then(function (resp) {
-	if (xhrRequest401State) { console.log('rest after relog success'); console.log(resp); }
-	xhrRequest401State = false;
 	xhrRequestInvalidCsrfState = false;
 	return resp;
     }, onError);
