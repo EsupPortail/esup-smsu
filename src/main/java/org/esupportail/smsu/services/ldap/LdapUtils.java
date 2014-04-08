@@ -6,6 +6,7 @@ import java.util.List;
 import org.esupportail.commons.exceptions.UserNotFoundException;
 import org.esupportail.commons.services.ldap.LdapException;
 import org.esupportail.commons.services.ldap.LdapGroup;
+import org.esupportail.commons.services.ldap.LdapGroupService;
 import org.esupportail.commons.services.ldap.LdapUser;
 import org.esupportail.commons.services.ldap.LdapUserAndGroupService;
 import org.esupportail.commons.services.ldap.LdapAttributesModificationException;
@@ -30,6 +31,8 @@ public class LdapUtils {
 	 * used to manage user and group (read only).
 	 */
 	private LdapUserAndGroupService ldapService;
+
+	private LdapGroupService ldapGroupService;
 
 	/**
 	 * used to manage user (read only)
@@ -80,6 +83,11 @@ public class LdapUtils {
 	 * The key used to represent the CG in the ldap (up1terms).
 	 */
 	private String cgKeyName;
+	
+	private String userDnPath;
+	private String userIdAttribute;
+	private String groupMemberAttribute;
+	private String groupNameAttribute;
 	
 	/**
 	 * Return the ldap user by this id.
@@ -429,6 +437,15 @@ public class LdapUtils {
 			uids, completeCgKeyName(), mayAddEtiquette(service));
 	}
 
+	private UserGroup convertToUserGroup(final LdapGroup group) {
+		return new UserGroup(group.getId(), group.getAttribute(groupNameAttribute));
+	}
+
+	private List<UserGroup> convertToUserGroups(final List<LdapGroup> groups) {
+		List<UserGroup> l = new LinkedList<UserGroup>();
+		for (LdapGroup group : groups) l.add(convertToUserGroup(group));
+		return l;
+	}
 	
 	/**
 	 * Retrieve all the groups of a given user.
@@ -436,9 +453,15 @@ public class LdapUtils {
 	 * @return the list of user group
 	 */
 	public List<UserGroup> getUserGroupsByUid(final String uid) {
-		return null;
+		String rdn = userIdAttribute + '=' + uid + "," + userDnPath;
+		String filter = groupMemberAttribute + "=" + rdn;
+		return convertToUserGroups(ldapGroupService.getLdapGroupsFromFilter(filter));
 	}
 
+	public List<UserGroup> searchGroupsByName(final String token) {
+		return convertToUserGroups(ldapGroupService.getLdapGroupsFromToken(token));
+	}
+	
 	public String getGroupDisplayName(CustomizedGroup cg) {
 		return getGroupDisplayName(cg.getLabel());
 	}
@@ -480,16 +503,7 @@ public class LdapUtils {
 	public String getGroupNameByIdOrNull(final String id) {
 		return null;
 	}
-	
-	/**
-	 * Retrieve all the groups of a given user.
-	 * @param uid : user identifier in the LDAP
-	 * @return the list of user group
-	 */
-	public List<UserGroup> searchGroupsByName(final String uid) {
-		return null;
-	}
-	
+
 	/**
 	 * @param uids
 	 * @return a list of user mails.
@@ -530,15 +544,16 @@ public class LdapUtils {
 	 * @return a ldap group corresponding to an id
 	 */
 	public LdapGroup getLdapGroup(final String id) {
-		return ldapService.getLdapGroup(id);
+		return ldapGroupService.getLdapGroup(id);
 	}
 	
-	/**
-	 * @param ldapGroup
-	 * @return the string id list of a ldap group. 
-	 */
-	public List<String> getMemberIds(final LdapGroup ldapGroup) {
-		return ldapService.getMemberIds(ldapGroup);
+	public List<LdapUser> getMembers(final String groupId, String serviceKey) {
+		logger.debug("Search users for group [" + groupId + "]");
+		LdapGroup ldapGroup = getLdapGroup(groupId);
+		List<String> uids = ldapService.getMemberIds(ldapGroup);
+		List<LdapUser> users = ldapUtilsHelpers.getConditionFriendlyLdapUsersFromUid(uids, completeCgKeyName(), serviceKey);
+		logger.debug("found " + uids.size() + " users in group " + ldapGroup.getId() + " and " + users.size() + " users having pager+CG");
+		return users;
 	}
 	
 	/**
@@ -563,6 +578,10 @@ public class LdapUtils {
 		this.ldapService = ldapGroupService;
 	}
 	
+	public void setLdapGroupService(LdapGroupService ldapGroupService) {
+		this.ldapGroupService = ldapGroupService;
+	}
+
 	/**
 	 * Standard setter used by spring.
 	 * @param writeableLdapUserService
@@ -633,6 +652,22 @@ public class LdapUtils {
 	 */
 	public void setCgKeyName(final String cgKeyName) {
 		this.cgKeyName = cgKeyName;
+	}
+
+	public void setGroupMemberAttribute(String groupMemberAttribute) {
+		this.groupMemberAttribute = groupMemberAttribute;
+	}
+
+	public void setUserDnPath(String userDnPath) {
+		this.userDnPath = userDnPath;
+	}
+
+	public void setGroupNameAttribute(String groupNameAttribute) {
+		this.groupNameAttribute = groupNameAttribute;
+	}
+
+	public void setUserIdAttribute(String userIdAttribute) {
+		this.userIdAttribute = userIdAttribute;
 	}
 
 	private <A> LinkedList<A> singletonList(A e) {

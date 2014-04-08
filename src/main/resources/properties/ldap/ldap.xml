@@ -70,6 +70,7 @@
 		  <list>
 		    <value>${ldap.group.groupMemberAttr}</value>
 		    <value>${ldap.group.groupSearchAttr}</value>
+		    <value>${ldap.group.nameAttr}</value>
 		  </list>
 		</property>
 		<property name="dnSubPath" value="${ldap.group.dnSubPath}"/>
@@ -191,6 +192,7 @@
 		class="org.esupportail.smsu.services.ldap.LdapUtils">
 		<description>The ldap access way for the smsu application.</description>
 		<property name="ldapService" ref="ldapService"/>
+		<property name="ldapGroupService" ref="ldapGroupService" />
 		<property name="ldapUtilsHelpers" ref="ldapUtilsHelpers"/>
 		<property name="writeableLdapUserService" ref="writeableLdapUserService"/>
 		<property name="userDisplayName" value="${ldap.displayNameAttribute}"/>
@@ -201,6 +203,10 @@
 		<property name="userTermsOfUseAttribute" value="${ldap.termsOfUseAttribute}"/>
 		<property name="userTermsOfUseAttributeEtiquetteSMSU" value="${ldap.termsOfUseAttributeEtiquetteSMSU}"/>
 		<property name="cgKeyName" value="${ldap.key.cg}"/>
+		<property name="userDnPath" value="${ldap.dnSubPath},${ldap.base}"/>
+		<property name="userIdAttribute" value="${ldap.uidAttribute}"/>
+		<property name="groupMemberAttribute" value="${ldap.group.groupMemberAttr}"/>
+		<property name="groupNameAttribute" value="${ldap.group.nameAttr}"/>
 	</bean>
 
 </beans>

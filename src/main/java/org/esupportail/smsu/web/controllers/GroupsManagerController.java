@@ -11,6 +11,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 
 import org.esupportail.commons.services.logging.Logger;
@@ -18,6 +19,7 @@ import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.business.GroupManager;
 import org.esupportail.smsu.domain.DomainService;
 import org.esupportail.smsu.services.ldap.LdapUtils;
+import org.esupportail.smsu.services.ldap.beans.UserGroup;
 import org.esupportail.smsu.web.beans.UICustomizedGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -101,6 +103,15 @@ public class GroupsManagerController {
 	public List<String> getAccounts() {
 		return domainService.getAccounts();
 	}
+
+	@GET
+	@Produces("application/json")
+	@Path("/search")
+	@RolesAllowed({"FCTN_GESTION_GROUPE","FCTN_SMS_ENVOI_GROUPES"})
+	public List<UserGroup> search(@QueryParam("token") String token) {
+		return ldapUtils.searchGroupsByName(token);
+	}
+	
 
 	//////////////////////////////////////////////////////////////
 	private void checkMandatoryUIParameters(UICustomizedGroup uiCGroup) {
