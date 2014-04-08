@@ -32,8 +32,8 @@ app.provider('routes', function () {
 });
 
 app.provider('globals', function () {
-    if (!document.esupSmsuApiAdmin) alert("missing configuration document.esupSmsuApiAdmin");
-    var globals = document.esupSmsuApiAdmin;
+    if (!document.esupSmsu) alert("missing configuration document.esupSmsu");
+    var globals = document.esupSmsu;
     this.baseURL = globals.baseURL;
 
     this.$get = function () { 
