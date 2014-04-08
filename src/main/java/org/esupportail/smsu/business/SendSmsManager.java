@@ -709,13 +709,10 @@ public class SendSmsManager  {
 		if (label == null) return null;
 		if (logger.isDebugEnabled()) logger.debug("get recipient group");
 
-				PortalGroup pGroup = null;
-				@SuppressWarnings("null")
-				String portalId = pGroup.getId();
-				BasicGroup groupRecipient = daoService.getGroupByLabel(portalId);
+				BasicGroup groupRecipient = daoService.getGroupByLabel(label);
 				if (groupRecipient == null) {
 					groupRecipient = new BasicGroup();
-					groupRecipient.setLabel(portalId);
+					groupRecipient.setLabel(label);
 				}
 				return groupRecipient;
 	}
