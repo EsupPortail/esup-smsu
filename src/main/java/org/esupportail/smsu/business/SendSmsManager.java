@@ -556,18 +556,16 @@ public class SendSmsManager  {
 		}
 	}
 
-	private void addGroupRecipients(Set<Recipient> recipients, final String groupName, String serviceKey) throws EmptyGroup {
-		if (groupName == null) return;
+	private void addGroupRecipients(Set<Recipient> recipients, final String groupId, String serviceKey) throws EmptyGroup {
+		if (groupId == null) return;
 		
 				// Group users are search from the portal.
-				List<LdapUser> groupUsers = getUsersByGroup(groupName,serviceKey);
-				// users are filtered to keep only service compliant ones.
-				List<LdapUser> filteredUsers = filterUsers(groupUsers, serviceKey);
-				if (filteredUsers.isEmpty())
-					throw new CreateMessageException.EmptyGroup(groupName);
+				List<LdapUser> groupUsers = getUsersByGroup(groupId,serviceKey);
+				if (groupUsers.isEmpty())
+					throw new CreateMessageException.EmptyGroup(groupId);
 					
 				//users are added to the recipient list.
-				for (LdapUser ldapUser : filteredUsers) {
+				for (LdapUser ldapUser : groupUsers) {
 					String phone = ldapUtils.getUserPagerByUser(ldapUser);
 					String login = ldapUser.getId();
 					mayAdd(recipients, phone, login);
@@ -664,21 +662,6 @@ public class SendSmsManager  {
 			}
 		}
 		return finalList;
-	}
-
-	/**
-	 * @param service
-	 * @return the filtered list of users
-	 */
-	private List<LdapUser> filterUsers(final List<LdapUser> users, final String service) {
-		if (logger.isDebugEnabled()) logger.debug("Filtering users for service [" + service + "]");
-		List<LdapUser> filteredUsers = new ArrayList<LdapUser>();
-
-		for (LdapUser user : users) {
-			if (ldapUtils.isGeneralAndSpecificConditionValidate(user, service)) filteredUsers.add(user);
-		}
-		if (logger.isDebugEnabled()) logger.debug("Number of filtered users : " + filteredUsers.size());
-		return filteredUsers;
 	}
 
 	/**
