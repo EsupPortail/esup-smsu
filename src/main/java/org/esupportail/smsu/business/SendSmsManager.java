@@ -15,12 +15,13 @@ import java.util.TreeMap;
 import java.text.DateFormat;
 import java.lang.reflect.UndeclaredThrowableException;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.StringUtils;
 import org.esupportail.commons.services.i18n.I18nService;
 import org.esupportail.commons.services.ldap.LdapUser;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
-import org.esupportail.commons.services.urlGeneration.UrlGenerator;
 import org.esupportail.portal.ws.client.PortalGroup;
 import org.esupportail.portal.ws.client.PortalGroupHierarchy;
 import org.esupportail.smsu.business.beans.CustomizedMessage;
@@ -43,6 +44,7 @@ import org.esupportail.smsu.exceptions.CreateMessageException;
 import org.esupportail.smsu.exceptions.InsufficientQuotaException;
 import org.esupportail.smsu.exceptions.UnknownIdentifierApplicationException;
 import org.esupportail.smsu.exceptions.CreateMessageException.EmptyGroup;
+import org.esupportail.smsu.services.UrlGenerator;
 import org.esupportail.smsu.services.client.SmsuapiWS;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.services.ldap.beans.UserGroup;
@@ -64,7 +66,7 @@ public class SendSmsManager  {
 	@Autowired private SmtpServiceUtils smtpServiceUtils;
 	@Autowired private LdapUtils ldapUtils;
 	@Autowired private SchedulerUtils schedulerUtils;
-	private UrlGenerator urlGenerator; //TODO
+	@Autowired private UrlGenerator urlGenerator;
 	@Autowired private ContentCustomizationManager customizer;
 
 	
@@ -98,14 +100,14 @@ public class SendSmsManager  {
 	//////////////////////////////////////////////////////////////
 	// Pricipal methods
 	//////////////////////////////////////////////////////////////
-	public int sendMessage(UINewMessage msg) throws CreateMessageException {
+	public int sendMessage(UINewMessage msg, HttpServletRequest request) throws CreateMessageException {
 		Message message = composeMessage(msg);
 
 		//TODO verify unneeded 
 		// by default, a SMS is considered as a sent one.
 		//message.setStateAsEnum(MessageStatus.IN_PROGRESS);
 
-		treatMessage(message);
+		treatMessage(message, request);
 
 		return message.getId();
 	}
@@ -156,16 +158,17 @@ public class SendSmsManager  {
 
 	/**
 	 * @param message
+	 * @param request 
 	 * @return null or an error message (key into i18n properties)
 	 * @throws CreateMessageException.WebService
 	 */
-	public void treatMessage(final Message message) throws CreateMessageException.WebService {
+	public void treatMessage(final Message message, HttpServletRequest request) throws CreateMessageException.WebService {
 		try {
 			if (message.getStateAsEnum().equals(MessageStatus.NO_RECIPIENT_FOUND))
 				;
 			else if (message.getStateAsEnum().equals(MessageStatus.WAITING_FOR_APPROVAL))
 				// envoi du mail
-				sendApprovalMailToSupervisors(message);
+				sendApprovalMailToSupervisors(message, request);
 			else 
 				maySendMessageInBackground(message);
 		} catch (UnknownIdentifierApplicationException e) {
@@ -233,18 +236,19 @@ public class SendSmsManager  {
 
 	/**
 	 * send mail based on supervisors.
+	 * @param request 
 	 * @return
 	 */
-	private void sendApprovalMailToSupervisors(final Message message) {
-		sendMailToSupervisors(message, MessageStatus.WAITING_FOR_APPROVAL, null);
+	private void sendApprovalMailToSupervisors(final Message message, HttpServletRequest request) {
+		sendMailToSupervisors(message, MessageStatus.WAITING_FOR_APPROVAL, null, request);
 	}
 
-	public void sendMailMessageApprovedOrCanceled(Message message, MessageStatus status, User currentUser) {
-		sendMailToSupervisors(message, status, currentUser);
+	public void sendMailMessageApprovedOrCanceled(Message message, MessageStatus status, User currentUser, HttpServletRequest request) {
+		sendMailToSupervisors(message, status, currentUser, request);
 		sendMailToSenderMessageApprovedOrCanceled(message, status, currentUser);
 	}
 
-	private void sendMailToSupervisors(final Message message, MessageStatus status, User currentUser) {
+	private void sendMailToSupervisors(final Message message, MessageStatus status, User currentUser, HttpServletRequest request) {
 		CustomizedGroup cGroup = getSupervisorCustomizedGroup(message);
 		List<String> toList = getSupervisorsMails(getSupervisors(cGroup));
 		if (toList == null || toList.isEmpty()) {
@@ -266,7 +270,7 @@ public class SendSmsManager  {
 		} else {
 			subjectKey = "MSG.SUBJECT.MAIL.TO.APPROVAL";
 			textBodyKey = "MSG.TEXTBOX.MAIL.TO.APPROVAL";
-			textBodyParam3 = urlGenerator.casUrl(Collections.singletonMap("approvalSMS", ""));
+			textBodyParam3 = urlGenerator.goTo(request, "/approvals");
 		}
 		String senderName = ldapUtils.getUserDisplayName(message.getSender());
 		String cGroupName = ldapUtils.getGroupDisplayName(cGroup);

@@ -45,7 +45,7 @@ public class ApprovalController {
 		}
 		User currentUser = domainService.getUser(request.getRemoteUser());
 		logger.info("" + currentUser + " " + (status.equals("CANCEL") ? "cancel" : "approve") + " message " + id);
-		approvalManager.cancelOrApproveMessage(id, currentUser, MessageStatus.valueOf(status));
+		approvalManager.cancelOrApproveMessage(id, currentUser, MessageStatus.valueOf(status), request);
 	}
 
 }

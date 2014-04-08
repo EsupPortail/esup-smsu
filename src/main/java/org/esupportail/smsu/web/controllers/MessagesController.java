@@ -99,8 +99,8 @@ public class MessagesController {
 		if (msg.mailToSend != null)
 			mailsValidation(msg.mailToSend.getMailOtherRecipientsList());
 
-		int messageId = sendSmsManager.sendMessage(msg);
-		return messageManager.getUIMessage(messageId);
+		int messageId = sendSmsManager.sendMessage(msg, request);
+		return messageManager.getUIMessage(messageId, null);
 	}
 
 	@GET
