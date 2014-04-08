@@ -50,7 +50,7 @@ Filtre : <a href="" ng-click="showAccountFilters = !showAccountFilters">{{accoun
 <!-- * to make things more understable when the new results get displayed -->
 <!-- * on mobile phones, the onscroll event can be buggy, this blank fixes it -->
 <div style="margin-bottom: 8em" class="normalContent" when-scrolled="showMoreResults()" >
-  <a href="" ng-hide="inProgress || noMoreResults" name="{{nbResults}}" ng-click="showMoreResults()">Voir plus</a>
+  <a href="" ng-hide="inProgress || noMoreResults" id="{{nbResults}}" ng-click="showMoreResults()">Voir plus</a>
   <div ng-show="inProgress">En cours...</div>
 </div>
 
