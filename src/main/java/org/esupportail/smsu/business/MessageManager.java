@@ -23,6 +23,7 @@ import org.esupportail.smsu.dao.beans.Recipient;
 import org.esupportail.smsu.domain.beans.message.MessageStatus;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.web.beans.UIMessage;
+import org.esupportail.smsu.web.controllers.InvalidParameterException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -37,46 +38,38 @@ public class MessageManager {
 	// Principal methods
 	//////////////////////////////////////////////////////////////
 	
-	/**
-	 * @param[userGroupId, userAccountId, userServiceId, userTemplateId, userUserId, beginDate, endDate]
-	 * @return the UI messages.
-	 */
 	public List<UIMessage> getMessages(final Integer userGroupId, final Integer userAccountId, 
-			final Integer userServiceId, final Integer userTemplateId, final Integer userUserId, 
-			final Date beginDate, final Date endDate) {
+			final Integer userServiceId, final Integer userTemplateId, final String senderLogin, 
+			final Date beginDate, final Date endDate, int maxResults) {
 
+		Person sender = senderLogin == null ? null : daoService.getPersonByLogin(senderLogin);
+		
 		java.sql.Date beginDateSQL = 
 			beginDate == null ? null : new java.sql.Date(beginDate.getTime()); // get rid of HH:MM:SS
 		java.sql.Date endDateSQL =
 			endDate == null ? null : new java.sql.Date(addOneDay(endDate).getTime());
 	
 		List<Message> messages = daoService.getMessages(userGroupId, userAccountId, userServiceId, 
-								 userTemplateId, userUserId, beginDateSQL, endDateSQL);
+								 userTemplateId, sender, beginDateSQL, endDateSQL, maxResults);
 		return convertToUI(messages);
-	}
-
-	public List<String> getUIRecipients(int messageId) {
-		Message message = getMessage(messageId);
-		Set<Recipient> recipients = message.getRecipients();	
-		if (recipients == null) return null;
-		
-		List<String> result = new LinkedList<String>();
-		for (Recipient r : recipients) {
-		    result.add(r.getLogin() != null ? r.getLogin() : r.getPhone());
-		}
-		return result;
 	}
 
 	/**
 	 * @param messageId
 	 * @return a message
 	 */
-	public Message getMessage(final Integer messageId) {
-		return daoService.getMessageById(messageId);
+	public Message getMessage(final Integer messageId, String allowedSender) {		
+		Message msg = daoService.getMessageById(messageId);
+		if (allowedSender != null && !allowedSender.equals(msg.getSender().getLogin())) {
+			throw new InvalidParameterException(allowedSender + " is not allowed to view message " + messageId);
+		}
+		return msg;
 	}
 
-	public UIMessage getUIMessage(final Integer messageId) {
-		return convertToUI(Collections.singletonList(getMessage(messageId))).get(0);
+	public UIMessage getUIMessage(final Integer messageId, String allowedSender) {
+		Message msg = getMessage(messageId, allowedSender);
+		if (msg == null) return null;
+		return convertToUI(Collections.singletonList(msg)).get(0);
 	}
 	
 	public List<UIMessage> convertToUI(List<Message> messages) {
@@ -96,8 +89,10 @@ public class MessageManager {
 		r.date = mess.getDate();
 		r.content = mess.getContent();
 		r.nbRecipients = mess.getRecipients().size();
+		r.recipients = convertRecipientsToUI(mess.getRecipients());
 		r.supervisors= convertToUI(mess.getSupervisors());
-		r.senderName = retreiveNiceDisplayName(id2displayName, mess.getSender().getLogin());
+		r.senderLogin = mess.getSender().getLogin();
+		r.senderName = id2displayName.get(r.senderLogin);
 		r.accountLabel = mess.getAccount().getLabel();
 		r.groupSenderName = retreiveNiceGroupName(mess.getGroupSender());
 		r.groupRecipientName = retreiveNiceGroupName(mess.getGroupRecipient());
@@ -114,6 +109,17 @@ public class MessageManager {
 			t.add(p.getLogin());
 		return t;
 	}
+
+	private List<String> convertRecipientsToUI(Set<Recipient> recipients) {
+		if (recipients == null) return null;
+		
+		List<String> result = new LinkedList<String>();
+		for (Recipient r : recipients) {
+		    result.add(r.getLogin() != null ? r.getLogin() : r.getPhone());
+		}
+		return result;
+	}
+
 
 	private Date addOneDay(Date d) {
 		Calendar cal = Calendar.getInstance();
@@ -134,18 +140,6 @@ public class MessageManager {
 		for (LdapUser u : ldapUtils.getUsersByUids(uids))
 		    result.put(u.getId(), ldapUtils.getUserDisplayName(u));
 		return result;
-	}
-
-	private String retreiveNiceDisplayName(Map<String, String> id2displayName, String senderLogin) {
-		logger.debug("mess.getSender.getLogin is: " + senderLogin);
-		
-		String displayName = id2displayName.get(senderLogin);
-		if (displayName != null) {
-			logger.debug("displayName is: " + displayName);
-			return displayName + "  (" + senderLogin + ")"; 
-		} else {
-			return senderLogin;
-		}
 	}
 
 	private String retreiveNiceGroupName(BasicGroup recipientGroup) {

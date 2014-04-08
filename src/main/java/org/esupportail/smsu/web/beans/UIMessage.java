@@ -14,6 +14,7 @@ public class UIMessage {
 	 * senderName.
 	 */
 	public String senderName;
+	public String senderLogin;
 	
 	/**
 	 * group names.
@@ -28,6 +29,7 @@ public class UIMessage {
 	
 	public String stateMail;
 	public List<String> supervisors;
+	public List<String> recipients;
 
 	public Integer getId() {
 		return id;
