@@ -68,8 +68,8 @@ public class SecurityManager {
 		List<CustomizedGroup> l = new ArrayList<CustomizedGroup>();
 
 		for (UserGroup group : getUserGroupsPlusSelfGroup(login)) {
-			logger.debug("group login is: " + group.getLdapId());
-			CustomizedGroup grp = daoService.getCustomizedGroupByLabel(group.getLdapId());
+			logger.debug("group login is: " + group.id);
+			CustomizedGroup grp = daoService.getCustomizedGroupByLabel(group.id);
 			if (grp != null) l.add(grp);
 		}
 		return l;
