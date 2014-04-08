@@ -662,9 +662,8 @@ public class SendSmsManager  {
 	/**
 	 * get the message template.
 	 */
-	private Template getMessageTemplate(final String strTemplate) {
-		Integer iTemplate = Integer.parseInt(strTemplate);
-		return daoService.getTemplateById(iTemplate);		 
+	private Template getMessageTemplate(final String templateLabel) {
+		return daoService.getTemplateByLabel(templateLabel);		 
 	}
 
 	/**
