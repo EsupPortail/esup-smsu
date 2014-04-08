@@ -604,21 +604,12 @@ public class SendSmsManager  {
 	}
 
 	/**
-	 * @param groupName
+	 * @param groupId
 	 * @param serviceKey 
 	 * @return the user list.
 	 */
-	@SuppressWarnings("null")
-	public List<LdapUser> getUsersByGroup(final String groupName, String serviceKey) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Search users for group [" + groupName + "]");
-		}
-		//get the recipient group hierarchy
-		List<LdapUser> members = null;
-
-		logger.info("Found " + members.size() + " ldap users in group " + groupName + " (including duplicates)");
-
-		return members;
+	public List<LdapUser> getUsersByGroup(final String groupId, String serviceKey) {
+		return ldapUtils.getMembers(groupId, serviceKey);
 	}
 
 
