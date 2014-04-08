@@ -168,7 +168,7 @@ public class MemberManager {
 		if (hasChanged) {
 			// save the new phone number
 			logger.info("replacing " + login + " phone number in LDAP: new:" + wanted + " old:" + previous);
-			ldapUtils.setUserPagerByUid(login, wanted.equals("") ? null : wanted);
+			ldapUtils.setUserPagerByUid(login, wanted);
 		} else {
 			logger.info("keeping " + login + " phone number unchanged in LDAP (" + wanted + ")");
 		}
