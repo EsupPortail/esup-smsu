@@ -906,8 +906,11 @@ public class SendSmsManager  {
 	
 	public List<UserGroup> getUserGroupLeaves(String uid) {
 		Map<String, UserGroup> idToGroup = new HashMap<String, UserGroup>();
-		for (UserGroup group : ldapUtils.getUserGroupsByUid(uid))
-			idToGroup.put(group.getLdapId(), group);
+		List<UserGroup> groups = ldapUtils.getUserGroupsByUid(uid);
+		// add a simple user with group id = user's id
+		groups.add(new UserGroup(uid, ldapUtils.getUserDisplayName(uid)));
+		for (UserGroup group : groups)
+			idToGroup.put(group.id, group);
 		List<UserGroup> l = new LinkedList<UserGroup>();
 		for (String id : keepGroupLeaves(idToGroup.keySet())) {
 			l.add(idToGroup.get(id));
