@@ -9,8 +9,12 @@
 
    <bean id="RoleWrapperFilter" class="org.esupportail.smsu.web.RoleWrapperFilter" />
 
-   <bean id="StartPage" class="org.esupportail.smsu.web.StartPage">
+   <bean id="urlGenerator" class="org.esupportail.smsu.services.UrlGenerator">
   	  <property name="serviceURL" value="${serviceURL}" />
+	</bean>
+
+   <bean id="StartPage" class="org.esupportail.smsu.web.StartPage">
+  	  <property name="urlGenerator" ref="urlGenerator" />
 	</bean>
   
   <bean id="loginController"		class="org.esupportail.smsu.web.controllers.LoginController" />

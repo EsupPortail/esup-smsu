@@ -26,7 +26,7 @@ public class StartPagePortlet extends GenericPortlet {
 
     static public String getWebWidgetHtml(PortletContext context, String baseURL) throws IOException {
 	String s = getHtmlTemplate(context, "/WEB-INF/WebWidget-template.html");
-	return StartPage.instantiateWebWidgetHtml(s, baseURL, false);
+	return StartPage.instantiateWebWidgetHtml(s, baseURL, true, false);
     }
 
     static public String getHtmlTemplate(PortletContext context, String path) throws IOException {

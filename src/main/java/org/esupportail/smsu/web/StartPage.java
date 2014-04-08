@@ -7,19 +7,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
  
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
+import org.esupportail.smsu.services.UrlGenerator;
 
 public class StartPage implements org.springframework.web.HttpRequestHandler {
 
-    private String serviceURL;
+    private UrlGenerator urlGenerator;
 
     public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
 	ServletContext context = request.getSession().getServletContext();
+	boolean isWebWidget = request.getServletPath().equals("/WebWidget");
 	boolean genTestStaticJsonPage = request.getServletPath().equals("/GenTestStaticJsonPage");
-	String serviceURL = genTestStaticJsonPage ? ".." : this.serviceURL;
-	String baseURL = get_baseURL(request, serviceURL);
-	String page = getWebWidgetHtml(context, baseURL, genTestStaticJsonPage);
-	if (!request.getServletPath().equals("/WebWidget")) 
+	String baseURL = genTestStaticJsonPage ? ".." : urlGenerator.baseURL(request);
+	String page = getWebWidgetHtml(context, baseURL, isWebWidget, genTestStaticJsonPage);
+	if (!isWebWidget) 
 	    page = getStartPageHtml(context, page);	
 	response.setContentType("text/html; charset=UTF-8");
         response.getWriter().print(page);
@@ -30,26 +30,19 @@ public class StartPage implements org.springframework.web.HttpRequestHandler {
 	return instantiateTemplate(s, "webWidget", webWidget);
     }
 
-    static public String getWebWidgetHtml(ServletContext context, String baseURL, boolean genTestStaticJsonPage) throws IOException {
+    static public String getWebWidgetHtml(ServletContext context, String baseURL, 
+    			boolean isWebWidget, boolean genTestStaticJsonPage) throws IOException {
 	String s = getHtmlTemplate(context, "/WEB-INF/WebWidget-template.html");
-	return instantiateWebWidgetHtml(s, baseURL, genTestStaticJsonPage);
+	return instantiateWebWidgetHtml(s, baseURL, isWebWidget, genTestStaticJsonPage);
     }
 
-    static public String instantiateWebWidgetHtml(String template, String baseURL, boolean genTestStaticJsonPage) {
+    static public String instantiateWebWidgetHtml(String template, String baseURL, boolean isWebWidget, boolean genTestStaticJsonPage) {
 	String s = template;
 	s = instantiateTemplate(s, "baseURL", baseURL);
 	s = instantiateTemplate(s, "loginURL", genTestStaticJsonPage ? "test/login.jsonp" : "rest/login");
-        s = instantiateTemplate(s, "useTestStaticJson", ""+genTestStaticJsonPage);
+    s = instantiateTemplate(s, "isWebWidget", ""+isWebWidget);
+    s = instantiateTemplate(s, "useTestStaticJson", ""+genTestStaticJsonPage);
 	return s;
-    }
-
-    static public String get_baseURL(HttpServletRequest request, String serviceURL) throws IOException {
-	if (StringUtils.isBlank(serviceURL)) {
-	    String url = request.getRequestURL().toString();
-	    return url.replaceFirst("/(WebWidget|index.html|)$", "");
-	} else {
-	    return serviceURL;
-	}
     }
 
     static public String instantiateTemplate(String template, String var, String value) {
@@ -60,7 +53,8 @@ public class StartPage implements org.springframework.web.HttpRequestHandler {
 	return IOUtils.toString(context.getResourceAsStream(path), "UTF-8");
     }
 
-    public void setServiceURL(String serviceURL) {
-	this.serviceURL = serviceURL;
-    }
+	public void setUrlGenerator(UrlGenerator urlGenerator) {
+		this.urlGenerator = urlGenerator;
+	}
+
 }

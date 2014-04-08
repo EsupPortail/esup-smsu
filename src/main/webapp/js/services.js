@@ -35,6 +35,7 @@ app.provider('globals', function () {
     if (!document.esupSmsu) alert("missing configuration document.esupSmsu");
     var globals = document.esupSmsu;
     this.baseURL = globals.baseURL;
+    this.isWebWidget = globals.isWebWidget;
 
     this.$get = function () { 
 	return this;
