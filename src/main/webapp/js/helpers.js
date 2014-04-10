@@ -47,6 +47,13 @@ this.array_map = function (array, f) {
     });
     return r;
 };
+this.array_concat_map = function (array, f) {
+    var r = [];
+    angular.forEach(array, function (e) {
+	r = r.concat(f(e)); 
+    });
+    return r;
+};
 this.simpleFilter = function (array, f) {
     var r = [];
     angular.forEach(array, function (e) {
@@ -68,6 +75,9 @@ this.uniqWith = function (array, f) {
 	if (!(k in o)) o[k] = e;
     });
     return h.objectValues(o);
+};
+this.uniq = function (array) {
+    return h.set2array(h.array2set(array));
 };
 this.array_remove_elt = function (array, searchElement) {
     var i, length = array.length;

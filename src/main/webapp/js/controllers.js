@@ -227,7 +227,7 @@ app.controller('TemplatesDetailCtrl', function($scope, h, $routeParams, $locatio
     h.getTemplates().then(function (templates) {
 	$scope.label2template = h.array2hash(h.objectValues(templates), 'label');
 	if (id === "new") {
-	    $scope.template = { isNew: true, body: "" };
+	    $scope.template = { isNew: true, body: "", heading: "", signature: "" };
 	} else {
 	    var id2template = h.array2hash(templates, 'id');
 	    if (id in id2template) {
