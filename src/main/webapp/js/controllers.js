@@ -215,14 +215,16 @@ app.controller('RolesCtrl', function($scope, h) {
 
 app.controller('RolesDetailCtrl', function($scope, h, $routeParams, $location, $translate, $filter) {
     var id = $routeParams.id;
+    var fonction2text;
 
-    $scope.forOrdering = $translate;
+    $scope.forOrdering = function (fonction) { return fonction2text && fonction2text[fonction] };
     $scope.fonctionText = function (fonction) {
-	return $translate(fonction).replace(/^\d+ /, '');
+	return fonction2text[fonction].replace(/^\d+ /, '');
     };
 
     h.callRest('roles/fonctions').then(function (list) {
 	$scope.allFonctions = list;
+	$translate(list).then(function (h) { fonction2text = h; });
     });
 
     var updateCurrentTabTitle = function () {
