@@ -11,7 +11,7 @@
 		/properties/dao/hibernate/mapping. 
 	-->
 	<session-factory>
-		<property name="hibernate.connection.autocommit">false</property>
+		<property name="hibernate.connection.autocommit">true</property>
 		<property name="hibernate.connection.charSet">UTF-8</property>
 		<property name="hibernate.show_sql">false</property>
 		<property name="hibernate.bytecode.use_reflection_optimizer">false</property>
