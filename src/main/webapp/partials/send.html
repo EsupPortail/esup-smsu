@@ -4,7 +4,7 @@
 
   <div class="form-group">
     <label class="col-md-3 control-label" for="cgroup">Décompter du quota</label>
-    <div class="col-md-6">
+    <div class="col-md-9">
       <select name="cgroup" ng-model="msg.senderGroup" ng-options="cgroup.id as cgroup.name for cgroup in groupLeaves" class="form-control">
       </select>
     </div>  
@@ -12,7 +12,7 @@
 
   <div class="form-group">
     <label class="col-md-3 control-label" for="service">Thème/Partenaire</label>
-    <div class="col-md-6">
+    <div class="col-md-9">
       <select name="service" ng-model="msg.serviceKey" ng-options="service.key as service.name for service in services" class="form-control">
 	<option value="" ng-selected="selected">Aucun</option>
       </select>
@@ -21,7 +21,7 @@
 
   <div class="form-group">
     <label class="col-md-3 control-label" for="service">Type de destinataire</label>
-    <div class="col-md-6">
+    <div class="col-md-9">
       <select name="recipientType" ng-model="recipientType" ng-options="type as type | translate for type in recipientTypes" class="form-control">
       </select>
     </div>  
@@ -31,21 +31,26 @@
  <div class="form-group"
       ng-class="{'has-error': submitted && myForm.destPhoneNumber.$invalid}">
     <label class="col-md-3 control-label" for="fonctions">Destinataires</label>
-    <div class="col-md-6" ng-switch on="recipientType">
+    <div class="col-md-9" ng-switch on="recipientType">
 
-      <input type="text" ng-model="wip.login" class="form-control" ng-switch-when="SMS_ENVOI_ADH"
+      <div ng-switch-when="SMS_ENVOI_ADH">
+	<input type="text" ng-model="wip.login" class="form-control"
 	     typeahead="e as e.name for e in searchUser($viewValue)" 
 	     typeahead-on-select="addDestLogin()"
 	     >
-      <span ng-show="wip.logins.length === 0" class="has-error"><span class="help-block">No match</span></span>
+	<span ng-show="wip.logins.length === 0" class="has-error"><span class="help-block">No match</span></span>
+      </div>
 
-      <input type="text" ng-model="wip.group" class="form-control" ng-switch-when="SMS_ENVOI_GROUPES"
+      <div ng-switch-when="SMS_ENVOI_GROUPES">
+	<input type="text" ng-model="wip.group" class="form-control"
 	     typeahead="e as e.name for e in searchGroup($viewValue)" 
 	     typeahead-on-select="addDestGroup()"
 	     >
-      <span ng-show="wip.groups.length === 0" class="has-error"><span class="help-block">No match</span></span>
+	<span ng-show="wip.groups.length === 0" class="has-error"><span class="help-block">No match</span></span>
+      </div>
 
-      <div class="input-group" ng-switch-when="SMS_ENVOI_NUM_TEL">
+      <div ng-switch-when="SMS_ENVOI_NUM_TEL">
+	<div class="input-group">
          <input type="text" name="destPhoneNumber" ng-model="wip.phoneNumber" class="form-control" 
 	     my-validator="{ format : checkPhoneNumber }" >
 	 <span class="input-group-btn">
@@ -55,8 +60,9 @@
 	    <span class="glyphicon glyphicon-plus"></span>
 	   </button>
 	 </span>
+	</div>
+	<span ng-show="submitted && myForm.destPhoneNumber.$error.format" class="help-block">Invalide</span>
       </div>
-      <span ng-show="submitted && myForm.destPhoneNumber.$error.format" class="help-block">Invalide</span>
 
       <div class="input-group" ng-switch-when="SMS_ENVOI_LISTE_NUM_TEL">
         <textarea ng-model="wip.listPhoneNumbers" class="form-control" ></textarea>
@@ -99,7 +105,7 @@
 
   <div class="form-group">
     <label class="col-md-3 control-label" for="template">Modèle</label>
-    <div class="col-md-6">
+    <div class="col-md-9">
       <select name="template" ng-model="msg.template" ng-options="template as template.label for template in templates" class="form-control">
 	<option value="" ng-selected="selected">Aucun</option>
       </select>
@@ -125,25 +131,8 @@
     </div>
   </div>
 
-msg.mailToSend.isMailToRecipients
-msg.mailToSend.mailOtherRecipients
-msg.mailToSend.mailSubject
-msg.mailToSend.mailContent
-msg.mailToSend.mailTemplate
-<p>
-Accompagner le SMS d'un courriel
-	
-
-Envoyer le courriel aux destinataires du SMS
-Envoyer le courriel à d'autres destinataires (séparer les adresses par une virgule)
-Modèle	
-Objet	
-Préfixe	
-Corps	
-Signature	
-
   <div class="form-group">
-    <div class="col-md-offset-3 col-md-6">
+    <div class="col-md-offset-3 col-md-9">
       <button class="btn btn-primary" type="submit">
 	<span class="glyphicon glyphicon-send"></span>
 	Envoyer</button>
