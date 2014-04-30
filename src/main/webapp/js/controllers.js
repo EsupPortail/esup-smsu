@@ -398,6 +398,13 @@ app.controller('SendCtrl', function($scope, h, $location) {
 	//$scope.recipientType = 'SMS_ENVOI_LISTE_NUM_TEL'; // TEST
     });
 
+    $scope.msg.mailOption = '';
+    $scope.mailOptions = [
+	{key: '', label: 'aucun'},
+	{key: 'DUPLICATE', label: "accompagner le SMS d'un courriel"},
+	{key: 'OTHER', label: "autres destinataires"},
+    ];
+
     h.callRest('messages/groupLeaves').then(function (groupLeaves) {
 	$scope.groupLeaves = groupLeaves;
 	$scope.msg.senderGroup = groupLeaves[0].id;
@@ -482,7 +489,8 @@ app.controller('SendCtrl', function($scope, h, $location) {
 	$scope.wip.phoneNumber = null;
     };
     $scope.addDestGroup = function () {
-	$scope.msg.destGroup = $scope.wip.group;	
+	$scope.msg.destGroup = $scope.wip.group; 
+	$scope.wip.group = null;
     };
     $scope.addListDestPhoneNumber = function () {
 	var s = $scope.wip.listPhoneNumbers;
@@ -531,6 +539,15 @@ app.controller('SendCtrl', function($scope, h, $location) {
 	msgToSend.recipientLogins = destIds(msg.destLogins);
 	msgToSend.recipientPhoneNumbers = msg.destPhoneNumbers.length ? msg.destPhoneNumbers : null;
 	msgToSend.recipientGroup = msg.destGroup && msg.destGroup.id;
+	if (msg.mailOption) {
+	    var otherRecipients = msg.mailToSend.mailOtherRecipients;
+	    msgToSend.mailToSend =
+		{ isMailToRecipients: msg.mailOption === 'DUPLICATE',
+		  mailContent: msgToSend.content, 
+		  mailTemplate : msgToSend.smsTemplate,
+		  mailSubject: msg.mailToSend.mailSubject,
+		  mailOtherRecipients : otherRecipients ? otherRecipients.split("\n") : [] };
+	}
 
 	console.log("sending...");
 	console.log(msgToSend);

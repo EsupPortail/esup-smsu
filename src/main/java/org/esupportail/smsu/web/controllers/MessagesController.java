@@ -29,6 +29,7 @@ import org.esupportail.smsu.domain.beans.message.MessageStatus;
 import org.esupportail.smsu.exceptions.CreateMessageException;
 import org.esupportail.smsu.services.ldap.beans.UserGroup;
 import org.esupportail.smsu.services.smtp.SmtpServiceUtils;
+import org.esupportail.smsu.web.beans.MailToSend;
 import org.esupportail.smsu.web.beans.UIMessage;
 import org.esupportail.smsu.web.beans.UINewMessage;
 import org.esupportail.smsuapi.exceptions.UnknownMessageIdException;
@@ -108,8 +109,11 @@ public class MessagesController {
 		recipientsValidation(msg, request, login);
 		userGroupValidation(msg.senderGroup, login);
 		contentValidation(msg.content);
-		if (msg.mailToSend != null)
-			mailsValidation(msg.mailToSend.getMailOtherRecipientsList());
+		if (msg.mailToSend != null) {
+			if (!request.isUserInRole("FCTN_SMS_AJOUT_MAIL"))
+				throw new InvalidParameterException("user " + login + " is not allowed to send mails");
+			mailsValidation(msg.mailToSend);
+		}
 
 		int messageId = sendSmsManager.sendMessage(msg, request);
 		return messageManager.getUIMessage(messageId, null);
@@ -188,8 +192,9 @@ public class MessagesController {
 		}		
 	}
 
-	private void mailsValidation(String[] mails) {
-		if (mails.length == 0) {
+	private void mailsValidation(MailToSend mailToSend) {
+		List<String> mails = mailToSend.getMailOtherRecipients();
+		if (mails.isEmpty() && !mailToSend.getIsMailToRecipients()) {
 			throw new InvalidParameterException("SENDSMS.MESSAGE.RECIPIENTSMANDATORY");
 		}
 		for (String mail : mails) {

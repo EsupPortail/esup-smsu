@@ -1,30 +1,19 @@
 package org.esupportail.smsu.web.beans;
 
+import java.util.List;
+
+
 public class MailToSend {
 
 	private Boolean isMailToRecipients;
-	private String mailOtherRecipients;
+	private List<String> mailOtherRecipients;
 	
 	private String mailSubject;
 	
 	private String mailContent;
 	private String mailTemplate;
 
-	/**
-	 * @param isMailToRecipients
-	 * @param mailContent
-	 * @param mailOtherRecipients
-	 * @param mailSubject
-	 */
-	public MailToSend(final Boolean isMailToRecipients, final  String mailContent,
-			final String mailOtherRecipients, final  String mailSubject, final String mailTemplate) {
-		super();
-		this.isMailToRecipients = isMailToRecipients;
-		this.mailContent = mailContent;
-		this.mailOtherRecipients = mailOtherRecipients;
-		this.mailSubject = mailSubject;
-		this.mailTemplate = mailTemplate;
-	}
+	public MailToSend() {}
 
 	public Boolean getIsMailToRecipients() {
 		return isMailToRecipients;
@@ -34,18 +23,11 @@ public class MailToSend {
 		this.isMailToRecipients = isMailToRecipients;
 	}
 
-	public String getMailOtherRecipients() {
+	public List<String> getMailOtherRecipients() {
 		return mailOtherRecipients;
 	}
 
-	public String[] getMailOtherRecipientsList() {
-		if (mailOtherRecipients.equals("")) 
-			return new String[] {};
-		else
-			return mailOtherRecipients.split(",");
-	}
-
-	public void setMailOtherRecipients(final String mailOtherRecipients) {
+	public void setMailOtherRecipients(final List<String> mailOtherRecipients) {
 		this.mailOtherRecipients = mailOtherRecipients;
 	}
 

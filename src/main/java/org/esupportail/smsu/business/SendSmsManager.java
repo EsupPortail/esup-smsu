@@ -408,7 +408,7 @@ public class SendSmsManager  {
 			}
 		}
 
-		for (String otherAdresse : mailToSend.getMailOtherRecipientsList()) {
+		for (String otherAdresse : mailToSend.getMailOtherRecipients()) {
 				MailRecipient mailRecipient = daoService.getMailRecipientByAddress(otherAdresse);
 				if (mailRecipient == null) {
 					mailRecipient = new MailRecipient(null, otherAdresse, null);
