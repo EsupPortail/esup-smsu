@@ -33,13 +33,18 @@ public final class RoleWrapperFilter implements Filter {
      */
     public void doFilter(final ServletRequest servletRequest, final ServletResponse response, final FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
-	if (request.getRemoteUser() == null) {
+        String user = request.getRemoteUser();
+	if (user == null) {
 	    unauthorized((HttpServletResponse) response);
 	    return;
 	}
 
-        filterChain.doFilter(new MyHttpServletRequestWrapper(request, retrieveRoles(request)), 
-			     response);
+        Set<String> rights = securityManager.loadUserRightsByUsername(user);
+        if (request.getHeader("X-Impersonate-User") != null) {
+        	user = request.getHeader("X-Impersonate-User");
+        	rights = securityManager.loadUserRightsByUsername(user);
+        }
+		filterChain.doFilter(new MyHttpServletRequestWrapper(request, user, rights), response);
     }
 
     private void unauthorized(HttpServletResponse response) throws IOException {
@@ -47,26 +52,26 @@ public final class RoleWrapperFilter implements Filter {
 	response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
     }
 
-    protected Set<String> retrieveRoles(final HttpServletRequest request) {
-        String user = request.getRemoteUser();
-        return securityManager.loadUserRightsByUsername(user);
-    }
-
     final class MyHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
         private final Set<String> roles;
+        private String user;
 
-        MyHttpServletRequestWrapper(final HttpServletRequest request, Set<String> roles) {
+        MyHttpServletRequestWrapper(final HttpServletRequest request, String user, Set<String> roles) {
             super(request);
+            this.user = user;
             this.roles = roles;
         }
 
+        public String getRemoteUser() {
+        	return user;
+        }
+        
         public boolean isUserInRole(final String role) {
 	    if (roles.contains(role)) {
 		    logger.debug("user has role " + role);
 		    return true;
             }
-	    String user = getRemoteUser();
 	    logger.warn("user " + user + " has not role " + role);
 	    for (String r : roles) logger.warn("it has role " + r);
 	    return false;

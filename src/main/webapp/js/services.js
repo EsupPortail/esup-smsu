@@ -4,7 +4,7 @@
 function computeRoutes(baseURL) {
   var templatesBaseURL = baseURL + "/partials";
   var l =
-    [{ route: '/welcome', mainText: "Accueil", controller: 'EmptyCtrl' }, 
+    [{ route: '/welcome', mainText: "Accueil", controller: 'WelcomeCtrl' }, 
      { route: '/membership', mainText: "Adhésion", controller: 'MembershipCtrl'},
      { route: '/send', mainText: "Envoi SMS", controller: 'SendCtrl'},
      { route: '/messages', mainText: "Suivi des envois", show: 'loggedUser.can.FCTN_SUIVI_ENVOIS_UTIL || loggedUser.can.FCTN_SUIVI_ENVOIS_ETABL', controller: 'MessagesCtrl'},

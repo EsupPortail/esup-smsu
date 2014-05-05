@@ -42,7 +42,17 @@ app.controller('MainCtrl', function($scope, h, $route, $parse, routes, globals) 
 });
 
 
+
 app.controller('EmptyCtrl', function($scope) {});
+
+app.controller('WelcomeCtrl', function($scope, $rootScope, h) {
+    $scope.searchUser = h.searchUser;
+    $scope.wip = {};
+    $scope.impersonate = function (user) {
+	$rootScope.impersonatedUser = user;
+	h.callRest('login').then(h.setLoggedUser);
+    };
+});
 
 app.controller('GroupsDetailCtrl', function($scope, h, $routeParams, $location) {
     var id = $routeParams.id;
@@ -451,20 +461,15 @@ app.controller('SendCtrl', function($scope, h, $location) {
     //$scope.msg.destGroup = {id:"foo", name: "Groupe Machin"};
 
 
-    var hash2array = function (h) {
-	return $.map(h, function (name, id) { return { id: id, name: name }; });
-    };
-
     $scope.searchUser = function (token) {
 	if (token.length < 4) {
 	    $scope.wip.logins = null;
 	    return [];
 	}
-	return h.callRest('users/search', 
-			  { token: token, service: $scope.msg.serviceKey })
-	    .then(function (id2name) {
-		$scope.wip.logins = hash2array(id2name);
-		return $scope.wip.logins;
+	return h.searchUser(token, { service: $scope.msg.serviceKey })
+	    .then(function (logins) {
+		$scope.wip.logins = logins
+		return logins;
 	    });
     };
 

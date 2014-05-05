@@ -149,7 +149,7 @@ this.windowOpenLogin = function () {
     state.div = windowOpenLoginDivCreate();
     state.div.bind("click", function () {
 	state.listener = windowOpenLoginOnMessage(state); 
-	state.window = $window.open(globals.baseURL + '/rest/login');
+	state.window = $window.open(globals.baseURL + '/rest/login?postMessage');
     });
     return state.deferredLogin.promise;
 };
@@ -266,18 +266,27 @@ function xhrRequest(args) {
     }, onError);
 }
 
+this.callRest_headers = function () {
+    var r = {};
+    if ($rootScope.impersonatedUser) {
+	r["X-Impersonate-User"] = $rootScope.impersonatedUser;
+    }
+    console.log(r);
+    return r;
+};
+
 this.callRest = function ($function, params) {
     var url = globals.baseURL + '/rest/' + $function;
     params = angular.extend({}, params);
     params.cacheSlayer = new Date().getTime(); // for our beloved IE which caches every AJAX... ( http://stackoverflow.com/questions/16098430/angular-ie-caching-issue-for-http )
-    var args = { method: 'get', url: url, params: params };
+    var args = { method: 'get', url: url, params: params, headers: h.callRest_headers() };
     return xhrRequest(args).then(function(resp) {
 	return resp.data;
     });
 };
 
 this.callRestModify = function (method, restPath, o) {
-    var args = { method: method, url: globals.baseURL + '/rest/' + restPath };
+    var args = { method: method, url: globals.baseURL + '/rest/' + restPath, headers: h.callRest_headers() };
     if (method !== 'post') {
 	var id = o.id;
 	if (typeof id === "undefined") return alert("internal error: missing id");
@@ -345,6 +354,24 @@ this.mayGetMsgStatuses = function (msg) {
 	    msg.statuses = statuses;
 	});
     }
+};
+
+this.searchUser = function (token, extraParams) {
+    function hash2array(h) {
+	return $.map(h, function (name, id) { 
+	    return { id: id, name: name };
+	});
+    }
+
+    if (token.length < 4) {
+	return [];
+    }
+
+    var params = angular.extend({ token: token }, extraParams);
+    return h.callRest('users/search', params)
+	    .then(function (id2name) {
+		return hash2array(id2name);
+	    });
 };
 
 });

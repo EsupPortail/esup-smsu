@@ -35,14 +35,18 @@ public class LoginController {
 
 	User user = domainService.getUser(request.getRemoteUser());
 	String jsUser = new ObjectMapper().writeValueAsString(user);
-	String callback = request.getParameter("callback");
-	String type = callback == null ? "text/html" : "application/x-javascript";
-	String js = 
-	    callback == null ?
-	    "Login success, please wait...\n<script>\n (window.opener.postMessage ? window.opener : window.opener.document).postMessage('loggedUser=' + JSON.stringify(" + jsUser + "), '*');\n</script>" :
-	    callback + "(" + jsUser + ")";
-	
-        return Response.status(Response.Status.OK).type(type).entity(js).build();
+	String content, type;
+	if (request.getParameter("postMessage") != null) {
+		type = "text/html";
+		content = "Login success, please wait...\n<script>\n (window.opener.postMessage ? window.opener : window.opener.document).postMessage('loggedUser=' + JSON.stringify(" + jsUser + "), '*');\n</script>";
+	} else if (request.getParameter("callback") != null) {
+		type = "application/x-javascript";
+		content = request.getParameter("callback") + "(" + jsUser + ")";
+	} else {
+		type = "application/json";
+		content = jsUser;
+	}
+        return Response.status(Response.Status.OK).type(type).entity(content).build();
     }
  
 }
