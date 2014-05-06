@@ -9,6 +9,8 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
+import org.esupportail.smsu.dao.beans.BasicGroup;
+import org.esupportail.smsu.dao.beans.Person;
 import org.esupportail.smsu.exceptions.CreateMessageException;
 import org.esupportail.smsu.exceptions.CreateMessageException.UnknownCustomizedTag;
 import org.esupportail.smsu.exceptions.CreateMessageException.CustomizedTagValueNotFound;
@@ -99,19 +101,19 @@ public class ContentCustomizationManager {
 	 * @return the content customized with the sender data.
 	 * @throws CreateMessageException
 	 */
-	public String customizeExpContent(String content, final String expGroupName, final String expUid) throws CreateMessageException {
+	public String customizeExpContent(String content, final BasicGroup expGroup, final Person exp) throws CreateMessageException {
 		Set<String> tags = extractExpTags(content);
 
 		for (String tag : tags) {
 			String tagRepl;
 			try {
 				if (tag.equals("EXP_GROUPE_NOM")) {
-					tagRepl = expGroupName(expGroupName);
+					tagRepl = expGroupName(expGroup);
 				} else {
-					tagRepl = computeTagValue(tag, expUid);
+					tagRepl = computeTagValue(tag, exp.getLogin());
 				}
 			} catch (LdapUserNotFoundException e) {
-				String messageStr = "Unable to find the user with id : [" + expUid + "]";
+				String messageStr = "Unable to find the user with id : [" + exp.getLogin() + "]";
 				logger.warn(messageStr, e);
 				throw new CreateMessageException.Wrapper(messageStr, e);
 			}
@@ -148,7 +150,7 @@ public class ContentCustomizationManager {
 		return v;
 	}
 
-	private String expGroupName(final String expGroupName) {
+	private String expGroupName(final BasicGroup expGroupName) {
 		// a sending group can be a user name
 		String groupName = ldapUtils.getGroupDisplayName(expGroupName);
 		 

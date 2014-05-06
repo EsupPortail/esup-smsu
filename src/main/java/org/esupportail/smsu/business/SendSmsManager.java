@@ -128,7 +128,7 @@ public class SendSmsManager  {
 		Person sender = getSender(msg.login);
 
 		// test if customizeExpContent raises a CreateMessageException
-		customizer.customizeExpContent(msg.content, groupSender.getLabel(), sender.getLogin());
+		customizer.customizeExpContent(msg.content, groupSender, sender);
 				
 		Message message = new Message();
 		message.setContent(msg.content);
@@ -438,14 +438,11 @@ public class SendSmsManager  {
 			}
 			//retrieve all informations from message (EXP_NOM, ...)
 			final Set<MailRecipient> recipients = mail.getMailRecipients();
-			final String expGroupName = message.getGroupSender().getLabel();
-			final String expUid = message.getSender().getLogin();
 			final String mailSubject = mail.getSubject();
 			//the original content
 			final String originalContent = mail.getContent();
 			try {
-				final String contentWithoutExpTags = customizer.customizeExpContent(
-						originalContent, expGroupName, expUid );
+				final String contentWithoutExpTags = customizer.customizeExpContent(originalContent, message.getGroupSender(), message.getSender());
 				if (logger.isDebugEnabled()) {
 					logger.debug("sendMails contentWithoutExpTags: " 
 							+ contentWithoutExpTags);
@@ -723,12 +720,9 @@ public class SendSmsManager  {
 	 */
 	private List<CustomizedMessage> getCustomizedMessages(final Message message) {
 		final Set<Recipient> recipients = message.getRecipients();
-		final String senderUid = message.getSender().getLogin();
-
 		String contentWithoutExpTags = null;
 		try {
-			contentWithoutExpTags = customizer.customizeExpContent(message.getContent(), 
-					message.getGroupSender().getLabel(), senderUid);
+			contentWithoutExpTags = customizer.customizeExpContent(message.getContent(), message.getGroupSender(), message.getSender());
 			if (logger.isDebugEnabled()) logger.debug("contentWithoutExpTags: " + contentWithoutExpTags);
 		} catch (CreateMessageException e) {
 			logger.error("discarding message with error " + e + " (this should not happen, the message should have been checked first!)");

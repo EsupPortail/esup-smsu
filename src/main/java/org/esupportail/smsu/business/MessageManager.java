@@ -144,7 +144,7 @@ public class MessageManager {
 
 	private String retreiveNiceGroupName(BasicGroup recipientGroup) {
 		return recipientGroup != null ?
-			ldapUtils.getGroupDisplayName(recipientGroup.getLabel()) : null;
+			ldapUtils.getGroupDisplayName(recipientGroup) : null;
 	}
 
 	private String convertToUI(MessageStatus messageStatus) {
