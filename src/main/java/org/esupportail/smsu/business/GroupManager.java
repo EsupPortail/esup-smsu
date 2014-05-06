@@ -88,7 +88,8 @@ public class GroupManager {
 		result.role = group.getRole().getName();
 		result.account = group.getAccount().getLabel();
 		result.supervisors = convertToUI(group.getSupervisors());
-		result.labelIsUserId= ldapUtils.getGroupNameByIdOrNull(group.getLabel()) == null;
+		result.labelIsUserId= ldapUtils.mayGetLdapUserByUid(group.getLabel()) != null;
+		result.displayName = ldapUtils.getGroupDisplayName(group);
 		return result;
 	}
 	

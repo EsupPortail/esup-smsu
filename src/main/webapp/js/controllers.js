@@ -145,7 +145,7 @@ app.controller('GroupsCtrl', function($scope, h) {
 			   sortInfo: {fields: ['label'], directions: ['asc', 'desc']},
 			   headerRowHeight: '50',
 			   multiSelect: false,
-			   columnDefs: [{field: 'label', displayName:"Group", width: '***', 
+			   columnDefs: [{field: 'displayName', displayName:"Group", width: '***', 
 					   cellTemplate: '<div class="ngCellText"><a href="#/groups/{{row.entity.id}}">{{row.getProperty(col.field)}}</a></div>'},
 					{field: 'role', displayName: 'Rôle', width: '*'},
 					{field: 'quotaSms', displayName: 'Quota', width: '*'},

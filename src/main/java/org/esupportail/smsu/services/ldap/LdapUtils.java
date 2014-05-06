@@ -3,6 +3,7 @@ package org.esupportail.smsu.services.ldap;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.esupportail.commons.exceptions.GroupNotFoundException;
 import org.esupportail.commons.exceptions.UserNotFoundException;
 import org.esupportail.commons.services.ldap.LdapException;
 import org.esupportail.commons.services.ldap.LdapGroup;
@@ -110,6 +111,14 @@ public class LdapUtils {
 		return ldapUser;	
 	}
 
+	public LdapUser mayGetLdapUserByUid(final String uid) {
+		try {
+			return ldapService.getLdapUser(uid);
+		} catch (UserNotFoundException e) {
+			return null;
+		}
+	}
+	
 	private void throwLdapUserNotFoundException(UserNotFoundException e, final String ldapUserUid) 
 			throws LdapUserNotFoundException {
 		final String messageStr = 
@@ -502,7 +511,11 @@ public class LdapUtils {
 	 * @return the group name
 	 */
 	public String getGroupNameByIdOrNull(final String id) {
-		return null;
+		try {
+			return getLdapGroup(id).getAttribute(groupNameAttribute);
+		} catch (GroupNotFoundException e) {
+			return null;
+		}
 	}
 
 	/**

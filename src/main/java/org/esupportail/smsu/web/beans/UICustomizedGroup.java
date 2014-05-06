@@ -6,6 +6,7 @@ public class UICustomizedGroup {
 	public Integer id;
 	public String label;
 	public boolean labelIsUserId;
+	public String displayName;
 	public long quotaSms;
 	public long maxPerSms;
 	public long consumedSms;
