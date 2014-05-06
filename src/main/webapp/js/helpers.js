@@ -374,6 +374,15 @@ this.searchUser = function (token, extraParams) {
 	    });
 };
 
+this.searchGroup = function (token) {
+    if (token.length < 3) {
+	return [];
+    }
+
+    return h.callRest('groups/search', { token: token });
+};
+
+
 });
 
 })();

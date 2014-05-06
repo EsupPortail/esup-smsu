@@ -65,6 +65,10 @@ app.controller('GroupsDetailCtrl', function($scope, h, $routeParams, $location) 
 	'FCTN_SMS_REQ_LDAP_ADH',
 	'FCTN_SMS_ENVOI_SERVICE_CP' ];
 
+    $scope.wip = {};
+    $scope.groupOrUserChoices = [{ key:"group", label:"Groupe" },
+				 { key:"user", label: "Utilisateur" }];
+
     h.getAccounts().then(function (list) {
 	$scope.accounts = list;
     });
@@ -82,6 +86,16 @@ app.controller('GroupsDetailCtrl', function($scope, h, $routeParams, $location) 
     updateCurrentTabTitle();
     $scope.$watch('group.label', updateCurrentTabTitle);
 
+    $scope.searchUserOrGroup = function (userOrGroup, token) {
+	return userOrGroup === 'user' ? h.searchUser(token) : h.searchGroup(token);
+    };
+
+    $scope.setLabel = function (e) {
+	$scope.group.label = e.id;
+	$scope.group.displayName = e.name;
+	$scope.myForm.label.$setValidity('unique', $scope.checkUniqueLabel(e.id));
+    };
+
     $scope.checkUniqueLabel = function (label) {
 	var group = $scope.label2group[label];
 	return !group || group === $scope.group;
@@ -92,7 +106,7 @@ app.controller('GroupsDetailCtrl', function($scope, h, $routeParams, $location) 
 
     var modify = function (method, then) {
 	var group = angular.copy($scope.group);
-	group.role = group.role.name;
+	//group.role = group.role.name;
 	delete group.isNew;
 	h.callRestModify(method, 'groups', group).then(function () {
 	    $location.url(then || '/groups');
@@ -112,11 +126,14 @@ app.controller('GroupsDetailCtrl', function($scope, h, $routeParams, $location) 
 
 	if (id === "new") {
 	    $scope.group = { isNew: true, quotaSms: 0 };
+	    $scope.groupOrUser = 'group';
 	} else {
 	    var id2group = h.array2hash(groups, 'id');
 
 	    if (id in id2group) {
 		$scope.group = id2group[id];
+		$scope.groupOrUser = $scope.group.labelIsUserId ? 'user' : 'group';
+		$scope.wip.label = $scope.group.displayName;
 	    } else {
 		alert("invalid group " + id);
 	    }
@@ -478,7 +495,7 @@ app.controller('SendCtrl', function($scope, h, $location) {
 	    $scope.wip.groups = null;
 	    return [];
 	}
-	return h.callRest('groups/search', { token: token })
+	return h.searchGroup(token)
 	    .then(function (groups) {
 		$scope.wip.groups = groups;
 		return $scope.wip.groups;
