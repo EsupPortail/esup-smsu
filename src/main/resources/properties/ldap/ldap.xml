@@ -59,27 +59,43 @@
 		</property>
 	</bean>
 	
-	<bean id="ldapGroupService"
-		class="org.esupportail.commons.services.ldap.SearchableLdapGroupServiceImpl"
-		lazy-init="true">
+	<bean id="ldapGroupServiceProperties"
+		abstract="true">
 		<property name="i18nService" ref="i18nService">
 			<description> The i18nService, used for statistics. </description>
 		</property>
 		<property name="ldapTemplate" ref="ldapTemplate" />
-		<property name="attributes">
-		  <list>
-		    <value>${ldap.group.groupMemberAttr}</value>
-		    <value>${ldap.group.groupSearchAttr}</value>
-		    <value>${ldap.group.nameAttr}</value>
-		  </list>
-		</property>
 		<property name="dnSubPath" value="${ldap.group.dnSubPath}"/>
 		<property name="idAttribute" value="${ldap.group.idAttribute}"/>
 		<property name="searchAttribute" value="${ldap.group.groupSearchAttr}"/>
 		<property name="searchDisplayedAttributes"> <list><value>cn</value></list> </property> <!-- unused -->
 		<property name="objectClass" value="${ldap.group.groupObjectClass}"/>
 		<property name="testFilter" value="${ldap.group.testFilter}"/>
+	</bean>
+	
+	<bean id="ldapGroupService"
+		class="org.esupportail.commons.services.ldap.SearchableLdapGroupServiceImpl"
+		parent="ldapGroupServiceProperties"
+		lazy-init="true">
+		<property name="attributes">
+		  <list>
+		    <value>${ldap.group.nameAttr}</value>
+		  </list>
+		</property>
+	</bean>
 
+	<!-- another LdapGroup service especially to return group members.
+	     having them in ldapGroupService would impact very badly performance when searching a group!		
+	 -->	
+	<bean id="ldapGroupMembersService"
+		class="org.esupportail.commons.services.ldap.SearchableLdapGroupServiceImpl"
+		parent="ldapGroupServiceProperties"
+		lazy-init="true">
+		<property name="attributes">
+		  <list>
+		    <value>${ldap.group.groupMemberAttr}</value>
+		  </list>
+		</property>
 	</bean>
 
 	<bean id="ldapUtilsHelpers"
@@ -193,6 +209,7 @@
 		<description>The ldap access way for the smsu application.</description>
 		<property name="ldapService" ref="ldapService"/>
 		<property name="ldapGroupService" ref="ldapGroupService" />
+		<property name="ldapGroupMembersService" ref="ldapGroupMembersService" />
 		<property name="ldapUtilsHelpers" ref="ldapUtilsHelpers"/>
 		<property name="writeableLdapUserService" ref="writeableLdapUserService"/>
 		<property name="userDisplayName" value="${ldap.displayNameAttribute}"/>

@@ -33,6 +33,7 @@ public class LdapUtils {
 	private LdapUserAndGroupService ldapService;
 
 	private LdapGroupService ldapGroupService;
+	private LdapGroupService ldapGroupMembersService;
 
 	/**
 	 * used to manage user (read only)
@@ -549,10 +550,9 @@ public class LdapUtils {
 	
 	public List<LdapUser> getMembers(final String groupId, String serviceKey) {
 		logger.debug("Search users for group [" + groupId + "]");
-		LdapGroup ldapGroup = getLdapGroup(groupId);
-		List<String> uids = ldapService.getMemberIds(ldapGroup);
+		List<String> uids = ldapService.getMemberIds(ldapGroupMembersService.getLdapGroup(groupId));
 		List<LdapUser> users = ldapUtilsHelpers.getConditionFriendlyLdapUsersFromUid(uids, completeCgKeyName(), serviceKey);
-		logger.debug("found " + uids.size() + " users in group " + ldapGroup.getId() + " and " + users.size() + " users having pager+CG");
+		logger.debug("found " + uids.size() + " users in group " + groupId + " and " + users.size() + " users having pager+CG");
 		return users;
 	}
 	
@@ -580,6 +580,10 @@ public class LdapUtils {
 	
 	public void setLdapGroupService(LdapGroupService ldapGroupService) {
 		this.ldapGroupService = ldapGroupService;
+	}
+	
+	public void setLdapGroupMembersService(LdapGroupService ldapGroupMembersService) {
+		this.ldapGroupMembersService = ldapGroupMembersService;
 	}
 
 	/**
