@@ -29,11 +29,12 @@
     </div>
   </div>
 
-  <div class="form-group">
+  <div class="form-group" ng-class="{'has-error': submitted && myForm.role.$invalid}">
     <label class="col-md-3 control-label" for="role">Sélectionnez un rôle</label>
     <div class="col-md-9">
-      <select name="role" ng-model="group.role" ng-options="name as name for (name, role) in roles" class="form-control">
+      <select name="role" ng-model="group.role" ng-options="name as name for (name, role) in roles" class="form-control" required>
       </select>
+      <span ng-show="submitted && myForm.role.$error.required" class="help-block">Required</span>
 
       <span ng-show="roles[group.role].fonctions.length === 0" class="help-block">
 	NB : le rôle choisit ne donne aucun droit. Ce groupe servira uniquement à définir les superviseurs pour l'envoi au groupe {{group.name}}.
