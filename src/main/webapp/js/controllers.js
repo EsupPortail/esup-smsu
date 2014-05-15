@@ -106,7 +106,12 @@ app.controller('GroupsDetailCtrl', function($scope, h, $routeParams, $location) 
 
     var modify = function (method, then) {
 	var group = angular.copy($scope.group);
-	//group.role = group.role.name;
+
+	if (group.isNew && !group.account) {
+	    // this must be a "Destination Group"
+	    // a valid account is needed, choose one:
+	    group.account = $scope.accounts[0];
+	}
 	delete group.isNew;
 	h.callRestModify(method, 'groups', group).then(function () {
 	    $location.url(then || '/groups');
