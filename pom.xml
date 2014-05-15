@@ -145,12 +145,6 @@
 		</dependency>
 
 		<dependency>
-		  <groupId>esup</groupId>
-		  <artifactId>esup-uportal-ws-client</artifactId>
-		  <version>RELEASE</version>
-		</dependency>
-
-		<dependency>
 		  <groupId>org.esupportail</groupId>
 		  <artifactId>esup-commons2-ldap</artifactId>
 		  <version>${esup-commons-version}</version>

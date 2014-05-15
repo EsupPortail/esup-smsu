@@ -37,34 +37,6 @@ public class GroupsManagerController {
 	@Autowired private LdapUtils ldapUtils;
 	@Autowired private DomainService domainService;
 	@Autowired private GroupManager groupManager;
-	
-//	TODO
-	// private TreeNode getRootNode() {
-//		PortalGroupHierarchy groupHierarchy = ldapUtils.getPortalGroupHierarchy();
-//		TreeNode rootNode = getChildrenNodes(groupHierarchy);
-//		return rootNode;
-//	}
-
-//	private TreeNodeBase getChildrenNodes(final PortalGroupHierarchy groupHierarchy) {
-//		String groupDescription = groupHierarchy.getGroup().getName();
-//		String groupIdentifer = groupHierarchy.getGroup().getId();
-//		List<PortalGroupHierarchy> childs = groupHierarchy.getSubHierarchies(); 
-//		 
-//		Boolean isGroupLeaf = true;
-//		if (childs != null) {
-//			isGroupLeaf = false;
-//		}
-//		TreeNodeBase node = new TreeNodeBase("group", groupDescription, groupIdentifer, isGroupLeaf);
-//		
-//		if (!isGroupLeaf) {
-//			for (PortalGroupHierarchy child : childs) {
-//				TreeNodeBase childNode = getChildrenNodes(child);
-//				node.getChildren().add(childNode);
-//			}
-//		}
-//		
-//		return node;
-//	}
 
 	@GET
 	@Produces("application/json")

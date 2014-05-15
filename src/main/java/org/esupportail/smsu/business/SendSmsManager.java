@@ -19,8 +19,6 @@ import org.esupportail.commons.services.i18n.I18nService;
 import org.esupportail.commons.services.ldap.LdapUser;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
-import org.esupportail.portal.ws.client.PortalGroup;
-import org.esupportail.portal.ws.client.PortalGroupHierarchy;
 import org.esupportail.smsu.business.beans.CustomizedMessage;
 import org.esupportail.smsu.dao.DaoService;
 import org.esupportail.smsu.dao.beans.Account;
@@ -205,7 +203,7 @@ public class SendSmsManager  {
 			}
 			// get the associated customized group
 			final String groupLabel = message.getGroupSender().getLabel();
-			final CustomizedGroup cGroup = getRecurciveCustomizedGroupByLabel(groupLabel);
+			final CustomizedGroup cGroup = getCustomizedGroupByLabel(groupLabel);
 
 			// send the customized messages
 			for (CustomizedMessage customizedMessage : getCustomizedMessages(message)) {
@@ -514,24 +512,23 @@ public class SendSmsManager  {
 	 * @param groupLabel
 	 * @return the current customized group if it has supervisors or the first parent with supervisors.
 	 */
-	@SuppressWarnings("unused") //TODO
-	private CustomizedGroup getSupervisorCustomizedGroupByLabel(final String groupLabel) {
+	@SuppressWarnings("null")
+	private CustomizedGroup getSupervisorCustomizedGroupByLabel(final String groupLabel) {	    
 		if (logger.isDebugEnabled()) {
 			logger.debug("getSupervisorCustomizedGroupByLabel for group [" + groupLabel + "]");
 		}
-		CustomizedGroup cGroup = getRecurciveCustomizedGroupByLabel(groupLabel);	
-		if (cGroup == null) 
-			return null;
-		else if (!cGroup.getSupervisors().isEmpty())
-			return cGroup;
-		else {
-			if (logger.isDebugEnabled())
+		// TODO
+		String[] groupAndParents = null; //getGroupPathByLabel(groupLabel);
+		for (String label : groupAndParents) {
+		    CustomizedGroup cGroup = getCustomizedGroupByLabel(label);
+		    if (cGroup != null) {
+			if (!cGroup.getSupervisors().isEmpty())
+			    return cGroup;
+			else
 				logger.debug("Customized group without supervisor found : [" + cGroup.getLabel() + "]");
-			
-			String parentGroup = null;
-			if (parentGroup == null) return null;
-			return getSupervisorCustomizedGroupByLabel(parentGroup);
+		    }
 		}
+		return null;
 	}
 
 	private Set<Recipient> getRecipients(UINewMessage msg, String serviceKey) throws EmptyGroup {
@@ -642,7 +639,7 @@ public class SendSmsManager  {
 		if (logger.isDebugEnabled()) logger.debug("get workflow state");
 		if (logger.isDebugEnabled()) logger.debug("nbRecipients: " + nbRecipients);
 
-		final CustomizedGroup cGroup = getRecurciveCustomizedGroupByLabel(groupSender.getLabel());
+		final CustomizedGroup cGroup = getCustomizedGroupByLabel(groupSender.getLabel());
 		if (cGroup == null)
 			throw new InvalidParameterException("invalid sender group");
 
@@ -841,7 +838,7 @@ public class SendSmsManager  {
 	 * @return an account.
 	 */
 	private Account getAccount(final String userGroup) {
-		CustomizedGroup groupSender = getRecurciveCustomizedGroupByLabel(userGroup);
+		CustomizedGroup groupSender = getCustomizedGroupByLabel(userGroup);
 		Account count;
 		if (groupSender == null) {
 			//Default account
@@ -864,12 +861,13 @@ public class SendSmsManager  {
 		return l;
 	}
 
+	@SuppressWarnings("unused")
 	private List<String> keepGroupLeaves(Set<String> ids) {
 		logger.debug("keepGroupLeaves: given ids " + ids);
 
 		SortedMap<String, String> pathToId = new TreeMap<String, String>();
 		for (String id : ids) {
-			String path = getRecursiveGroupPathByLabel(id);
+			String path = getGroupPathByLabel(id);
 			if (path != null) pathToId.put(path, id);
 		}
 		logger.debug("keepGroupLeaves: pathToId: " + pathToId);
@@ -879,6 +877,14 @@ public class SendSmsManager  {
 			keptIds.add(pathToId.get(path));
 		logger.debug("keepGroupLeaves: keptIds: " + keptIds);
 		return keptIds;
+	}
+
+	/**
+	 * @param label
+	 * @return the path corresponding to a group
+	 */
+	private String getGroupPathByLabel(String label) {
+	    return groupUtils.getGroupPathByLabel(label);
 	}
 
 	/**
@@ -909,45 +915,9 @@ public class SendSmsManager  {
 	 * @param groupId
 	 * @return the customized group corresponding to a group
 	 */
-	private CustomizedGroup getRecurciveCustomizedGroupByLabel(String portalGroupId) {
-	    return getRecurciveCustomizedGroupAndPathByLabel(portalGroupId, null);
-	}
-
-	/**
-	 * @param portalGroupId
-	 * @return the path corresponding to a group if a customized group exists, otherwise return null
-	 */
-	public String getRecursiveGroupPathByLabel(String portalGroupId) {
-		StringBuilder path = new StringBuilder();
-		if (getRecurciveCustomizedGroupAndPathByLabel(portalGroupId, path) == null)
-			return null;
-		else
-			return path.toString();
-	}
-	
-	private CustomizedGroup getRecurciveCustomizedGroupAndPathByLabel(String portalGroupId, StringBuilder path) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Search the customised group associated to the group : [" + portalGroupId + "]");
-		}
-
-		CustomizedGroup groupSender = null;
-
-		while (true) {
-		    if (path != null) path.insert(0, ".." + portalGroupId);
-		    if (groupSender == null)
-			    //search the customized group from the data base
-			    groupSender = daoService.getCustomizedGroupByLabel(portalGroupId);
-
-		    if (groupSender != null && path == null) return groupSender;
-		    // if path != null, we must continue to compute the full path. 
-
-		    if (logger.isDebugEnabled() && groupSender == null)
-			logger.debug("Customized group not found : " + portalGroupId);
-
-		    // if a parent group is found, search the corresponding customized group
-		    String parentGroup = null;
-		    if (parentGroup == null) return groupSender;
-		}
+	private CustomizedGroup getCustomizedGroupByLabel(String label) {
+		//search the customized group from the data base
+		return daoService.getCustomizedGroupByLabel(label);
 	}
 
 	private Service getService(final String key) {
