@@ -41,6 +41,7 @@ app.provider('globals', function () {
     var globals = document.esupSmsu;
     this.baseURL = globals.baseURL;
     this.isWebWidget = globals.isWebWidget;
+    this.wsgroupsURL = globals.wsgroupsURL;
 
     this.$get = function () { 
 	return this;

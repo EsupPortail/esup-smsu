@@ -12,6 +12,7 @@ import org.esupportail.smsu.services.UrlGenerator;
 public class StartPage implements org.springframework.web.HttpRequestHandler {
 
     private UrlGenerator urlGenerator;
+    private String wsgroupsURL;
 
     public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
 	ServletContext context = request.getSession().getServletContext();
@@ -40,6 +41,7 @@ public class StartPage implements org.springframework.web.HttpRequestHandler {
 	String s = template;
 	s = instantiateTemplate(s, "baseURL", baseURL);
 	s = instantiateTemplate(s, "loginURL", genTestStaticJsonPage ? "test/login.jsonp" : "rest/login");
+	s = instantiateTemplate(s, "wsgroupsURL", wsgroupsURL);
     s = instantiateTemplate(s, "isWebWidget", ""+isWebWidget);
     s = instantiateTemplate(s, "useTestStaticJson", ""+genTestStaticJsonPage);
 	return s;
@@ -55,6 +57,10 @@ public class StartPage implements org.springframework.web.HttpRequestHandler {
 
 	public void setUrlGenerator(UrlGenerator urlGenerator) {
 		this.urlGenerator = urlGenerator;
+	}
+
+	public void setWsgroupsURL(String wsgroupsURL) {
+		this.wsgroupsURL = wsgroupsURL;
 	}
 
 }

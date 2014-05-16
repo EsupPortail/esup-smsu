@@ -18,6 +18,7 @@
 
    <bean id="StartPage" class="org.esupportail.smsu.web.StartPage">
   	  <property name="urlGenerator" ref="urlGenerator" />
+  	  <property name="wsgroupsURL" value="${wsgroups.url}" />
 	</bean>
   
   <bean id="loginController"		class="org.esupportail.smsu.web.controllers.LoginController" />
