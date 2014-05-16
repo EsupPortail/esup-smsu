@@ -18,25 +18,25 @@ public class StartPage implements org.springframework.web.HttpRequestHandler {
 	boolean isWebWidget = request.getServletPath().equals("/WebWidget");
 	boolean genTestStaticJsonPage = request.getServletPath().equals("/GenTestStaticJsonPage");
 	String baseURL = genTestStaticJsonPage ? ".." : urlGenerator.baseURL(request);
-	String page = getWebWidgetHtml(context, baseURL, isWebWidget, genTestStaticJsonPage);
+	String template = getHtmlTemplate(context, "/WEB-INF/WebWidget-template.html");
+	String page = instantiateWebWidgetHtml(template, baseURL, isWebWidget, genTestStaticJsonPage);
 	if (!isWebWidget) 
 	    page = getStartPageHtml(context, page);	
+
 	response.setContentType("text/html; charset=UTF-8");
         response.getWriter().print(page);
     }
 
-    static public String getStartPageHtml(ServletContext context, String webWidget) throws IOException {
+    private String getStartPageHtml(ServletContext context, String webWidget) throws IOException {
 	String s = getHtmlTemplate(context, "/WEB-INF/StartPage-template.html");
 	return instantiateTemplate(s, "webWidget", webWidget);
     }
 
-    static public String getWebWidgetHtml(ServletContext context, String baseURL, 
-    			boolean isWebWidget, boolean genTestStaticJsonPage) throws IOException {
-	String s = getHtmlTemplate(context, "/WEB-INF/WebWidget-template.html");
-	return instantiateWebWidgetHtml(s, baseURL, isWebWidget, genTestStaticJsonPage);
+    public String instantiateWebWidgetHtml(String template, String baseURL, boolean isWebWidget) {
+    	return instantiateWebWidgetHtml(template, baseURL, isWebWidget, false);
     }
 
-    static public String instantiateWebWidgetHtml(String template, String baseURL, boolean isWebWidget, boolean genTestStaticJsonPage) {
+    public String instantiateWebWidgetHtml(String template, String baseURL, boolean isWebWidget, boolean genTestStaticJsonPage) {
 	String s = template;
 	s = instantiateTemplate(s, "baseURL", baseURL);
 	s = instantiateTemplate(s, "loginURL", genTestStaticJsonPage ? "test/login.jsonp" : "rest/login");
