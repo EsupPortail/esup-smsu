@@ -14,7 +14,7 @@
 		<many-to-one name="Account"	column="ACC_ID"	class="Account"	not-null="true" />
 
 		<property name="Label" column="CGR_LABEL"
-			type="string" not-null="true" length="32" unique="true" />
+			type="string" not-null="true" length="255" unique="true" />
 		<property name="QuotaSms" column="CGR_QUOTA_SMS"
 			type="java.lang.Long" not-null="true" length="20" />
 		<property name="QuotaOrder"	column="CGR_QUOTA_ORDER"
