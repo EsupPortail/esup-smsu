@@ -37,6 +37,14 @@ public class MembershipController {
 		return memberManager.getMember(request.getRemoteUser());
 	}
 
+	@GET
+	@Produces("application/json")
+	@Path("/isPhoneNumberInBlackList")
+	public boolean isPhoneNumberInBlackList(@Context HttpServletRequest request) throws LdapUserNotFoundException, HttpException {
+		Member member = memberManager.getMember(request.getRemoteUser());;
+		return memberManager.isPhoneNumberInBlackList(member.getPhoneNumber());
+	}
+
 	@POST
 	public String save(Member member, @Context HttpServletRequest request) throws LdapUserNotFoundException, LdapWriteException, HttpException, InsufficientQuotaException {
 		if (logger.isDebugEnabled()) {
@@ -51,9 +59,6 @@ public class MembershipController {
 			if (member.getValidCG()) throw new InvalidParameterException("ADHESION.ERROR.PHONEREQUIRED");
 		} else { 
 			validatePhoneNumber(member.getPhoneNumber());
-			
-			if (memberManager.isPhoneNumberInBlackList(member.getPhoneNumber()))
-				throw new InvalidParameterException("ADHESION.MESSAGE.PHONEINBLACKLIST");
 		}
 
 		// save datas into LDAP

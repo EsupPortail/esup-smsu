@@ -365,6 +365,15 @@ app.controller('MembershipCtrl', function($scope, h) {
 	$scope.services = services;
     });
 
+    var isPhoneNumberInBlackList = function () {
+	$scope.isPhoneNumberInBlackList = false;
+	if (!$scope.membership.phoneNumber) return;
+
+	h.callRest('membership/isPhoneNumberInBlackList').then(function (is) {
+	    $scope.isPhoneNumberInBlackList = angular.fromJson(is);
+	});
+    };
+
     var set_prev_membership = function () {
 	$scope.membership.prev_validCG = $scope.membership.validCG;
     }
@@ -379,6 +388,7 @@ app.controller('MembershipCtrl', function($scope, h) {
 		$scope.membership.validCG ? "Adhésion enregistrée" : "Résiliation effectuée";
 	    set_prev_membership();
 	    $scope.myForm.$setPristine();
+	    isPhoneNumberInBlackList();
 	});
     };
     
@@ -391,6 +401,7 @@ app.controller('MembershipCtrl', function($scope, h) {
 	membership.validCP = h.array2set(membership.validCP);
 	$scope.membership = membership;
 	set_prev_membership();
+	isPhoneNumberInBlackList();
     });
 });
 

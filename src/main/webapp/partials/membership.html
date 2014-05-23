@@ -19,10 +19,12 @@
     </div>
   </div>
 
-  <div class="form-group">
+  <div class="form-group" ng-class="{'has-error': isPhoneNumberInBlackList && myForm.phoneNumber.$pristine}">
     <label class="col-md-3 control-label" for="phoneNumber">Numéro de téléphone</label>
     <div class="col-md-9">
       <input type="text" name="phoneNumber" ng-model="membership.phoneNumber" maxlength="20" class="form-control">
+
+      <span ng-show="myForm.phoneNumber.$pristine && isPhoneNumberInBlackList" class="help-block">Votre numéro de téléphone est dans la liste noire</span>
     </div>
   </div>
 
