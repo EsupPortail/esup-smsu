@@ -81,6 +81,9 @@ public class MessagesController {
 			@PathParam("id") int messageId,
 			@Context HttpServletRequest request) {			
 		Message message = messageManager.getMessage(messageId, allowedSender(request));
+		if (message == null) {
+			throw new InvalidParameterException("unknow message " + messageId);
+		}
 		if (MessageStatus.SENT.name().equals(message.getStateAsEnum().name())) {
 			return domainService.getMessageStatuses(messageId);
 		}
