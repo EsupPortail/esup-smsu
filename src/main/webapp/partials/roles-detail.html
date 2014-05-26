@@ -35,7 +35,7 @@
     <div class="col-md-9">
 
       <ul class="not-inline multiSelectAvailable">
-	<li ng-repeat="fonction in allFonctions | array_difference:role.fonctions | orderBy:forOrdering">
+	<li ng-repeat="fonction in availableFonctions | orderBy:forOrdering">
 	  <a ng-click="addFonction(fonction)">
 	    {{fonctionText(fonction)}}
 	    <span class="glyphicon glyphicon-plus"></span>

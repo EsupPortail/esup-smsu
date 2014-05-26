@@ -270,11 +270,16 @@ app.controller('RolesDetailCtrl', function($scope, h, $routeParams, $location, $
 	return !role || role === $scope.role;
     };
 
+    function updateAvailableFonctions() {
+	$scope.availableFonctions = h.array_difference($scope.allFonctions, $scope.role.fonctions);
+    }
     $scope.removeFonction = function (fonction) {
 	h.array_remove_elt($scope.role.fonctions, fonction);
+	updateAvailableFonctions();
     };
     $scope.addFonction = function (fonction) {
 	$scope.role.fonctions.push(fonction);
+	updateAvailableFonctions();
     };
 
     var modify = function (method) {
@@ -297,11 +302,13 @@ app.controller('RolesDetailCtrl', function($scope, h, $routeParams, $location, $
 	$scope.name2role = h.array2hash(roles, 'name');
 	if (id === "new") {
 	    $scope.role = { isNew: true, fonctions: [] };
+	    updateAvailableFonctions();
 	} else {
 	    var id2role = h.array2hash(roles, 'id');
 	    if (id in id2role) {
 		$scope.role = id2role[id];
 		$scope.role.fonctions.sort();
+		updateAvailableFonctions();
 	    } else {
 		alert("invalid role " + id);
 	    }
