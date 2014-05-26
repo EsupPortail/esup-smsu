@@ -4,97 +4,15 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd ">
 
-<!-- uncomment this bean if you want to initialize ssl from the application (for a servlet deployment for exemple 
-	<bean id="initSslParameters" class="org.esupportail.smsu.services.client.InitSSLParameters">
-		<property name="trustStore" value="${smsuapi.ws.trustStore}" />
-		<property name="trustStorePassword" value="${smsuapi.ws.trustStorePassword}" />
-		<property name="keyStore" value="${smsuapi.ws.keyStore}" />
-		<property name="keyStorePassword" value="${smsuapi.ws.keyStorePassword}" />
-	</bean>
--->
-
-	<bean id="xfireParams" abstract="true">
-	    <property name="username" value="${smsuapi.ws.basic.auth.username}" />
-	    <property name="password" value="${smsuapi.ws.basic.auth.password}" />
-	    <property name="lookupServiceOnStartup" value="false" />
-	</bean> 
-
-	<bean id="remoteSendTrack" lazy-init="true"
-		class="org.codehaus.xfire.spring.remoting.XFireClientFactoryBean" parent="xfireParams">
-		<property name="serviceClass"
-			value="org.esupportail.smsu.services.client.SendTrack" />
-		<property name="wsdlDocumentUrl" value="${smsuapi.ws.address}/SendTrack?WSDL" />
+	<bean id="httpRequestSmsuapiWS"
+		class="org.esupportail.smsuapi.services.client.HttpRequestSmsuapiWS">
+		<property name="username" value="${smsuapi.ws.basic.auth.username}" />
+		<property name="password" value="${smsuapi.ws.basic.auth.password}" />
+		<property name="url" value="${smsuapi.ws.address}" />
 	</bean>
 
-	<bean id="remoteSendSms" lazy-init="true"
-		class="org.codehaus.xfire.spring.remoting.XFireClientFactoryBean" parent="xfireParams">
-		<property name="serviceClass" value="org.esupportail.smsu.services.client.SendSms" />
-		<property name="wsdlDocumentUrl" value="${smsuapi.ws.address}/SendSms?WSDL" />
-	</bean>
-
-	<bean id="remoteNotificationPhoneNumber" lazy-init="true"
-		class="org.codehaus.xfire.spring.remoting.XFireClientFactoryBean" parent="xfireParams">
-		<property name="serviceClass"
-			value="org.esupportail.smsu.services.client.NotificationPhoneNumberInBlackList" />
-		<property name="wsdlDocumentUrl"
-			value="${smsuapi.ws.address}/NotificationPhoneNumberInBlackList?WSDL" />
-	</bean>
-
-	<bean id="remoteListPhoneNumbers" lazy-init="true"
-		class="org.codehaus.xfire.spring.remoting.XFireClientFactoryBean" parent="xfireParams">
-		<property name="serviceClass"
-			value="org.esupportail.smsu.services.client.ListPhoneNumbersInBlackList" />
-		<property name="wsdlDocumentUrl"
-			value="${smsuapi.ws.address}/ListPhoneNumbersInBlackList?WSDL" />
-	</bean>
-
-
-	<bean id="remoteTestConnexion" lazy-init="true"
-		class="org.codehaus.xfire.spring.remoting.XFireClientFactoryBean" parent="xfireParams">
-		<property name="serviceClass"
-			value="org.esupportail.smsu.services.client.TestConnexion" />
-		<property name="wsdlDocumentUrl" value="${smsuapi.ws.address}/TestConnexion?WSDL" />
-	</bean>
-
-	<bean id="testConnexionClient"
-		class="org.esupportail.smsu.services.client.TestConnexionClient"
+	<bean id="smsuapiWS" class="org.esupportail.smsu.services.client.SmsuapiWS"
 		lazy-init="true">
-		<description>The business layer concerning the client connexion
-			test</description>
-		<property name="remoteService" ref="remoteTestConnexion" />
-	</bean>
-
-
-	<bean id="sendTrackClient" class="org.esupportail.smsu.services.client.SendTrackClient"
-		lazy-init="true">
-		<description>The business layer concerning the client to track sms.
-		</description>
-		<property name="sendTrack" ref="remoteSendTrack" />
-	</bean>
-
-
-	<bean id="sendSmsClient" class="org.esupportail.smsu.services.client.SendSmsClient"
-		lazy-init="true">
-		<description>The business layer concerning the client to send sms.
-		</description>
-		<property name="sendSms" ref="remoteSendSms" />
-	</bean>
-
-	<bean id="notificationPhoneNumberInBlackListClient"
-		class="org.esupportail.smsu.services.client.NotificationPhoneNumberInBlackListClient"
-		lazy-init="true">
-		<description>The business layer concerning the client to send sms.
-		</description>
-		<property name="notificationPhoneNumber" ref="remoteNotificationPhoneNumber" />
-	</bean>
-
-
-	<bean id="listPhoneNumbersInBlackListClient"
-		class="org.esupportail.smsu.services.client.ListPhoneNumbersInBlackListClient"
-		lazy-init="true">
-		<description>The business layer concerning the client to send sms.
-		</description>
-		<property name="listPhoneNumbers" ref="remoteListPhoneNumbers" />
 	</bean>
 
 </beans>

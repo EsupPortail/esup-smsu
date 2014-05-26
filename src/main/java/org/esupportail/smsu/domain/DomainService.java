@@ -29,6 +29,8 @@ import org.esupportail.smsu.dao.beans.Service;
 import org.esupportail.smsu.domain.beans.User;
 import org.esupportail.smsu.services.client.SmsuapiWS;
 import org.esupportail.smsu.services.ldap.LdapUtils;
+import org.esupportail.smsuapi.exceptions.UnknownMessageIdException;
+import org.esupportail.smsuapi.utils.HttpException;
 import org.esupportail.ws.remote.beans.TrackInfos;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -182,11 +184,11 @@ public class DomainService {
     	return dateTemp;
 	   }
     
-	public TrackInfos getMessageStatuses(final Integer msgId) {
+	public TrackInfos getMessageStatuses(final Integer msgId) throws HttpException, UnknownMessageIdException {
 		return smsuapiWS.getMessageStatus(msgId);
 	}
 
-	public Set<String> getListPhoneNumbersInBlackList() {
+	public Set<String> getListPhoneNumbersInBlackList() throws HttpException {
 		return smsuapiWS.getListPhoneNumbersInBlackList();
 	}
 	

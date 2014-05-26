@@ -31,6 +31,8 @@ import org.esupportail.smsu.services.ldap.beans.UserGroup;
 import org.esupportail.smsu.services.smtp.SmtpServiceUtils;
 import org.esupportail.smsu.web.beans.UIMessage;
 import org.esupportail.smsu.web.beans.UINewMessage;
+import org.esupportail.smsuapi.exceptions.UnknownMessageIdException;
+import org.esupportail.smsuapi.utils.HttpException;
 import org.esupportail.ws.remote.beans.TrackInfos;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
@@ -79,7 +81,7 @@ public class MessagesController {
 	@Path("/{id:\\d+}/statuses")
 	public TrackInfos getMessageStatuses(
 			@PathParam("id") int messageId,
-			@Context HttpServletRequest request) {			
+			@Context HttpServletRequest request) throws HttpException, UnknownMessageIdException {			
 		Message message = messageManager.getMessage(messageId, allowedSender(request));
 		if (message == null) {
 			throw new InvalidParameterException("unknow message " + messageId);

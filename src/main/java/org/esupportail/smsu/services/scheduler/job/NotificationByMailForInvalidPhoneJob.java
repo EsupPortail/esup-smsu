@@ -4,6 +4,7 @@ import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.business.NotificationByMailForInvalidPhoneManager;
 import org.esupportail.smsu.services.scheduler.AbstractQuartzJob;
+import org.esupportail.smsuapi.utils.HttpException;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -26,7 +27,11 @@ public class NotificationByMailForInvalidPhoneJob extends AbstractQuartzJob {
 		}
 		
 		final NotificationByMailForInvalidPhoneManager notifForInvalidPhone = (NotificationByMailForInvalidPhoneManager) applicationContext.getBean("notificationByMailForInvalidPhoneManager");
-		notifForInvalidPhone.sendMails();
+		try {
+			notifForInvalidPhone.sendMails();
+		} catch (HttpException e) {
+			logger.error(e);
+		}
 		
 		if (logger.isDebugEnabled()) {
 			logger.debug("End of Quartz task NotificationByMailForInvalidPhoneJob");

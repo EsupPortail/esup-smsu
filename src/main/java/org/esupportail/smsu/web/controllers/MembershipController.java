@@ -14,6 +14,8 @@ import org.esupportail.smsu.business.MemberManager;
 import org.esupportail.smsu.business.beans.Member;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
 import org.esupportail.smsu.exceptions.ldap.LdapWriteException;
+import org.esupportail.smsuapi.exceptions.InsufficientQuotaException;
+import org.esupportail.smsuapi.utils.HttpException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
 
@@ -36,7 +38,7 @@ public class MembershipController {
 	}
 
 	@POST
-	public String save(Member member, @Context HttpServletRequest request) throws LdapUserNotFoundException, LdapWriteException {
+	public String save(Member member, @Context HttpServletRequest request) throws LdapUserNotFoundException, LdapWriteException, HttpException, InsufficientQuotaException {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Save data of a member");
 		}

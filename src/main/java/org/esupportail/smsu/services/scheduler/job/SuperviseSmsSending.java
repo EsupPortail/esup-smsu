@@ -4,6 +4,8 @@ import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.business.SendSmsManager;
 import org.esupportail.smsu.services.scheduler.AbstractQuartzJob;
+import org.esupportail.smsuapi.exceptions.InsufficientQuotaException;
+import org.esupportail.smsuapi.utils.HttpException;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -35,7 +37,13 @@ public class SuperviseSmsSending extends AbstractQuartzJob {
 		
 		final SendSmsManager sendSmsManager = (SendSmsManager) applicationContext.getBean(SEND_SMS_MANAGER_BEAN_NAME);
 		
-		sendSmsManager.sendWaitingForSendingMessage();
+		try {
+			sendSmsManager.sendWaitingForSendingMessage();
+		} catch (HttpException e) {
+			logger.error(e);
+		} catch (InsufficientQuotaException e) {
+			logger.error(e);
+		}
 
 		
 		if (logger.isDebugEnabled()) {

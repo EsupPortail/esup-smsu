@@ -12,6 +12,7 @@ import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
 import org.esupportail.smsu.services.client.SmsuapiWS;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.services.smtp.SmtpServiceUtils;
+import org.esupportail.smsuapi.utils.HttpException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -30,8 +31,9 @@ public class NotificationByMailForInvalidPhoneManager {
 	/**
 	 * Get list of phone numbers in blacklist.
 	 * @return return set of phone numbers 
+	 * @throws HttpException 
 	 */
-	private Set<String> getListePhoneNumberInBlackList() {
+	private Set<String> getListePhoneNumberInBlackList() throws HttpException {
 		return smsuapiWS.getListPhoneNumbersInBlackList(); 
 	}
 	
@@ -65,8 +67,9 @@ public class NotificationByMailForInvalidPhoneManager {
 	/**
 	 * sendMails method called by Quartz task.
 	 * @return
+	 * @throws HttpException 
 	 */
-	public void sendMails() {
+	public void sendMails() throws HttpException {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Enter to sendMails method");
 		}

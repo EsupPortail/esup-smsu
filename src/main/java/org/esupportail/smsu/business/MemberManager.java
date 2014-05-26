@@ -17,6 +17,8 @@ import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
 import org.esupportail.smsu.exceptions.ldap.LdapWriteException;
 import org.esupportail.smsu.services.client.SmsuapiWS;
 import org.esupportail.smsu.services.ldap.LdapUtils;
+import org.esupportail.smsuapi.exceptions.InsufficientQuotaException;
+import org.esupportail.smsuapi.utils.HttpException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.StringUtils;
@@ -94,8 +96,10 @@ public class MemberManager {
 	 * send a code by sms to the given phone number.
 	 * @param code
 	 * @param memberPhoneNumber
+	 * @throws InsufficientQuotaException 
+	 * @throws HttpException 
 	 */
-	private void sendCodeBySMS(final String code, final String memberPhoneNumber) {
+	private void sendCodeBySMS(final String code, final String memberPhoneNumber) throws HttpException, InsufficientQuotaException {
 			logger.debug("Send the sms to " + memberPhoneNumber
 					+ " containing the validation code " + code);
 
@@ -151,7 +155,7 @@ public class MemberManager {
 		return acc;
 	}
 
-	private void sendCodeBySMSAndAddPendingMember(final Member member) {
+	private void sendCodeBySMSAndAddPendingMember(final Member member) throws HttpException, InsufficientQuotaException {
 		String code = generateValidationCode();
 		// send the code to this member
 		sendCodeBySMS(code, member.getPhoneNumber());
@@ -243,8 +247,10 @@ public class MemberManager {
 	 * @param member
 	 * @throws LdapUserNotFoundException 
 	 * @throws LdapWriteException 
+	 * @throws InsufficientQuotaException 
+	 * @throws HttpException 
 	 */
-	public boolean saveOrUpdateMember(final Member member) throws LdapUserNotFoundException, LdapWriteException {
+	public boolean saveOrUpdateMember(final Member member) throws LdapUserNotFoundException, LdapWriteException, HttpException, InsufficientQuotaException {
 		logger.debug("Save a member ");
 		boolean numberPhoneChanged = savePhoneNumber(member);
 
@@ -306,8 +312,9 @@ public class MemberManager {
 	 * Test if a phone number is already in the black list.
 	 * @param phoneNumber
 	 * @return return true if the phone number is in the bl, false otherwise
+	 * @throws HttpException 
 	 */
-	public boolean isPhoneNumberInBlackList(final String phoneNumber) {
+	public boolean isPhoneNumberInBlackList(final String phoneNumber) throws HttpException {
 			logger.debug("Request in memberManager : " + phoneNumber);
 		Boolean retVal = smsuapiWS.isPhoneNumberInBlackList(phoneNumber); 
 			logger.debug("Response return in memberManager for : " 

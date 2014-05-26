@@ -13,7 +13,6 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.text.DateFormat;
-import java.lang.reflect.UndeclaredThrowableException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -39,10 +38,7 @@ import org.esupportail.smsu.dao.beans.Template;
 import org.esupportail.smsu.domain.beans.User;
 import org.esupportail.smsu.domain.beans.mail.MailStatus;
 import org.esupportail.smsu.domain.beans.message.MessageStatus;
-import org.esupportail.smsu.exceptions.BackOfficeUnrichableException;
 import org.esupportail.smsu.exceptions.CreateMessageException;
-import org.esupportail.smsu.exceptions.InsufficientQuotaException;
-import org.esupportail.smsu.exceptions.UnknownIdentifierApplicationException;
 import org.esupportail.smsu.exceptions.CreateMessageException.EmptyGroup;
 import org.esupportail.smsu.services.UrlGenerator;
 import org.esupportail.smsu.services.client.SmsuapiWS;
@@ -53,9 +49,11 @@ import org.esupportail.smsu.services.smtp.SmtpServiceUtils;
 import org.esupportail.smsu.web.beans.MailToSend;
 import org.esupportail.smsu.web.beans.UINewMessage;
 import org.esupportail.smsu.web.controllers.InvalidParameterException;
+import org.esupportail.smsuapi.exceptions.InsufficientQuotaException;
+import org.esupportail.smsuapi.services.client.SmsuapiWS.AuthenticationFailedException;
+import org.esupportail.smsuapi.utils.HttpException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
-
 
 
 public class SendSmsManager  {
@@ -171,7 +169,7 @@ public class SendSmsManager  {
 				sendApprovalMailToSupervisors(message, request);
 			else 
 				maySendMessageInBackground(message);
-		} catch (UnknownIdentifierApplicationException e) {
+		} catch (AuthenticationFailedException e) {
 			message.setStateAsEnum(MessageStatus.WS_ERROR);
 			daoService.updateMessage(message);
 			logger.error("Application unknown", e);
@@ -181,7 +179,7 @@ public class SendSmsManager  {
 			daoService.updateMessage(message);
 			logger.error("Quota error", e);
 			throw new CreateMessageException.WebServiceInsufficientQuota(e);
-		} catch (BackOfficeUnrichableException e) {
+		} catch (HttpException e) {
 			message.setStateAsEnum(MessageStatus.WS_ERROR);
 			daoService.updateMessage(message);
 			throw new CreateMessageException.BackOfficeUnreachable(e);
@@ -190,8 +188,10 @@ public class SendSmsManager  {
 
 	/**
 	 * Used to send message in state waiting_for_sending.
+	 * @throws InsufficientQuotaException 
+	 * @throws HttpException 
 	 */
-	public void sendWaitingForSendingMessage() {
+	public void sendWaitingForSendingMessage() throws HttpException, InsufficientQuotaException {
 		// get all message ready to be sent
 		final List<Message> messageList = daoService.getMessagesByState(MessageStatus.WAITING_FOR_SENDING);
 
@@ -327,7 +327,7 @@ public class SendSmsManager  {
 	}
 
 
-	private void maySendMessageInBackground(final Message message) throws BackOfficeUnrichableException, UnknownIdentifierApplicationException, InsufficientQuotaException {
+	private void maySendMessageInBackground(final Message message) throws HttpException, InsufficientQuotaException {
 		checkBackOfficeQuotas(message);
 
 		// message is ready to be sent to the back office
@@ -761,8 +761,10 @@ public class SendSmsManager  {
 	/**
 	 * Send the customized message to the back office.
 	 * @param customizedMessage
+	 * @throws InsufficientQuotaException 
+	 * @throws HttpException 
 	 */
-	private void sendCustomizedMessages(final CustomizedMessage customizedMessage) {
+	private void sendCustomizedMessages(final CustomizedMessage customizedMessage) throws HttpException, InsufficientQuotaException {
 		final Integer messageId = customizedMessage.getMessageId();
 		final Integer senderId = customizedMessage.getSenderId();
 		final Integer groupSenderId = customizedMessage.getGroupSenderId();
@@ -826,19 +828,17 @@ public class SendSmsManager  {
 	}
 	/**
 	 * @return quotasOk
+	 * @throws InsufficientQuotaException 
+	 * @throws HttpException 
 	 */ 
-	private void checkBackOfficeQuotas(final Message message)
-	throws BackOfficeUnrichableException, UnknownIdentifierApplicationException,
-	InsufficientQuotaException {
+	private void checkBackOfficeQuotas(final Message message) throws HttpException, InsufficientQuotaException {
 		/////check the quotas with the back office/////
 		Integer nbToSend = message.getRecipients().size();
 		String accountLabel = message.getAccount().getLabel();
 		checkBackOfficeQuotas(nbToSend, accountLabel);
 	}
 
-	private void checkBackOfficeQuotas(final Integer nbToSend, final String accountLabel) 
-	throws BackOfficeUnrichableException, UnknownIdentifierApplicationException,
-	InsufficientQuotaException {
+	private void checkBackOfficeQuotas(final Integer nbToSend, final String accountLabel) throws HttpException, InsufficientQuotaException {
 		try {
 			if (logger.isDebugEnabled()) {
 				logger.debug("Request for WS SendSms method mayCreateAccountCheckQuotaOk with parameters \n" 
@@ -852,17 +852,16 @@ public class SendSmsManager  {
 				logger.debug("checkQuotaOk: quota is ok to send all our messages"); 
 			}
 
-		} catch (UndeclaredThrowableException e) {
-			String msg = checkWhySmsuapiFailed(e.getCause());
-			throw new BackOfficeUnrichableException(msg);
+		} catch (HttpException.Unreachable e) {
+			checkWhySmsuapiFailed(e.getCause());
+			throw e;
 		}
 	}
 
-	public String checkWhySmsuapiFailed(Throwable cause) {
+	public void checkWhySmsuapiFailed(Throwable cause) {
 		org.esupportail.smsu.services.ssl.InspectKeyStore inspect = new org.esupportail.smsu.services.ssl.InspectKeyStore();
 		inspect.inspectTrustStore();
 		logger.error("Unable to connect to smsuapi back office : " + cause);
-		return null;
 	}
 
 	/**
