@@ -21,7 +21,6 @@
 	  <property name="locations" > 
 	      <list>
 	      	<value>classpath:/properties/config.properties</value>
-	      	<value>classpath:/properties/version.properties</value>
 	      </list>
 	  </property>
 	</bean>
@@ -38,7 +37,6 @@
 	<import resource="i18n/i18n.xml" />
 	<import resource="ldap/ldap.xml" />
 	<import resource="group/group.xml" />
-	<import resource="misc/application.xml" />
 	<import resource="smtp/smtp.xml" />
 	<import resource="init/init.xml" />
 	<import resource="scheduler/scheduler.xml" /> 
