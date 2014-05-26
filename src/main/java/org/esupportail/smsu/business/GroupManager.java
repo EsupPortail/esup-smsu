@@ -28,6 +28,7 @@ import org.esupportail.smsu.dao.beans.Account;
 import org.esupportail.smsu.dao.beans.CustomizedGroup;
 import org.esupportail.smsu.dao.beans.Person;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
+import org.esupportail.smsu.services.GroupUtils;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.web.beans.UICustomizedGroup;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,7 @@ public class GroupManager {
 	
 	@Autowired private DaoService daoService;
 	@Autowired private LdapUtils ldapUtils;
+	@Autowired private GroupUtils groupUtils;
 
 	private final Logger logger = new LoggerImpl(getClass());
 
@@ -89,7 +91,7 @@ public class GroupManager {
 		result.account = group.getAccount().getLabel();
 		result.supervisors = convertToUI(group.getSupervisors());
 		result.labelIsUserId= ldapUtils.mayGetLdapUserByUid(group.getLabel()) != null;
-		result.displayName = ldapUtils.getGroupDisplayName(group);
+		result.displayName = groupUtils.getGroupDisplayName(group);
 		return result;
 	}
 	

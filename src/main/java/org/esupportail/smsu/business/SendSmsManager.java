@@ -3,12 +3,10 @@ package org.esupportail.smsu.business;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -40,6 +38,7 @@ import org.esupportail.smsu.domain.beans.mail.MailStatus;
 import org.esupportail.smsu.domain.beans.message.MessageStatus;
 import org.esupportail.smsu.exceptions.CreateMessageException;
 import org.esupportail.smsu.exceptions.CreateMessageException.EmptyGroup;
+import org.esupportail.smsu.services.GroupUtils;
 import org.esupportail.smsu.services.UrlGenerator;
 import org.esupportail.smsu.services.client.SmsuapiWS;
 import org.esupportail.smsu.services.ldap.LdapUtils;
@@ -63,6 +62,7 @@ public class SendSmsManager  {
 	@Autowired private SmsuapiWS smsuapiWS;
 	@Autowired private SmtpServiceUtils smtpServiceUtils;
 	@Autowired private LdapUtils ldapUtils;
+	@Autowired private GroupUtils groupUtils;
 	@Autowired private SchedulerUtils schedulerUtils;
 	@Autowired private UrlGenerator urlGenerator;
 	@Autowired private ContentCustomizationManager customizer;
@@ -273,7 +273,7 @@ public class SendSmsManager  {
 			textBodyParam3 = urlGenerator.goTo(request, "/approvals");
 		}
 		String senderName = ldapUtils.getUserDisplayName(message.getSender());
-		String cGroupName = ldapUtils.getGroupDisplayName(cGroup);
+		String cGroupName = groupUtils.getGroupDisplayName(cGroup);
 		String subject = getI18nString(subjectKey, senderName);
 		String textBody = getI18nString(textBodyKey, cGroupName,
 						i18nMsgDate(message), i18nMsgTime(message), textBodyParam3);
@@ -606,54 +606,13 @@ public class SendSmsManager  {
 	 * @return the user list.
 	 */
 	public List<LdapUser> getUsersByGroup(final String groupId, String serviceKey) {
-		return ldapUtils.getMembers(groupId, serviceKey);
-	}
+		logger.debug("Search users for group [" + groupId + "]");
 
+		List<String> uids = groupUtils.getMemberIds(groupId);
 
-	/**
-	 * @param groupHierarchy
-	 * @param serviceKey 
-	 * @return the list of the unique sub-members of a group (recursive)
-	 */
-	@SuppressWarnings({ "null", "unused" }) // TODO
-	private List<LdapUser> getMembers(final PortalGroupHierarchy groupHierarchy, String serviceKey) {
-		final PortalGroup currentGroup = groupHierarchy.getGroup();
-		if (logger.isDebugEnabled()) {
-			logger.debug("Search users for subgroup [" + currentGroup.getName()
-				     + "] [" + currentGroup.getId() + "]");
-		}
-
-		List<LdapUser> members = null; //TODO getMembersNonRecursive(currentGroup, serviceKey);
-		if (!members.isEmpty()) return members;
-
-		// hum, the group is empty, it may mean that the group is using RegexTester.
-		// so recurse on sub-groups, hoping that we do not miss members doing so /o\
-
-		List<PortalGroupHierarchy> childs = groupHierarchy.getSubHierarchies();
-		if (childs != null) {
-			for (PortalGroupHierarchy child : childs)
-				members = mergeUserLists(members, getMembers(child, serviceKey));
-		}
-
-		return members;
-	}
-
-	/**
-	 * @param source
-	 * @param toMerge
-	 * @return the merged list
-	 */
-	private List<LdapUser> mergeUserLists(final List<LdapUser> source, final List<LdapUser> toMerge) {
-		final List<LdapUser> finalList = source;
-		for (LdapUser sToMerge : toMerge) {
-			if (!finalList.contains(sToMerge)) {
-				finalList.add(sToMerge);
-				if (logger.isDebugEnabled()) {
-					logger.debug("Element [" + sToMerge + "] merged to the source list");
-				}
-			}
-		}
-		return finalList;
+		List<LdapUser> users = ldapUtils.getConditionFriendlyLdapUsersFromUid(uids, serviceKey);
+		logger.debug("found " + uids.size() + " users in group " + groupId + " and " + users.size() + " users having pager+CG");
+		return users;
 	}
 
 	/**
@@ -897,15 +856,10 @@ public class SendSmsManager  {
 
 	
 	public List<UserGroup> getUserGroupLeaves(String uid) {
-		Map<String, UserGroup> idToGroup = new HashMap<String, UserGroup>();
-		List<UserGroup> groups = ldapUtils.getUserGroupsByUid(uid);
-		// add a simple user with group id = user's id
-		groups.add(new UserGroup(uid, ldapUtils.getUserDisplayName(uid)));
-		for (UserGroup group : groups)
-			idToGroup.put(group.id, group);
 		List<UserGroup> l = new LinkedList<UserGroup>();
-		for (String id : keepGroupLeaves(idToGroup.keySet())) {
-			l.add(idToGroup.get(id));
+		for (UserGroup group : groupUtils.getUserGroupsPlusSelfGroup(uid)) {
+		    if (getCustomizedGroupByLabel(group.id) != null)
+		    	l.add(group);
 		}
 		return l;
 	}

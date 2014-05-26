@@ -15,12 +15,14 @@ import org.esupportail.smsu.exceptions.CreateMessageException;
 import org.esupportail.smsu.exceptions.CreateMessageException.UnknownCustomizedTag;
 import org.esupportail.smsu.exceptions.CreateMessageException.CustomizedTagValueNotFound;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
+import org.esupportail.smsu.services.GroupUtils;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class ContentCustomizationManager {
 
 	@Autowired private LdapUtils ldapUtils;
+	@Autowired private GroupUtils groupUtils;
 
 	/**
 	 * defaultNotFoundData.
@@ -152,7 +154,7 @@ public class ContentCustomizationManager {
 
 	private String expGroupName(final BasicGroup expGroupName) {
 		// a sending group can be a user name
-		String groupName = ldapUtils.getGroupDisplayName(expGroupName);
+		String groupName = groupUtils.getGroupDisplayName(expGroupName);
 		 
 		if (logger.isDebugEnabled()) {
 			logger.debug("Group name used :" + groupName);

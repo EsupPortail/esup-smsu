@@ -37,6 +37,7 @@
  	<import resource="client/client.xml" />
 	<import resource="i18n/i18n.xml" />
 	<import resource="ldap/ldap.xml" />
+	<import resource="group/group.xml" />
 	<import resource="misc/application.xml" />
 	<import resource="smtp/smtp.xml" />
 	<import resource="init/init.xml" />

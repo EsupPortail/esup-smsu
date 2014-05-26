@@ -21,6 +21,7 @@ import org.esupportail.smsu.dao.beans.Message;
 import org.esupportail.smsu.dao.beans.Person;
 import org.esupportail.smsu.dao.beans.Recipient;
 import org.esupportail.smsu.domain.beans.message.MessageStatus;
+import org.esupportail.smsu.services.GroupUtils;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.web.beans.UIMessage;
 import org.esupportail.smsu.web.controllers.InvalidParameterException;
@@ -31,6 +32,7 @@ public class MessageManager {
 
 	@Autowired private DaoService daoService;
 	@Autowired private LdapUtils ldapUtils;
+	@Autowired private GroupUtils groupUtils;
 	
 	private final Logger logger = new LoggerImpl(getClass());
 
@@ -144,7 +146,7 @@ public class MessageManager {
 
 	private String retreiveNiceGroupName(BasicGroup recipientGroup) {
 		return recipientGroup != null ?
-			ldapUtils.getGroupDisplayName(recipientGroup) : null;
+			groupUtils.getGroupDisplayName(recipientGroup) : null;
 	}
 
 	private String convertToUI(MessageStatus messageStatus) {

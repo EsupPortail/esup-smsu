@@ -1,9 +1,7 @@
 package org.esupportail.smsu.business;
 
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.esupportail.commons.services.logging.Logger;
@@ -11,7 +9,7 @@ import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.dao.DaoService;
 import org.esupportail.smsu.dao.beans.CustomizedGroup;
 import org.esupportail.smsu.dao.beans.Fonction;
-import org.esupportail.smsu.services.ldap.beans.UserGroup;
+import org.esupportail.smsu.services.GroupUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -21,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class SecurityManager {
 	@Autowired private DaoService daoService;
+	@Autowired private GroupUtils groupUtils;
 
 	private final Logger logger = new LoggerImpl(getClass());
 
@@ -37,7 +36,7 @@ public class SecurityManager {
 		Set<String> fonctions = new HashSet<String>();
 		logger.debug("parameter login in loadUserRightsByUsername method is: " + login);
 		
-		for (CustomizedGroup grp : getCustomizedGroups(login)) {
+		for (CustomizedGroup grp : groupUtils.getCustomizedGroups(login)) {
 				logger.debug("group label in loadUserRightsByUsername method is: " + grp.getLabel());
 				addFonctions(fonctions, grp.getRole().getFonctions());
 		}
@@ -49,30 +48,6 @@ public class SecurityManager {
 				logger.debug("parameter fct in addFonction method is: " + fct);
 				fonctions.add(fct.getName());
 		}
-	}
-
-	private List<UserGroup> getUserGroupsPlusSelfGroup(String login) {
-		List<UserGroup> groups = new ArrayList<UserGroup>();
-		try {
-		    //TODO groups = ldapUtils.getUserGroupsByUid(login);
-		} catch (Exception e) {
-		    logger.debug("" + e, e); // nb: exception already logged in SmsuCachingUportalServiceImpl
-		    // go on, things can still work using only the self group
-		}
-		UserGroup selfGroup = new UserGroup(login, login);
-		groups.add(selfGroup);
-		return groups;
-	}
-	
-	private List<CustomizedGroup> getCustomizedGroups(String login) {
-		List<CustomizedGroup> l = new ArrayList<CustomizedGroup>();
-
-		for (UserGroup group : getUserGroupsPlusSelfGroup(login)) {
-			logger.debug("group login is: " + group.id);
-			CustomizedGroup grp = daoService.getCustomizedGroupByLabel(group.id);
-			if (grp != null) l.add(grp);
-		}
-		return l;
 	}
 	
 }

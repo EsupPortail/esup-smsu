@@ -13,8 +13,6 @@ import org.esupportail.commons.services.ldap.LdapUserAndGroupService;
 import org.esupportail.commons.services.ldap.LdapAttributesModificationException;
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
-import org.esupportail.smsu.dao.beans.BasicGroup;
-import org.esupportail.smsu.dao.beans.CustomizedGroup;
 import org.esupportail.smsu.dao.beans.Person;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
 import org.esupportail.smsu.exceptions.ldap.LdapWriteException;
@@ -471,28 +469,6 @@ public class LdapUtils {
 	public List<UserGroup> searchGroupsByName(final String token) {
 		return convertToUserGroups(ldapGroupService.getLdapGroupsFromToken(token));
 	}
-	
-	public String getGroupDisplayName(CustomizedGroup cg) {
-		return getGroupDisplayName(cg.getLabel());
-	}
-	public String getGroupDisplayName(BasicGroup cg) {
-		return getGroupDisplayName(cg.getLabel());
-	}
-	
-	/**
-	 * Retrieve the group by id.
-	 * @param id : group identifier
-	 * @return the group name
-	 */
-        public String getGroupDisplayName(final String id) {
-		String displayName;
-		try {
-			displayName = getUserDisplayNameByUserUid(id);
-		} catch (LdapUserNotFoundException e) {
-			displayName = getGroupNameByIdOrNull(id);
-		}
-		return displayName != null ? displayName : id;
-	}
 
 	public String getUserDisplayName(final Person p) {
 		return getUserDisplayName(p.getLogin());
@@ -560,13 +536,9 @@ public class LdapUtils {
 	public LdapGroup getLdapGroup(final String id) {
 		return ldapGroupService.getLdapGroup(id);
 	}
-	
-	public List<LdapUser> getMembers(final String groupId, String serviceKey) {
-		logger.debug("Search users for group [" + groupId + "]");
-		List<String> uids = ldapService.getMemberIds(ldapGroupMembersService.getLdapGroup(groupId));
-		List<LdapUser> users = ldapUtilsHelpers.getConditionFriendlyLdapUsersFromUid(uids, completeCgKeyName(), serviceKey);
-		logger.debug("found " + uids.size() + " users in group " + groupId + " and " + users.size() + " users having pager+CG");
-		return users;
+
+	public List<String> getMemberIds(String groupId) {
+		return ldapService.getMemberIds(ldapGroupMembersService.getLdapGroup(groupId));
 	}
 	
 	/**
