@@ -378,10 +378,7 @@ this.searchUser = function (token, extraParams) {
     }
 
     var params = angular.extend({ token: token }, extraParams);
-    return h.callRest('users/search', params)
-	    .then(function (id2name) {
-		return hash2array(id2name);
-	    });
+    return h.callRest('users/search', params);
 };
 
 this.searchGroup = function (token) {
@@ -392,6 +389,15 @@ this.searchGroup = function (token) {
     return h.callRest('groups/search', { token: token });
 };
 
+this.get_noSMS = function (user, extraParams) {
+    var params = angular.extend({ id: user.id }, extraParams);
+    h.callRest('users/search', params)
+	.then(function (users) {
+	    var id2users = h.array2hash(users, 'id');
+	    user.noSMS = id2users[user.id] ? id2users[user.id].noSMS : true;
+	    if (!user.noSMS) console.log(user.id + ' has no SMS');
+	});
+}
 
 });
 

@@ -526,6 +526,9 @@ app.controller('SendCtrl', function($scope, h, $location) {
     };
 
     $scope.addDestLogin = function () {
+	if ($scope.wsgroupsURL) {
+	    h.get_noSMS($scope.wip.login, { service: $scope.msg.serviceKey });
+	}
 	$scope.msg.destLogins.push($scope.wip.login);
 	$scope.wip.login = null;
     };
