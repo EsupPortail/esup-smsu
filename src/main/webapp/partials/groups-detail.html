@@ -16,12 +16,21 @@
 
   <div class="form-group" ng-class="{'has-error': submitted && myForm.label.$invalid}">
     <label class="col-md-3 control-label" for="label">Nom</label>
-    <div class="col-md-9">
+    <div class="col-md-9" ng-switch on="groupOrUser">
 
-      <input type="text" name="label" ng-model="wip.label" class="form-control"
-	     typeahead="e as e.name for e in searchUserOrGroup(groupOrUser, $viewValue)" 
-	     typeahead-on-select="setLabel(wip.label)"
+	<div my-autocomplete="user" ng-switch-when="user"
+	     name="label" ng-model="wip.label" class="form-control"
+	     do-search="searchUser($viewValue)" 
+	     on-select="setLabel()"
 	     >
+	</div>
+
+	<div my-autocomplete="group" ng-switch-when="group"
+	     name="label" ng-model="wip.label" class="form-control"
+	     do-search="searchGroup($viewValue)" 
+	     on-select="setLabel()"
+	     >
+	</div>
 
       <!--input type="text" name="label" ng-model="group.label" my-validator="{ unique: checkUniqueLabel }" required maxlength="30" class="form-control"-->
       <span ng-show="submitted && myForm.label.$error.required" class="help-block">Required</span>

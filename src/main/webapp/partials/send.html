@@ -34,18 +34,20 @@
     <div class="col-md-9" ng-switch on="recipientType">
 
       <div ng-switch-when="SMS_ENVOI_ADH">
-	<input type="text" ng-model="wip.login" class="form-control"
-	     typeahead="e as e.name for e in searchUser($viewValue)" 
-	     typeahead-on-select="addDestLogin()"
+	<div my-autocomplete="user" ng-model="wip.login" class="form-control"
+	     do-search="searchUser($viewValue)" 
+	     on-select="addDestLogin()"
 	     >
+	</div>
 	<span ng-show="wip.logins.length === 0" class="has-error"><span class="help-block">No match</span></span>
       </div>
 
       <div ng-switch-when="SMS_ENVOI_GROUPES">
-	<input type="text" ng-model="wip.group" class="form-control"
-	     typeahead="e as e.name for e in searchGroup($viewValue)" 
-	     typeahead-on-select="addDestGroup()"
+	<div my-autocomplete="group" ng-model="wip.group" class="form-control"
+	     do-search="searchGroup($viewValue)" 
+	     on-select="addDestGroup()"
 	     >
+	</div>
 	<span ng-show="wip.groups.length === 0" class="has-error"><span class="help-block">No match</span></span>
       </div>
 

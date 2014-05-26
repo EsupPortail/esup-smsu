@@ -16,6 +16,7 @@ app.controller('MainCtrl', function($scope, h, $route, $parse, routes, globals) 
 
     $scope.getTemplateUrl = h.getTemplateUrl;
     $scope.allowLogout = false;//!globals.isWebWidget;
+    $scope.wsgroupsURL = globals.wsgroupsURL;
 
     $scope.$watch('loggedUser', function () {
 	$scope.mainVisibleTabs = $.grep(routes.routes, function(e) { 
@@ -86,13 +87,13 @@ app.controller('GroupsDetailCtrl', function($scope, h, $routeParams, $location) 
     updateCurrentTabTitle();
     $scope.$watch('group.label', updateCurrentTabTitle);
 
-    $scope.searchUserOrGroup = function (userOrGroup, token) {
-	return userOrGroup === 'user' ? h.searchUser(token) : h.searchGroup(token);
-    };
+    $scope.searchUser = h.searchUser;
+    $scope.searchGroup = h.searchGroup;
 
-    $scope.setLabel = function (e) {
-	$scope.group.label = e.id;
-	$scope.group.displayName = e.name;
+    $scope.setLabel = function () {
+	var e = $scope.wip.label;
+	$scope.group.label = e.value || e.id;
+	$scope.group.displayName = e.label || e.name;
 	$scope.myForm.label.$setValidity('unique', $scope.checkUniqueLabel(e.id));
     };
 
@@ -158,7 +159,6 @@ app.controller('GroupsCtrl', function($scope, h) {
 		return false;
 	    }
 	});
-	console.log($scope.groups);
     }
 
     h.getRoles().then(function (roles) {

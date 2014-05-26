@@ -8,10 +8,10 @@ Veuillez utiliser la barre de navigation
  <div ng-if="!impersonatedUser && loggedUser.can.FCTN_GESTION_ROLES_AFFECT">
    Impersonate
 
-   <input type="text" ng-model="wip.impersonate" class="form-control"
-	  typeahead="e.id as e.name for e in searchUser($viewValue)" 
-	  typeahead-on-select="impersonate(wip.impersonate)"
-	  >
+   <div my-autocomplete="user" ng-model="wip.impersonate" class="form-control"
+	  do-search="searchUser($viewValue)" 
+	  on-select="impersonate(wip.impersonate.id)"
+	></div>
 
    <a ng-click="impersonate('sender1')">impersonate sender1</a>
    <a ng-click="impersonate('sender2')">impersonate sender2</a>

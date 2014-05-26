@@ -42,4 +42,52 @@ app.directive('myValidator', function () {
    };
 });
 
+app.directive('autocompleteUserOrGroup', function (globals) {
+  var searchUserURL = globals.wsgroupsURL + '/searchUserCAS';
+  var searchGroupURL = globals.wsgroupsURL + '/searchGroup';
+  return {
+    restrict: 'A',
+    require: 'ngModel',
+    link: function (scope, el, attr, ngModel) {
+	var select = function (event, ui) {
+	    // NB: this event is called before the selected value is set in the "input"
+
+	    ui.item.id = ui.item.value;
+	    ui.item.name = ui.item.label;
+
+	    $(el).val(ui.item.label);
+
+            scope.$apply(function () {
+                ngModel.$setViewValue(ui.item);
+            });
+	    scope.$apply(attr.onSelect);
+	    return false;
+        };
+	var params = { select: select };
+	if (attr.autocompleteUserOrGroup === 'user') {
+            $(el).autocompleteUser(searchUserURL, params);
+	} else {
+            $(el).autocompleteGroup(searchGroupURL, params);
+	}
+    }
+  };
+});
+
+app.directive('myAutocomplete', function (globals) {
+  return {
+    restrict: 'A',
+    replace: true,
+    // the scope could be the following (can't work for ng-model, so simple dynamic templating is used)
+    //scope: { onSelect: '&', doSearch: '&', ng-model: '=' },
+    template: function(element, attrs) {
+	if (globals.wsgroupsURL) {
+	    return '<input type="text" autocomplete-user-or-group="' + attrs.myAutocomplete + '">';
+	} else {
+	    var typeahead = 'e as e.name for e in ' + attrs.doSearch;
+            return '<input type="text" typeahead="' + typeahead + '" typeahead-on-select="' + attrs.onSelect + '" >';
+	}
+    }
+  };
+});
+
 })();
