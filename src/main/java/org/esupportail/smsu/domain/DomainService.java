@@ -1,6 +1,5 @@
 /**
- * ESUP-Portail esup-smsu - Copyright (c) 2006-2012 ESUP-Portail consortium
- * http://sourcesup.cru.fr/projects/esup-smsu
+ * SMS-U - Copyright (c) 2009-2014 Universite Paris 1 Pantheon-Sorbonne
  */
 package org.esupportail.smsu.domain;
 
