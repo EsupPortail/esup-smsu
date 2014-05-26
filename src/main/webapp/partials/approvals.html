@@ -6,7 +6,7 @@
 </div>
 
 <div ng-repeat="msg in approvals">
-  Le {{msg.date | date:"dd/MM/yyyy à HH:mm"}}, {{msg.senderName || msg.senderLogin}} a souhaité envoyer
+  Le {{msg.date | date:"dd/MM/yyyy à HH:mm"}}, {{msg.senderName || msg.senderLogin}} souhaite envoyer
   le message suivant à {{msg.nbRecipients}} personne(s).
 
   <blockquote><p>

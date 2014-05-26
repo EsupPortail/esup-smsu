@@ -16,10 +16,11 @@
   </div>
 
  <div class="form-group">
-    <label class="col-md-3 control-label" for="fonctions">Fonctions</label>
+    <label class="col-md-3 control-label" for="fonctions">Fonctions choisies</label>
     <div class="col-md-9">
 
-      <ul class="not-inline multiSelectSelected">
+      <p class="form-control-static" ng-if="role.fonctions.length === 0">aucune</p>
+      <ul class="not-inline multiSelectSelected"  ng-if="role.fonctions.length > 0">
 	<li ng-repeat="fonction in role.fonctions | orderBy:forOrdering">
 	  <a ng-click="removeFonction(fonction)">
 	    {{fonctionText(fonction)}}
@@ -30,8 +31,8 @@
     </div>
   </div>
 
- <div class="form-group">
-    <label class="col-md-3 control-label" for="fonctions">Fonctions disponibles</label>
+ <div class="form-group" ng-show="availableFonctions">
+    <label class="col-md-3 control-label" for="fonctions">Ajouter des fonctions</label>
     <div class="col-md-9">
 
       <ul class="not-inline multiSelectAvailable">
