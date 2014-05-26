@@ -46,7 +46,7 @@ public class UsersController {
 		else if (token != null)
 			return searchLdapUser(token, serviceKey);
 		else
-			throw new InvalidParameterException("missing param uid or ldapFilter");
+			throw new InvalidParameterException("missing param 'token' or 'id' or 'ldapFilter'");
 	}
 	
 	private Map<String, String> searchLdapUser(String token, String serviceKey) {
