@@ -250,17 +250,6 @@
 		  <version>2.0.8</version>
 		</dependency>
 
-		<!-- for exception org.apache.axis.AxisFault in SmsuCachingUportalServiceImpl  -->
-		<dependency>
-		  <groupId>axis</groupId>
-		  <artifactId>axis</artifactId>
-		  <version>1.2.1</version>
-		  <exclusions>
-		    <exclusion> <groupId>javax.activation</groupId> <artifactId>activation</artifactId> </exclusion>
-		    <exclusion> <groupId>javax.mail</groupId> <artifactId>mail</artifactId> </exclusion>
-		  </exclusions>
-		</dependency>
-
 		<dependency>
 		  <groupId>junit</groupId>
 		  <artifactId>junit</artifactId>
