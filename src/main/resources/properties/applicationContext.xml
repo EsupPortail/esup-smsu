@@ -38,7 +38,6 @@
 	<import resource="ldap/ldap.xml" />
 	<import resource="group/group.xml" />
 	<import resource="smtp/smtp.xml" />
-	<import resource="init/init.xml" />
 	<import resource="scheduler/scheduler.xml" /> 
 	<import resource="web/controllers.xml" />
 
