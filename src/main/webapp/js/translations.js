@@ -46,6 +46,10 @@ app.config(function ($translateProvider) {
       MSG_STATE_WAITING_FOR_APPROVAL : "En approbation",
       MSG_STATE_WAITING_FOR_SENDING : "En attente d'envoi",
 
+      MSG_MAIL_STATE_SENT	: "Envoyé",
+      MSG_MAIL_STATE_WAITING	: "En attente",
+      MSG_MAIL_STATE_ERROR	: "Erreur",
+
       SMS_ENVOI_LISTE_NUM_TEL   : "Liste de numéros de téléphone",
       SMS_ENVOI_GROUPES         : "Groupe d'utilisateurs",
       SMS_ENVOI_ADH             : "Utilisateur adhérent",
