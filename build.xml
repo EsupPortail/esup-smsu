@@ -170,33 +170,6 @@
 	    </webApp>
 	  </jetty>
 	</target>
-	
-	<target name="_dist" description="build ZIP archives" >
-
-		<property file="src/main/resources/properties/version.properties" />
-		<property name="dist.dir" value="dist"/>
-		<property name="zip.file" value="${dist.dir}/${app.name}-${app.versionMajorNumber}.${app.versionMinorNumber}.${app.versionUpdate}-${app.release}.zip"/>
-
-		<property name="app.zip-files.exclude" value="" />
-		<property name="app.zip-files.include" value="
-		build.properties
-		build.xml
-		src/main/resources/properties/**/*.*
-		src/main/java/**/*.java 
-		utils/ant
-    	        src/main/webapp
-		" />
-
-		<mkdir dir="${dist.dir}"/>
-		<delete file="${zip.file}" failonerror="false" />
-		<zip destfile="${zip.file}">
-				    <zipfileset 
-				    	dir="." 
-				    	excludes="${app.zip-files.exclude}" 
-				    	includes="${app.zip-files.include}"
-				    	prefix="${app.name}-${app.version}"/>
-		</zip>
-	</target>
 
 </project>
 
