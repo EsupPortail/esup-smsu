@@ -136,11 +136,22 @@
 		  <artifactId>cas-client-core</artifactId>
 		  <version>[3.2.1, 4)</version>
 		  <exclusions>
+		    <!-- we do not use SAML, get rid of it -->
+		    <!-- this removes many libs: bcprov-jdk15 commons-codec commons-httpclient esapi jcip-annotations joda-time jul-to-slf4j log4j-over-slf4j not-yet-commons-ssl openws velocity xercesImpl xmlsec xmltooling -->
+                    <exclusion>
+                      <groupId>org.opensaml</groupId>
+                      <artifactId>opensaml</artifactId>
+                    </exclusion>
 		    <!-- we have log4j, log4j-over-slf4j must not be there! (cf http://bugzilla.slf4j.org/show_bug.cgi?id=202) -->
 		    <exclusion>
 		      <groupId>org.slf4j</groupId>
 		      <artifactId>log4j-over-slf4j</artifactId>
 		    </exclusion>
+                    <!-- xerces conflicts with default xml-apis -->
+                    <exclusion>
+                      <groupId>xerces</groupId>
+                      <artifactId>xercesImpl</artifactId>
+                    </exclusion>
 		  </exclusions>
 		</dependency>
 
