@@ -18,7 +18,7 @@
        >{{'MSG_SUPERVISORS'     | translate}}</dt><dd>{{msg.supervisors.join(", ")}}</dd>
     <dt>{{'MSG_STATE'           | translate}}</dt><dd>{{'MSG_STATE_' + msg.stateMessage | translate}}</dd>
     <dt ng-show="msg.stateMail"
-       >{{'MSG_MAIL_STATE'      | translate}}</dt><dd>{{'MSG_MAIL_STATE_' + msg.stateMail | translate}}</dd>
+       >{{'MSG_MAIL_STATE'      | translate}}</dt><dd ng-show="msg.stateMail">{{'MSG_MAIL_STATE_' + msg.stateMail | translate}}</dd>
   </dl>
 
   <dl class="dl-horizontal">
