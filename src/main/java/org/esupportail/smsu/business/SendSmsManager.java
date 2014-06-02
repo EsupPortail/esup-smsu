@@ -280,7 +280,7 @@ public class SendSmsManager  {
 			textBodyParam3 = urlGenerator.goTo(request, "/approvals");
 		}
 		String senderName = ldapUtils.getUserDisplayName(message.getSender());
-		String cGroupName = groupUtils.getGroupDisplayName(cGroup);
+		String cGroupName = cGroup.getLabel().equals("defaultSupervisor") ? "defaultSupervisor" : groupUtils.getGroupDisplayName(cGroup);
 		String subject = getI18nString(subjectKey, senderName);
 		String textBody = getI18nString(textBodyKey, cGroupName,
 						i18nMsgDate(message), i18nMsgTime(message), textBodyParam3);
