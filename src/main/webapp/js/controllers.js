@@ -101,6 +101,11 @@ app.controller('GroupsDetailCtrl', function($scope, h, $routeParams, $location) 
 	var group = $scope.label2group[label];
 	return !group || group === $scope.group;
     };
+    $scope.addSupervisor = function () {
+	var e = $scope.wip.supervisor;
+	$scope.wip.supervisor = null;
+	$scope.group.supervisors[e.value || e.id] = e.label || e.name;
+    };
     $scope.removeSupervisor = function (id) {
 	delete $scope.group.supervisors[id];
     };
@@ -131,7 +136,7 @@ app.controller('GroupsDetailCtrl', function($scope, h, $routeParams, $location) 
 	$scope.label2group = h.array2hash(groups, 'label');
 
 	if (id === "new") {
-	    $scope.group = { isNew: true, quotaSms: 0 };
+	    $scope.group = { isNew: true, quotaSms: 0, supervisors: {} };
 	    $scope.groupOrUser = 'group';
 	} else {
 	    var id2group = h.array2hash(groups, 'id');

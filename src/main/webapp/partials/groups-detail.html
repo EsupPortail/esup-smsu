@@ -56,6 +56,13 @@
     <label class="col-md-3 control-label" for="supervisors">Superviseurs</label>
     <div class="col-md-9">
 
+      <div my-autocomplete="user"
+	   name="supervisor" ng-model="wip.supervisor" class="form-control"
+	   do-search="searchUser($viewValue)" 
+	   on-select="addSupervisor()"
+	   >
+      </div>
+
       <ul class="list-inline multiSelectSelected">
 	<li ng-repeat="(id, name) in group.supervisors">
 	  <a class="btn btn-default" ng-click="removeSupervisor(id)">
