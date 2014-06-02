@@ -23,10 +23,6 @@
     height: 400px
 }
 
-.sidenav {
-    padding-left: 15px !important;
-    padding-right: 15px !important;
-}
 .sidenav > li:first-child > a {
     border-radius: 6px 6px 0 0;
 }
@@ -118,27 +114,6 @@ ul.breadcrumb { margin-left: 0; }
   color: green !important;
 }
 
-
-@media (max-width: 767px) {
-  .row {
-    margin-right: 0;
-    margin-left: 0;
-  }
-  .page {
-    padding-left: 0;
-    padding-right: 0;
-
-  }
-  .normalContent {
-    margin-right: 15px;
-    margin-left: 15px;
-  }
-
-  .sidenav, .sidenavDiv {
-    padding: 0;
-  }
-}
-
 .breadcrumb .active {
     font-size: 120% !important;
 }
@@ -158,9 +133,4 @@ ul.breadcrumb { margin-left: 0; }
   .ifSideNavbar { 
     display: none;
   }
-
-  /* put navbar at bottom */
-  .row { display: table; width: 100%; }
-  .span3 { display: table-footer-group; }
-  .page { display: table-header-group; }
 }

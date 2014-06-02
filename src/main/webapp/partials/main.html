@@ -1,5 +1,12 @@
 <div class="container">
 <div class="row">
+
+ <div class="page col-sm-12 ifBottomNavbar" ng-if="forceSidenav">
+   <!-- only displayed on "welcome" if small devices -->
+   <div ng-include="getTemplateUrl('breadcrumb-inc.html')"></div>
+   <div ng-include="getTemplateUrl('welcome-inc.html')"></div>
+ </div>
+
  <div class="col-sm-3 sidenavDiv">
   <ul class="sidenav nav nav-stacked" ng-class="{ifSideNavbar: !forceSidenav}">
 	<li ng-repeat="tab in mainVisibleTabs" ng-class="{active: tab == currentMainTab}">
@@ -13,7 +20,8 @@
 
  <div class="page col-sm-9">
 
-   <div ng-include="getTemplateUrl('breadcrumb-inc.html')"></div>
+   <div ng-include="getTemplateUrl('breadcrumb-inc.html')"
+	ng-class="{ifSideNavbar: forceSidenav}"></div>
 
    <div class="content" ng-class="{loadInProgress: loadInProgress}" ng-view></div>
    
