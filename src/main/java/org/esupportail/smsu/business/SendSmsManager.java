@@ -5,8 +5,10 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -145,7 +147,11 @@ public class SendSmsManager  {
 	private Set<Person> mayGetSupervisorsOrNull(Message message) {
 		if (MessageStatus.WAITING_FOR_APPROVAL.equals(message.getStateAsEnum())) {
 			logger.debug("Supervisors needed");
-			return getSupervisors(getSupervisorCustomizedGroup(message));
+			Set<Person> supervisors = new HashSet<Person>();
+			for (CustomizedGroup cGroup : getSupervisorCustomizedGroup(message)) {
+				supervisors.addAll(getSupervisors(cGroup));
+			}
+			return supervisors;
 		} else {
 			logger.debug("No supervisors needed");
 			return null;
@@ -246,7 +252,11 @@ public class SendSmsManager  {
 	}
 
 	private void sendMailToSupervisors(final Message message, MessageStatus status, User currentUser, HttpServletRequest request) {
-		CustomizedGroup cGroup = getSupervisorCustomizedGroup(message);
+		for (CustomizedGroup cGroup : getSupervisorCustomizedGroup(message)) {
+			sendMailToSupervisorsRaw(message, cGroup, status, currentUser, request);
+		}
+	}
+	private void sendMailToSupervisorsRaw(final Message message, CustomizedGroup cGroup, MessageStatus status, User currentUser, HttpServletRequest request) {
 		List<String> toList = getSupervisorsMails(getSupervisors(cGroup));
 		if (toList == null || toList.isEmpty()) {
 			logger.error("no supervisors??");
@@ -468,20 +478,19 @@ public class SendSmsManager  {
 			} 
 	}
 
-	private CustomizedGroup getSupervisorCustomizedGroup(final Message message) {
-		CustomizedGroup r;
+	private List<CustomizedGroup> getSupervisorCustomizedGroup(final Message message) {
 
-		r = getSupervisorCustomizedGroupByGroup(message.getGroupRecipient(), "destination");
-		if (r != null) return r;
+		List<CustomizedGroup> l = getSupervisorCustomizedGroupByGroup(message.getGroupRecipient(), "destination");
+		if (!l.isEmpty()) return l;
 
-		r = getSupervisorCustomizedGroupByGroup(message.getGroupSender(), "sender");
-		if (r != null) return r;
+		CustomizedGroup r = getCustomizedGroupWithSupervisors(message.getGroupSender());
+		if (r != null) return singletonList(r);
 
 		logger.debug("Supervisor needed without a group. Using the default supervisor : [" + defaultSupervisorLogin + "]");
 		r = new CustomizedGroup();
 		r.setLabel("defaultSupervisor");
 		r.setSupervisors(Collections.singleton(defaultSupervisor()));
-		return r;
+		return singletonList(r);
 	}
 
 	private Person defaultSupervisor() {
@@ -492,42 +501,46 @@ public class SendSmsManager  {
 		return admin;
 	}
 
-	private CustomizedGroup getSupervisorCustomizedGroupByGroup(final BasicGroup group, String groupKind) {
-		if (group == null) return null;
+	private List<CustomizedGroup> getSupervisorCustomizedGroupByGroup(final BasicGroup group, String groupKind) {
+		if (group == null) return new LinkedList<CustomizedGroup>();
 
-		CustomizedGroup cGroup = getSupervisorCustomizedGroupByLabel(group.getLabel());
+		List<CustomizedGroup> cGroups = getSupervisorCustomizedGroupByLabel(group.getLabel());
 
-		if (logger.isDebugEnabled()) {
-			if (cGroup != null)
-				logger.info("Supervisor found from " + groupKind + " group : [" + cGroup.getLabel() + "]");
-			else
-				logger.debug("No supervisor found from " + groupKind + " group.");
-		}
+		if (!cGroups.isEmpty())
+			logger.info("Supervisor found from " + groupKind + " group : [" + cGroups + "]");
+		else
+			logger.debug("No supervisor found from " + groupKind + " group.");
 		
-		return cGroup;
+		return cGroups;
 	}
 
 	/**
 	 * @param groupLabel
 	 * @return the current customized group if it has supervisors or the first parent with supervisors.
 	 */
-	@SuppressWarnings("null")
-	private CustomizedGroup getSupervisorCustomizedGroupByLabel(final String groupLabel) {	    
+	private List<CustomizedGroup> getSupervisorCustomizedGroupByLabel(final String groupLabel) {	    
 		if (logger.isDebugEnabled()) {
 			logger.debug("getSupervisorCustomizedGroupByLabel for group [" + groupLabel + "]");
 		}
-		// TODO
-		String[] groupAndParents = null; //getGroupPathByLabel(groupLabel);
-		for (String label : groupAndParents) {
-		    CustomizedGroup cGroup = getCustomizedGroupByLabel(label);
-		    if (cGroup != null) {
-			if (!cGroup.getSupervisors().isEmpty())
-			    return cGroup;
-			else
-				logger.debug("Customized group without supervisor found : [" + cGroup.getLabel() + "]");
-		    }
+		
+		Map<String, List<String>> groupAndParents = group2parents(groupLabel);
+		
+		Set<String> todo = Collections.singleton(groupLabel);
+		List<CustomizedGroup> found = new LinkedList<CustomizedGroup>();
+		while (!todo.isEmpty()) {
+			Set<String> next = new LinkedHashSet<String>();
+			for (String label : todo) {
+			    CustomizedGroup cGroup = getCustomizedGroupByLabelWithSupervisors(label);
+			    if (cGroup != null) {
+				    found.add(cGroup);
+				    continue;
+			    }
+			    // not found, will search in the parents
+			    next.addAll(groupAndParents.get(label));
+			}
+			todo = next;
 		}
-		return null;
+		return found;
 	}
 
 	private Set<Recipient> getRecipients(UINewMessage msg, String serviceKey) throws EmptyGroup {
@@ -959,6 +972,12 @@ public class SendSmsManager  {
 		return i18nService.getString(key, i18nService.getDefaultLocale(), arg1, arg2, arg3, arg4);
 	}
 
+	private <A> LinkedList<A> singletonList(A e) {
+		final LinkedList<A> l = new LinkedList<A>();
+		l.add(e);
+		return l;
+	}	
+	
 	///////////////////////////////////
 	// setters
 	///////////////////////////////////
