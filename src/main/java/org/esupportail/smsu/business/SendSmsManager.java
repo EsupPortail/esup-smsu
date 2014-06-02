@@ -202,8 +202,7 @@ public class SendSmsManager  {
 				logger.debug("Start managment of message with id : " + message.getId());
 			}
 			// get the associated customized group
-			final String groupLabel = message.getGroupSender().getLabel();
-			final CustomizedGroup cGroup = getCustomizedGroupByLabel(groupLabel);
+			final CustomizedGroup cGroup = getCustomizedGroup(message.getGroupSender());
 
 			// send the customized messages
 			for (CustomizedMessage customizedMessage : getCustomizedMessages(message)) {
@@ -639,7 +638,7 @@ public class SendSmsManager  {
 		if (logger.isDebugEnabled()) logger.debug("get workflow state");
 		if (logger.isDebugEnabled()) logger.debug("nbRecipients: " + nbRecipients);
 
-		final CustomizedGroup cGroup = getCustomizedGroupByLabel(groupSender.getLabel());
+		final CustomizedGroup cGroup = getCustomizedGroup(groupSender);
 		if (cGroup == null)
 			throw new InvalidParameterException("invalid sender group");
 
@@ -911,6 +910,14 @@ public class SendSmsManager  {
 		return keptIds;
 	}
 
+	private CustomizedGroup getCustomizedGroup(BasicGroup group) {
+		return getCustomizedGroupByLabel(group.getLabel());
+	}
+
+	private CustomizedGroup getCustomizedGroupWithSupervisors(BasicGroup group) {
+		return getCustomizedGroupByLabelWithSupervisors(group.getLabel());
+	}
+
 	/**
 	 * @param groupId
 	 * @return the customized group corresponding to a group
@@ -918,6 +925,17 @@ public class SendSmsManager  {
 	private CustomizedGroup getCustomizedGroupByLabel(String label) {
 		//search the customized group from the data base
 		return daoService.getCustomizedGroupByLabel(label);
+	}
+
+	private CustomizedGroup getCustomizedGroupByLabelWithSupervisors(String label) {
+		CustomizedGroup g = getCustomizedGroupByLabel(label);
+		if (g != null) {
+			if (!g.getSupervisors().isEmpty()) {
+				return g;
+			}
+			logger.debug("Customized group without supervisor found : [" + label + "]");
+		}
+		return null;
 	}
 
 	private Service getService(final String key) {
