@@ -12,6 +12,7 @@ import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
 import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
@@ -79,6 +80,9 @@ public class HttpRequestWsgroups {
     	if (json == null) return null;
     	try {
 			return (new ObjectMapper()).readValue(json, typeRef);
+    	} catch (JsonParseException e) {
+    		logger.error("JsonParseException for request " + params + " :\n  " + e.getMessage() + "\n  value: " + json);
+    		return null;
     	} catch (JsonMappingException e) {
     		logger.error("JsonMappingException for request " + params + " :\n  " + e.getMessage() + "\n  value: " + json);
     		return null;
