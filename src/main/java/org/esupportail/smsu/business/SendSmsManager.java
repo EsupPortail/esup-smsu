@@ -605,6 +605,7 @@ public class SendSmsManager  {
 		logger.debug("Search users for group [" + groupId + "]");
 
 		List<String> uids = groupUtils.getMemberIds(groupId);
+		logger.debug("found " + uids.size() + " users in group " + groupId);
 
 		List<LdapUser> users = ldapUtils.getConditionFriendlyLdapUsersFromUid(uids, serviceKey);
 		logger.debug("found " + uids.size() + " users in group " + groupId + " and " + users.size() + " users having pager+CG");
