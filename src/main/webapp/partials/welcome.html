@@ -1,9 +1,7 @@
 <div class="normalContent">
 
-Bienvenue dans esup-smsu.
-<p>
-Veuillez utiliser la barre de navigation 
-<span class="ifSideNavbar">ci-contre</span><span class="ifBottomNavbar">ci-dessous</span>.
+<div ng-include="getTemplateUrl('welcome-inc.html')">
+</div>
 
  <div ng-if="!impersonatedUser && loggedUser.can.FCTN_GESTION_ROLES_AFFECT">
    Impersonate
