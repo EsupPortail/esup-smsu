@@ -382,7 +382,11 @@ app.controller('MembershipCtrl', function($scope, h) {
 	if (!$scope.membership.phoneNumber) return;
 
 	h.callRest('membership/isPhoneNumberInBlackList').then(function (is) {
+	    $scope.phoneNumberInBlackList_msg = "Votre numéro de téléphone est dans la liste noire"
 	    $scope.isPhoneNumberInBlackList = angular.fromJson(is);
+	}, function (err) {
+	    $scope.isPhoneNumberInBlackList = true;	    
+	    $scope.phoneNumberInBlackList_msg = err ? err.error : "error";
 	});
     };
 
@@ -555,6 +559,11 @@ app.controller('SendCtrl', function($scope, h, $location) {
 		s.replace(phoneNumberPatternAll, '');	    
 	}
     };
+
+    $scope.wip.group = { id: 'groups-gpelp.24171', name: "groups-gpelp.24171" };
+    $scope.addDestGroup();
+    //$scope.wip.login = { id: 'prigaux', name: 'P Rig' };
+    //$scope.addDestLogin();
     
 
     $scope.removeRecipient = function (e) {

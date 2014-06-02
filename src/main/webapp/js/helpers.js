@@ -251,7 +251,7 @@ function xhrRequest(args) {
 	    return onErrorCsrf(resp, err);
 	else {
 	    alert(err.error);
-	    return $q.reject(resp);
+	    return $q.reject(err);
 	}
     };
     var onError = function(resp) {

@@ -24,7 +24,7 @@
     <div class="col-md-9">
       <input type="text" name="phoneNumber" ng-model="membership.phoneNumber" maxlength="20" class="form-control">
 
-      <span ng-show="myForm.phoneNumber.$pristine && isPhoneNumberInBlackList" class="help-block">Votre numéro de téléphone est dans la liste noire</span>
+      <span ng-show="myForm.phoneNumber.$pristine && isPhoneNumberInBlackList" class="help-block">{{phoneNumberInBlackList_msg}}</span>
     </div>
   </div>
 
