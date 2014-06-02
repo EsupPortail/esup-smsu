@@ -45,6 +45,8 @@ app.config(function ($translateProvider) {
       MSG_STATE_IN_PROGRESS     : "En cours",
       MSG_STATE_WAITING_FOR_APPROVAL : "En approbation",
       MSG_STATE_WAITING_FOR_SENDING : "En attente d'envoi",
+      MSG_STATE_WS_QUOTA_ERROR  : "Erreur de quota",
+      MSG_STATE_WS_ERROR	: "Erreur web service",
 
       MSG_MAIL_STATE_SENT	: "Envoyé",
       MSG_MAIL_STATE_WAITING	: "En attente",
