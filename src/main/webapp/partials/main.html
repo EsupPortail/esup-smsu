@@ -13,17 +13,7 @@
 
  <div class="page col-sm-9">
 
-
-   <ul class="breadcrumb">
-     <li ng-if="currentTab.route != '/welcome'" class="ifBottomNavbar">
-       <a href="#/welcome">Accueil</a>
-     </li>
-     <li ng-if="currentTab != currentMainTab" >
-       <a href="#{{currentMainTab.route}}">{{currentMainTab.mainText}}</a>
-     </li>
-     <li class="active">{{currentTab.text || currentTab.mainText}}</li>
-   </ul>
-
+   <div ng-include="getTemplateUrl('breadcrumb-inc.html')"></div>
 
    <div class="content" ng-class="{loadInProgress: loadInProgress}" ng-view></div>
    
