@@ -118,7 +118,7 @@ ul.breadcrumb { margin-left: 0; }
     font-size: 120% !important;
 }
 
-@media (min-width: 767px) {
+@media (min-width: 992px) {
   .ifBottomNavbar, .breadcrumb .ifBottomNavbar { 
      display: none !important;
   }
@@ -129,7 +129,7 @@ ul.breadcrumb { margin-left: 0; }
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 992px) {
   .ifSideNavbar { 
     display: none;
   }

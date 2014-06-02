@@ -7,7 +7,7 @@
    <div ng-include="getTemplateUrl('welcome-inc.html')"></div>
  </div>
 
- <div class="col-sm-3 sidenavDiv">
+ <div class="col-md-3 sidenavDiv">
   <ul class="sidenav nav nav-stacked" ng-class="{ifSideNavbar: !forceSidenav}">
 	<li ng-repeat="tab in mainVisibleTabs" ng-class="{active: tab == currentMainTab}">
 	   <a href="#{{tab.route}}">
@@ -18,7 +18,7 @@
   </ul>
  </div>
 
- <div class="page col-sm-9">
+ <div class="page col-md-9">
 
    <div ng-include="getTemplateUrl('breadcrumb-inc.html')"
 	ng-class="{ifSideNavbar: forceSidenav}"></div>
