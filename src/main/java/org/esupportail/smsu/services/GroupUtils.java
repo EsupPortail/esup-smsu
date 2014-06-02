@@ -1,7 +1,10 @@
 package org.esupportail.smsu.services;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.esupportail.commons.services.logging.Logger;
 import org.esupportail.commons.services.logging.LoggerImpl;
@@ -46,16 +49,25 @@ public class GroupUtils {
 		}
 	}
 
-	public String getGroupPathByLabel(String label) {
+	public Map<String,List<String>> group2parents(String label) {
 		if (wsgroups.inUse()) {
-			// TODO? https://wsgroups.univ-paris1.fr/getSuperGroups?key=groups-mati01418C02&depth=3
-			return label;
+			return wsgroups.group2parents(label);
 		} else {
 			// flat groups for LDAP
-			return label;
+			return singletonMap(label, GroupUtils.<String>emptyList());
 		}
 	}
 	
+	public static <A> List<A> emptyList() {
+		return new LinkedList<A>();
+	}
+	
+	public static <A,B> Map<A, B> singletonMap(A a, B b) {
+		Map<A, B> o = new HashMap<A,B>();
+		o.put(a, b);
+		return o;
+	}
+
 	public String getGroupDisplayName(CustomizedGroup cg) {
 		return getGroupDisplayName(cg.getLabel());
 	}

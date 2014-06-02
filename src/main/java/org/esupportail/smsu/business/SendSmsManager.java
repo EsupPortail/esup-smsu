@@ -867,7 +867,7 @@ public class SendSmsManager  {
 
 		SortedMap<String, String> pathToId = new TreeMap<String, String>();
 		for (String id : ids) {
-			String path = getGroupPathByLabel(id);
+			String path = null; // getGroupPathByLabel(id);
 			if (path != null) pathToId.put(path, id);
 		}
 		logger.debug("keepGroupLeaves: pathToId: " + pathToId);
@@ -883,8 +883,8 @@ public class SendSmsManager  {
 	 * @param label
 	 * @return the path corresponding to a group
 	 */
-	private String getGroupPathByLabel(String label) {
-	    return groupUtils.getGroupPathByLabel(label);
+	private Map<String, List<String>> group2parents(String label) {
+	    return groupUtils.group2parents(label);
 	}
 
 	/**

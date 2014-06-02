@@ -2,7 +2,10 @@ package org.esupportail.smsu.services.wsgroups;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
@@ -110,6 +113,19 @@ public class HttpRequestWsgroups {
     	return request(cook_params("groupUsers", "key", groupId, "attr", "uid"),
     			new TypeReference<List<String>>() {});
     }
+
+	public Map<String, List<String>> group2parents(String label) {
+    	Map<String, GroupWithSuperGroups> map = 
+    			request(cook_params("getSuperGroups", "key", label, "depth", ""+99),
+    					new TypeReference<Map<String, GroupWithSuperGroups>>() {});
+    	if (map == null) return GroupUtils.singletonMap(label, GroupUtils.<String>emptyList());
+
+    	Map<String, List<String>> r = new HashMap<String, List<String>>();
+    	for (Entry<String, GroupWithSuperGroups> e : map.entrySet()) {
+    		r.put(e.getKey(), e.getValue().superGroups);
+    	}
+		return r;
+	}    
 
 	public void setWsgroupsURL(String wsgroupsURL) {
 		this.wsgroupsURL = wsgroupsURL;
