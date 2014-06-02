@@ -9,6 +9,7 @@ import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
 import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.esupportail.commons.services.logging.Logger;
@@ -72,6 +73,9 @@ public class HttpRequestWsgroups {
     	if (json == null) return null;
     	try {
 			return (new ObjectMapper()).readValue(json, typeRef);
+    	} catch (JsonMappingException e) {
+    		logger.error("JsonMappingException for request " + params + " :\n  " + e.getMessage() + "\n  value: " + json);
+    		return null;
     	} catch (IOException e) {
     		throw new RuntimeException(e);
     	}
