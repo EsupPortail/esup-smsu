@@ -49,8 +49,11 @@ public class HttpRequestWsgroups {
 	private String requestRaw(String params) {
 		String cooked_url = wsgroupsURL + "/" + params;
     	try {
+    		logger.debug("asking " + params);
     		HttpURLConnection conn = HttpUtils.openConnection(cooked_url);
-    		return HttpUtils.requestGET(conn);    		
+    		String s = HttpUtils.requestGET(conn);
+    		logger.debug("response " + s);
+    		return s;
     	} catch (HttpException e) {
     		logger.error(e);
     		return null;
