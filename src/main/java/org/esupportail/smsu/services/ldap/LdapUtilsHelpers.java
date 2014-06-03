@@ -59,6 +59,15 @@ public class LdapUtilsHelpers {
 	 */
 	private String searchAttribute;
 	
+	// instead of doing one huge filter (&(termsOfUse=CG)(|(uid=x1)(uid=x2)(uid=x3)...)
+	// we do smaller filters with at most X uids.
+	// for example for X=2 it gives (&(termsOfUse=CG)(|(uid=x1)(uid=x2))) then (&(termsOfUse=CG)(|(uid=x3)(uid=x4))) ...
+	// on tests on a production openldap:
+	// - the sweet point is between 5 and 10
+	// - for X too large, it can be 10 times slower
+	// - for X=1, it can be 2 times slower	
+	private int ldapfilterBestNumberOfUidsForSpeed = 5; 
+	
 	/**
 	 * constructor.
 	 */
@@ -131,12 +140,28 @@ public class LdapUtilsHelpers {
 	}
 	
 	/**
-	 * @param uid
+	 * @param uids
 	 * @param cgKeyName
 	 * @param service
-	 * @return the ldap user if he is eligible for the service
+	 * @return ldap users eligible for the service
 	 */
 	public List<LdapUser> getConditionFriendlyLdapUsersFromUid(final List<String> uids,
+			final String cgKeyName, final String service) {
+		int nbUids = uids.size();
+		int breakApart = ldapfilterBestNumberOfUidsForSpeed;
+		 
+		// we split the potentially big list of uids instead sublists.
+		// this helps keeping the ldap filter small enough.
+		// without this, on tests with openldap, it could be 10 times slower
+		List<LdapUser> r = new ArrayList<LdapUser>();
+		for (int i = 0; i < nbUids; i += breakApart) {
+			List<String> sub = uids.subList(i, Math.min(nbUids, i + breakApart));
+			r.addAll(getConditionFriendlyLdapUsersFromUidRaw(sub, cgKeyName, service));
+		}
+		return r;
+	}
+
+	private List<LdapUser> getConditionFriendlyLdapUsersFromUidRaw(final List<String> uids,
 			final String cgKeyName, final String service) {
 
 		final AndFilter filter = new AndFilter();
