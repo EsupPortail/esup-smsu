@@ -1,7 +1,3 @@
-function debug_msg(msg) {
-    $("#debug").html($("#debug").html() + "<br>" + msg);
-};
-
 (function () {
 "use strict";
 
