@@ -254,7 +254,7 @@ app.controller('RolesDetailCtrl', function($scope, h, $routeParams, $location, $
     var id = $routeParams.id;
     var fonction2text;
 
-    $scope.forOrdering = function (fonction) { return fonction2text && fonction2text[fonction] };
+    $scope.forOrdering = function (fonction) { return fonction2text && fonction2text[fonction]; };
     $scope.fonctionText = function (fonction) {
 	return fonction2text[fonction].replace(/^\d+ /, '');
     };
@@ -392,7 +392,7 @@ app.controller('MembershipCtrl', function($scope, h) {
 
     var set_prev_membership = function () {
 	$scope.membership.prev_validCG = $scope.membership.validCG;
-    }
+    };
 
     var modify = function (method) {
 	var membershipRaw = h.objectSlice($scope.membership, ['login','phoneNumber', 'validCG']); // keep only modifiable fields
@@ -517,7 +517,7 @@ app.controller('SendCtrl', function($scope, h, $location) {
 	}
 	return h.searchUser(token, { service: $scope.msg.serviceKey })
 	    .then(function (logins) {
-		$scope.wip.logins = logins
+		$scope.wip.logins = logins;
 		return logins;
 	    });
     };

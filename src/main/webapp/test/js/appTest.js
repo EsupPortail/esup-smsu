@@ -17,7 +17,7 @@ var myAppTest = angular.module('myAppTest', ['myApp', 'ngMockE2E']);
 myAppTest.run(function($http, $httpBackend, h) {
 
     function flatten(l) {
-	return h.array_concat_map(l, function (l) { return l || [] });	
+	return h.array_concat_map(l, function (l) { return l || []; });	
     }
     function reverse_hashMulti(h_in) {
 	var h = {};
@@ -78,9 +78,9 @@ myAppTest.run(function($http, $httpBackend, h) {
 
     function roleNames2rights(roleNames) {
 	var roles = h.array_map(roleNames, function (name) {
-	    return h.simpleFind(db.roles, function (e) { return e.name === name });
+	    return h.simpleFind(db.roles, function (e) { return e.name === name; });
 	});
-	return h.uniq(h.array_concat_map(roles, function (e) { return e.fonctions }));
+	return h.uniq(h.array_concat_map(roles, function (e) { return e.fonctions; }));
     }
 
     function userGroups(id) {
@@ -97,7 +97,7 @@ myAppTest.run(function($http, $httpBackend, h) {
 
     function getLoggedUser(id) {
 	var groups = userGroups(id);
-	var rights = roleNames2rights(h.array_map(groups, function (e) { return e.role }));
+	var rights = roleNames2rights(h.array_map(groups, function (e) { return e.role; }));
 	return {"id":id, "displayName": consts.users[id], "rights": rights};
     }
 
@@ -179,18 +179,18 @@ myAppTest.run(function($http, $httpBackend, h) {
     $httpBackend.whenGET(/rest.login/).respond(whenGET_rest_login);
     $httpBackend.whenJSONP(/rest.login/).respond(whenGET_rest_login);
 
-    $httpBackend.whenGET(/rest.messages.groupLeaves/).respond(function () { return [200, userGroupLeaves()] });
-    $httpBackend.whenGET(/rest.messages.senders/).respond(function () { return [200, senders()] });
+    $httpBackend.whenGET(/rest.messages.groupLeaves/).respond(function () { return [200, userGroupLeaves()]; });
+    $httpBackend.whenGET(/rest.messages.senders/).respond(function () { return [200, senders()]; });
     $httpBackend.whenGET(/rest.messages/).respond(get_list(db.msgs));
     $httpBackend.whenPOST(/rest.messages/).respond(function (method, url, data) {
 	var msg = createMsg(angular.fromJson(data));
 	db.msgs.unshift(msg);
 	return [200, msg];
     });
-    $httpBackend.whenGET(/rest.approvals/).respond(function () { return [200, h.simpleFilter(db.msgs, canApprove)] });
+    $httpBackend.whenGET(/rest.approvals/).respond(function () { return [200, h.simpleFilter(db.msgs, canApprove)]; });
     $httpBackend.whenPUT(/rest.approvals/).respond(modify_list(db.msgs));
 
-    $httpBackend.whenGET(/rest.membership/).respond(function () { return [200, loggedUserMembership() ] });
+    $httpBackend.whenGET(/rest.membership/).respond(function () { return [200, loggedUserMembership() ]; });
     $httpBackend.whenPOST(/rest.membership/).respond(modify_object(loggedUserMembership));
 
     function modify_object(object_getter) {
