@@ -633,7 +633,7 @@ app.controller('MessagesCtrl', function($scope, h, $location, $route) {
     });
 
     $scope.setFilter = function (e) {
-	var e = h.objectSlice(e, ['sender']); // all but hashKey
+	e = h.objectSlice(e, ['sender']); // all but hashKey
 	$location.search(e);
 	$route.reload();
     };
