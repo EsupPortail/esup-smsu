@@ -14,7 +14,7 @@ function parseKeyValue(/**string*/keyValue) {
 
 var myAppTest = angular.module('myAppTest', ['myApp', 'ngMockE2E']);
 
-myAppTest.run(function($http, $httpBackend, h) {
+myAppTest.run(function($http, $httpBackend, h, $rootScope) {
 
     function flatten(l) {
 	return h.array_concat_map(l, function (l) { return l || []; });	
@@ -67,8 +67,6 @@ myAppTest.run(function($http, $httpBackend, h) {
 		 "stateMessage":"WAITING_FOR_APPROVAL","supervisors":["sender1"]};
     db.msgs = [completeMsg(msg34),completeMsg(msg33)];
 
-    var loggedUser;
-
     function id2groupName(id) {
 	var g = h.simpleFind(consts.basicGroups, function (g) {
 	    return g.id === id;
@@ -102,7 +100,7 @@ myAppTest.run(function($http, $httpBackend, h) {
     }
 
     function userGroupLeaves() {
-	var r = h.array_map(userGroups(loggedUser.id), function (g) {
+	var r = h.array_map(userGroups($rootScope.loggedUser.id), function (g) {
 	    var name = g.labelIsUserId ? consts.users[g.label] : id2groupName(g.label);
 	    return { id: g.label, name: name };
 	});
@@ -140,7 +138,7 @@ myAppTest.run(function($http, $httpBackend, h) {
 				 consts.groupMembers[inMsg.recipientGroup]]);
 	var msg = {
 	    "content": inMsg.content,
-	    "senderLogin": loggedUser.id,
+	    "senderLogin": $rootScope.loggedUser.id,
 	    "groupSenderName": inMsg.senderGroup,
 	    "groupRecipientName": inMsg.recipientGroup,
 	    "stateMessage":"WAITING_FOR_APPROVAL",
@@ -152,16 +150,16 @@ myAppTest.run(function($http, $httpBackend, h) {
 
     function canApprove(msg) {
 	return msg.stateMessage === 'WAITING_FOR_APPROVAL' &&
-	    (loggedUser.can.FCTN_GESTIONS_RESPONSABLES ||
-	     h.array2set(msg.supervisors)[loggedUser.id]);
+	    ($rootScope.loggedUser.can.FCTN_GESTIONS_RESPONSABLES ||
+	     h.array2set(msg.supervisors)[$rootScope.loggedUser.id]);
     }
 
     function loggedUserMembership() {
 	var o = h.simpleFind(db.membership, function (e) { 
-	    return e.login === loggedUser.id;
+	    return e.login === $rootScope.loggedUser.id;
 	});
 	if (!o) {
-	    o = { login: loggedUser.id };
+	    o = { login: $rootScope.loggedUser.id };
 	    db.membership.push(o);
 	}
 	return o;
@@ -173,7 +171,7 @@ myAppTest.run(function($http, $httpBackend, h) {
     $httpBackend.whenGET(/rest.groups.search/).respond(consts.basicGroups);
 
     function whenGET_rest_login(method, url, data, headers) {
-	loggedUser = getLoggedUser(headers["X-Impersonate-User"] || defaultLoggedUser);
+	var loggedUser = getLoggedUser(headers["X-Impersonate-User"] || defaultLoggedUser);
 	return [200, loggedUser];
     }
     $httpBackend.whenGET(/rest.login/).respond(whenGET_rest_login);
