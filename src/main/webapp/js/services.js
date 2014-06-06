@@ -8,7 +8,7 @@ function computeRoutes(baseURL) {
      { route: '/membership', mainText: "Adhésion", controller: 'MembershipCtrl'},
      { route: '/send', mainText: "Envoi SMS", controller: 'SendCtrl'},
      { route: '/messages', mainText: "Suivi des envois", show: 'loggedUser.can.FCTN_SUIVI_ENVOIS_UTIL || loggedUser.can.FCTN_SUIVI_ENVOIS_ETABL', controller: 'MessagesCtrl'},
-     { route: '/approvals', mainText: "Approbation des envois", controller: 'ApprovalsCtrl'},
+     { route: '/approvals', mainText: "Approbation des envois", show: 'loggedUser.can.APPROBATION_ENVOI', controller: 'ApprovalsCtrl'},
      { route: '/templates', mainText: "Modèles", show: 'loggedUser.can.FCTN_GESTION_MODELES', controller: 'TemplatesCtrl'},
      { route: '/roles', mainText: "Rôles", show: 'loggedUser.can.FCTN_GESTION_ROLES_CRUD', controller: 'RolesCtrl'},
      { route: '/groups', mainText: "Groupes", show: 'loggedUser.can.FCTN_GESTION_GROUPE', controller: 'GroupsCtrl'},

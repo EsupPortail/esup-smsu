@@ -9,6 +9,7 @@ import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.dao.DaoService;
 import org.esupportail.smsu.dao.beans.CustomizedGroup;
 import org.esupportail.smsu.dao.beans.Fonction;
+import org.esupportail.smsu.dao.beans.Person;
 import org.esupportail.smsu.services.GroupUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -40,7 +41,15 @@ public class SecurityManager {
 				logger.debug("group label in loadUserRightsByUsername method is: " + grp.getLabel());
 				addFonctions(fonctions, grp.getRole().getFonctions());
 		}
+		if (fonctions.contains("FCTN_GESTIONS_RESPONSABLES") || isSupervisor(login)) {
+			fonctions.add("APPROBATION_ENVOI");
+		}
 		return fonctions;
+	}
+
+	private boolean isSupervisor(String login) {
+		Person person = daoService.getPersonByLogin(login);
+		return person != null && daoService.isSupervisor(person);
 	}
 
 	private void addFonctions(Set<String> fonctions, Set<Fonction> fonctions_to_add) {

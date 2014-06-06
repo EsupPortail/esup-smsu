@@ -116,11 +116,6 @@ public class DomainService {
 		return result;
 	}
 
-	public boolean isSupervisor(User user) {
-		Person person = daoService.getPersonByLogin(user.getId());
-		return person != null && daoService.isSupervisor(person);
-	}
-
 	//////////////////////////////////////////////////////////////
 	// Service
 	//////////////////////////////////////////////////////////////

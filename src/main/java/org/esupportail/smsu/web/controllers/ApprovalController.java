@@ -22,7 +22,7 @@ import org.esupportail.commons.services.logging.LoggerImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Path("/approvals")
-@RolesAllowed("FCTN_GESTIONS_RESPONSABLES")
+@RolesAllowed("APPROBATION_ENVOI")
 public class ApprovalController {
 
 	private final Logger logger = new LoggerImpl(getClass());
