@@ -176,7 +176,14 @@ function tryRelog() {
 
     function relogSuccess(loggedUser) {
 	console.log('relog success');
-	h.setLoggedUser(loggedUser);
+
+	if ($rootScope.impersonatedUser) {
+	    // relog does not use XHR, so X-Impersonate-User was not passed
+	    // update loggedUser by using XHR
+	    h.callRest('login').then(h.setLoggedUser);
+	} else {
+	    h.setLoggedUser(loggedUser);
+	}
 	return null;
     }
     function queueXhrRequest() {
