@@ -2,6 +2,7 @@ package org.esupportail.smsu.web.controllers;
 
 import java.util.List;
 
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -29,6 +30,7 @@ public class TemplateManagerController {
 	
 	@GET
 	@Produces("application/json")
+	@PermitAll
 	public List<UITemplate> getTemplates() {
 		return templateManager.getUITemplates();
 	}

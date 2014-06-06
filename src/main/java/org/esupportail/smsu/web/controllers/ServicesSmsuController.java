@@ -1,6 +1,8 @@
 package org.esupportail.smsu.web.controllers;
 
 import java.util.List;
+
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -22,7 +24,7 @@ public class ServicesSmsuController {
 	
 	@GET
 	@Produces("application/json")
-	@RolesAllowed({"FCTN_SMS_ENVOI_SERVICE_CP","FCTN_GESTION_SERVICES_CP"})
+	@PermitAll
 	public List<UIService> getUIServices() {
 		return serviceManager.getAllUIServices();
 	}
