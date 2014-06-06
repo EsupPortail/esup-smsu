@@ -27,7 +27,6 @@ import org.esupportail.smsu.dao.DaoService;
 import org.esupportail.smsu.dao.beans.Account;
 import org.esupportail.smsu.dao.beans.CustomizedGroup;
 import org.esupportail.smsu.dao.beans.Person;
-import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
 import org.esupportail.smsu.services.GroupUtils;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.web.beans.UICustomizedGroup;
@@ -175,18 +174,4 @@ public class GroupManager {
 		daoService.updateCustomizedGroup(persistent);
 	}
     
-	// TODO unused, to remove?
-	@SuppressWarnings("unused")
-	private String getPreciseDisplayName(Person p) {
-		return getPersonPreciseDisplayName(p.getLogin());
-	}
-	private String getPersonPreciseDisplayName(String login) {
-		try {
-			return ldapUtils.getUserDisplayNameByUserUid(login)
-				+ " (" + login + ")";
-		} catch (LdapUserNotFoundException e) {
-		    	return login;
-		}
-	}
-
 }
