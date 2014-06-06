@@ -44,7 +44,11 @@ public class MessageManager {
 			final Integer userServiceId, final Integer userTemplateId, final String senderLogin, 
 			final Date beginDate, final Date endDate, int maxResults) {
 
-		Person sender = senderLogin == null ? null : daoService.getPersonByLogin(senderLogin);
+		Person sender = null;
+		if (senderLogin != null) {
+			sender = daoService.getPersonByLogin(senderLogin);
+			if (sender == null) return Collections.emptyList();
+		}
 		
 		java.sql.Date beginDateSQL = 
 			beginDate == null ? null : new java.sql.Date(beginDate.getTime()); // get rid of HH:MM:SS
