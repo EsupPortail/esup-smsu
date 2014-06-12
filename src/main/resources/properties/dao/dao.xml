@@ -83,8 +83,10 @@
 	</bean>
 	
     <jdbc:embedded-database id="testDataSource">
-        <jdbc:script location="classpath:database/create_tables.hsql"/>
+        <!--
+        <jdbc:script location="classpath:database/create_tables.sql"/>
         <jdbc:script location="classpath:database/populate_tables_esup-smsu.sql"/>
+        -->
     </jdbc:embedded-database>
 	<bean 
 		id="testSessionFactory" 
