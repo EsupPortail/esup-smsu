@@ -6,7 +6,7 @@ function computeRoutes(baseURL) {
   var l =
     [{ route: '/welcome', mainText: "Accueil", controller: 'WelcomeCtrl' }, 
      { route: '/membership', mainText: "Adhésion", controller: 'MembershipCtrl'},
-     { route: '/send', mainText: "Envoi SMS", controller: 'SendCtrl'},
+     { route: '/send', mainText: "Envoi SMS", show: 'loggedUser.can.FCTN_SMS_ENVOI_ADH || loggedUser.can.FCTN_SMS_ENVOI_GROUPES || loggedUser.can.FCTN_SMS_ENVOI_NUM_TEL || loggedUser.can.FCTN_SMS_ENVOI_LISTE_NUM_TEL || loggedUser.can.FCTN_SMS_REQ_LDAP_ADH', controller: 'SendCtrl'},
      { route: '/messages', mainText: "Suivi des envois", show: 'loggedUser.can.FCTN_SUIVI_ENVOIS_UTIL || loggedUser.can.FCTN_SUIVI_ENVOIS_ETABL', controller: 'MessagesCtrl'},
      { route: '/approvals', mainText: "Approbation des envois", show: 'loggedUser.can.APPROBATION_ENVOI', controller: 'ApprovalsCtrl'},
      { route: '/templates', mainText: "Modèles", show: 'loggedUser.can.FCTN_GESTION_MODELES', controller: 'TemplatesCtrl'},
