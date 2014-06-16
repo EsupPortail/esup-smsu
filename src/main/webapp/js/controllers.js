@@ -560,8 +560,6 @@ app.controller('SendCtrl', function($scope, h, $location) {
 	}
     };
 
-    $scope.wip.group = { id: 'groups-gpelp.24171', name: "groups-gpelp.24171" };
-    $scope.addDestGroup();
     //$scope.wip.login = { id: 'prigaux', name: 'P Rig' };
     //$scope.addDestLogin();
     
