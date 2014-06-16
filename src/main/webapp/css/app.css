@@ -43,6 +43,11 @@
     background-color: #428bca !important;
 }
 
+/* ensure jquery-ui autocomplete is above bootstrap textarea */
+.ui-autocomplete { 
+    z-index: 3 !important;
+}
+
 /* override uportal fss framework shit */
 .sidenav { margin-left: 0; margin-right: 0; }
 .sidenav li { list-style: none; }
