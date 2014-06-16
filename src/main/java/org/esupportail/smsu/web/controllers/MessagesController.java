@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DefaultValue;
@@ -120,6 +121,7 @@ public class MessagesController {
 
 	@GET
 	@Produces("application/json")
+	@PermitAll
 	@Path("/groupLeaves")
 	public List<UserGroup> getUserGroupLeaves(@Context HttpServletRequest request) {
 		return sendSmsManager.getUserGroupLeaves(request.getRemoteUser());
