@@ -140,6 +140,11 @@
       <select name="mailOption" ng-model="msg.mailOption" ng-options="a.key as a.label for a in mailOptions" class="form-control">
       </select>
 
+      <div class="alert alert-warning" 
+	   ng-if="msg.mailOption === 'DUPLICATE' && msg.destPhoneNumbers.length">
+	Pour les destinataires dont seul le numéro de téléphone est connu, aucun courriel d'accompagnement ne sera envoyé.
+      </div>
+
       <div ng-if="msg.mailOption !== ''">
 	Objet :
 	<input type="text" ng-model="msg.mailToSend.mailSubject" class="form-control">
