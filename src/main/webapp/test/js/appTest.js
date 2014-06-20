@@ -93,9 +93,18 @@ myAppTest.run(function($http, $httpBackend, h, $rootScope) {
 	return userGroup.concat(nonUserGroups);
     }
 
+    function isSupervisor(userId) {
+	return h.simpleFind(db.msgs, function (msg) {
+	    return userId in h.array2set(msg.supervisors);
+	});
+    }
+
     function getLoggedUser(id) {
 	var groups = userGroups(id);
 	var rights = roleNames2rights(h.array_map(groups, function (e) { return e.role; }));
+	if (('FCTN_GESTIONS_RESPONSABLES' in h.array2set(rights)) || isSupervisor(id)) {
+	    rights.push('APPROBATION_ENVOI');
+	}
 	return {"id":id, "displayName": consts.users[id], "rights": rights};
     }
 
