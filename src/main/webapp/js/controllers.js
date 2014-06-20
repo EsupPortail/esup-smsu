@@ -382,7 +382,7 @@ app.controller('MembershipCtrl', function($scope, h) {
 	if (!$scope.membership.phoneNumber) return;
 
 	h.callRest('membership/isPhoneNumberInBlackList').then(function (is) {
-	    $scope.phoneNumberInBlackList_msg = "Votre numéro de téléphone est dans la liste noire"
+	    $scope.phoneNumberInBlackList_msg = "Votre numéro de téléphone est dans la liste noire";
 	    $scope.isPhoneNumberInBlackList = angular.fromJson(is);
 	}, function (err) {
 	    $scope.isPhoneNumberInBlackList = true;	    
@@ -400,7 +400,7 @@ app.controller('MembershipCtrl', function($scope, h) {
 	h.callRestModify(method, 'membership', membershipRaw).then(function () {
 	    var prev = $scope.membership.prev_validCG;
 	    $scope.submitted_msg = 
-		!prev == !$scope.membership.validCG ? "Modifications enregistrées" :
+		!prev === !$scope.membership.validCG ? "Modifications enregistrées" :
 		$scope.membership.validCG ? "Adhésion enregistrée" : "Résiliation effectuée";
 	    set_prev_membership();
 	    $scope.myForm.$setPristine();

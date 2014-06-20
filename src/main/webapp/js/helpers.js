@@ -143,12 +143,13 @@ function windowOpenLoginCleanup(state) {
 	if (state.window) state.window.close(); 
     } catch (e) {}
     windowOpenLoginState = {};
-};
+}
 this.windowOpenLogin = function () {
     $rootScope.loggedUser = undefined; // hide app
 
     windowOpenLoginCleanup(windowOpenLoginState);
-    var state = windowOpenLoginState = {};
+    var state = {};
+    windowOpenLoginState = state;
 
     state.deferredLogin = $q.defer();
     state.deferredQueue = [];
@@ -236,7 +237,7 @@ var xhrRequestInvalidCsrfState = false;
 function xhrRequest(args) {
     var onError401 = function (resp) {
 	return tryRelog().then(function () { 
-	    return xhrRequest(args);;
+	    return xhrRequest(args);
 	});
     };
     var onErrorCsrf = function (resp, err) {
@@ -259,10 +260,10 @@ function xhrRequest(args) {
     };
     var onError = function(resp) {
 	var status = resp.status;
-	if (status == 0) {
+	if (status === 0) {
 	    alert("unknown failure (server seems to be down)");
 	    return $q.reject(resp);
-	} else if (status == 401) {
+	} else if (status === 401) {
 	    return onError401(resp);
 	} else if (resp.data) {
 	    var err = fromJsonOrNull(resp.data);
@@ -321,11 +322,11 @@ this.userWithCapabilities = function (user) {
 };
 
 this.findCurrentTab = function ($scope, templateUrl) {
-    var tab = h.simpleFind(routes.routes, function (tab) { return tab.templateUrl == templateUrl; });
+    var tab = h.simpleFind(routes.routes, function (tab) { return tab.templateUrl === templateUrl; });
     if (!tab) return;
     var mainTab;
     if (tab.parent) {
-	mainTab = h.simpleFind(routes.routes, function (mainTab) { return mainTab.route == tab.parent; });
+	mainTab = h.simpleFind(routes.routes, function (mainTab) { return mainTab.route === tab.parent; });
     } else {
 	mainTab = tab;
     }
