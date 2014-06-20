@@ -285,7 +285,6 @@ this.callRest_headers = function () {
     if ($rootScope.impersonatedUser) {
 	r["X-Impersonate-User"] = $rootScope.impersonatedUser;
     }
-    console.log(r);
     return r;
 };
 
