@@ -301,18 +301,6 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 		  <version>[1.0, 1.99]</version>
 		</dependency>
 
-		<!-- for CORS filter (CrossOriginFilter) -->
-		<dependency>
-		  <groupId>org.eclipse.jetty</groupId>
-		  <artifactId>jetty-servlets</artifactId>
-		  <version>${jetty-version}</version>
-		<exclusions>
-		  <exclusion> <groupId>org.eclipse.jetty</groupId> <artifactId>jetty-continuation</artifactId> </exclusion>
-		  <exclusion> <groupId>org.eclipse.jetty</groupId> <artifactId>jetty-http</artifactId> </exclusion>
-		  <exclusion> <groupId>org.eclipse.jetty</groupId> <artifactId>jetty-io</artifactId> </exclusion>
-		</exclusions>
-		</dependency>
-		
 		<dependency>
                   <groupId>quartz</groupId>
                   <artifactId>quartz</artifactId>

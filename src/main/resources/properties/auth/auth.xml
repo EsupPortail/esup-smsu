@@ -24,4 +24,10 @@
       </property>
     </bean>
 
+    <bean id="CrossOriginFilter"
+          class="org.esupportail.smsu.web.CrossOriginFilter">
+      <property name="allowedOrigins" value="${portal.urls}" />
+    </bean>
+
+
 </beans>

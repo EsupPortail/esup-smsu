@@ -51,18 +51,15 @@
 	  <tracking-mode>COOKIE</tracking-mode>
 	</session-config>
 
-	<!--filter>
-	  <filter-name>cross-origin</filter-name>
-	  <filter-class>org.eclipse.jetty.servlets.CrossOriginFilter</filter-class>
-	  <init-param>
-	    <param-name>allowedOrigins</param-name>
-	    <param-value>https://foo.univ.fr,https://bar.univ.fr</param-value>
-	  </init-param>	  
+	<filter>
+	  <filter-name>CrossOriginFilter</filter-name>
+	  <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
 	</filter>
 	<filter-mapping>
-	  <filter-name>cross-origin</filter-name>
+	  <filter-name>CrossOriginFilter</filter-name>
 	  <url-pattern>/*</url-pattern>
-	</filter-mapping-->
+	</filter-mapping>
+
 
 	<filter>
 	  <filter-name>CAS Single Sign Out Filter</filter-name>
