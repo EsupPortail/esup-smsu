@@ -15,4 +15,11 @@ app.config(function($httpProvider) {
     $httpProvider.defaults.withCredentials = true;
 });
 
+app.config(function($sceDelegateProvider, globalsProvider) {
+    $sceDelegateProvider.resourceUrlWhitelist([
+       // Allow same origin resource loads.
+       'self',
+       globalsProvider.baseURL + '/**']);
+});
+
 })();
