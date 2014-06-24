@@ -30,7 +30,7 @@
       <plugin>
 	<groupId>org.mortbay.jetty</groupId>
 	<artifactId>jetty-maven-plugin</artifactId>
-	<version>${jetty-version}</version>
+	<version>8.1.9.v20130131</version>
       </plugin>
 
       <plugin>
@@ -110,7 +110,6 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 		
     <esup-commons-version>[0.3.3, 0.3.99]</esup-commons-version>
     <spring-version>3.2.3.RELEASE</spring-version>
-    <jetty-version>8.1.9.v20130131</jetty-version>
   </properties>
 
   <repositories>
