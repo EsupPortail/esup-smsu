@@ -10,7 +10,8 @@
    <bean id="RoleWrapperFilter" class="org.esupportail.smsu.web.RoleWrapperFilter" />
 
    <bean id="urlGenerator" class="org.esupportail.smsu.services.UrlGenerator">
-  	  <property name="serviceURL" value="${serviceURL}" />
+  	  <property name="serverURL" value="${server.url}" />
+  	  <property name="contextPath" value="${contextPath}" />
 	</bean>
 
    <!-- for StartPagePortlet -->

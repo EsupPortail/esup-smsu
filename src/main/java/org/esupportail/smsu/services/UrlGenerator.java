@@ -12,11 +12,12 @@ public class UrlGenerator {
 
 	private final Logger logger = new LoggerImpl(getClass());
 
-	private String serviceURL;
+	private String serverURL;
+	private String contextPath;
 	
 	public String baseURL(HttpServletRequest request) {
 		try {
-			return get_baseURL(request, serviceURL);
+			return get_baseURL(request, serverURL, contextPath);
 		} catch (IOException e) {
 			logger.error(e);
 			return null;
@@ -27,17 +28,32 @@ public class UrlGenerator {
 		return baseURL(request) + "/#" + then;
 	}
 
-	static public String get_baseURL(HttpServletRequest request, String serviceURL) throws IOException {
-	if (StringUtils.isBlank(serviceURL)) {
-	    String url = request.getRequestURL().toString();
-	    return url.replaceFirst("(/|/WebWidget|/index.html|/rest/.*)$", "");
-	} else {
-	    return serviceURL;
-	}
+	static public String get_baseURL(HttpServletRequest request, String serverURL, String contextPath) throws IOException {
+		if (StringUtils.isBlank(contextPath)) {
+			contextPath = request.getContextPath();
+		}
+		return serverURL + contextPath;	
     }
 
-    public void setServiceURL(String serviceURL) {
-	this.serviceURL = serviceURL;
-    }
+	// since java-cas-client breaks its serverName when the port is not explicit,
+	// we end up here with urls with explicit ports even when unneeded.
+	// alas angularjs $sceDelegateProvider.resourceUrlWhitelist does not like this it seems,
+	// so a nice cleanup here will help
+	private String cleanupServerUrl(String serverURL) {
+		if (serverURL.startsWith("http://"))
+			return serverURL.replaceFirst(":80/?$", "");
+		else if (serverURL.startsWith("https://"))
+			return serverURL.replaceFirst(":443/?$", "");
+		else
+			return serverURL;
+	}
+
+	public void setServerURL(String serverURL) {
+		this.serverURL = cleanupServerUrl(serverURL);
+	}
+
+	public void setContextPath(String contextPath) {
+		this.contextPath = contextPath;
+	}
     
 }
