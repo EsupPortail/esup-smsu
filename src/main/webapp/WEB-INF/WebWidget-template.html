@@ -1,49 +1,49 @@
 
 <script>
   document.esupSmsu = { 
-     baseURL: '{{baseURL}}', 
-     wsgroupsURL: '{{wsgroupsURL}}',
-     isWebWidget: {{isWebWidget}},
-     useTestStaticJson: {{useTestStaticJson}} };
+     baseURL: '{{serverSide.baseURL}}', 
+     wsgroupsURL: '{{serverSide.wsgroupsURL}}',
+     isWebWidget: {{serverSide.isWebWidget}},
+     useTestStaticJson: {{serverSide.useTestStaticJson}} };
 </script>
 
-<link href="{{baseURL}}/css/bootstrap-scoped.css" rel="stylesheet">
+<link href="{{serverSide.baseURL}}/css/bootstrap-scoped.css" rel="stylesheet">
 
 <!--link href="//angular-ui.github.com/ng-grid/css/ng-grid.css" rel="stylesheet" type="text/css" /-->
-<link href="{{baseURL}}/libs/ng-grid/2.0.11/ng-grid.min.css" rel="stylesheet" type="text/css" />
-<link href="{{baseURL}}/css/app.css" rel="stylesheet" type="text/css" />
+<link href="{{serverSide.baseURL}}/libs/ng-grid/2.0.11/ng-grid.min.css" rel="stylesheet" type="text/css" />
+<link href="{{serverSide.baseURL}}/css/app.css" rel="stylesheet" type="text/css" />
 
 <!--script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script-->
-<script src="{{baseURL}}/libs/jquery/1.7.2/jquery.min.js"></script>
+<script src="{{serverSide.baseURL}}/libs/jquery/1.7.2/jquery.min.js"></script>
 
 <!-- if using wsgroups -->
 <!--
-<link rel="stylesheet" href="{{wsgroupsURL}}/web-widget/jquery-ui.css" type="text/css" media="all">
-<link rel="stylesheet" href="{{wsgroupsURL}}/web-widget/ui.theme.css" type="text/css" media="all">
-<link rel="stylesheet" href="{{wsgroupsURL}}/web-widget/autocompleteUser.css" type="text/css" media="all">
-<script src="{{wsgroupsURL}}/web-widget/jquery-ui-1.8.21.custom.min.js"></script>
-<script src="{{wsgroupsURL}}/web-widget/autocompleteUser.js"></script>
+<link rel="stylesheet" href="{{serverSide.wsgroupsURL}}/web-widget/jquery-ui.css" type="text/css" media="all">
+<link rel="stylesheet" href="{{serverSide.wsgroupsURL}}/web-widget/ui.theme.css" type="text/css" media="all">
+<link rel="stylesheet" href="{{serverSide.wsgroupsURL}}/web-widget/autocompleteUser.css" type="text/css" media="all">
+<script src="{{serverSide.wsgroupsURL}}/web-widget/jquery-ui-1.8.21.custom.min.js"></script>
+<script src="{{serverSide.wsgroupsURL}}/web-widget/autocompleteUser.js"></script>
 -->
 
-<script src="{{baseURL}}/libs/angularjs/1.2.14/angular.min.js"></script>
-<script src="{{baseURL}}/libs/angularjs/1.2.14/angular-route.min.js"></script>
-<script src="{{baseURL}}/libs/angularjs/1.2.14/i18n/angular-locale_fr-fr.js"></script>
-<script src="{{baseURL}}/libs/angular-translate/2.1.0/angular-translate.min.js"></script>
-<script src="{{baseURL}}/libs/ng-grid/2.0.11/ng-grid.min.js"></script>
-<script src="{{baseURL}}/js/ui-bootstrap-custom-tpls-0.10.0.min.js"></script>
+<script src="{{serverSide.baseURL}}/libs/angularjs/1.2.14/angular.min.js"></script>
+<script src="{{serverSide.baseURL}}/libs/angularjs/1.2.14/angular-route.min.js"></script>
+<script src="{{serverSide.baseURL}}/libs/angularjs/1.2.14/i18n/angular-locale_fr-fr.js"></script>
+<script src="{{serverSide.baseURL}}/libs/angular-translate/2.1.0/angular-translate.min.js"></script>
+<script src="{{serverSide.baseURL}}/libs/ng-grid/2.0.11/ng-grid.min.js"></script>
+<script src="{{serverSide.baseURL}}/js/ui-bootstrap-custom-tpls-0.10.0.min.js"></script>
 
-<script src="{{baseURL}}/js/uportal-specific.js"></script>
-<script src="{{baseURL}}/js/app.js"></script>
-<script src="{{baseURL}}/js/helpers.js"></script>
-<script src="{{baseURL}}/js/services.js"></script>
-<script src="{{baseURL}}/js/controllers.js"></script>
-<script src="{{baseURL}}/js/directives.js"></script>
-<script src="{{baseURL}}/js/translations.js"></script>
-<script src="{{baseURL}}/js/config.js"></script>
+<script src="{{serverSide.baseURL}}/js/uportal-specific.js"></script>
+<script src="{{serverSide.baseURL}}/js/app.js"></script>
+<script src="{{serverSide.baseURL}}/js/helpers.js"></script>
+<script src="{{serverSide.baseURL}}/js/services.js"></script>
+<script src="{{serverSide.baseURL}}/js/controllers.js"></script>
+<script src="{{serverSide.baseURL}}/js/directives.js"></script>
+<script src="{{serverSide.baseURL}}/js/translations.js"></script>
+<script src="{{serverSide.baseURL}}/js/config.js"></script>
 
 
 <div class="myAppDiv bootstrap-smsu">
   <div ng-app="myApp" ng-show="loggedUser" ng-controller="MainCtrl">
-    <div ng-include="'{{baseURL}}/partials/main.html'"></div>
+    <div ng-include="'{{serverSide.baseURL}}/partials/main.html'"></div>
   </div>
 </div>

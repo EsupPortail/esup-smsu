@@ -54,7 +54,7 @@ public class StartPage implements org.springframework.web.HttpRequestHandler {
     }
 
     static public String instantiateTemplate(String template, String var, String value) {
-	return template.replaceAll(Pattern.quote("{{" + var + "}}"), value);
+	return template.replaceAll(Pattern.quote("{{serverSide." + var + "}}"), value);
     }
 
     static public String getHtmlTemplate(ServletContext context, String path) throws IOException {
