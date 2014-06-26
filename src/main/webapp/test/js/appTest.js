@@ -31,7 +31,10 @@ myAppTest.run(function($http, $httpBackend, h, $rootScope) {
     var defaultLoggedUser = 'admin';
 
     var consts = {
-	users: {"admin":"The Boss","sender1":"Sender #1","sender2":"Sender #2","user1": "User #1"},
+	users: [{"id":"admin", "name": "The Boss"},
+		{"id":"sender1", "name": "Sender #1"},
+		{"id":"sender2", "name":"Sender #2"},
+		{"id":"user1", "name": "User #1"}],
 	allFonctions: ["FCTN_SMS_ENVOI_ADH","FCTN_SMS_ENVOI_GROUPES","FCTN_SMS_ENVOI_NUM_TEL","FCTN_SMS_REQ_LDAP_ADH","FCTN_SMS_AJOUT_MAIL","FCTN_GESTIONS_RESPONSABLES","FCTN_GESTION_ROLES_CRUD","FCTN_GESTION_ROLES_AFFECT","FCTN_GESTION_MODELES","FCTN_GESTION_SERVICES_CP","FCTN_GESTION_QUOTAS","FCTN_SUIVI_ENVOIS_UTIL","FCTN_SUIVI_ENVOIS_ETABL","FCTN_GESTION_GROUPE","FCTN_SMS_ENVOI_LISTE_NUM_TEL"],
 	accounts: ["test-univ.fr"],
 	basicGroups: [{"id": "gfoo", "name": "GroupFoo"}, 
@@ -41,11 +44,11 @@ myAppTest.run(function($http, $httpBackend, h, $rootScope) {
     consts.user2groupIds = reverse_hashMulti(consts.groupMembers);
 
     var db = {
-	groups: [{"id":11,"label":"admin","displayName": consts.users["admin"], "labelIsUserId":true,
+	groups: [{"id":11,"label":"admin","displayName": id2userName("admin"), "labelIsUserId":true,
 		  "role":"SUPER_ADMIN","account":"test-univ.fr", "supervisors":{},
 		  "quotaSms":0,"maxPerSms":1,"consumedSms":0 },
 		 {"id":12,"label":"senders","displayName": id2groupName("senders"), "labelIsUserId":false,
-		  "role":"sender","account":"test-univ.fr","supervisors":h.objectSlice(consts.users, ["sender1"]),
+		  "role":"sender","account":"test-univ.fr","supervisors": { "sender1": id2userName("sender1") },
 		  "quotaSms":0,"maxPerSms":1,"consumedSms":0 }],
 
 	roles: [{"id":1,"name":"SUPER_ADMIN","fonctions":angular.copy(consts.allFonctions)},
@@ -69,6 +72,13 @@ myAppTest.run(function($http, $httpBackend, h, $rootScope) {
 
     function id2groupName(id) {
 	var g = h.simpleFind(consts.basicGroups, function (g) {
+	    return g.id === id;
+	});
+	return g && g.name;
+    }
+
+    function id2userName(id) {
+	var g = h.simpleFind(consts.users, function (g) {
 	    return g.id === id;
 	});
 	return g && g.name;
@@ -105,12 +115,12 @@ myAppTest.run(function($http, $httpBackend, h, $rootScope) {
 	if (('FCTN_GESTIONS_RESPONSABLES' in h.array2set(rights)) || isSupervisor(id)) {
 	    rights.push('APPROBATION_ENVOI');
 	}
-	return {"id":id, "displayName": consts.users[id], "rights": rights};
+	return {"id":id, "displayName": id2userName(id), "rights": rights};
     }
 
     function userGroupLeaves() {
 	var r = h.array_map(userGroups($rootScope.loggedUser.id), function (g) {
-	    var name = g.labelIsUserId ? consts.users[g.label] : id2groupName(g.label);
+	    var name = g.labelIsUserId ? id2userName(g.label) : id2groupName(g.label);
 	    return { id: g.label, name: name };
 	});
 	return r;
@@ -132,7 +142,7 @@ myAppTest.run(function($http, $httpBackend, h, $rootScope) {
 
     function completeMsg(msg) {
 	var msg_ = { 
-	    senderName : consts.users[msg.senderLogin],
+	    senderName : id2userName(msg.senderLogin),
 	    nbRecipients : msg.recipients.length,
 	    accountLabel : consts.accounts[0],
 	    date : new Date(),
