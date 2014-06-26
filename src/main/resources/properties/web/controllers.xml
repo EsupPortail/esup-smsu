@@ -9,6 +9,9 @@
 
    <bean id="RoleWrapperFilter" class="org.esupportail.smsu.web.RoleWrapperFilter" />
 
+   <bean id="cachedDigest" class="org.esupportail.smsu.utils.CachedDigest" />
+   <bean id="serverSideDirectives" class="org.esupportail.smsu.web.ServerSideDirectives" />
+
    <bean id="urlGenerator" class="org.esupportail.smsu.services.UrlGenerator">
   	  <property name="serverURL" value="${server.url}" />
   	  <property name="contextPath" value="${contextPath}" />
