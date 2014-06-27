@@ -41,7 +41,7 @@ public class CrossOriginFilter implements Filter
     // preflight cache duration in the browser
     private String maxAge = "600"; // 600 seconds = 10 minutes
     private String allowedMethods = "GET,POST,PUT,DELETE";
-    private String allowedHeaders = "X-CSRF-TOKEN,Content-Type,Accept,Origin";
+    private String allowedHeaders = "X-CSRF-TOKEN,X-Impersonate-User,Content-Type,Accept,Origin";
 
     public void destroy() {}
     public void init(FilterConfig config) {}
