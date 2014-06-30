@@ -235,6 +235,16 @@ function setHttpHeader(methods, name, val) {
     });
 }
 
+var alerted = {};
+function alertOnce(msg, timeout) {
+    if (alerted[msg]) return;
+    alert(msg);
+    alerted[msg] = 1;
+    if (timeout > 0) {
+       $timeout(function () { delete alerted[msg]; }, timeout);
+    }
+}
+
 var cookiesRejected = false;
 function xhrRequest(args, flags) {
     var onError401 = function (resp) {
@@ -274,6 +284,9 @@ function xhrRequest(args, flags) {
 	if (status === 0) {
 	    alert("unknown failure (server seems to be down)");
 	    return $q.reject(resp);
+	} else if (status === 503) {
+            alertOnce("Le serveur est en maintenance, veuillez ré-essayer ultérieurement", 2000);
+            return $q.reject(resp);         
 	} else if (status === 401) {
 	    return onError401(resp);
 	} else if (resp.data) {
