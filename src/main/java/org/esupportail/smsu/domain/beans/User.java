@@ -36,6 +36,8 @@ public class User implements Serializable {
 
 	public Set<String> rights;
     
+	public String sessionId;
+	
 	/**
 	 * Bean constructor.
 	 */

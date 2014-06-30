@@ -214,6 +214,8 @@ function tryRelog() {
 this.setLoggedUser = function (loggedUser) {
     console.log('user logged in: ' + loggedUser.id);
 
+    $rootScope.sessionId = loggedUser.sessionId;
+    delete loggedUser.sessionId;
     $rootScope.loggedUser = h.userWithCapabilities(loggedUser);
 };
 
@@ -233,10 +235,21 @@ function setHttpHeader(methods, name, val) {
     });
 }
 
+var cookiesRejected = false;
 function xhrRequest(args, flags) {
     var onError401 = function (resp) {
+	if (flags.justSuccessfullyLogged) {
+	    if (!flags.cookiesRejected) {
+		console.log("It looks like our cookies are rejected. Trying to pass sessionId in URLs...");
+		cookiesRejected = true;
+		return xhrRequest(args, flags);
+	    } else {	
+		alert("FATAL : both cookies and URL parameter jsessionid are rejected");
+		return $q.reject(resp);
+	    }
+	}
 	return tryRelog().then(function () { 
-	    return xhrRequest(args);
+	    return xhrRequest(args, { justSuccessfullyLogged: true });
 	});
     };
     var onErrorCsrf = function (resp, err) {
@@ -272,6 +285,11 @@ function xhrRequest(args, flags) {
 	alert("unknown error " + status);
 	return $q.reject(resp);
     };
+    if (cookiesRejected && !flags.cookiesRejected) {
+	flags.cookiesRejected = true;
+	args = angular.copy(args);
+	args.url = args.url + ";jsessionid=" + $rootScope.sessionId;
+    }
     return $http(args).then(function (resp) {
 	return resp;
     }, onError);
