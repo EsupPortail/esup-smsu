@@ -233,22 +233,20 @@ function setHttpHeader(methods, name, val) {
     });
 }
 
-var xhrRequestInvalidCsrfState = false;
-function xhrRequest(args) {
+function xhrRequest(args, flags) {
     var onError401 = function (resp) {
 	return tryRelog().then(function () { 
 	    return xhrRequest(args);
 	});
     };
     var onErrorCsrf = function (resp, err) {
-	if (xhrRequestInvalidCsrfState) {
+	if (flags.xhrRequestInvalidCsrfState) {
 	    alert("Invalid CRSF prevention token failed twice");
 	    return $q.reject(resp);
 	}
-	xhrRequestInvalidCsrfState = true;
 	setHttpHeader(['post','put','delete'], "X-CSRF-TOKEN", err.token);
 	console.log("retrying with new CSRF token");
-	return xhrRequest(args);
+	return xhrRequest(args, { xhrRequestInvalidCsrfState: true });
     };
     var onErrorFromJson = function(resp, err) {
 	if (err.error === "Invalid CRSF prevention token")
@@ -275,7 +273,6 @@ function xhrRequest(args) {
 	return $q.reject(resp);
     };
     return $http(args).then(function (resp) {
-	xhrRequestInvalidCsrfState = false;
 	return resp;
     }, onError);
 }
@@ -293,7 +290,7 @@ this.callRest = function ($function, params) {
     params = angular.extend({}, params);
     params.cacheSlayer = new Date().getTime(); // for our beloved IE which caches every AJAX... ( http://stackoverflow.com/questions/16098430/angular-ie-caching-issue-for-http )
     var args = { method: 'get', url: url, params: params, headers: h.callRest_headers() };
-    return xhrRequest(args).then(function(resp) {
+    return xhrRequest(args, {}).then(function(resp) {
 	return resp.data;
     });
 };
@@ -309,7 +306,7 @@ this.callRestModify = function (method, restPath, o) {
     if (method !== 'delete') {
 	args.data = o;
     }
-    return xhrRequest(args);
+    return xhrRequest(args, {});
 };
 
 this.userWithCapabilities = function (user) {
