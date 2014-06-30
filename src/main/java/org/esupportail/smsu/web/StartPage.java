@@ -5,7 +5,8 @@ import java.util.regex.Pattern;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
- 
+
+import org.codehaus.jackson.map.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.esupportail.smsu.services.UrlGenerator;
 
@@ -16,15 +17,20 @@ public class StartPage implements org.springframework.web.HttpRequestHandler {
 
     public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
 	ServletContext context = request.getSession().getServletContext();
-	boolean isWebWidget = request.getServletPath().equals("/WebWidget");
+	boolean isWebWidget = request.getServletPath().startsWith("/WebWidget");
 	boolean genTestStaticJsonPage = request.getServletPath().equals("/GenTestStaticJsonPage");
 	String baseURL = genTestStaticJsonPage ? ".." : urlGenerator.baseURL(request);
 	String template = getHtmlTemplate(context, "/WEB-INF/WebWidget-template.html");
 	String page = instantiateWebWidgetHtml(template, baseURL, isWebWidget, genTestStaticJsonPage);
 	if (!isWebWidget) 
 	    page = getStartPageHtml(context, page);	
+	String type = "text/html; charset=UTF-8";
+	if (request.getServletPath().endsWith(".js")) {
+	    type = "application/x-javascript";
+	    page = "document.write(" + new ObjectMapper().writeValueAsString(page) + ");";
+	}
 
-	response.setContentType("text/html; charset=UTF-8");
+	response.setContentType(type);
         response.getWriter().print(page);
     }
 

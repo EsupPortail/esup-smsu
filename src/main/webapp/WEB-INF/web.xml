@@ -159,6 +159,10 @@
 	</servlet-mapping>
 	<servlet-mapping>
 	  <servlet-name>StartPage</servlet-name>
+	  <url-pattern>/WebWidget.js</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+	  <servlet-name>StartPage</servlet-name>
 	  <url-pattern>/WebWidget</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
