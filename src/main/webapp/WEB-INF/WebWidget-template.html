@@ -12,6 +12,9 @@
 <link server-side-prefix="baseURL" server-side-cache-buster href="css/app.css" rel="stylesheet" type="text/css" />
 
 <script server-side-prefix="baseURL" src="libs/jquery/1.7.2/jquery.min.js"></script>
+<script>
+if (!window.jQuery) alert('FATAL ERROR, fix "server.url" or "contextPath" in config.properties');
+</script>
 
 <link server-side-if="wsgroupsURL" server-side-prefix="wsgroupsURL" rel="stylesheet" href="web-widget/jquery-ui.css" type="text/css" media="all">
 <link server-side-if="wsgroupsURL" server-side-prefix="wsgroupsURL" rel="stylesheet" href="web-widget/ui.theme.css" type="text/css" media="all">
