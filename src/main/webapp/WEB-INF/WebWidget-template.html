@@ -26,18 +26,27 @@
 <script server-side-prefix="baseURL" src="libs/ng-grid/2.0.11/ng-grid.min.js"></script>
 <script server-side-prefix="baseURL" src="js/ui-bootstrap-custom-tpls-0.10.0.min.js"></script>
 
-<script server-side-cache-buster server-side-prefix="baseURL" src="js/uportal-specific.js"></script>
-<script server-side-cache-buster server-side-prefix="baseURL" src="js/app.js"></script>
-<script server-side-cache-buster server-side-prefix="baseURL" src="js/helpers.js"></script>
-<script server-side-cache-buster server-side-prefix="baseURL" src="js/services.js"></script>
-<script server-side-cache-buster server-side-prefix="baseURL" src="js/controllers.js"></script>
-<script server-side-cache-buster server-side-prefix="baseURL" src="js/directives.js"></script>
-<script server-side-cache-buster server-side-prefix="baseURL" src="js/translations.js"></script>
-<script server-side-cache-buster server-side-prefix="baseURL" src="js/config.js"></script>
+<script server-side-cache-buster server-side-prefix="baseURL" server-side-concat="libs/myApp.js" src="js/uportal-specific.js"></script>
+<script server-side-cache-buster server-side-prefix="baseURL" server-side-concat="libs/myApp.js" src="js/app.js"></script>
+<script server-side-cache-buster server-side-prefix="baseURL" server-side-concat="libs/myApp.js" src="js/helpers.js"></script>
+<script server-side-cache-buster server-side-prefix="baseURL" server-side-concat="libs/myApp.js" src="js/services.js"></script>
+<script server-side-cache-buster server-side-prefix="baseURL" server-side-concat="libs/myApp.js" src="js/controllers.js"></script>
+<script server-side-cache-buster server-side-prefix="baseURL" server-side-concat="libs/myApp.js" src="js/directives.js"></script>
+<script server-side-cache-buster server-side-prefix="baseURL" server-side-concat="libs/myApp.js" src="js/translations.js"></script>
+<script server-side-cache-buster server-side-prefix="baseURL" server-side-concat="libs/myApp.js" src="js/config.js"></script>
+
 
 
 <div class="myAppDiv bootstrap-smsu">
   <div ng-app="myApp" ng-show="loggedUser" ng-controller="MainCtrl">
+
+    <!-- most used templates -->
+    <script server-side-cache-buster server-side-prefix="baseURL" 
+	    server-side-angular-templates="partials/main.html partials/breadcrumb-inc.html 
+	                                   partials/welcome.html partials/welcome-inc.html partials/about.html
+	                                   partials/membership.html partials/send.html partials/messages.html"
+	    src="libs/myApp-templates.js"></script>
+
     <div ng-include="'{{serverSide.baseURL}}/partials/main.html'"></div>
   </div>
 </div>

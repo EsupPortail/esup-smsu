@@ -10,6 +10,7 @@
    <bean id="RoleWrapperFilter" class="org.esupportail.smsu.web.RoleWrapperFilter" />
 
    <bean id="cachedDigest" class="org.esupportail.smsu.utils.CachedDigest" />
+   <bean id="aggregateToFile" class="org.esupportail.smsu.utils.AggregateToFile" />
    <bean id="serverSideDirectives" class="org.esupportail.smsu.web.ServerSideDirectives" />
 
    <bean id="urlGenerator" class="org.esupportail.smsu.services.UrlGenerator">
