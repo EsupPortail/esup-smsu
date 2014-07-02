@@ -36,7 +36,7 @@
 		<description>The business layer concerning the sending.</description>
 		<property name="defaultSupervisorLogin" value="${sms.defaultSupervisorLogin}"/>
 		<property name="smsMaxSize" value="${sms.maxLength}"/>
-		<property name="defaultAccount" value="${sms.defaultAccount}"/>
+		<property name="defaultAccount" value="${smsuapi.defaultAccount}"/>
 		<property name="phoneNumberPattern" value="${recipient.phoneNumberPattern}"></property>
 		<property name="userEmailAttribute" value="${ldap.emailAttribute}"/>
 	</bean>
