@@ -79,8 +79,8 @@ describe('Existing group view', function() {
 	expect(element(".dropdown-menu:visible").count()).toBe(0);
 	input('wip.label').enter('zzzz');
 	expect(element(".dropdown-menu:visible").count()).toBe(1);
-	expect(element(".dropdown-menu li a").count()).toBe(4);
-	element(".dropdown-menu li:last a").click();
+	expect(element(".dropdown-menu li a").count()).toBe(5);
+	element(".dropdown-menu li:nth(3) a").click();
 	expect(input('wip.label').val()).toBe("User #1");
 
 	element("form button").click();
@@ -117,8 +117,8 @@ describe('New group view', function() {
 	expect(element(".dropdown-menu:visible").count()).toBe(0);
 	input('wip.label').enter('zzzz');
 	expect(element(".dropdown-menu:visible").count()).toBe(1);
-	expect(element(".dropdown-menu li a").count()).toBe(2);
-	element(".dropdown-menu li:last a").click();
+	expect(element(".dropdown-menu li a").count()).toBe(3);
+	element(".dropdown-menu li:nth(1) a").click();
 	expect(input('wip.label').val()).toBe("All Senders");
 
 	element("form button").click();

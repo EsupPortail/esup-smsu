@@ -14,6 +14,28 @@ function parseKeyValue(/**string*/keyValue) {
 
 var myAppTest = angular.module('myAppTest', ['myApp', 'ngMockE2E']);
 
+var slowUser = 'slow1';
+var slowUserDelay = 1000;
+
+myAppTest.config(function($provide) {
+    $provide.decorator('$httpBackend', function($delegate) {
+        var proxy = function(method, url, data, callback, headers) {
+	    if (headers["X-Impersonate-User"] &&
+		headers["X-Impersonate-User"] == slowUser && method === 'POST') {
+		var vanillaCallback = callback;
+		callback = function() {
+                    var _this = this, _arguments = arguments;
+                    setTimeout(function() {
+			vanillaCallback.apply(_this, _arguments);
+                    }, slowUserDelay);
+		};
+	    }
+            return $delegate.call(this, method, url, data, callback, headers);
+        };
+	return angular.extend(proxy, $delegate);
+    });
+});
+
 myAppTest.run(function($http, $httpBackend, h, $rootScope) {
 
     function flatten(l) {
@@ -34,12 +56,14 @@ myAppTest.run(function($http, $httpBackend, h, $rootScope) {
 	users: [{"id":"admin", "name": "The Boss"},
 		{"id":"sender1", "name": "Sender #1"},
 		{"id":"sender2", "name":"Sender #2"},
-		{"id":"user1", "name": "User #1"}],
+		{"id":"user1", "name": "User #1"},
+		{"id":"slow1", "name": "Slow User #1"}],
 	allFonctions: ["FCTN_SMS_ENVOI_ADH","FCTN_SMS_ENVOI_GROUPES","FCTN_SMS_ENVOI_NUM_TEL","FCTN_SMS_REQ_LDAP_ADH","FCTN_SMS_AJOUT_MAIL","FCTN_GESTIONS_RESPONSABLES","FCTN_GESTION_ROLES_CRUD","FCTN_GESTION_ROLES_AFFECT","FCTN_GESTION_MODELES","FCTN_GESTION_SERVICES_CP","FCTN_GESTION_QUOTAS","FCTN_SUIVI_ENVOIS_UTIL","FCTN_SUIVI_ENVOIS_ETABL","FCTN_GESTION_GROUPE","FCTN_SMS_ENVOI_LISTE_NUM_TEL"],
 	accounts: ["test-univ.fr"],
 	basicGroups: [{"id": "gfoo", "name": "GroupFoo"}, 
-		      {"id": "senders", "name": "All Senders"}],
-	groupMembers: {"gfoo": ["user1"], "senders": ["sender1", "sender2"]},
+		      {"id": "senders", "name": "All Senders"},
+		      {"id": "empty", "name": "Empty"}],
+	groupMembers: {"gfoo": ["user1"], "senders": ["sender1", "sender2", "slow1"]},
     };
     consts.user2groupIds = reverse_hashMulti(consts.groupMembers);
 
