@@ -240,7 +240,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 		<dependency>
 		  <groupId>org.esup-portail</groupId>
 		  <artifactId>esup-smsu-api</artifactId>
-		  <version>2.0.0-RC2</version>
+		  <version>2.0.0</version>
 		  <type>jar</type>
 		</dependency>
 
