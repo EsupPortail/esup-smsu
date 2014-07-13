@@ -51,6 +51,7 @@ myAppTest.run(function($http, $httpBackend, h, $rootScope) {
 	return h;
     }
     var defaultLoggedUser = 'admin';
+    //$rootScope.impersonatedUser = slowUser; // force a default impersonatedUser
 
     var consts = {
 	users: [{"id":"admin", "name": "The Boss"},
@@ -216,7 +217,8 @@ myAppTest.run(function($http, $httpBackend, h, $rootScope) {
     $httpBackend.whenGET(/rest.groups.search/).respond(consts.basicGroups);
 
     function whenGET_rest_login(method, url, data, headers) {
-	var loggedUser = getLoggedUser(headers["X-Impersonate-User"] || defaultLoggedUser);
+	var id = $rootScope.impersonatedUser || defaultLoggedUser; // nb: we should be using headers["X-Impersonate-User"] but it can't work on initial login (which uses JSONP)
+	var loggedUser = getLoggedUser(id);
 	return [200, loggedUser];
     }
     $httpBackend.whenGET(/rest.login/).respond(whenGET_rest_login);
