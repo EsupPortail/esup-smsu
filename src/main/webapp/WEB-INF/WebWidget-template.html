@@ -16,12 +16,6 @@
 if (!window.jQuery) alert('FATAL ERROR, fix "server.url" or "contextPath" in config.properties');
 </script>
 
-<link server-side-if="wsgroupsURL" server-side-prefix="wsgroupsURL" rel="stylesheet" href="web-widget/jquery-ui.css" type="text/css" media="all">
-<link server-side-if="wsgroupsURL" server-side-prefix="wsgroupsURL" rel="stylesheet" href="web-widget/ui.theme.css" type="text/css" media="all">
-<link server-side-if="wsgroupsURL" server-side-prefix="wsgroupsURL" rel="stylesheet" href="web-widget/autocompleteUser.css" type="text/css" media="all">
-<script server-side-if="wsgroupsURL" server-side-prefix="wsgroupsURL" src="web-widget/jquery-ui-1.8.21.custom.min.js"></script>
-<script server-side-if="wsgroupsURL" server-side-prefix="wsgroupsURL" src="web-widget/autocompleteUser.js"></script>
-
 <script server-side-prefix="baseURL" src="libs/angularjs/1.2.14/angular.min.js"></script>
 <script server-side-prefix="baseURL" src="libs/angularjs/1.2.14/angular-route.min.js"></script>
 <script server-side-prefix="baseURL" src="libs/angularjs/1.2.14/i18n/angular-locale_fr-fr.js"></script>
@@ -53,3 +47,5 @@ if (!window.jQuery) alert('FATAL ERROR, fix "server.url" or "contextPath" in con
     <div ng-include="'{{serverSide.baseURL}}/partials/main.html'"></div>
   </div>
 </div>
+
+<script server-side-if="wsgroupsURL" server-side-prefix="wsgroupsURL" src="web-widget/autocompleteUser-resources.html.js"></script>
