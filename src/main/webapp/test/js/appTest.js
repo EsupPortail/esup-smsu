@@ -179,6 +179,8 @@ myAppTest.run(function($http, $httpBackend, h, $rootScope) {
     function createMsg(inMsg) {
 	var recipients = flatten([inMsg.recipientPhoneNumbers, inMsg.recipientLogins, 
 				 consts.groupMembers[inMsg.recipientGroup]]);
+	if (recipients.length === 0) return;
+
 	var msg = {
 	    "content": inMsg.content,
 	    "senderLogin": $rootScope.loggedUser.id,
@@ -225,6 +227,7 @@ myAppTest.run(function($http, $httpBackend, h, $rootScope) {
     $httpBackend.whenGET(/rest.messages/).respond(get_list(db.msgs));
     $httpBackend.whenPOST(/rest.messages/).respond(function (method, url, data) {
 	var msg = createMsg(angular.fromJson(data));
+	if (!msg) return [500, '{"error":"group empty"}'];
 	db.msgs.unshift(msg);
 	return [200, msg];
     });
