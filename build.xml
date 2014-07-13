@@ -185,13 +185,14 @@
 	<target name="ant-extra" depends="prepare-ant-extra,download-ant-extra" />
 	
 	<target name="jetty.run" depends="ant-extra,compile" description="test using jetty">
+	  <property file="build.properties" />
 	  <path id="jetty.plugin.classpath">
 	    <fileset dir="tmp/ant-extra" includes="*.jar"/>
 	  </path>
 	  <taskdef classpathref="jetty.plugin.classpath" resource="tasks.properties" loaderref="jetty.loader" />
 
-	  <jetty tempDirectory="tmp/jetty-temp">
-	    <webApp name="esup-smsu" warfile="src/main/webapp" contextpath="/esup-smsu">
+	  <jetty tempDirectory="tmp/jetty-temp" jettyPort="${jetty.port}">
+	    <webApp name="myApp" warfile="src/main/webapp" contextpath="/">
 	      <lib dir="${build.dir}/WEB-INF/lib" includes="*.jar" />
 	      <classes dir="${build.classes}" includes="*.class" />
 	    </webApp>
