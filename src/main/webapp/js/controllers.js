@@ -609,11 +609,13 @@ app.controller('SendCtrl', function($scope, h, $location) {
 		  mailOtherRecipients : otherRecipients ? otherRecipients.split("\n") : [] };
 	}
 
-	console.log("sending...");
-	console.log(msgToSend);
-	h.callRestModify('post', 'messages', msgToSend).then(function (resp) {
-	    var msg = resp.data;
-	    $location.path('messages/' + msg.id);
+	h.mutexAction($scope, 'sending', function () {
+	    console.log("sending...");
+	    console.log(msgToSend);
+	    return h.callRestModify('post', 'messages', msgToSend).then(function (resp) {
+		var msg = resp.data;
+		$location.path('messages/' + msg.id);
+	    });
 	});
 
     };

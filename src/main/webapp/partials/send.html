@@ -159,9 +159,10 @@
 
   <div class="form-group">
     <div class="col-md-offset-3 col-md-9">
-      <button class="btn btn-primary" type="submit">
+      <button class="btn btn-primary" type="submit" ng-disabled="sending">
 	<span class="glyphicon glyphicon-send"></span>
-	Envoyer</button>
+	{{sending ? "Envoi en cours" : "Envoyer"}}
+      </button>
     </div>
   </div>
 
