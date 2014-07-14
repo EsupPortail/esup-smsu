@@ -36,16 +36,4 @@ app.provider('routes', function () {
     };
 });
 
-app.provider('globals', function () {
-    if (!document.esupSmsu) alert("missing configuration document.esupSmsu");
-    var globals = document.esupSmsu;
-    this.baseURL = globals.baseURL;
-    this.isWebWidget = globals.isWebWidget;
-    this.wsgroupsURL = globals.wsgroupsURL;
-
-    this.$get = function () { 
-	return this;
-    };
-});
-
 }());
