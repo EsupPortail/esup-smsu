@@ -3,7 +3,7 @@
 
 var app = angular.module('myApp');
 
-app.service('h', function (routes, globals, basicHelpers, restWsHelpers) {
+app.service('h', function (globals, basicHelpers, restWsHelpers) {
 
 var h = this;
 
@@ -12,20 +12,6 @@ angular.extend(this, basicHelpers);
 // rename restWsHelpers methods for compat
 this.callRest = restWsHelpers.simple;
 this.callRestModify = restWsHelpers.action;
-
-
-this.findCurrentTab = function ($scope, templateUrl) {
-    var tab = h.simpleFind(routes.routes, function (tab) { return tab.templateUrl === templateUrl; });
-    if (!tab) return;
-    var mainTab;
-    if (tab.parent) {
-	mainTab = h.simpleFind(routes.routes, function (mainTab) { return mainTab.route === tab.parent; });
-    } else {
-	mainTab = tab;
-    }
-    $scope.currentMainTab = mainTab;
-    $scope.currentTab = tab;
-};
 
 this.getTemplateUrl = function (basename) {
     return globals.baseURL + '/partials/' + basename;

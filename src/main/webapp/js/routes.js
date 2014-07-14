@@ -26,13 +26,27 @@ function computeRoutes(baseURL) {
   return l;
 }
 
+function findCurrentTab($scope, templateUrl) {
+    var routes = this.routes;
+    var tab = this.h.simpleFind(routes, function (tab) { return tab.templateUrl === templateUrl; });
+    if (!tab) return;
+    var mainTab;
+    if (tab.parent) {
+	mainTab = this.h.simpleFind(routes, function (mainTab) { return mainTab.route === tab.parent; });
+    } else {
+	mainTab = tab;
+    }
+    $scope.currentMainTab = mainTab;
+    $scope.currentTab = tab;
+}
+
 var app = angular.module('myApp');
 
 app.provider('routes', function () {
     this.routes = [];
     this.computeRoutes = computeRoutes;
-    this.$get = function () {
-	return { routes: this.routes };
+    this.$get = function (basicHelpers) {
+	return { routes: this.routes, findCurrentTab: findCurrentTab, h: basicHelpers };
     };
 });
 

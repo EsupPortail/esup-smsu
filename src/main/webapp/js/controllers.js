@@ -27,7 +27,7 @@ app.controller('MainCtrl', function($scope, h, $route, $parse, routes, globals, 
     login.jsonp().then(null, login.mayRedirect).then(loginSuccess.set);
 
     $scope.$on('$locationChangeSuccess', function(){
-	h.findCurrentTab($scope, $route.current.templateUrl);
+	routes.findCurrentTab($scope, $route.current.templateUrl);
 	$scope.forceSidenav = $scope.currentTab && $scope.currentTab.route === "/welcome";
     });
 
