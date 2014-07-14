@@ -32,6 +32,7 @@ public class UrlGenerator {
 		if (StringUtils.isBlank(contextPath)) {
 			contextPath = request.getContextPath();
 		}
+		contextPath = contextPath.replaceFirst("/$", "");
 		return serverURL + contextPath;	
     }
 
@@ -39,7 +40,9 @@ public class UrlGenerator {
 	// we end up here with urls with explicit ports even when unneeded.
 	// alas angularjs $sceDelegateProvider.resourceUrlWhitelist does not like this it seems,
 	// so a nice cleanup here will help
+	// (also cleanup trailing slash that would break web.xml <url-pattern> in case of double "/")
 	private String cleanupServerUrl(String serverURL) {
+		serverURL = serverURL.replaceFirst("/$", "");
 		if (serverURL.startsWith("http://"))
 			return serverURL.replaceFirst(":80/?$", "");
 		else if (serverURL.startsWith("https://"))
