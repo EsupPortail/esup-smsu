@@ -33,7 +33,7 @@ public class AggregateToFile {
     public void concat(Collection<File> sources, File dest, String header, String footer, Filter filter) throws IOException {
     	String newDigest = computeDigest(sources);
     	String prevDigest = file2sourceDigests.get(dest.toString());
-    	if (prevDigest == null || !prevDigest.equals(newDigest)) {
+    	if (prevDigest == null || !prevDigest.equals(newDigest) || !dest.exists()) { // NB: checking existence in case the file has been removed since we generated last time
     		concatAlwaysAtomic(sources, dest, header, footer, filter);
     		file2sourceDigests.put(dest.toString(), newDigest);
     	}    	
