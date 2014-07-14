@@ -12,7 +12,7 @@ app.filter('array_difference', function (h) {
     };
 });
 
-app.controller('MainCtrl', function($scope, h, $route, $parse, routes, globals) {
+app.controller('MainCtrl', function($scope, h, $route, $parse, routes, globals, login, loginSuccess) {
 
     $scope.getTemplateUrl = h.getTemplateUrl;
     $scope.allowLogout = false;//!globals.isWebWidget;
@@ -24,7 +24,7 @@ app.controller('MainCtrl', function($scope, h, $route, $parse, routes, globals) 
 	});
     });
 
-    h.jsonpLogin().then(null, h.loginMayRedirect).then(h.setLoggedUser);
+    login.jsonp().then(null, login.mayRedirect).then(loginSuccess.set);
 
     $scope.$on('$locationChangeSuccess', function(){
 	h.findCurrentTab($scope, $route.current.templateUrl);
