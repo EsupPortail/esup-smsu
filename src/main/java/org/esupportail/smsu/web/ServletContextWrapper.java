@@ -1,8 +1,6 @@
 package org.esupportail.smsu.web;
 
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import javax.portlet.PortletContext;
 import javax.servlet.ServletContext;
