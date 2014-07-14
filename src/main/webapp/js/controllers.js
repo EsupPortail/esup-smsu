@@ -14,7 +14,6 @@ app.filter('array_difference', function (h) {
 
 app.controller('MainCtrl', function($scope, h, $route, $parse, routes, globals, login, loginSuccess) {
 
-    $scope.getTemplateUrl = h.getTemplateUrl;
     $scope.allowLogout = false;//!globals.isWebWidget;
     $scope.wsgroupsURL = globals.wsgroupsURL;
 

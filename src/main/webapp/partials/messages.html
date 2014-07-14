@@ -42,7 +42,7 @@ Filtre : <a href="" ng-click="showFilters = !showFilters">{{formattedFilter()}}<
   <tr ng-if="msg.showDetails"></tr> <!-- for table-striped -->
   <tr ng-if="msg.showDetails" ng-repeat-end>
       <td colspan="5">
-	<div ng-include="getTemplateUrl('messages-detail-inc.html')"></div>
+	<div my-include="messages-detail-inc.html"></div>
 	<a class="btn btn-default" href="#/messages/{{msg.id}}"><span class="glyphicon glyphicon-link"></span></a>
       </td>
   </tr>

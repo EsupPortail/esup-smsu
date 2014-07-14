@@ -90,4 +90,15 @@ app.directive('myAutocomplete', function (globals) {
   };
 });
 
+app.directive('myInclude', function (globals) {
+  return {
+    restrict: 'A',
+    replace: true,
+    template: function(element, attrs) {
+	var absoluteURL = globals.baseURL + '/partials/' + attrs.myInclude;
+	return '<div ng-include="\'' + absoluteURL + '\'"></div>';
+    }
+  };
+});
+
 })();

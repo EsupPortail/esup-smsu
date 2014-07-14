@@ -3,7 +3,7 @@
 
 var app = angular.module('myApp');
 
-app.service('h', function (globals, basicHelpers, restWsHelpers) {
+app.service('h', function (basicHelpers, restWsHelpers) {
 
 var h = this;
 
@@ -12,10 +12,6 @@ angular.extend(this, basicHelpers);
 // rename restWsHelpers methods for compat
 this.callRest = restWsHelpers.simple;
 this.callRestModify = restWsHelpers.action;
-
-this.getTemplateUrl = function (basename) {
-    return globals.baseURL + '/partials/' + basename;
-};
 
 this.getGroups = function () {
     return h.callRest('groups');
