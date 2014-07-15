@@ -3,10 +3,21 @@
 
 var app = angular.module('myApp');
 
-app.service('restWsHelpers', function ($http, $rootScope, globals, $q, $timeout, basicHelpers, login, loginSuccess) {
+app.service('restWsHelpers', function ($http, $rootScope, globals, $q, $timeout, basicHelpers, login, loginSuccess, $location) {
 
 // loginSuccess need restWsHelpers but it would create a circular deps, resolve it by hand:
 loginSuccess.restWsHelpers = this;
+
+getSessionIdOnStartup();
+
+function getSessionIdOnStartup() {
+    var sessionId = $location.search().sessionId;
+    if (sessionId) {
+	// save it then clean up URL
+	$rootScope.sessionId = sessionId;
+	$location.search('sessionId', null);
+    }
+}
 
 function tryRelog() {
 

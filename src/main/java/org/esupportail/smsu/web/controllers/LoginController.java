@@ -32,6 +32,11 @@ public class LoginController {
 	if (then != null) {
 		//then = URLDecoder.decode(then, "UTF-8");
 		String url = urlGenerator.goTo(request, then);
+		if (ourCookiesRejected) {
+		    // add sessionId as a "search" parameter in hash part of url
+		    if (!url.contains("#")) url += "#";
+		    url += "?sessionId=" + request.getSession().getId();
+		}
 		return Response.temporaryRedirect(URI.create(url)).build();		
 	}
 
