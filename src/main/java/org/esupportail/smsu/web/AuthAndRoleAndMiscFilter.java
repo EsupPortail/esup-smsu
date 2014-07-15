@@ -19,7 +19,7 @@ import org.esupportail.commons.services.logging.LoggerImpl;
 import org.esupportail.smsu.business.SecurityManager;
 
 
-public final class RoleWrapperFilter implements Filter {
+public final class AuthAndRoleAndMiscFilter implements Filter {
 	
     @Autowired private SecurityManager securityManager;
 
