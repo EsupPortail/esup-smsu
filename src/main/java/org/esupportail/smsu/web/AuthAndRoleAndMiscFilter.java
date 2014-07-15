@@ -31,11 +31,12 @@ public final class AuthAndRoleAndMiscFilter implements Filter {
     /**
      * Wraps the HttpServletRequest in a wrapper class that delegates <code>request.isUserInRole</code> 
      */
-    public void doFilter(final ServletRequest servletRequest, final ServletResponse response, final FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse, final FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
+        HttpServletResponse response = (HttpServletResponse) servletResponse;
         String user = request.getRemoteUser();
 	if (user == null) {
-	    unauthorized((HttpServletResponse) response);
+	    unauthorized(response);
 	    return;
 	}
 
@@ -44,6 +45,10 @@ public final class AuthAndRoleAndMiscFilter implements Filter {
         	user = request.getHeader("X-Impersonate-User");
         	rights = securityManager.loadUserRightsByUsername(user);
         }
+        
+        // ugly hack for Internet Explorer. It would need to be done somewhere else...
+        response.setHeader("Cache-Control", "no-cache");
+        
 		filterChain.doFilter(new MyHttpServletRequestWrapper(request, user, rights), response);
     }
 
