@@ -5,6 +5,9 @@ var app = angular.module('myApp');
 
 app.service('restWsHelpers', function ($http, $rootScope, globals, $q, $timeout, basicHelpers, login, loginSuccess) {
 
+// loginSuccess need restWsHelpers but it would create a circular deps, resolve it by hand:
+loginSuccess.restWsHelpers = this;
+
 function tryRelog() {
 
     function relogSuccess(loggedUser) {
