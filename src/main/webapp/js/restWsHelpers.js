@@ -19,6 +19,10 @@ function getSessionIdOnStartup() {
     }
 }
 
+function initialLogin() {
+    login.jsonp().then(null, login.mayRedirect).then(loginSuccess.set);
+}
+
 function tryRelog() {
 
     function relogSuccess(loggedUser) {
@@ -171,6 +175,7 @@ function action(method, restPath, o) {
 
 this.simple = simple;
 this.action = action;
+this.initialLogin = initialLogin;
 
 });
 

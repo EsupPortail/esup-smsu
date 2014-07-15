@@ -12,7 +12,7 @@ app.filter('array_difference', function (h) {
     };
 });
 
-app.controller('MainCtrl', function($scope, h, $route, $parse, routes, globals, login, loginSuccess) {
+app.controller('MainCtrl', function($scope, h, $route, $parse, routes, globals, restWsHelpers) {
 
     $scope.allowLogout = false;//!globals.isWebWidget;
     $scope.wsgroupsURL = globals.wsgroupsURL;
@@ -23,7 +23,7 @@ app.controller('MainCtrl', function($scope, h, $route, $parse, routes, globals, 
 	});
     });
 
-    login.jsonp().then(null, login.mayRedirect).then(loginSuccess.set);
+    restWsHelpers.initialLogin();
 
     $scope.$on('$locationChangeSuccess', function(){
 	routes.findCurrentTab($scope, $route.current.templateUrl);
