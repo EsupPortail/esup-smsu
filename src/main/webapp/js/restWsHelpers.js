@@ -63,13 +63,11 @@ function alertOnce(msg, timeout) {
     }
 }
 
-var cookiesRejected = false;
 function xhrRequest(args, flags) {
     var onError401 = function (resp) {
 	if (flags.justSuccessfullyLogged) {
-	    if (!flags.cookiesRejected) {
-		console.log("It looks like our cookies are rejected. Trying to pass sessionId in URLs...");
-		cookiesRejected = true;
+	    if (!flags.cookiesRejected && $rootScope.sessionId) {
+		console.log("Race? Our request was done without flag cookiesRejected. Retrying with jsessionid in request");
 		return xhrRequest(args, flags);
 	    } else {	
 		alert("FATAL : both cookies and URL parameter jsessionid are rejected");
@@ -116,7 +114,7 @@ function xhrRequest(args, flags) {
 	alert("unknown error " + status);
 	return $q.reject(resp);
     };
-    if (cookiesRejected && !flags.cookiesRejected) {
+    if ($rootScope.sessionId && !flags.cookiesRejected) {
 	flags.cookiesRejected = true;
 	args = angular.copy(args);
 	args.url = args.url + ";jsessionid=" + $rootScope.sessionId;

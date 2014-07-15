@@ -10,6 +10,7 @@ import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -25,6 +26,7 @@ public class LoginController {
     
     @GET
     public Response get(@Context HttpServletRequest request) throws IOException {
+    	boolean ourCookiesRejected = ourCookiesRejected(request);
 
 	String then = request.getParameter("then");
 	if (then != null) {
@@ -34,7 +36,9 @@ public class LoginController {
 	}
 
 	User user = domainService.getUser(request.getRemoteUser());
-	user.sessionId = request.getSession().getId();
+	if (ourCookiesRejected) {
+		user.sessionId = request.getSession().getId();
+	}
 	String jsUser = new ObjectMapper().writeValueAsString(user);
 	String content, type;
 	if (request.getParameter("postMessage") != null) {
@@ -49,5 +53,19 @@ public class LoginController {
 	}
         return Response.status(Response.Status.OK).type(type).entity(content).build();
     }
- 
+
+	// call this function on successful login
+    // if we managed to get here and there is no cookie, it means they have been rejected
+    private boolean ourCookiesRejected(HttpServletRequest request) {
+    	for (Cookie cookie : request.getCookies()) {
+    		if (cookie.getName().equals("JSESSIONID"))
+    			// cool, our previous Set-Cookie was accepted
+    			return false;
+    		if (cookie.getName().startsWith("_shibsession_"))
+    			// Shibboleth SP Set-Cookie was accepted
+    			return false;
+    	}
+    	return true;
+     }
+
 }
