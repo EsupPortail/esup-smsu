@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class StartPage implements org.springframework.web.HttpRequestHandler {
 
-    private UrlGenerator urlGenerator;
+    @Autowired private UrlGenerator urlGenerator;
     @Autowired private ServerSideDirectives serverSideDirectives;
     private String wsgroupsURL;
     
@@ -70,10 +70,6 @@ public class StartPage implements org.springframework.web.HttpRequestHandler {
     static public String getHtmlTemplate(ServletContextWrapper context, String path) throws IOException {
 	return IOUtils.toString(context.getResourceAsStream(path), "UTF-8");
     }
-
-	public void setUrlGenerator(UrlGenerator urlGenerator) {
-		this.urlGenerator = urlGenerator;
-	}
 
 	public void setWsgroupsURL(String wsgroupsURL) {
 		this.wsgroupsURL = wsgroupsURL;

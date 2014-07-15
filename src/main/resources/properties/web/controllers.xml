@@ -25,7 +25,6 @@
    <bean id="applicationContextHolder" class="org.esupportail.commons.context.ApplicationContextHolder" />
 
    <bean id="StartPage" class="org.esupportail.smsu.web.StartPage">
-  	  <property name="urlGenerator" ref="urlGenerator" />
   	  <property name="wsgroupsURL" value="${wsgroups.url}" />
 	  <property name="jsonpDisabled" value="#{'${authentication}' == 'shibboleth'}" />
 	</bean>
