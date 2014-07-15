@@ -28,6 +28,7 @@ public final class AuthAndRoleAndMiscFilter implements Filter {
     private boolean shibUseHeaders = false;
 
     private String sessionAttributeName = "MY_REMOTE_USER";
+    private String rightAllowingImpersonate = "FCTN_GESTION_ROLES_AFFECT";
 
     private final Logger logger = new LoggerImpl(getClass());
 
@@ -48,6 +49,9 @@ public final class AuthAndRoleAndMiscFilter implements Filter {
 
         Set<String> rights = securityManager.loadUserRightsByUsername(user);
         if (request.getHeader("X-Impersonate-User") != null) {
+	    if (!rights.contains(rightAllowingImpersonate))
+	        throw new RuntimeException("Impersonate not allowed");
+
         	user = request.getHeader("X-Impersonate-User");
         	rights = securityManager.loadUserRightsByUsername(user);
         }
