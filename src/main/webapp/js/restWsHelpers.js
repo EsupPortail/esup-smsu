@@ -132,6 +132,7 @@ function xhrRequest(args, flags) {
 	alert("unknown error " + status);
 	return $q.reject(resp);
     };
+    if (flags.noErrorHandling) onError = null;
     if ($rootScope.sessionId && !flags.cookiesRejected) {
 	flags.cookiesRejected = true;
 	args = angular.copy(args);
@@ -150,11 +151,12 @@ function headers() {
     return r;
 }
 
-function simple($function, params) {
+function simple($function, params, flags) {
     var url = globals.baseURL + '/rest/' + $function;
     params = angular.extend({}, params);
+    flags = angular.extend({}, flags);
     var args = { method: 'get', url: url, params: params, headers: headers() };
-    return xhrRequest(args, {}).then(function(resp) {
+    return xhrRequest(args, flags).then(function(resp) {
 	return resp.data;
     });
 };
