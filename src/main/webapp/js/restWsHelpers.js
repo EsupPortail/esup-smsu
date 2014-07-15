@@ -20,7 +20,12 @@ function getSessionIdOnStartup() {
 }
 
 function initialLogin() {
-    login.jsonp().then(null, login.mayRedirect).then(loginSuccess.set);
+    if (globals.jsonpDisabled) {
+	// try a simple XHR login, especially needed in case we arrive here after a redirect
+	simple('login', {}, { noErrorHandling: true }).then(null, login.mayRedirect).then(loginSuccess.set);
+    } else {
+	login.jsonp().then(null, login.mayRedirect).then(loginSuccess.set);
+    }
 }
 
 function tryRelog() {
@@ -54,7 +59,7 @@ function tryRelog() {
 	console.log("jsonpLogin failed, going to windowOpenLogin");
 
 	$rootScope.loggedUser = undefined; // hide app
-	return login.windowOpen().then(relogSuccess, function (resp) {
+	return login.windowOpen('relog').then(relogSuccess, function (resp) {
 	    console.log('relog failed');
 	    console.log(resp);
 	    alert("relog failed");

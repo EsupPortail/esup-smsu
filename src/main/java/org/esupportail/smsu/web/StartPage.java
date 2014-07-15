@@ -17,6 +17,8 @@ public class StartPage implements org.springframework.web.HttpRequestHandler {
     private UrlGenerator urlGenerator;
     @Autowired private ServerSideDirectives serverSideDirectives;
     private String wsgroupsURL;
+    
+    private boolean jsonpDisabled = false;
 
     public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
 	ServletContextWrapper context = new ServletContextWrapper(request.getSession().getServletContext());
@@ -54,6 +56,7 @@ public class StartPage implements org.springframework.web.HttpRequestHandler {
     	env.put("loginURL", genTestStaticJsonPage ? "test/login.jsonp" : "rest/login");
     	env.put("wsgroupsURL", wsgroupsURL);
     	env.put("isWebWidget", ""+isWebWidget);
+    	env.put("jsonpDisabled", ""+jsonpDisabled);
     	env.put("useTestStaticJson", ""+genTestStaticJsonPage);
 		return env;
 	}
@@ -74,6 +77,10 @@ public class StartPage implements org.springframework.web.HttpRequestHandler {
 
 	public void setWsgroupsURL(String wsgroupsURL) {
 		this.wsgroupsURL = wsgroupsURL;
+	}
+
+	public void setJsonpDisabled(boolean jsonpDisabled) {
+		this.jsonpDisabled = jsonpDisabled;
 	}
 
 }

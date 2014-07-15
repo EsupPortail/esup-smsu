@@ -48,7 +48,7 @@ public class LoginController {
 	String content, type;
 	if (request.getParameter("postMessage") != null) {
 		type = "text/html";
-		content = "Login success, please wait...\n<script>\n (window.opener.postMessage ? window.opener : window.opener.document).postMessage('loggedUser=' + JSON.stringify(" + jsUser + "), '*');\n</script>";
+		content = "Login success, please wait...\n<script>\n (window.opener ? (window.opener.postMessage ? window.opener : window.opener.document) : window.parent).postMessage('loggedUser=' + JSON.stringify(" + jsUser + "), '*');\n</script>";
 	} else if (request.getParameter("callback") != null) {
 		type = "application/x-javascript";
 		content = request.getParameter("callback") + "(" + jsUser + ")";
