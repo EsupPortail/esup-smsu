@@ -7,7 +7,10 @@
 		http://www.springframework.org/schema/beans
 		http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-   <bean id="AuthAndRoleAndMiscFilter" class="org.esupportail.smsu.web.AuthAndRoleAndMiscFilter" />
+   <bean id="AuthAndRoleAndMiscFilter" class="org.esupportail.smsu.web.AuthAndRoleAndMiscFilter">
+      <property name="authentication" value="${authentication}" />
+      <property name="shibUseHeaders" value="${shibboleth.shibUseHeaders}" />
+   </bean>
 
    <bean id="cachedDigest" class="org.esupportail.smsu.utils.CachedDigest" />
    <bean id="aggregateToFile" class="org.esupportail.smsu.utils.AggregateToFile" />

@@ -10,6 +10,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import java.io.IOException;
 
@@ -23,6 +24,11 @@ public final class AuthAndRoleAndMiscFilter implements Filter {
 	
     @Autowired private SecurityManager securityManager;
 
+    private String authentication = "cas";
+    private boolean shibUseHeaders = false;
+
+    private String sessionAttributeName = "MY_REMOTE_USER";
+
     private final Logger logger = new LoggerImpl(getClass());
 
     public void destroy() {}
@@ -34,7 +40,7 @@ public final class AuthAndRoleAndMiscFilter implements Filter {
     public void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse, final FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
-        String user = request.getRemoteUser();
+        String user = getRemoteUser(request);
 	if (user == null) {
 	    unauthorized(response);
 	    return;
@@ -51,6 +57,32 @@ public final class AuthAndRoleAndMiscFilter implements Filter {
         
 		filterChain.doFilter(new MyHttpServletRequestWrapper(request, user, rights), response);
     }
+    
+	private String getRemoteUser(HttpServletRequest request) {
+		if (authentication.equals("cas")) {
+        	// the job is done by org.jasig.cas.client.util.HttpServletRequestWrapperFilter
+        	return request.getRemoteUser();
+		} else {			
+			return getRemoteUserShibboleth(request);
+        }		
+	}
+	
+	private String getRemoteUserShibboleth(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		String user = (String) session.getAttribute(sessionAttributeName);
+		if (user == null) {
+			// initial auth, we rely on shibboleth SP to do the authentication
+			// use either use normal stuff (AJP) or HTTP header (if really needed...)
+			user = request.getRemoteUser();
+			if (user == null) {
+				user = request.getHeader("REMOTE_USER");
+				if (user != null && !shibUseHeaders)
+					throw new RuntimeException("Received HTTP header REMOTE_USER. You must be using \"ShibUserHeaders On\" in apache configuration. In that case set shibboleth.shibUserHeaders=true");
+			}
+			if (user != null) session.setAttribute(sessionAttributeName, user);
+        }
+		return user;
+	}
 
     private void unauthorized(HttpServletResponse response) throws IOException {
 	response.setHeader("WWW-Authenticate", "CAS");
@@ -82,4 +114,12 @@ public final class AuthAndRoleAndMiscFilter implements Filter {
 	    return false;
         }
     }
+    
+    public void setAuthentication(String authentication) {
+ 		this.authentication = authentication;
+ 	}
+ 	public void setShibUseHeaders(boolean shibUseHeaders) {
+ 		this.shibUseHeaders = shibUseHeaders;
+ 	}
+
 }
