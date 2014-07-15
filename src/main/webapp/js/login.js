@@ -69,6 +69,8 @@ this.mayRedirect = function () {
 	console.log("jsonpLogin failed, trying redirect");
 	var then = $window.location.hash && $window.location.hash.replace(/^#/, '');
 	$window.location.href = globals.baseURL + '/rest/login?then=' + encodeURIComponent(then);
+	// the redirect may take time, in the meantime, do not think login was succesful
+	return $q.reject("jsonpLogin failed, trying redirect");
     }
 };
 
