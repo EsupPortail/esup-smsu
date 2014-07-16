@@ -13,10 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.commons.lang.StringUtils;
@@ -115,21 +113,13 @@ public final class AuthAndRoleAndMiscFilter implements Filter {
 		// (nb: not using encode=true since it adds jsessionid in url which mess up things. we do not need it since we will have _shibsession_)
 		String target = CommonUtils.constructServiceUrl(request, response, null, serverURL, "_shibsession_", false);
 		
-		String url = shibbolethSessionInitiatorUrl + "?target=" + urlencode(target);
+		String url = shibbolethSessionInitiatorUrl + "?target=" + UrlGenerator.urlencode(target);
 
 		String idpId = request.getParameter("idpId");
 		if (idpId != null) url += "&providerId=" + idpId;
 
 		response.sendRedirect(concatUrlAndLocation(serverURL, url));
 	}
-
-    public static String urlencode(String s) {
-        try {
-            return URLEncoder.encode(s, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException("urlencode failed on '" + s + "'");
-        }
-    }
 	
 	private String concatUrlAndLocation(String serverURL, String url) throws MalformedURLException {
 		return new URL(new URL(serverURL), url).toString();

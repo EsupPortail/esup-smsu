@@ -1,6 +1,8 @@
 package org.esupportail.smsu.services;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -58,6 +60,14 @@ public class UrlGenerator {
 		else
 			return serverURL;
 	}
+
+    public static String urlencode(String s) {
+        try {
+            return URLEncoder.encode(s, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("urlencode failed on '" + s + "'");
+        }
+    }
 
 	public String getServerURL() {
 		return serverURL;
