@@ -25,7 +25,7 @@ public class StartPage implements org.springframework.web.HttpRequestHandler {
 	boolean isWebWidget = request.getServletPath().startsWith("/WebWidget");
 	boolean genTestStaticJsonPage = request.getServletPath().equals("/GenTestStaticJsonPage");
 	String baseURL = genTestStaticJsonPage ? ".." : urlGenerator.baseURL(request);
-	Map<String, String> env = createEnv(baseURL, isWebWidget, genTestStaticJsonPage);
+	Map<String, Object> env = createEnv(baseURL, isWebWidget, genTestStaticJsonPage);
 
 	String template = getHtmlTemplate(context, "/WEB-INF/WebWidget-template.html");
 	String page = instantiateTemplate(context, env, template);
@@ -41,22 +41,22 @@ public class StartPage implements org.springframework.web.HttpRequestHandler {
         response.getWriter().print(page);
     }
 
-	public String instantiateTemplate(ServletContextWrapper context, Map<String, String> env, String template) {
+	public String instantiateTemplate(ServletContextWrapper context, Map<String, Object> env, String template) {
 		return serverSideDirectives.instantiate(template, env, context);
 	}
 
     private String getStartPageHtml(ServletContextWrapper context, String webWidget) throws IOException {
     	String s = getHtmlTemplate(context, "/WEB-INF/StartPage-template.html");
-    	return serverSideDirectives.instantiate_vars(s, singletonMap("webWidget", webWidget));
+    	return serverSideDirectives.instantiate_vars(s, singletonMap("webWidget", (Object) webWidget));
     }
 
-	public Map<String, String> createEnv(String baseURL, boolean isWebWidget, boolean genTestStaticJsonPage) {
-		Map<String, String> env = new TreeMap<String, String>();
+	public Map<String, Object> createEnv(String baseURL, boolean isWebWidget, boolean genTestStaticJsonPage) throws IOException {
+		Map<String, Object> env = new TreeMap<String, Object>();
     	env.put("baseURL", baseURL);
     	env.put("wsgroupsURL", wsgroupsURL);
-    	env.put("isWebWidget", ""+isWebWidget);
-    	env.put("jsonpDisabled", ""+jsonpDisabled);
-    	env.put("useTestStaticJson", ""+genTestStaticJsonPage);
+    	env.put("isWebWidget", isWebWidget);
+    	env.put("jsonpDisabled", jsonpDisabled);
+    	env.put("useTestStaticJson", genTestStaticJsonPage);
 		return env;
 	}
 

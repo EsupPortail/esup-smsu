@@ -31,7 +31,7 @@ public class ServerSideDirectives {
 	@Inject private CachedDigest cachedDigest;
 	@Inject private AggregateToFile aggregateToFile;
 	
-    public String instantiate(String template, Map<String,String> env, ServletContextWrapper context) {
+    public String instantiate(String template, Map<String,Object> env, ServletContextWrapper context) {
     	template = instantiate_vars(template, env);
     	// first remove what is unneeded
     	template = instantiate_serverSideIf(template, env);
@@ -45,11 +45,11 @@ public class ServerSideDirectives {
     	return template;
     }
     
-    public String instantiate_vars(String template, final Map<String,String> env) {
+    public String instantiate_vars(String template, final Map<String,Object> env) {
     	String regex = Pattern.quote("{{serverSide.") + "([^}]+)" + Pattern.quote("}}");
     	return ReplaceAllWithCallback.doIt(template, regex, new ReplaceAllWithCallback.Callback() {			
 			public String replace(MatchResult m) {
-				return env.get(m.group(1));
+				return (String) env.get(m.group(1));
 			}
 		});
     }
@@ -67,7 +67,7 @@ public class ServerSideDirectives {
 		return template;
     }
 
-    private String instantiate_serverSidePrefix(String template, Map<String,String> env) {
+    private String instantiate_serverSidePrefix(String template, Map<String,Object> env) {
 		String ssp_src_regex = "\\bserver-side-prefix=" + stringValue + "\\s+" + srcStringValue;
     	String ssp_href_regex = "\\bserver-side-prefix=" + stringValue + "\\s+" + hrefStringValue;
 		template = instantiate_serverSidePrefix(template, scriptStart + ssp_src_regex + scriptEnd, env);
@@ -76,23 +76,23 @@ public class ServerSideDirectives {
 		return template;
     }
     
-    private String instantiate_serverSideConcat(String template, Map<String,String> env, final ServletContextWrapper context) {
+    private String instantiate_serverSideConcat(String template, final ServletContextWrapper context) {
 		String ssp_src_regex = "\\bserver-side-concat=" + stringValue + "\\s+" + srcStringValue;
     	String ssp_href_regex = "\\bserver-side-concat=" + stringValue + "\\s+" + hrefStringValue;
-		template = instantiate_serverSideConcat(template, scriptStart + ssp_src_regex + scriptEnd, env, context);
-		template = instantiate_serverSideConcat(template, linkStart + ssp_href_regex + linkEnd, env, context);
+		template = instantiate_serverSideConcat(template, scriptStart + ssp_src_regex + scriptEnd, context);
+		template = instantiate_serverSideConcat(template, linkStart + ssp_href_regex + linkEnd, context);
     	if (template.matches("server-side-concat")) throw new RuntimeException("syntax error for server-side-concat in " + template);
 		return template;
     }
 
-    private String instantiate_serverSideAngularTemplates(String template, Map<String,String> env, final ServletContextWrapper context) {
+    private String instantiate_serverSideAngularTemplates(String template, Map<String, Object> env, final ServletContextWrapper context) {
 		String ssp_src_regex = "\\bserver-side-angular-templates=" + stringValue + "\\s+" + srcStringValue;
 		template = instantiate_serverSideAngularTemplates(template, scriptStart + ssp_src_regex + scriptEnd, env, context);
     	if (template.matches("server-side-angular-templates")) throw new RuntimeException("syntax error for server-side-concat in " + template);
 		return template;
     }
 
-    private String instantiate_serverSideIf(String template, Map<String,String> env) {
+    private String instantiate_serverSideIf(String template, Map<String, Object> env) {
 		String ssp_regex = "\\bserver-side-if=" + stringValue + "\\s*";
     	template = instantiate_serverSideIf(template, scriptStart + ssp_regex + scriptEnd, env);
 		template = instantiate_serverSideIf(template, linkStart + ssp_regex + linkEnd, env);
@@ -117,7 +117,7 @@ public class ServerSideDirectives {
     	});
     }
     
-    private String instantiate_serverSidePrefix(String template, String regex, final Map<String,String> env) {
+    private String instantiate_serverSidePrefix(String template, String regex, final Map<String,Object> env) {
     	return ReplaceAllWithCallback.doIt(template, regex, new ReplaceAllWithCallback.Callback() {			
 			public String replace(MatchResult m) {
 				String 	openTag = m.group(1),
@@ -126,7 +126,7 @@ public class ServerSideDirectives {
 						srcVal = m.group(4),
 						endTag = m.group(5);
 
-				String prefix = env.get(prefixVar);
+				String prefix = (String) env.get(prefixVar);
 				if (prefix == null) throw new RuntimeException("invalid server-side-prefix " + prefixVar);
     		
 				return openTag + srcAttr + "=\"" + prefix + "/" + srcVal + "\"" + endTag;
@@ -173,7 +173,7 @@ public class ServerSideDirectives {
     	return result;
     }
     
-    private String instantiate_serverSideAngularTemplates(String template, String regex, final Map<String,String> env, final ServletContextWrapper context) {
+    private String instantiate_serverSideAngularTemplates(String template, String regex, final Map<String, Object> env, final ServletContextWrapper context) {
     	return ReplaceAllWithCallback.doIt(template, regex, new ReplaceAllWithCallback.Callback() {			
 			public String replace(MatchResult m) {
 				String	openTag = m.group(1),
@@ -209,22 +209,31 @@ public class ServerSideDirectives {
     	});
     }
     
-    private String instantiate_serverSideIf(String template, String regex, final Map<String,String> env) {
+    private String instantiate_serverSideIf(String template, String regex, final Map<String,Object> env) {
     	String result = ReplaceAllWithCallback.doIt(template, regex, new ReplaceAllWithCallback.Callback() {			
 			public String replace(MatchResult m) {
 				String	openTag = m.group(1),
 						varName = m.group(2),
 						endTag = m.group(3);
 
-				String val = env.get(varName);
+				Object val = env.get(varName);
 				if (val == null) throw new RuntimeException("invalid server-side-if " + varName);
     		
-				return StringUtils.isBlank(val) ? "" : openTag + endTag;
+				return isFalse(val) ? "" : openTag + endTag;
 			}
     	});
     	return result;
     }
 	
+    // similar to perl/python falseness
+	private boolean isFalse(Object val) {
+		if (val == null) return true;
+		if (val instanceof Boolean) return !(Boolean) val;
+		if (val instanceof String) return StringUtils.isBlank((String) val);
+		if (val instanceof Number) return ((Number) val).doubleValue() == 0;
+		return false;
+	}
+
 	private File src2file(final ServletContextWrapper context, String src) {
 		File baseURL = new File(context.getRealPath("/"));
 		return new File(baseURL, src);
@@ -238,10 +247,10 @@ public class ServerSideDirectives {
 		return "document.write(" + new ObjectMapper().writeValueAsString(script) + ");\n";
 	}
 
-    private String getServerSidePrefix(String scriptTag, final Map<String, String> env) {
+    private String getServerSidePrefix(String scriptTag, final Map<String, Object> env) {
 		String urlPrefixVar = getFirstMatch("\\bserver-side-prefix=" + stringValue, scriptTag);
 		
-		String urlPrefix = env.get(urlPrefixVar);
+		String urlPrefix = (String) env.get(urlPrefixVar);
 		if (urlPrefix == null) throw new RuntimeException("invalid server-side-prefix " + urlPrefixVar);
 		return urlPrefix;
 	}
