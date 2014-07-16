@@ -37,9 +37,9 @@ public class ServerSideDirectives {
     	template = instantiate_serverSideIf(template, env);
     	// generate angular templates js
     	template = instantiate_serverSideAngularTemplates(template, env, context);    	
-    	template = instantiate_serverSideConcat(template, env, context);
+    	template = instantiate_serverSideConcat(template, context);
     	// must be done after Concat in case both are used
-    	template = instantiate_serverSideCacheBuster(template, env, context);
+    	template = instantiate_serverSideCacheBuster(template, context);
     	// must be done after CacheBuster
     	template = instantiate_serverSidePrefix(template, env);
     	return template;
@@ -58,11 +58,11 @@ public class ServerSideDirectives {
      * NB: this cacheBuster adds ?d=<digest> to urls, which is not best according to https://developers.google.com/speed/docs/best-practices/caching
      * but it should be quite good for our needs (and better than nothing!!)
      */
-    private String instantiate_serverSideCacheBuster(String template, Map<String,String> env, ServletContextWrapper context) {
+    private String instantiate_serverSideCacheBuster(String template, ServletContextWrapper context) {
 		String ssp_src_regex = "\\bserver-side-cache-buster\\s+" + srcStringValue;
     	String ssp_href_regex = "\\bserver-side-cache-buster\\s+" + hrefStringValue;
-		template = instantiate_serverSideCacheBuster(template, scriptStart + ssp_src_regex + scriptEnd, env, context);
-		template = instantiate_serverSideCacheBuster(template, linkStart + ssp_href_regex + linkEnd, env, context);
+		template = instantiate_serverSideCacheBuster(template, scriptStart + ssp_src_regex + scriptEnd, context);
+		template = instantiate_serverSideCacheBuster(template, linkStart + ssp_href_regex + linkEnd, context);
     	if (template.matches("server-side-cache-buster")) throw new RuntimeException("syntax error for server-side-cache-buster in " + template);
 		return template;
     }
@@ -100,7 +100,7 @@ public class ServerSideDirectives {
 		return template;
     }
     
-    private String instantiate_serverSideCacheBuster(String template, String regex, final Map<String,String> env, final ServletContextWrapper context) {
+    private String instantiate_serverSideCacheBuster(String template, String regex, final ServletContextWrapper context) {
     	return ReplaceAllWithCallback.doIt(template, regex, new ReplaceAllWithCallback.Callback() {			
 			public String replace(MatchResult m) {
 				String	openTag = m.group(1),
@@ -134,7 +134,7 @@ public class ServerSideDirectives {
     	});
     }
     
-    private String instantiate_serverSideConcat(String template, String regex, final Map<String,String> env, final ServletContextWrapper context) {
+    private String instantiate_serverSideConcat(String template, String regex, final ServletContextWrapper context) {
     	final Map<String,List<File>> destination2sources = new TreeMap<String, List<File>>();
     	
     	String result = ReplaceAllWithCallback.doIt(template, regex, new ReplaceAllWithCallback.Callback() {			
