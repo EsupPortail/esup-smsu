@@ -10,6 +10,7 @@
    <bean id="AuthAndRoleAndMiscFilter" class="org.esupportail.smsu.web.AuthAndRoleAndMiscFilter">
       <property name="authentication" value="${authentication}" />
       <property name="shibUseHeaders" value="${shibboleth.shibUseHeaders}" />
+      <property name="shibbolethSessionInitiatorUrl" value="${shibboleth.sessionInitiator.url}" />
    </bean>
 
    <bean id="cachedDigest" class="org.esupportail.smsu.utils.CachedDigest" />

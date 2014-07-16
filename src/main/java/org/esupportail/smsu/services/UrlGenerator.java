@@ -51,6 +51,10 @@ public class UrlGenerator {
 			return serverURL;
 	}
 
+	public String getServerURL() {
+		return serverURL;
+	}
+
 	public void setServerURL(String serverURL) {
 		this.serverURL = cleanupServerUrl(serverURL);
 	}
