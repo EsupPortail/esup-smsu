@@ -28,15 +28,12 @@ public class LoginController {
     public Response get(@Context HttpServletRequest request) throws IOException {
     	boolean ourCookiesRejected = ourCookiesRejected(request);
 
+	String sessionId = ourCookiesRejected ? request.getSession().getId() : null;
+    
 	String then = request.getParameter("then");
 	if (then != null) {
 		//then = URLDecoder.decode(then, "UTF-8");
-		String url = urlGenerator.goTo(request, then);
-		if (ourCookiesRejected) {
-		    // add sessionId as a "search" parameter in hash part of url
-		    if (!url.contains("#")) url += "#";
-		    url += "?sessionId=" + request.getSession().getId();
-		}
+		String url = urlGenerator.goTo(request, then, sessionId);
 		return Response.temporaryRedirect(URI.create(url)).build();		
 	}
 

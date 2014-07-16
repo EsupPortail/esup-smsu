@@ -25,6 +25,14 @@ public class UrlGenerator {
 	}   
 
 	public String goTo(HttpServletRequest request, String then) {
+		return goTo(request, then, null);
+	}
+
+	public String goTo(HttpServletRequest request, String then, String sessionId) {
+		if (sessionId != null) {
+			// add sessionId as a "search" parameter in hash part of url
+			then += (then.contains("?") ? "&" : "?") + "sessionId=" + sessionId;
+		}
 		return baseURL(request) + "/#" + then;
 	}
 
