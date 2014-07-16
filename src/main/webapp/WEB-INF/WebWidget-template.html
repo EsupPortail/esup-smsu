@@ -1,11 +1,6 @@
 
 <script>
-  document.esupSmsu = { 
-     baseURL: '{{serverSide.baseURL}}', 
-     wsgroupsURL: '{{serverSide.wsgroupsURL}}',
-     isWebWidget: {{serverSide.isWebWidget}},
-     jsonpDisabled: {{serverSide.jsonpDisabled}},
-     useTestStaticJson: {{serverSide.useTestStaticJson}} };
+  document.esupSmsu = {{serverSide.globals}};
 </script>
 
 <link server-side-prefix="baseURL" server-side-cache-buster href="css/bootstrap-scoped.css" rel="stylesheet">

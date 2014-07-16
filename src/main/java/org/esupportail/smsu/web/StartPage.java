@@ -57,6 +57,7 @@ public class StartPage implements org.springframework.web.HttpRequestHandler {
     	env.put("isWebWidget", isWebWidget);
     	env.put("jsonpDisabled", jsonpDisabled);
     	env.put("useTestStaticJson", genTestStaticJsonPage);
+    	env.put("globals", new ObjectMapper().writeValueAsString(env));
 		return env;
 	}
 
