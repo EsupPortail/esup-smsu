@@ -93,11 +93,19 @@ function alertOnce(msg, timeout) {
 function xhrRequest(args, flags) {
     var onError401 = function (resp) {
 	if (flags.justSuccessfullyLogged) {
-	    if (!flags.cookiesRejected && $rootScope.sessionId) {
-		console.log("Race? Our request was done without flag cookiesRejected. Retrying with jsessionid in request");
-		return xhrRequest(args, flags);
-	    } else {	
-		alert("FATAL : both cookies and URL parameter jsessionid are rejected");
+	    if ($rootScope.sessionId) {
+		if (!flags.sessionId) {
+		    console.log("Race? Our request was done without flag cookiesRejected. Retrying with jsessionid in request");
+		    return xhrRequest(args, flags);
+		} else if (flags.sessionId !== $rootScope.sessionId) {
+		    console.log("SessionId has changed. Retrying with new jsessionid");
+		    return xhrRequest(args, flags);
+		} else {
+		    alert("FATAL : both cookies and URL parameter jsessionid are rejected");
+		    return $q.reject(resp);
+		}
+	    } else {
+		alert("FATAL : ????");
 		return $q.reject(resp);
 	    }
 	}
@@ -142,10 +150,11 @@ function xhrRequest(args, flags) {
 	return $q.reject(resp);
     };
     if (flags.noErrorHandling) onError = null;
-    if ($rootScope.sessionId && !flags.cookiesRejected) {
-	flags.cookiesRejected = true;
+    if ($rootScope.sessionId && !flags.sessionId) {
+	flags.sessionId = $rootScope.sessionId;
 	args = angular.copy(args);
-	args.url = args.url + ";jsessionid=" + $rootScope.sessionId;
+	if (!args.url_no_sessionId) args.url_no_sessionId = args.url;
+	args.url = (args.url_no_sessionId || args.url) + ";jsessionid=" + $rootScope.sessionId;
     }
     return $http(args).then(function (resp) {
 	return resp;
