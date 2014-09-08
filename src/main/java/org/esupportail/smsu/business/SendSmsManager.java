@@ -871,7 +871,9 @@ public class SendSmsManager  {
 	public List<UserGroup> getUserGroupLeaves(String uid) {
 		List<UserGroup> l = new LinkedList<UserGroup>();
 		for (UserGroup group : groupUtils.getUserGroupsPlusSelfGroup(uid)) {
-		    if (getCustomizedGroupByLabel(group.id) != null)
+		    CustomizedGroup cgroup = getCustomizedGroupByLabel(group.id);
+			if (cgroup == null) continue;
+			if (cgroup.getQuotaSms() > 0) // skip "destination" groups
 		    	l.add(group);
 		}
 		return l;
