@@ -50,7 +50,7 @@ app.controller('WelcomeCtrl', function($scope, $rootScope, h) {
     $scope.wip = {};
     $scope.impersonate = function (user) {
 	$rootScope.impersonatedUser = user;
-	h.callRest('login').then(h.setLoggedUser);
+	restWsHelpers.simpleLogin();
     };
 });
 
