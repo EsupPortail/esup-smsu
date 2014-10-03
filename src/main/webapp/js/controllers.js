@@ -4,7 +4,7 @@
 var app = angular.module('myApp');
 
 var phoneNumberPatternOne = /^0[67]\d{8}$/;
-var phoneNumberPatternAll = /\s*\b0[67]\d{8}\b\s*/g;
+var phoneNumberPatternAll = /\b0[67]\d{8}\b/g;
 
 app.filter('array_difference', function (h) {
     return function (arr1, arr2) { 
