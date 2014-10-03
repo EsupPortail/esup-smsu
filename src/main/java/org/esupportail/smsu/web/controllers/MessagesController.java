@@ -19,8 +19,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 
-import org.esupportail.commons.services.logging.Logger;
-import org.esupportail.commons.services.logging.LoggerImpl;
+import org.apache.log4j.Logger;
 import org.esupportail.smsu.business.MessageManager;
 import org.esupportail.smsu.business.SendSmsManager;
 import org.esupportail.smsu.dao.beans.Message;
@@ -53,7 +52,7 @@ public class MessagesController {
 
 	private Integer smsMaxSize;
 
-	private final Logger logger = new LoggerImpl(getClass());
+	private final Logger logger = Logger.getLogger(getClass());
 
 	
 	@GET

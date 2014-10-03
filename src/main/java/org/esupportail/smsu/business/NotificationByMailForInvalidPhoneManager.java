@@ -6,8 +6,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.esupportail.commons.services.i18n.I18nService;
 import org.esupportail.commons.services.ldap.LdapUser;
-import org.esupportail.commons.services.logging.Logger;
-import org.esupportail.commons.services.logging.LoggerImpl;
+import org.apache.log4j.Logger;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
 import org.esupportail.smsu.services.client.SmsuapiWS;
 import org.esupportail.smsu.services.ldap.LdapUtils;
@@ -26,7 +25,7 @@ public class NotificationByMailForInvalidPhoneManager {
 	@Autowired private SmtpServiceUtils smtpServiceUtils;
 	@Autowired private SmsuapiWS smsuapiWS;
 
-	private final Logger logger = new LoggerImpl(getClass());
+	private final Logger logger = Logger.getLogger(getClass());
 		
 	/**
 	 * Get list of phone numbers in blacklist.

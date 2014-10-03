@@ -3,8 +3,7 @@ package org.esupportail.smsu.business;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.esupportail.commons.services.logging.Logger;
-import org.esupportail.commons.services.logging.LoggerImpl;
+import org.apache.log4j.Logger;
 import org.esupportail.smsu.dao.DaoService;
 import org.esupportail.smsu.dao.beans.Fonction;
 import org.esupportail.smsu.domain.beans.fonction.FonctionName;
@@ -19,7 +18,7 @@ public class FonctionManager {
 	@Autowired private DaoService daoService;
 	
 	@SuppressWarnings("unused")
-	private final Logger logger = new LoggerImpl(getClass());
+	private final Logger logger = Logger.getLogger(getClass());
 	
 	/**
 	 * Retrieve all the fonctions defined in smsu database.

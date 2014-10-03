@@ -15,8 +15,7 @@ import java.util.Set;
 
 import org.esupportail.commons.services.ldap.LdapException;
 import org.esupportail.commons.services.ldap.LdapUser;
-import org.esupportail.commons.services.logging.Logger;
-import org.esupportail.commons.services.logging.LoggerImpl;
+import org.apache.log4j.Logger;
 import org.esupportail.smsu.business.SecurityManager;
 import org.esupportail.smsu.dao.DaoService;
 import org.esupportail.smsu.dao.beans.Account;
@@ -42,7 +41,7 @@ public class DomainService {
 	@Autowired private SecurityManager securityManager;	
 	@Autowired private SmsuapiWS smsuapiWS;
 
-	private final Logger logger = new LoggerImpl(getClass());
+	private final Logger logger = Logger.getLogger(getClass());
 
 	/**
 	 * create user from a LDAP search or create a simple one

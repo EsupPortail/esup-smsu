@@ -11,8 +11,7 @@ import javax.ws.rs.QueryParam;
 import org.apache.commons.lang.StringUtils;
 import org.esupportail.commons.services.ldap.LdapException;
 import org.esupportail.commons.services.ldap.LdapUser;
-import org.esupportail.commons.services.logging.Logger;
-import org.esupportail.commons.services.logging.LoggerImpl;
+import org.apache.log4j.Logger;
 import org.esupportail.smsu.domain.DomainService;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.web.beans.UIRecipientUser;
@@ -32,7 +31,7 @@ public class UsersController {
 	 */
 	private String phoneNumberPattern;
 	
-	private final Logger logger = new LoggerImpl(getClass());
+	private final Logger logger = Logger.getLogger(getClass());
 
 	@GET
 	@Produces("application/json")

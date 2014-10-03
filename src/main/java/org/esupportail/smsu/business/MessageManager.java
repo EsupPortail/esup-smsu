@@ -12,8 +12,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.esupportail.commons.services.ldap.LdapUser;
-import org.esupportail.commons.services.logging.Logger;
-import org.esupportail.commons.services.logging.LoggerImpl;
+import org.apache.log4j.Logger;
 import org.esupportail.smsu.dao.DaoService;
 import org.esupportail.smsu.dao.beans.BasicGroup;
 import org.esupportail.smsu.dao.beans.Mail;
@@ -34,7 +33,7 @@ public class MessageManager {
 	@Autowired private LdapUtils ldapUtils;
 	@Autowired private GroupUtils groupUtils;
 	
-	private final Logger logger = new LoggerImpl(getClass());
+	private final Logger logger = Logger.getLogger(getClass());
 
 	//////////////////////////////////////////////////////////////
 	// Principal methods

@@ -6,8 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.esupportail.commons.services.logging.Logger;
-import org.esupportail.commons.services.logging.LoggerImpl;
+import org.apache.log4j.Logger;
 import org.esupportail.smsu.dao.DaoService;
 import org.esupportail.smsu.dao.beans.BasicGroup;
 import org.esupportail.smsu.dao.beans.CustomizedGroup;
@@ -22,7 +21,7 @@ public class GroupUtils {
 	@Autowired private DaoService daoService;
 	@Autowired private HttpRequestWsgroups wsgroups;
 	
-	private final Logger logger = new LoggerImpl(getClass());
+	private final Logger logger = Logger.getLogger(getClass());
 
 
     private String getGroupDisplayName_(final String id) {

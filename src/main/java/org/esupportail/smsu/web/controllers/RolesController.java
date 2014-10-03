@@ -11,8 +11,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import org.esupportail.commons.services.logging.Logger;
-import org.esupportail.commons.services.logging.LoggerImpl;
+import org.apache.log4j.Logger;
 import org.esupportail.smsu.business.FonctionManager;
 import org.esupportail.smsu.business.RoleManager;
 import org.esupportail.smsu.web.beans.UIRole;
@@ -24,7 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class RolesController {
 
 	@SuppressWarnings("unused")
-	private final Logger logger = new LoggerImpl(getClass());
+	private final Logger logger = Logger.getLogger(getClass());
 
 	@Autowired private FonctionManager fonctionManager;
 	@Autowired private RoleManager roleManager;

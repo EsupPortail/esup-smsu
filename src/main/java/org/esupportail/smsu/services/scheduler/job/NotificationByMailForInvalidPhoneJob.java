@@ -1,7 +1,6 @@
 package org.esupportail.smsu.services.scheduler.job;
 
-import org.esupportail.commons.services.logging.Logger;
-import org.esupportail.commons.services.logging.LoggerImpl;
+import org.apache.log4j.Logger;
 import org.esupportail.smsu.business.NotificationByMailForInvalidPhoneManager;
 import org.esupportail.smsu.services.scheduler.AbstractQuartzJob;
 import org.esupportail.smsuapi.utils.HttpException;
@@ -17,7 +16,7 @@ public class NotificationByMailForInvalidPhoneJob extends AbstractQuartzJob {
 	/**
 	 * A logger.
 	 */
-	private final Logger logger = new LoggerImpl(getClass());
+	private final Logger logger = Logger.getLogger(getClass());
 	
 	@Override
 	protected void executeJob(final ApplicationContext applicationContext) {

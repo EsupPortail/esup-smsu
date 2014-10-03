@@ -18,8 +18,7 @@ import java.net.URL;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.apache.commons.lang.StringUtils;
-import org.esupportail.commons.services.logging.Logger;
-import org.esupportail.commons.services.logging.LoggerImpl;
+import org.apache.log4j.Logger;
 import org.esupportail.smsu.business.SecurityManager;
 import org.esupportail.smsu.services.UrlGenerator;
 import org.jasig.cas.client.util.CommonUtils;
@@ -37,7 +36,7 @@ public final class AuthAndRoleAndMiscFilter implements Filter {
     private String sessionAttributeName = "MY_REMOTE_USER";
     private String rightAllowingImpersonate = "FCTN_GESTION_ROLES_AFFECT";
 
-    private final Logger logger = new LoggerImpl(getClass());
+    private final Logger logger = Logger.getLogger(getClass());
 
     public void destroy() {}
     public void init(FilterConfig config) {}

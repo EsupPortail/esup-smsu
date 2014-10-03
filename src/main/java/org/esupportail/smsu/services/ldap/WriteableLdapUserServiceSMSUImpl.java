@@ -10,8 +10,7 @@ import java.util.TreeSet;
 import net.sf.ehcache.CacheManager;
 
 import org.apache.commons.lang.StringUtils;
-import org.esupportail.commons.services.logging.Logger;
-import org.esupportail.commons.services.logging.LoggerImpl;
+import org.apache.log4j.Logger;
 import org.esupportail.commons.services.ldap.LdapUser;
 import org.esupportail.commons.services.ldap.WriteableLdapUserServiceImpl;
 import org.esupportail.commons.services.ldap.LdapAttributesModificationException;
@@ -30,7 +29,7 @@ public class WriteableLdapUserServiceSMSUImpl extends WriteableLdapUserServiceIm
 	/**
 	 * A logger.
 	 */
-	private final Logger logger = new LoggerImpl(getClass());
+	private final Logger logger = Logger.getLogger(getClass());
 	
 	private CacheManager cacheManager;
 

@@ -1,7 +1,6 @@
 package org.esupportail.smsu.services.scheduler.job;
 
-import org.esupportail.commons.services.logging.Logger;
-import org.esupportail.commons.services.logging.LoggerImpl;
+import org.apache.log4j.Logger;
 import org.esupportail.smsu.business.purge.PeriodicPurge;
 import org.esupportail.smsu.services.scheduler.AbstractQuartzJob;
 import org.springframework.context.ApplicationContext;
@@ -17,7 +16,7 @@ public class PeriodicPurgeJob extends AbstractQuartzJob {
 	/**
 	 * A logger.
 	 */
-	private final Logger logger = new LoggerImpl(getClass());
+	private final Logger logger = Logger.getLogger(getClass());
 	
 	/**
 	 * The periodic purge bean name.

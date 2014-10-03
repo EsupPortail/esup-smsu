@@ -4,8 +4,7 @@ package org.esupportail.smsu.business;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.esupportail.commons.services.logging.Logger;
-import org.esupportail.commons.services.logging.LoggerImpl;
+import org.apache.log4j.Logger;
 import org.esupportail.smsu.dao.DaoService;
 import org.esupportail.smsu.dao.beans.CustomizedGroup;
 import org.esupportail.smsu.dao.beans.Fonction;
@@ -22,7 +21,7 @@ public class SecurityManager {
 	@Autowired private DaoService daoService;
 	@Autowired private GroupUtils groupUtils;
 
-	private final Logger logger = new LoggerImpl(getClass());
+	private final Logger logger = Logger.getLogger(getClass());
 
 	//////////////////////////////////////////////////////////////
 	// Principal methods

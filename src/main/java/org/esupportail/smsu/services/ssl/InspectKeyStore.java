@@ -9,14 +9,13 @@ import java.security.KeyStoreException;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 
-import org.esupportail.commons.services.logging.Logger;
-import org.esupportail.commons.services.logging.LoggerImpl;
+import org.apache.log4j.Logger;
 
 
 public class InspectKeyStore
 {
 	
-    private final Logger logger = new LoggerImpl(getClass());
+    private final Logger logger = Logger.getLogger(getClass());
 
     public Error internalError(Exception e) {
 	return new Error("internal error", e);

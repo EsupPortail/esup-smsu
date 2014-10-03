@@ -11,8 +11,7 @@ import org.esupportail.commons.services.ldap.LdapGroupService;
 import org.esupportail.commons.services.ldap.LdapUser;
 import org.esupportail.commons.services.ldap.LdapUserAndGroupService;
 import org.esupportail.commons.services.ldap.LdapAttributesModificationException;
-import org.esupportail.commons.services.logging.Logger;
-import org.esupportail.commons.services.logging.LoggerImpl;
+import org.apache.log4j.Logger;
 import org.esupportail.smsu.dao.beans.Person;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
 import org.esupportail.smsu.exceptions.ldap.LdapWriteException;
@@ -24,7 +23,7 @@ public class LdapUtils {
 	/**
 	 * a logger.
 	 */
-	private final Logger logger = new LoggerImpl(getClass());
+	private final Logger logger = Logger.getLogger(getClass());
 	
 	/**
 	 * used to manage user and group (read only).

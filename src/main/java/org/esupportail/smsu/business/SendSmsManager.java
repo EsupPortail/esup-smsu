@@ -19,8 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 import org.esupportail.commons.services.i18n.I18nService;
 import org.esupportail.commons.services.ldap.LdapUser;
-import org.esupportail.commons.services.logging.Logger;
-import org.esupportail.commons.services.logging.LoggerImpl;
+import org.apache.log4j.Logger;
 import org.esupportail.smsu.business.beans.CustomizedMessage;
 import org.esupportail.smsu.dao.DaoService;
 import org.esupportail.smsu.dao.beans.Account;
@@ -93,7 +92,7 @@ public class SendSmsManager  {
 	 */
 	private String userEmailAttribute;
 	
-	private final Logger logger = new LoggerImpl(getClass());
+	private final Logger logger = Logger.getLogger(getClass());
 
 	//////////////////////////////////////////////////////////////
 	// Pricipal methods

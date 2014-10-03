@@ -17,15 +17,14 @@ import org.esupportail.smsu.domain.beans.User;
 import org.esupportail.smsu.domain.beans.message.MessageStatus;
 import org.esupportail.smsu.exceptions.CreateMessageException;
 import org.esupportail.smsu.web.beans.UIMessage;
-import org.esupportail.commons.services.logging.Logger;
-import org.esupportail.commons.services.logging.LoggerImpl;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Path("/approvals")
 @RolesAllowed("APPROBATION_ENVOI")
 public class ApprovalController {
 
-	private final Logger logger = new LoggerImpl(getClass());
+	private final Logger logger = Logger.getLogger(getClass());
 	
     @Autowired private DomainService domainService;
     @Autowired private ApprovalManager approvalManager;

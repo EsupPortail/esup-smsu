@@ -7,8 +7,7 @@ import java.util.List;
 import org.esupportail.commons.exceptions.UserNotFoundException;
 import org.esupportail.commons.services.ldap.LdapUser;
 import org.esupportail.commons.services.ldap.LdapUserAndGroupService;
-import org.esupportail.commons.services.logging.Logger;
-import org.esupportail.commons.services.logging.LoggerImpl;
+import org.apache.log4j.Logger;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.ldap.filter.AndFilter;
@@ -27,7 +26,7 @@ public class LdapUtilsHelpers {
 	/**
 	 * Logger.
 	 */
-	private final Logger logger = new LoggerImpl(getClass());
+	private final Logger logger = Logger.getLogger(getClass());
 	
 	/**
 	 * Spring template used to perform search in the ldap.

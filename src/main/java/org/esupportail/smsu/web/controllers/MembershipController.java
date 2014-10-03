@@ -8,8 +8,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 
 import org.apache.commons.lang.StringUtils;
-import org.esupportail.commons.services.logging.Logger;
-import org.esupportail.commons.services.logging.LoggerImpl;
+import org.apache.log4j.Logger;
 import org.esupportail.smsu.business.MemberManager;
 import org.esupportail.smsu.business.beans.Member;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
@@ -29,7 +28,7 @@ public class MembershipController {
 	 */
 	private String phoneNumberPattern;
 	
-	private final Logger logger = new LoggerImpl(getClass());
+	private final Logger logger = Logger.getLogger(getClass());
 
 	@GET
 	@Produces("application/json")

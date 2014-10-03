@@ -6,8 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.esupportail.commons.services.logging.Logger;
-import org.esupportail.commons.services.logging.LoggerImpl;
+import org.apache.log4j.Logger;
 import org.esupportail.smsu.dao.DaoService;
 import org.esupportail.smsu.dao.beans.Message;
 import org.esupportail.smsu.dao.beans.Person;
@@ -25,7 +24,7 @@ public class ApprovalManager {
 	@Autowired private SendSmsManager sendSmsManager;
 
 	@SuppressWarnings("unused")
-	private final Logger logger = new LoggerImpl(getClass());
+	private final Logger logger = Logger.getLogger(getClass());
 
 	public List<UIMessage> getApprovalUIMessages(HttpServletRequest request) {
 		List<Message> messages = daoService.getApprovalMessages();

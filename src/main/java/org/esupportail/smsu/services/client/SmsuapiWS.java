@@ -5,8 +5,7 @@ package org.esupportail.smsu.services.client;
 
 import java.util.Set;
 
-import org.esupportail.commons.services.logging.Logger;
-import org.esupportail.commons.services.logging.LoggerImpl;
+import org.apache.log4j.Logger;
 import org.esupportail.smsuapi.exceptions.InsufficientQuotaException;
 import org.esupportail.smsuapi.exceptions.UnknownMessageIdException;
 import org.esupportail.smsuapi.services.client.HttpRequestSmsuapiWS;
@@ -22,7 +21,7 @@ public class SmsuapiWS  {
 	
 	@Autowired private HttpRequestSmsuapiWS ws;
 	
-	private final Logger logger = new LoggerImpl(this.getClass());
+	private final Logger logger = Logger.getLogger(this.getClass());
 		
 	public void mayCreateAccountCheckQuotaOk(final Integer nbDest, final String labelAccount) throws HttpException, InsufficientQuotaException {
 		logger.info("mayCreateAccountCheckQuotaOk method client send with parameters : " + 

@@ -33,8 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.esupportail.commons.services.logging.Logger;
-import org.esupportail.commons.services.logging.LoggerImpl;
+import org.apache.log4j.Logger;
 
 /**
  * Provides basic CSRF protection for a web application. 
@@ -62,7 +61,7 @@ import org.esupportail.commons.services.logging.LoggerImpl;
  */
 public class CsrfPreventionFilterHttpHeader implements Filter {
 
-    private final Logger logger = new LoggerImpl(getClass());
+    private final Logger logger = Logger.getLogger(getClass());
     private Random randomSource = new SecureRandom();
 
     private int denyStatus = HttpServletResponse.SC_FORBIDDEN;

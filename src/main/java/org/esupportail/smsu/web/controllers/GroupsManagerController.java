@@ -14,8 +14,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 
-import org.esupportail.commons.services.logging.Logger;
-import org.esupportail.commons.services.logging.LoggerImpl;
+import org.apache.log4j.Logger;
 import org.esupportail.smsu.business.GroupManager;
 import org.esupportail.smsu.domain.DomainService;
 import org.esupportail.smsu.services.ldap.LdapUtils;
@@ -32,7 +31,7 @@ import org.springframework.util.StringUtils;
 public class GroupsManagerController {
 	
 	@SuppressWarnings("unused")
-	private final Logger logger = new LoggerImpl(getClass());
+	private final Logger logger = Logger.getLogger(getClass());
 
 	@Autowired private LdapUtils ldapUtils;
 	@Autowired private DomainService domainService;

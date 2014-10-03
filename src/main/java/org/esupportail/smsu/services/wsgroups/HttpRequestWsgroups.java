@@ -16,8 +16,7 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
-import org.esupportail.commons.services.logging.Logger;
-import org.esupportail.commons.services.logging.LoggerImpl;
+import org.apache.log4j.Logger;
 import org.esupportail.smsu.services.GroupUtils;
 import org.esupportail.smsu.services.ldap.beans.UserGroup;
 import org.esupportail.smsuapi.utils.HttpException;
@@ -34,7 +33,7 @@ public class HttpRequestWsgroups {
 
 	private Cache cache;
 	
-	private final Logger logger = new LoggerImpl(getClass());
+	private final Logger logger = Logger.getLogger(getClass());
 
 	public boolean inUse() {
 		return !StringUtils.isEmpty(wsgroupsURL);

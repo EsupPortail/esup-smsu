@@ -1,7 +1,6 @@
 package org.esupportail.smsu.services.scheduler;
 
-import org.esupportail.commons.services.logging.Logger;
-import org.esupportail.commons.services.logging.LoggerImpl;
+import org.apache.log4j.Logger;
 import org.springframework.dao.DataAccessException;
 
 /**
@@ -14,7 +13,7 @@ public class QuartzExceptionHandler {
 	/**
      * logger.
      */
-	private final Logger logger = new LoggerImpl(getClass());
+	private final Logger logger = Logger.getLogger(getClass());
 	
 	/**
 	 * 

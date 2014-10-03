@@ -1,7 +1,6 @@
 package org.esupportail.smsu.services.scheduler;
 
-import org.esupportail.commons.services.logging.Logger;
-import org.esupportail.commons.services.logging.LoggerImpl;
+import org.apache.log4j.Logger;
 import org.esupportail.smsu.services.scheduler.job.SuperviseSmsSending;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -16,7 +15,7 @@ public class SchedulerUtils {
 	/**
      * logger.
      */
-	private final Logger logger = new LoggerImpl(getClass());
+	private final Logger logger = Logger.getLogger(getClass());
 	
 	/**
 	 * Quartz scheduler.
