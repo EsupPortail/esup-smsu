@@ -45,6 +45,8 @@ app.directive('myValidator', function () {
 app.directive('autocompleteUserOrGroup', function (globals) {
   var searchUserURL = globals.wsgroupsURL + '/searchUserCAS';
   var searchGroupURL = globals.wsgroupsURL + '/searchGroup';
+  var subAndSuperGroupsURL = globals.wsgroupsURL + '/getSubAndSuperGroups';
+
   return {
     restrict: 'A',
     require: 'ngModel',
@@ -67,6 +69,7 @@ app.directive('autocompleteUserOrGroup', function (globals) {
 	if (attr.autocompleteUserOrGroup === 'user') {
             $(el).autocompleteUser(searchUserURL, params);
 	} else {
+	    params.subAndSuperGroupsURL = subAndSuperGroupsURL;
             $(el).autocompleteGroup(searchGroupURL, params);
 	}
     }
