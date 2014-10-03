@@ -118,7 +118,7 @@ public class CsrfPreventionFilterHttpHeader implements Filter {
 	  	String newToken = generateToken();
 	  	session.setAttribute(sessionAttrName, newToken);
 
-	  	logger.error("CsrfPreventionFilter: " + denyReason);
+	  	logger.warn(denyReason);
 	  	res.setStatus(denyStatus);
 	  	res.setContentType("application/json");
 	  	res.getOutputStream().println(
