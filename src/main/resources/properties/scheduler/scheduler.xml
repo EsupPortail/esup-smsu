@@ -8,6 +8,10 @@
 	>
 
 	<!-- Notification by mail for invalide number phone  -->
+	<bean id="notificationByMailForInvalidPhoneManager"
+		class="org.esupportail.smsu.business.NotificationByMailForInvalidPhoneManager">
+	</bean>
+
 	<bean id="notificationByMailForInvalidPhoneJob" class="org.springframework.scheduling.quartz.JobDetailBean">
 		<property name="jobClass" value="org.esupportail.smsu.services.scheduler.job.NotificationByMailForInvalidPhoneJob" />
 	</bean>
