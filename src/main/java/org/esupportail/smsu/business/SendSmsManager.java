@@ -793,7 +793,7 @@ public class SendSmsManager  {
 			    "Erreur de quota pour le groupe d'envoi [" + groupSender.getLabel() + 
 			    "] et groupe associated [" + cGroup.getLabel() + "]. Essai d'envoi de " + nbToSend + 
 			    " message(s), quota = " + cGroup.getQuotaSms() + " , consomme = " + cGroup.getConsumedSms();
-			logger.warn(mess);
+			logger.error(mess);
 			throw new CreateMessageException.GroupQuotaException(cGroup.getLabel());
 		}
 	}
