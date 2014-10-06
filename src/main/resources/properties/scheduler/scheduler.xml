@@ -14,6 +14,11 @@
 
 	<bean id="notificationByMailForInvalidPhoneJob" class="org.springframework.scheduling.quartz.JobDetailBean">
 		<property name="jobClass" value="org.esupportail.smsu.services.scheduler.job.NotificationByMailForInvalidPhoneJob" />
+		<property name="jobDataAsMap">
+		  <map>
+		    <entry key="beanName" value="notificationByMailForInvalidPhoneManager" />
+		  </map>
+		</property>
 	</bean>
 	
 	<bean id="notificationByMailForInvalidPhoneTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">

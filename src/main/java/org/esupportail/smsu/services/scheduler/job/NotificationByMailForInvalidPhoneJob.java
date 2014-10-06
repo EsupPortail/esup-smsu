@@ -18,6 +18,8 @@ public class NotificationByMailForInvalidPhoneJob extends AbstractQuartzJob {
 	 */
 	private final Logger logger = Logger.getLogger(getClass());
 	
+	private String beanName;
+
 	@Override
 	protected void executeJob(final ApplicationContext applicationContext) {
 		
@@ -25,7 +27,7 @@ public class NotificationByMailForInvalidPhoneJob extends AbstractQuartzJob {
 			logger.debug("Launching Quartz task NotificationByMailForInvalidPhoneJob now");
 		}
 		
-		final NotificationByMailForInvalidPhoneManager notifForInvalidPhone = (NotificationByMailForInvalidPhoneManager) applicationContext.getBean("notificationByMailForInvalidPhoneManager");
+		final NotificationByMailForInvalidPhoneManager notifForInvalidPhone = (NotificationByMailForInvalidPhoneManager) applicationContext.getBean(beanName);
 		try {
 			notifForInvalidPhone.sendMails();
 		} catch (HttpException e) {
@@ -36,5 +38,9 @@ public class NotificationByMailForInvalidPhoneJob extends AbstractQuartzJob {
 			logger.debug("End of Quartz task NotificationByMailForInvalidPhoneJob");
 		}
 	}
-
+	
+	public void setBeanName(String beanName) {
+		this.beanName = beanName;
+	}
+	
 }
