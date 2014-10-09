@@ -4,14 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
 import java.text.DateFormat;
 
 import javax.servlet.http.HttpServletRequest;
@@ -875,25 +872,33 @@ public class SendSmsManager  {
 			if (cgroup.getQuotaSms() > 0) // skip "destination" groups
 		    	l.add(group);
 		}
-		return l;
+		return keepGroupLeaves(l);
 	}
 
-	@SuppressWarnings("unused")
-	private List<String> keepGroupLeaves(Set<String> ids) {
+	private List<UserGroup> keepGroupLeaves(List<UserGroup> groups) {
+		Set<String> ids = new HashSet<String>();
+		for (UserGroup g : groups) ids.add(g.id);
 		logger.debug("keepGroupLeaves: given ids " + ids);
 
-		SortedMap<String, String> pathToId = new TreeMap<String, String>();
-		for (String id : ids) {
-			String path = null; // getGroupPathByLabel(id);
-			if (path != null) pathToId.put(path, id);
+		for (UserGroup g : groups) {
+			// skip self group
+			if (ldapUtils.mayGetLdapUserByUid(g.id) != null) continue;
+			
+			Map<String, List<String>> id2parents = group2parents(g.id);
+			if (id2parents == null) continue;
+			
+			for (List<String> parents : id2parents.values())
+				for (String parent : parents)
+					ids.remove(parent); // do not keep any parents
 		}
-		logger.debug("keepGroupLeaves: pathToId: " + pathToId);
 
-		List<String> keptIds = new LinkedList<String>();
-		for (String path : keepLeaves(pathToId.keySet().iterator()))
-			keptIds.add(pathToId.get(path));
-		logger.debug("keepGroupLeaves: keptIds: " + keptIds);
-		return keptIds;
+		logger.debug("keepGroupLeaves: kept ids: " + ids);
+
+		List<UserGroup> kept = new LinkedList<UserGroup>();
+		for (UserGroup g : groups)
+			if (ids.contains(g.id))
+				kept.add(g);		
+		return kept;
 	}
 
 	/**
@@ -902,30 +907,6 @@ public class SendSmsManager  {
 	 */
 	private Map<String, List<String>> group2parents(String label) {
 	    return groupUtils.group2parents(label);
-	}
-
-	/**
-	 * @param it iterator on a sorted collection of strings 
-	 * @return the strings without the prefix strings
-	 * 
-	 * example: { "a/b", "a", "c" } returns { "a/b", "c" }
-	 */
-	private List<String> keepLeaves(Iterator<String> it) {
-		List<String> keptIds = new LinkedList<String>();
-		String prev = null;
-		while (it.hasNext()) {
-			String current = it.next();
-			if (prev != null && prev.startsWith(current)) 
-				; // skip current
-			else if (prev == null || current.startsWith(prev))					
-				prev = current; // skip prev
-			else {
-				keptIds.add(prev);
-				prev = current;
-			}
-		}
-		if (prev != null) keptIds.add(prev);
-		return keptIds;
 	}
 
 	private CustomizedGroup getCustomizedGroup(BasicGroup group) {
