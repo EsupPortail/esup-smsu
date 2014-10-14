@@ -29,12 +29,12 @@ describe('Welcome view', function() {
 
     it('should have a working navbar', function() {
 	expect(title()).toBe('Accueil');
-	expect(content()).toContain('Bienvenue dans');
+	expect(content()).toMatch('Bienvenue dans');
 
 	expect(repeater('.sidenav li').count()).toBe(10);
 	
 	var btn7 = element('.sidenav li:nth-child(10) a');
-	expect(btn7.text()).toContain('A propos de');
+	expect(btn7.text()).toMatch('A propos de');
 	btn7.click();
 	expect(url()).toBe('/about');
     });
@@ -46,7 +46,7 @@ describe('About view', function() {
     });
     it('should contain valid content', function () {
 	expect(title()).toBe('A propos de');	  
-	expect(content()).toContain('SMS-U est un service numérique');
+	expect(content()).toMatch('SMS-U est un service numérique');
     });
 });
 
@@ -56,7 +56,7 @@ describe('Groups view', function() {
     });
     it('should display groups + button', function () {
 	expect(title()).toBe('Groupes');	  
-	expect(element("a[href='#/groups/new']").text()).toContain('Ajouter un groupe');
+	expect(element("a[href='#/groups/new']").text()).toMatch('Ajouter un groupe');
 	expect(element(".ngRow:first .ngCellText:first").text()).toBe('The Boss');
 	expect(element(".ngRow:first .ngCellText:first a").attr('href')).toBe('#/groups/11');
     });
