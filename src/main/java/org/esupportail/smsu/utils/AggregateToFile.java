@@ -40,7 +40,7 @@ public class AggregateToFile {
     }
     
 	private String computeDigest(Collection<File> sources) {
-		StringBuffer digest = new StringBuffer();
+		StringBuilder digest = new StringBuilder();
     	for (File source : sources) digest.append(cachedDigest.compute(source));
     	return digest.toString();
 	}

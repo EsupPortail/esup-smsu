@@ -110,7 +110,7 @@
 			This bean is the DAO service, the interface used by the domain service to access 
 			the database. It must implement interface org.esupportail.smsu.dao.DaoService.
 		</description>
-		<property name="sessionFactory" ref="#{sessionFactoryBeanName}"></property>
+		<property name="sessionFactory" ref="#{sessionFactoryBeanName}"/>
 	</bean>
 
 	<bean id="OneHibernateSessionPerRequest"

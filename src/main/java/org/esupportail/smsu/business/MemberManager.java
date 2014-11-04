@@ -295,7 +295,7 @@ public class MemberManager {
 		if (pendingMember == null) return false;
 		
 			// check if the code is correct
-			final String dbCode = pendingMember.getValidationCode().toString();
+			final String dbCode = pendingMember.getValidationCode();
 			final String code = member.getPhoneNumberValidationCode();
 			if (dbCode.equals(code)) {
 				// add smsu general condition for this member in the LDAP 

@@ -38,14 +38,14 @@
   <bean id="ServicesSmsuController"	class="org.esupportail.smsu.web.controllers.ServicesSmsuController" />
 
   <bean id="MembershipController"	class="org.esupportail.smsu.web.controllers.MembershipController">
-		<property name="phoneNumberPattern" value="${recipient.phoneNumberPattern}"></property>
+		<property name="phoneNumberPattern" value="${recipient.phoneNumberPattern}"/>
   </bean>
   <bean id="MessagesController"		class="org.esupportail.smsu.web.controllers.MessagesController">
   	<property name="smsMaxSize" value="${sms.maxLength}" />
   </bean>
   <bean id="TemplateManagerController"	class="org.esupportail.smsu.web.controllers.TemplateManagerController" />
   <bean id="UsersController"	class="org.esupportail.smsu.web.controllers.UsersController">
-		<property name="phoneNumberPattern" value="${recipient.phoneNumberPattern}"></property>
+		<property name="phoneNumberPattern" value="${recipient.phoneNumberPattern}"/>
   </bean>
   <bean id="WsController" class="org.esupportail.smsu.web.ws.WsController">
 		<property name="authorizedClientNames" value="${smsu.ws.authorizedClientNames}"></property>

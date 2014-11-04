@@ -307,7 +307,7 @@ public class LdapUtils {
 	 * Ensure the service key is prefixed with the etiquette
 	 */
 	private String mayAddEtiquette(String service) {
-		return service == null ? service : mayAddPrefix(userTermsOfUseAttributeEtiquetteSMSU, service);
+		return service == null ? null : mayAddPrefix(userTermsOfUseAttributeEtiquetteSMSU, service);
 	}
 	
 	private void setOrClearLdapAttributeByUidAndName(final String uid, final String name, String value) 

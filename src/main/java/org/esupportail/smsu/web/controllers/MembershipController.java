@@ -45,7 +45,7 @@ public class MembershipController {
 	@Produces("application/json")
 	@Path("/isPhoneNumberInBlackList")
 	public boolean isPhoneNumberInBlackList(@Context HttpServletRequest request) throws LdapUserNotFoundException, HttpException {
-		Member member = memberManager.getMember(request.getRemoteUser());;
+		Member member = memberManager.getMember(request.getRemoteUser());
 		return memberManager.isPhoneNumberInBlackList(member.getPhoneNumber());
 	}
 

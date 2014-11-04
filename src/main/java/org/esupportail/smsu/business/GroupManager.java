@@ -105,7 +105,7 @@ public class GroupManager {
 		CustomizedGroup result = new CustomizedGroup();
 
 		if (!isAddMode) {
-			result.setId(Integer.valueOf(uiCGroup.id));
+			result.setId(uiCGroup.id);
 		}		
 		result.setLabel(uiCGroup.label.trim());
 		result.setConsumedSms(Long.parseLong("0"));

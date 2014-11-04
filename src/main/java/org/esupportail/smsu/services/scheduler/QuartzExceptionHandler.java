@@ -21,14 +21,9 @@ public class QuartzExceptionHandler {
 	 * @param exception
 	 */
     public void process(final String taskTitle, final Throwable exception) {
-        
-        if (exception instanceof DataAccessException) {
-        	logger.error("A DataAccessException occurred during the task [" + taskTitle + "] : " + 
-			     exception.getClass() + " - " + exception.getMessage(), exception);
-        } else {
-		logger.error("A DataAccessException occurred during the task [" + taskTitle + "] : " + 
-			     exception.getClass(), exception);
-        }
+
+        logger.error("A DataAccessException occurred during the task [" + taskTitle + "] : " +
+                 exception.getClass(), exception);
 
     }
 }

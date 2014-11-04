@@ -27,8 +27,8 @@
 		<property name="phoneAttributesAsString"> 
 			<value type="java.lang.String">${adhesion.phoneNumberAttributes}</value>
 		</property>
-		<property name="phoneNumberPattern" value="${adhesion.phoneNumberPattern}"></property>
-		<property name="phoneNumberPrefixToRemove" value="${adhesion.phoneNumberPrefixToRemove}"></property>
+		<property name="phoneNumberPattern" value="${adhesion.phoneNumberPattern}"/>
+		<property name="phoneNumberPrefixToRemove" value="${adhesion.phoneNumberPrefixToRemove}"/>
 	</bean>
 	
 	<bean id="sendSmsManager"
@@ -37,7 +37,7 @@
 		<property name="defaultSupervisorLogin" value="${sms.defaultSupervisorLogin}"/>
 		<property name="smsMaxSize" value="${sms.maxLength}"/>
 		<property name="defaultAccount" value="${smsuapi.defaultAccount}"/>
-		<property name="phoneNumberPattern" value="${recipient.phoneNumberPattern}"></property>
+		<property name="phoneNumberPattern" value="${recipient.phoneNumberPattern}"/>
 		<property name="userEmailAttribute" value="${ldap.emailAttribute}"/>
 	</bean>
 	
