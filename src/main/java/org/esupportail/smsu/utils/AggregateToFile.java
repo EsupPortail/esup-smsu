@@ -49,9 +49,11 @@ public class AggregateToFile {
     	File tmp = tmpFile(dest);
     	try {
 	    	concatAlways(sources, tmp, header, footer, filter);
-	    	tmp.renameTo(dest);
+	    	if (!tmp.renameTo(dest))
+                tmp.delete(); // ensure no temp file lies if something goes wrong
     	} finally {
-    		tmp.delete(); // ensure no temp file lies if something goes wrong
+            //noinspection ResultOfMethodCallIgnored
+            tmp.delete(); // ensure no temp file lies if something goes wrong
     	}
     }
 
