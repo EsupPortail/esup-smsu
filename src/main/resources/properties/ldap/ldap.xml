@@ -180,7 +180,11 @@
 			base ou=people,dc=esup-portail,dc=edu, with scope "sub". See
 			http://ldaptemplate.sourceforge.net.
 		</description>
-		<property name="url" value="${ldap.url}"/>
+		<property name="urls">
+		  <bean class="org.springframework.util.StringUtils" factory-method="commaDelimitedListToSet">
+		    <constructor-arg type="java.lang.String" value="${ldap.url}"/>
+		  </bean>
+		</property>
 		<property name="userDn" value="${ldap.userName}">
 			<description>
 				The dn used to bind to the LDAP directory.
@@ -192,6 +196,7 @@
 			</description>
 		</property>
 		<property name="base" value="${ldap.base}"/>
+		<property name="referral" value="follow"/>
 		<property name="baseEnvironmentProperties">
 			<description>
 				The environment properties, for instance to set the
