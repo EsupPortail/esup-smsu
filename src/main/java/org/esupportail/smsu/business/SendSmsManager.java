@@ -359,10 +359,9 @@ public class SendSmsManager  {
 		logger.debug("create the mail to store CONTENT : " + content);
 
 		Template template = null;
-		String idTemplate = mailToSend.getMailTemplate();
-		if (idTemplate != null) {
-			logger.debug("create the mail to store TEMPLATE : " + idTemplate);
-			template = daoService.getTemplateById(Integer.parseInt(idTemplate));
+		if (mailToSend.getMailTemplate() != null) {
+			// NB: template is kept only for statistics, mail "content" already has the template applied
+			template = getMessageTemplate(mailToSend.getMailTemplate());
 		}
 
 		Set<MailRecipient> mailRecipients = getMailRecipients(message, mailToSend);
