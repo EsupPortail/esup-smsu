@@ -78,6 +78,20 @@ public class WriteableLdapUserServiceSMSUImpl extends WriteableLdapUserServiceIm
 		invalidateLdapCache();
 	}
 	
+	public void addAttributeByUidAndName(final LdapUserAndGroupService ldapService, final String id, final String attrName, final String value) 
+		throws LdapAttributesModificationException {
+		LdapUser ldapUser = ldapService.getLdapUser(id);
+		Map<String, List<String>> attrs = ldapUser.getAttributes();
+		List<String> allValues = attrs.get(attrName);
+		if(!allValues.contains(value)) {
+			allValues.add(value);	
+			// call updateLdapUser with only the attribute we want to write in LDAP
+			ldapUser.setAttributes(singletonMap(attrName, allValues));
+			updateLdapUser(ldapUser);
+			ldapUser.setAttributes(attrs); // restore other attributes
+		}
+	}
+	
 	/**
 	 * Set or clear a user specified attribute.
 	 * It handles the attribute etiquette: 
