@@ -4,6 +4,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
+import org.esupportail.smsu.web.Helper;
 import org.esupportail.smsuapi.utils.HttpException;
 
 @Provider

@@ -181,7 +181,7 @@ public class MessagesController {
 	/**
 	 * Content validation.
 	 */
-	private void contentValidation(final String content) {
+	public void contentValidation(final String content) {
 		Integer contentSize = content == null ? 0: content.length();
 		logger.debug("taille de message : " + contentSize.toString());
 		logger.debug("message : " + content);
@@ -192,7 +192,7 @@ public class MessagesController {
 		}		
 	}
 
-	private void mailsValidation(MailToSend mailToSend) {
+	public void mailsValidation(MailToSend mailToSend) {
 		List<String> mails = mailToSend.getMailOtherRecipients();
 		if (mails.isEmpty() && !mailToSend.getIsMailToRecipients()) {
 			throw new InvalidParameterException("SENDSMS.MESSAGE.RECIPIENTSMANDATORY");

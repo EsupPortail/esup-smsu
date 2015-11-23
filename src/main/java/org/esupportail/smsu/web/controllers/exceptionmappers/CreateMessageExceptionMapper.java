@@ -5,6 +5,7 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 import org.esupportail.smsu.exceptions.CreateMessageException;
+import org.esupportail.smsu.web.Helper;
 
 
 @Provider
