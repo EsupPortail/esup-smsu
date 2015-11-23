@@ -3,6 +3,7 @@ package org.esupportail.smsu.services.ldap;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.esupportail.commons.exceptions.GroupNotFoundException;
 import org.esupportail.commons.exceptions.UserNotFoundException;
 import org.esupportail.commons.services.ldap.LdapException;
@@ -87,6 +88,12 @@ public class LdapUtils {
 	private String userIdAttribute;
 	private String groupMemberAttribute;
 	private String groupNameAttribute;
+	
+	
+	/**
+	 * The objectClass ldap attribute to add if the userTermsOfUseAttribute or userPagerAttribute need a specific ldap schema
+	 */
+	private String objectClassToAdd;
 	
 	/**
 	 * Return the ldap user by this id.
@@ -214,6 +221,7 @@ public class LdapUtils {
 	 * @throws LdapWriteException 
 	 */
 	public void setUserPagerByUid(final String uid, final String pagerValue) throws LdapUserNotFoundException, LdapWriteException {
+		addSpecificObjectClassIfNeeded(uid);
 		setOrClearLdapAttributeByUidAndName(uid, userPagerAttribute, pagerValue);
 
 	}
@@ -239,6 +247,7 @@ public class LdapUtils {
 	public void setUserTermsOfUse(final String uid, final boolean validateGeneralCondition,
 			final List<String> specificConditions) 
 			throws LdapUserNotFoundException, LdapWriteException {
+		addSpecificObjectClassIfNeeded(uid);
 		List<String> values = new LinkedList<String>();
 		if (validateGeneralCondition) values.add(cgKeyName);
 		if (specificConditions != null) values.addAll(specificConditions);
@@ -258,6 +267,12 @@ public class LdapUtils {
 		setOrClearLdapAttributeByUidAndName(uid, name, null);
 	}
 	
+	
+	private void addSpecificObjectClassIfNeeded(String uid) throws LdapUserNotFoundException, LdapWriteException {
+		if (!StringUtils.isEmpty(objectClassToAdd)) {
+			writeableLdapUserService.addUserAttribute(ldapService, uid, "objectClass", objectClassToAdd);
+		}
+	}
 	
 	/**
 	 * Set or clear a user specified attribute.
@@ -657,6 +672,15 @@ public class LdapUtils {
 	public void setUserIdAttribute(String userIdAttribute) {
 		this.userIdAttribute = userIdAttribute;
 	}
+		
+	/**
+	 * Standard setter used by Spring.
+	 * @param objectClassToAdd
+	 */
+	public void setObjectClassToAdd(String objectClassToAdd) {
+		this.objectClassToAdd = objectClassToAdd;
+	}
+	
 
 	private <A> LinkedList<A> singletonList(A e) {
 		final LinkedList<A> l = new LinkedList<A>();

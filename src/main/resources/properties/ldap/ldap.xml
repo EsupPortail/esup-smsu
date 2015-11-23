@@ -45,6 +45,7 @@
 		    <value>${ldap.displayNameAttribute}</value>
 		    <value>${ldap.firstNameAttribute}</value>
 		    <value>${ldap.lastNameAttribute}</value>
+		    <value>objectClass</value>
 		  </list>
 		</property>
 		<property name="searchAttribute" value="${ldap.searchAttribute}" />
@@ -229,6 +230,7 @@
 		<property name="userIdAttribute" value="${ldap.uidAttribute}"/>
 		<property name="groupMemberAttribute" value="${ldap.group.groupMemberAttr}"/>
 		<property name="groupNameAttribute" value="${ldap.group.nameAttr}"/>
+		<property name="objectClassToAdd" value="${ldap.objectClassToAdd}"/>
 	</bean>
 
 </beans>

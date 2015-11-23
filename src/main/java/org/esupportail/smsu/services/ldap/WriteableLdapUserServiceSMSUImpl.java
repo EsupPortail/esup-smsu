@@ -78,6 +78,17 @@ public class WriteableLdapUserServiceSMSUImpl extends WriteableLdapUserServiceIm
 		invalidateLdapCache();
 	}
 	
+	public void addUserAttribute(final LdapUserAndGroupService ldapService, final String id, final String attrName, final String value) 
+		throws LdapAttributesModificationException {
+		LdapUser ldapUser = ldapService.getLdapUser(id);
+		Map<String, List<String>> attrs = ldapUser.getAttributes();
+		List<String> allValues = attrs.get(attrName);
+		if(!allValues.contains(value)) {
+			allValues.add(value);
+			setOrClearUserAttribute(ldapUser, attrName, null, allValues);
+		}
+	}
+	
 	/**
 	 * Set or clear a user specified attribute.
 	 * It handles the attribute etiquette: 
