@@ -20,13 +20,20 @@ import org.apache.log4j.Logger;
 import org.esupportail.smsu.business.MemberManager;
 import org.esupportail.smsu.business.MessageManager;
 import org.esupportail.smsu.business.SendSmsManager;
+import org.esupportail.smsu.business.ServiceManager;
 import org.esupportail.smsu.business.beans.Member;
 import org.esupportail.smsu.exceptions.CreateMessageException;
 import org.esupportail.smsu.exceptions.SmsuForbiddenException;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
+import org.esupportail.smsu.exceptions.ldap.LdapWriteException;
 import org.esupportail.smsu.web.beans.UIMessage;
 import org.esupportail.smsu.web.beans.UINewMessage;
+import org.esupportail.smsu.web.beans.UIService;
+import org.esupportail.smsu.web.controllers.InvalidParameterException;
+import org.esupportail.smsu.web.controllers.MembershipController;
 import org.esupportail.smsu.web.controllers.MessagesController;
+import org.esupportail.smsuapi.exceptions.InsufficientQuotaException;
+import org.esupportail.smsuapi.utils.HttpException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
 
@@ -39,6 +46,8 @@ public class WsController {
 	@Autowired private MessageManager messageManager;
 	@Autowired private SendSmsManager sendSmsManager;
     @Autowired private MemberManager memberManager;
+	@Autowired private ServiceManager serviceManager;	
+    @Autowired private MembershipController membershipController;
     
 
 	private List<String> authorizedClientNames;
@@ -93,6 +102,53 @@ public class WsController {
 			throw new SmsuForbiddenException("You can't call this WS from this remote address");
 		}
 	}
+	
+	/**
+	 * curl \
+	 * -i \
+	 * -X POST \
+	 * -H "Content-Type: application/json" \
+	 * '{"login": "loginTestSmsu", "phoneNumber": "0612345678", "validCG": true, "validCP": ["cas"]}}' \
+	 * http://localhost:8080/ws/sms/member
+	 */
+	@POST
+	@Path("/member")
+	public String saveMember(Member member, @Context HttpServletRequest request) throws LdapUserNotFoundException, LdapWriteException, HttpException, InsufficientQuotaException {
+		if(checkClient(request)) {
+			logger.debug("Save data of a member");		
+			if (StringUtils.isEmpty(member.getPhoneNumber())) {
+				if (member.getValidCG()) throw new InvalidParameterException("ADHESION.ERROR.PHONEREQUIRED");
+			} else { 
+				membershipController.validatePhoneNumber(member.getPhoneNumber());
+			}
+	
+			// save datas into LDAP
+			boolean pending = memberManager.saveOrUpdateMember(member);
+	
+			return pending ? "pending" : "ok";
+		} else {
+			throw new SmsuForbiddenException("You can't call this WS from this remote address");
+		}
+	}
+	
+	/**
+	 * curl \
+	 * -i \
+	 * -X GET \
+	 * -H "Content-Type: application/json" \
+	 * http://localhost:8080/ws/services
+	 */
+	@GET
+	@Path("/services")
+	@Produces("application/json")
+	public List<UIService> getUIServices(@Context HttpServletRequest request) {
+		if(checkClient(request)) {
+			return serviceManager.getAllUIServices();
+		} else {
+			throw new SmsuForbiddenException("You can't call this WS from this remote address");
+		}
+	}
+	
 	
 	/**                                                                                                                                                                                                                                   
 	 * Check if the client is authorized.                                                                                                                                                                                                                                                                                                                                                                                                           
