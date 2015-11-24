@@ -1,4 +1,4 @@
-package org.esupportail.smsu.web.controllers.exceptionmappers;
+package org.esupportail.smsu.web;
 
 import javax.ws.rs.core.Response;
 
