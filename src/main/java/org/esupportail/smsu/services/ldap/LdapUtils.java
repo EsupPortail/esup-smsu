@@ -87,8 +87,8 @@ public class LdapUtils {
 	private String userDnPath;
 	private String userIdAttribute;
 	private String groupMemberAttribute;
-	private String groupNameAttribute;
-	
+	private String groupNameAttribute;	
+	private String groupMemberContainsUserAttribute;
 	
 	/**
 	 * The objectClass ldap attribute to add if the userTermsOfUseAttribute or userPagerAttribute need a specific ldap schema
@@ -475,8 +475,11 @@ public class LdapUtils {
 	 * @return the list of user group
 	 */
 	public List<UserGroup> getUserGroupsByUid(final String uid) {
-		String rdn = userIdAttribute + '=' + uid + "," + userDnPath;
-		String filter = groupMemberAttribute + "=" + rdn;
+		String rid = userIdAttribute + '=' + uid + "," + userDnPath;
+		if("uid".equalsIgnoreCase(groupMemberContainsUserAttribute)) {
+			rid = uid;
+		}
+		String filter = groupMemberAttribute + "=" + rid;
 		logger.debug("search ldap groups with ldap filter : " + filter);
 		return convertToUserGroups(ldapGroupService.getLdapGroupsFromFilter(filter));
 	}
@@ -668,6 +671,10 @@ public class LdapUtils {
 
 	public void setGroupNameAttribute(String groupNameAttribute) {
 		this.groupNameAttribute = groupNameAttribute;
+	}
+
+	public void setGroupMemberContainsUserAttribute(String groupMemberContainsUserAttribute) {
+		this.groupMemberContainsUserAttribute = groupMemberContainsUserAttribute;
 	}
 
 	public void setUserIdAttribute(String userIdAttribute) {
