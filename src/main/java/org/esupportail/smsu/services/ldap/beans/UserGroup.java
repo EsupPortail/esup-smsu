@@ -11,4 +11,10 @@ public class UserGroup {
 		this.id = id;
 		this.name = name;
 	}
+
+	@Override
+	public String toString() {
+		return "UserGroup [id=" + id + ", name=" + name + "]";
+	}
+	
 }

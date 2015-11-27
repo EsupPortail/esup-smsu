@@ -34,8 +34,10 @@ public class GroupUtils {
     
 	private List<? extends UserGroup> getUserGroups(String login) {
 		if (wsgroups.inUse()) {
+			logger.debug("Use ws groups and not ldap groups");
 			return wsgroups.getUserGroups(login);
 		} else {
+			logger.debug("Use ldap groups and not ws groups");
 			return ldapUtils.getUserGroupsByUid(login);
 		}
 	}
@@ -93,6 +95,7 @@ public class GroupUtils {
 		}
 		UserGroup selfGroup = new UserGroup(login, ldapUtils.getUserDisplayName(login));
 		groups.add(selfGroup);
+		logger.debug("GroupsPlusSelf for " + login + " : " + groups);
 		return groups;
 	}
 	
