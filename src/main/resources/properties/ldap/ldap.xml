@@ -231,6 +231,7 @@
 		<property name="groupMemberAttribute" value="${ldap.group.groupMemberAttr}"/>
 		<property name="groupNameAttribute" value="${ldap.group.nameAttr}"/>
 		<property name="objectClassToAdd" value="${ldap.objectClassToAdd}"/>
+		<property name="groupMemberContainsUserAttribute" value="${ldap.group.groupMemberContainsUserAttribute}"/>
 	</bean>
 
 </beans>
