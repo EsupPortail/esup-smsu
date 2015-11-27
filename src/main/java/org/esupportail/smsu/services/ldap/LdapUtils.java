@@ -477,6 +477,7 @@ public class LdapUtils {
 	public List<UserGroup> getUserGroupsByUid(final String uid) {
 		String rdn = userIdAttribute + '=' + uid + "," + userDnPath;
 		String filter = groupMemberAttribute + "=" + rdn;
+		logger.debug("search ldap groups with ldap filter : " + filter);
 		return convertToUserGroups(ldapGroupService.getLdapGroupsFromFilter(filter));
 	}
 
