@@ -1,6 +1,7 @@
 package org.esupportail.smsu.web.controllers;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.DELETE;
@@ -56,7 +57,7 @@ public class RolesController {
 	@GET
 	@Produces("application/json")
 	@Path("/fonctions")
-	public List<String> allFonctions() {
+	public Set<String> allFonctions() {
 		return fonctionManager.getAllFonctions();
 	}
 		

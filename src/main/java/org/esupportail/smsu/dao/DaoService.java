@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 
 import org.esupportail.smsu.dao.beans.Account;
 import org.esupportail.smsu.dao.beans.BasicGroup;
@@ -21,7 +22,6 @@ import org.esupportail.smsu.dao.beans.Recipient;
 import org.esupportail.smsu.dao.beans.Role;
 import org.esupportail.smsu.dao.beans.Service;
 import org.esupportail.smsu.dao.beans.Template;
-
 import org.esupportail.smsu.domain.beans.message.MessageStatus;
 
 
@@ -429,6 +429,16 @@ public interface DaoService extends Serializable {
 	Fonction getFonctionById(Integer id);
 	Fonction getFonctionByName(String name);
 	
+	/**
+	 * @param fonction
+	 */
+	void addFonction(Fonction fonction);
+	
+	/**
+	 * @param service
+	 */
+	void deleteFonction(Fonction fonction);
+	
 	//////////////////////////////////////////////////////////////
 	// Mails
 	//////////////////////////////////////////////////////////////
@@ -461,4 +471,5 @@ public interface DaoService extends Serializable {
 
 	
 	boolean isSupervisor(final Person person);
+
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -11,6 +12,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 
 import org.esupportail.smsu.business.ServiceManager;
 import org.esupportail.smsu.web.beans.UIService;
@@ -27,6 +29,16 @@ public class ServicesSmsuController {
 	@PermitAll
 	public List<UIService> getUIServices() {
 		return serviceManager.getAllUIServices();
+	}
+	
+	@GET
+	@Produces("application/json")
+	@Path("/sendFctn")
+	@PermitAll
+	public List<UIService> getUIServicesSendFctn(@Context HttpServletRequest request) {
+		String login = request.getRemoteUser();
+		if (login == null) throw new InvalidParameterException("SERVICE.CLIENT.NOTDEFINED");
+		return serviceManager.getUIServicesSendFctn(login);
 	}
 	 
 	@POST

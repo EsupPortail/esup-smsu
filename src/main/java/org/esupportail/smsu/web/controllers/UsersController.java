@@ -12,6 +12,7 @@ import org.apache.commons.lang.StringUtils;
 import org.esupportail.commons.services.ldap.LdapException;
 import org.esupportail.commons.services.ldap.LdapUser;
 import org.apache.log4j.Logger;
+import org.esupportail.smsu.business.ServiceManager;
 import org.esupportail.smsu.domain.DomainService;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.web.beans.UIRecipientUser;
@@ -41,6 +42,8 @@ public class UsersController {
 				@QueryParam("service") String serviceKey,
 				@QueryParam("id") String id, 
 				@QueryParam("ldapFilter") String ldapFilter) {
+		if(ServiceManager.SERVICE_SEND_FUNCTION_CG.equals(serviceKey)) 
+			serviceKey = null;
 		if (ldapFilter != null)
 			return searchLdapWithFilter(ldapFilter);
 		else if (token != null)
