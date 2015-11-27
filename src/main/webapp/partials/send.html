@@ -134,7 +134,7 @@
     </div>
   </div>
 
-  <div class="form-group">
+  <div class="form-group" ng-if="loggedUser.can.FCTN_SMS_AJOUT_MAIL">
     <label class="col-md-3 control-label" for="mailOption">Courriel</label>
     <div class="col-md-9">
       <select name="mailOption" ng-model="msg.mailOption" ng-options="a.key as a.label for a in mailOptions" class="form-control">
