@@ -7,7 +7,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 
 import org.esupportail.smsu.dao.beans.Account;
 import org.esupportail.smsu.dao.beans.BasicGroup;
@@ -435,7 +434,7 @@ public interface DaoService extends Serializable {
 	void addFonction(Fonction fonction);
 	
 	/**
-	 * @param service
+	 * @param fonction
 	 */
 	void deleteFonction(Fonction fonction);
 	

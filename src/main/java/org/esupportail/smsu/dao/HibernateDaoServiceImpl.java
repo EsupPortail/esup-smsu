@@ -854,7 +854,7 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 	}
 	
 	/**
-	 * @param service
+	 * @param fonction
 	 */
 	public void deleteFonction(Fonction fonction) {
 		deleteObject(fonction);
