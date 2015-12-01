@@ -37,6 +37,10 @@ this.getServices = function () {
     return h.callRest('services');
 };
 
+this.getServicesAdh = function () {
+    return h.callRest('services/adhFctn');
+};
+
 this.mayGetMsgStatuses = function (msg) {
     if (msg.stateMessage === "SENT") {
 	h.callRest('messages/' + msg.id + '/statuses').then(function (statuses) {

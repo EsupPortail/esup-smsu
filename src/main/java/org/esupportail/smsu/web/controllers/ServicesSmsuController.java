@@ -40,7 +40,17 @@ public class ServicesSmsuController {
 		if (login == null) throw new InvalidParameterException("SERVICE.CLIENT.NOTDEFINED");
 		return serviceManager.getUIServicesSendFctn(login);
 	}
-	 
+	
+	@GET
+	@Produces("application/json")
+	@Path("/adhFctn")
+	@PermitAll
+	public List<UIService> getUIServicesAdhFctn(@Context HttpServletRequest request) {
+		String login = request.getRemoteUser();
+		if (login == null) throw new InvalidParameterException("SERVICE.CLIENT.NOTDEFINED");
+		return serviceManager.getUIServicesAdhFctn(login);
+	}
+	
 	@POST
 	public void create(UIService uiService) {
 		createOrModify(uiService, true);

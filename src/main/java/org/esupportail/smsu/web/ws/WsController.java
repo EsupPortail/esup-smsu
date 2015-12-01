@@ -149,6 +149,23 @@ public class WsController {
 		}
 	}
 	
+	/**
+	 * curl \
+	 * -i \
+	 * -X GET \
+	 * -H "Content-Type: application/json" \
+	 * http://localhost:8080/ws/sms/member/loginTestSmsu/adhServicesAvailable
+	 */
+	@GET
+	@Path("/member/{login}/adhServicesAvailable")
+	@Produces("application/json")
+	public List<UIService> getUIServicesAdh(@PathParam("login") String login, @Context HttpServletRequest request) {
+		if(checkClient(request)) {
+			return serviceManager.getUIServicesAdhFctn(login);
+		} else {
+			throw new SmsuForbiddenException("You can't call this WS from this remote address");
+		}
+	}
 	
 	/**                                                                                                                                                                                                                                   
 	 * Check if the client is authorized.                                                                                                                                                                                                                                                                                                                                                                                                           

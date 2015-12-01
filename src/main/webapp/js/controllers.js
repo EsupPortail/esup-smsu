@@ -258,7 +258,8 @@ app.controller('RolesDetailCtrl', function($scope, h, $routeParams, $location, $
 	return fonction2text[fonction]
 		.replace(/^\d+ /, '')
 		.replace('FCTN_SMS_ENVOI_SERVICE_CG', 'Envoi SMS en utilisant \'Aucun\' service')
-		.replace('FCTN_SMS_ENVOI_SERVICE_', 'Envoi SMS au service : ');
+		.replace('FCTN_SMS_ENVOI_SERVICE_', 'Envoi SMS au service : ')
+		.replace('FCTN_SMS_ADHESION_SERVICE_', 'Adhésion au service : ');
     };
 
     h.callRest('roles/fonctions').then(function (list) {
@@ -375,7 +376,7 @@ app.controller('ServicesDetailCtrl', function($scope, h, $routeParams, $location
 });
 
 app.controller('MembershipCtrl', function($scope, h) {
-    h.getServices().then(function (services) {
+    h.getServicesAdh().then(function (services) {
 	$scope.services = services;
     });
 
