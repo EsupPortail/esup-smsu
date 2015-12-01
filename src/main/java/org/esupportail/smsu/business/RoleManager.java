@@ -108,8 +108,7 @@ public class RoleManager {
 	private List<String> fonctionsToStringNames(Set<Fonction> fonctions) {
 		List<String> selectedValues = new ArrayList<String>();
 		for (Fonction fct : fonctions) {
-			if (FonctionManager.toFonctionName(fct.getName()) != null) // filter obsolete Fonctions (eg: FCTN_APPROBATION_ENVOI)
-				selectedValues.add(fct.getName());
+			selectedValues.add(fct.getName());
 		}
 		return selectedValues;
 	}
