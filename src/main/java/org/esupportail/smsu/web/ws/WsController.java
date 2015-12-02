@@ -1,13 +1,11 @@
 package org.esupportail.smsu.web.ws;
 
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -41,6 +39,8 @@ import org.springframework.beans.factory.annotation.Required;
 public class WsController {
 
 	private final Logger logger = Logger.getLogger(getClass());
+	
+	protected static enum MembershipStatus {PENDING, OK};
 
 	@Autowired private MessagesController messagesController;
 	@Autowired private MessageManager messageManager;
@@ -113,7 +113,8 @@ public class WsController {
 	 */
 	@POST
 	@Path("/member")
-	public String saveMember(Member member, @Context HttpServletRequest request) throws LdapUserNotFoundException, LdapWriteException, HttpException, InsufficientQuotaException {
+	@Produces("application/json")
+	public MembershipStatus saveMember(Member member, @Context HttpServletRequest request) throws LdapUserNotFoundException, LdapWriteException, HttpException, InsufficientQuotaException {
 		if(checkClient(request)) {
 			logger.debug("Save data of a member");		
 			if (StringUtils.isEmpty(member.getPhoneNumber())) {
@@ -125,7 +126,7 @@ public class WsController {
 			// save datas into LDAP
 			boolean pending = memberManager.saveOrUpdateMember(member);
 	
-			return pending ? "pending" : "ok";
+			return pending ? MembershipStatus.PENDING : MembershipStatus.OK;
 		} else {
 			throw new SmsuForbiddenException("You can't call this WS from this remote address");
 		}
