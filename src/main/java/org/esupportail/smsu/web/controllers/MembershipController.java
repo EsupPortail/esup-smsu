@@ -22,6 +22,8 @@ import org.springframework.beans.factory.annotation.Required;
 public class MembershipController {
 	
     @Autowired private MemberManager memberManager;
+	
+	protected static enum MembershipStatus {PENDING, OK};
 
 	/**
 	 * The pattern used to validate a phone number.
@@ -45,7 +47,8 @@ public class MembershipController {
 	}
 
 	@POST
-	public String save(Member member, @Context HttpServletRequest request) throws LdapUserNotFoundException, LdapWriteException, HttpException, InsufficientQuotaException {
+	@Produces("application/json")
+	public MembershipStatus save(Member member, @Context HttpServletRequest request) throws LdapUserNotFoundException, LdapWriteException, HttpException, InsufficientQuotaException {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Save data of a member");
 		}
@@ -63,7 +66,7 @@ public class MembershipController {
 		// save datas into LDAP
 		boolean pending = memberManager.saveOrUpdateMember(member);
 
-		return pending ? "pending" : "ok";
+		return pending ? MembershipStatus.PENDING : MembershipStatus.OK;
 	}
 	
 	/**
