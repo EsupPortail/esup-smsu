@@ -1,5 +1,6 @@
 package org.esupportail.smsu.services.ldap;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -556,7 +557,14 @@ public class LdapUtils {
 	}
 
 	public List<String> getMemberIds(String groupId) {
-		return ldapService.getMemberIds(ldapGroupMembersService.getLdapGroup(groupId));
+		List<String> memberIds;
+		LdapGroup group = ldapGroupMembersService.getLdapGroup(groupId);
+		if("uid".equalsIgnoreCase(groupMemberContainsUserAttribute)) {
+			memberIds = group.getAttributes(groupMemberAttribute);
+		} else {
+			memberIds = ldapService.getMemberIds(group);
+		}
+		return memberIds;
 	}
 	
 	/**
