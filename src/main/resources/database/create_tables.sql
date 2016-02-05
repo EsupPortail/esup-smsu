@@ -10,7 +10,7 @@ create table person (PER_ID integer not null auto_increment, PER_LOGIN varchar(3
 create table recipient (RCP_ID integer not null auto_increment, RCP_PHONE varchar(255) not null unique, RCP_LOGIN varchar(32), primary key (RCP_ID)) ENGINE=InnoDB;
 create table role (ROL_ID integer not null auto_increment, ROL_NAME varchar(32) not null unique, primary key (ROL_ID)) ENGINE=InnoDB;
 create table role_composition (ROL_ID integer not null, FCT_ID integer not null, primary key (ROL_ID, FCT_ID)) ENGINE=InnoDB;
-create table service (SVC_ID integer not null auto_increment, SVC_NAME varchar(32) not null unique, SVC_KEY varchar(16) not null unique, primary key (SVC_ID)) ENGINE=InnoDB;
+create table service (SVC_ID integer not null auto_increment, SVC_NAME varchar(32) not null unique, SVC_KEY varchar(32) not null unique, primary key (SVC_ID)) ENGINE=InnoDB;
 create table supervisor (CGR_ID integer not null, PER_ID integer not null, primary key (PER_ID, CGR_ID)) ENGINE=InnoDB;
 create table supervisor_sender (MSG_ID integer not null, PER_ID integer not null, primary key (PER_ID, MSG_ID)) ENGINE=InnoDB;
 create table template (TPL_ID integer not null auto_increment, TPL_LABEL varchar(32) not null unique, TPL_HEADING varchar(50), TPL_BODY varchar(160), TPL_SIGNATURE varchar(50), primary key (TPL_ID)) ENGINE=InnoDB;
