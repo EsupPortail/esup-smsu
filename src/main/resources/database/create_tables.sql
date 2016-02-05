@@ -1,7 +1,7 @@
 create table account (ACC_ID integer not null auto_increment, ACC_LABEL varchar(32) not null unique, primary key (ACC_ID)) ENGINE=InnoDB;
 create table basic_group (BGR_ID integer not null auto_increment, BGR_LABEL varchar(255) not null unique, primary key (BGR_ID)) ENGINE=InnoDB;
 create table customized_group (CGR_ID integer not null auto_increment, ROL_ID integer not null, ACC_ID integer not null, CGR_LABEL varchar(255) not null unique, CGR_QUOTA_SMS bigint not null, CGR_QUOTA_ORDER bigint not null, CGR_CONSUMED_SMS bigint not null, primary key (CGR_ID)) ENGINE=InnoDB;
-create table fonction (FCT_ID integer not null auto_increment, FCT_NAME varchar(32) not null unique, primary key (FCT_ID)) ENGINE=InnoDB;
+create table fonction (FCT_ID integer not null auto_increment, FCT_NAME varchar(64) not null unique, primary key (FCT_ID)) ENGINE=InnoDB;
 create table mail (MAIL_ID integer not null auto_increment, MAIL_CONTENT varchar(300) not null, MAIL_STATE varchar(16) not null, MAIL_SUBJECT varchar(300), TPL_ID integer, primary key (MAIL_ID)) ENGINE=InnoDB;
 create table mail_recipient (MRC_ID integer not null auto_increment, MRC_ADDRESS varchar(100) not null unique, MRC_LOGIN varchar(32), primary key (MRC_ID)) ENGINE=InnoDB;
 create table message (MSG_ID integer not null auto_increment, MSG_DATE datetime not null, MSG_CONTENT varchar(255) not null, MSG_STATE varchar(32) not null, ACC_ID integer not null, TPL_ID integer, PER_ID integer not null, SVC_ID integer, MAIL_ID integer unique, BGR_SENDER_ID integer not null, BGR_RECIPIENT_ID integer, primary key (MSG_ID)) ENGINE=InnoDB;
@@ -10,7 +10,7 @@ create table person (PER_ID integer not null auto_increment, PER_LOGIN varchar(3
 create table recipient (RCP_ID integer not null auto_increment, RCP_PHONE varchar(255) not null unique, RCP_LOGIN varchar(32), primary key (RCP_ID)) ENGINE=InnoDB;
 create table role (ROL_ID integer not null auto_increment, ROL_NAME varchar(32) not null unique, primary key (ROL_ID)) ENGINE=InnoDB;
 create table role_composition (ROL_ID integer not null, FCT_ID integer not null, primary key (ROL_ID, FCT_ID)) ENGINE=InnoDB;
-create table service (SVC_ID integer not null auto_increment, SVC_NAME varchar(32) not null unique, SVC_KEY varchar(16) not null unique, primary key (SVC_ID)) ENGINE=InnoDB;
+create table service (SVC_ID integer not null auto_increment, SVC_NAME varchar(32) not null unique, SVC_KEY varchar(32) not null unique, primary key (SVC_ID)) ENGINE=InnoDB;
 create table supervisor (CGR_ID integer not null, PER_ID integer not null, primary key (PER_ID, CGR_ID)) ENGINE=InnoDB;
 create table supervisor_sender (MSG_ID integer not null, PER_ID integer not null, primary key (PER_ID, MSG_ID)) ENGINE=InnoDB;
 create table template (TPL_ID integer not null auto_increment, TPL_LABEL varchar(32) not null unique, TPL_HEADING varchar(50), TPL_BODY varchar(160), TPL_SIGNATURE varchar(50), primary key (TPL_ID)) ENGINE=InnoDB;
