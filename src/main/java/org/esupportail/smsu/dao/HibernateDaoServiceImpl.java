@@ -459,9 +459,12 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 	 * @see org.esupportail.smsu.dao.DaoService#deleteService(org.esupportail.smsu.dao.beans.Service)
 	 */
 	public void deleteService(final Service service) {
+		for(Message message: service.getMessages()) {
+			message.setService(null);
+		}
 		deleteObject(service);
 	}
-	
+
 	/**
 	 * @see org.esupportail.smsu.dao.DaoService#getServiceByKey(java.lang.String)
 	 */
@@ -845,6 +848,26 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 		criteria.addOrder(Order.asc(Fonction.PROP_ID));
 		return  getHibernateTemplate().findByCriteria(criteria);
 	}
+
+	
+	/**
+	 * @param fonction
+	 */
+	public void addFonction(Fonction fonction) {
+		addObject(fonction);
+	}
+	
+	/**
+	 * @param fonction
+	 */
+	public void deleteFonction(Fonction fonction) {
+		for(Role role: fonction.getRoles()) {
+			role.getFonctions().remove(fonction);
+		}
+		fonction.setRoles(null);
+		deleteObject(fonction);
+	}
+	
 
 	//////////////////////////////////////////////////////////////
 	// Mails
