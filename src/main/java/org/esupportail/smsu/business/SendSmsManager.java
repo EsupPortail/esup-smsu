@@ -937,7 +937,7 @@ public class SendSmsManager  {
 	}
 
 	private Service getService(final String key) {
-		if (key != null)
+		if (key != null && !ServiceManager.SERVICE_SEND_FUNCTION_CG.equals(key))
 			return daoService.getServiceByKey(key);
 		else
 			return null;

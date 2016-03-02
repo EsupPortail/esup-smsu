@@ -74,8 +74,19 @@ public class RoleManager {
 		return result;
 	}
 	
-	private Fonction stringNameToFonction(String val) {
-		return daoService.getFonctionByName(val);
+	/**
+	 * Get function by Name from the dao
+	 * If the function name doesn't correspond to a function in the dao
+	 * we create it.
+	 */
+	private Fonction stringNameToFonction(String fonctionName) {
+		Fonction fonction = daoService.getFonctionByName(fonctionName);
+		if(fonction == null) {
+			fonction = new Fonction();
+			fonction.setName(fonctionName);
+			daoService.addFonction(fonction);
+		}
+		return fonction;
 	}
 
 	private Set<Fonction> stringNamesToFonctions(List<String> selectedValues) {

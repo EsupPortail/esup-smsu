@@ -9,7 +9,7 @@
   <div class="form-group" ng-class="{'has-error': submitted && myForm.key.$invalid}">
     <label class="col-md-3 control-label" for="key">Clé</label>
     <div class="col-md-6">
-      <input type="text" name="key" ng-model="service.key" my-validator="{ unique: checkUniqueName }" required maxlength="30" class="form-control">
+      <input type="text" name="key" ng-disabled="!service.isNew" ng-model="service.key" my-validator="{ unique: checkUniqueName }" required maxlength="30" class="form-control">
       <span display-required-if-needed input-name="myForm.key"></span>
       <span ng-show="submitted && myForm.key.$error.unique" class="help-block">Already in use</span>
     </div>

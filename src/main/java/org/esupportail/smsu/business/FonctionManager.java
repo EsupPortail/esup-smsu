@@ -1,7 +1,9 @@
 package org.esupportail.smsu.business;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.esupportail.smsu.dao.DaoService;
@@ -16,6 +18,8 @@ public class FonctionManager {
 	
 	@Autowired private DaoService daoService;
 	
+	@Autowired private ServiceManager serviceManager;
+	
 	@SuppressWarnings("unused")
 	private final Logger logger = Logger.getLogger(getClass());
 	
@@ -23,11 +27,12 @@ public class FonctionManager {
 	 * Retrieve all the fonctions defined in smsu database.
 	 * @return
 	 */
-	public List<String> getAllFonctions() {
-		List<String> result = new ArrayList<String>();
+	public Set<String> getAllFonctions() {
+		Set<String> result = new HashSet<String>();
 		for (Fonction fct : daoService.getFonctions()) {
 			result.add(fct.getName());
 		}
+		result.addAll(serviceManager.getAllAddonServicesSendFctn());
 		return result;
 	}
 

@@ -17,7 +17,7 @@ public class Fonction implements Serializable {
 	 * Hibernate property for the name.
 	 */
 	public static final String PROP_NAME = "Name";
-
+	
 	/**
 	 * Hibernate property for the identifier.
 	 */

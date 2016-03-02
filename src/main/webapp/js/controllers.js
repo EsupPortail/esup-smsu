@@ -255,7 +255,10 @@ app.controller('RolesDetailCtrl', function($scope, h, $routeParams, $location, $
 
     $scope.forOrdering = function (fonction) { return fonction2text && fonction2text[fonction]; };
     $scope.fonctionText = function (fonction) {
-	return fonction2text[fonction].replace(/^\d+ /, '');
+	return fonction2text[fonction]
+		.replace(/^\d+ /, '')
+		.replace('FCTN_SMS_ENVOI_SERVICE_CG', 'Envoi SMS en utilisant \'Aucun\' service')
+		.replace('FCTN_SMS_ENVOI_SERVICE_', 'Envoi SMS au service : ');
     };
 
     h.callRest('roles/fonctions').then(function (list) {
@@ -467,7 +470,7 @@ app.controller('SendCtrl', function($scope, h, $location) {
 	$scope.groupLeaves = groupLeaves;
 	$scope.msg.senderGroup = groupLeaves[0].id;
     });
-    h.callRest('services').then(function (services) {
+    h.callRest('services/sendFctn').then(function (services) {
 	$scope.services = services;
     });
     h.callRest('templates').then(function (templates) {

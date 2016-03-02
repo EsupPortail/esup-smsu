@@ -2,8 +2,11 @@ package org.esupportail.smsu.business;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+
 import org.apache.log4j.Logger;
 import org.esupportail.smsu.dao.DaoService;
+import org.esupportail.smsu.dao.beans.Fonction;
 import org.esupportail.smsu.dao.beans.Message;
 import org.esupportail.smsu.dao.beans.Service;
 import org.esupportail.smsu.web.beans.UIService;
@@ -12,7 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class ServiceManager {
 	
+	public static final String SERVICE_SEND_FUNCTION_PREFIX = "FCTN_SMS_ENVOI_SERVICE_";
+	public static final String SERVICE_SEND_FUNCTION_CG = SERVICE_SEND_FUNCTION_PREFIX + "CG";
+	
 	@Autowired private DaoService daoService;
+	
+	@Autowired private SecurityManager securityManager;
 	
 	@SuppressWarnings("unused")
 	private final Logger logger = Logger.getLogger(getClass());
@@ -27,28 +35,68 @@ public class ServiceManager {
 		}
 		return allUiServices;
 	}
+	
+	/**
+	 * retrieve services defined in smsu database that this user can use to send mail to.
+	 */
+	public List<UIService> getUIServicesSendFctn(String login) {
+		List<UIService> allUiServices = new ArrayList<UIService>();
+		Set<String> allowedFonctions = securityManager.loadUserRightsByUsername(login);
+		if(allowedFonctions.contains(SERVICE_SEND_FUNCTION_CG)) {
+			allUiServices.add(UIService.CG_SERVICE);
+		}
+		for (Service service : daoService.getServices()) {			
+			if(allowedFonctions.contains(SERVICE_SEND_FUNCTION_CG) ||
+					allowedFonctions.contains(SERVICE_SEND_FUNCTION_PREFIX + service.getKey().toUpperCase())) {
+				allUiServices.add(convertToUI(service));
+			}
+		}
+		return allUiServices;
+	}
+	
+	public List<String> getAllAddonServicesSendFctn() {
+		List<String> result = new ArrayList<String>();
+		result.add(SERVICE_SEND_FUNCTION_CG);
+		for (Service service : daoService.getServices()) {
+			result.add(SERVICE_SEND_FUNCTION_PREFIX + service.getKey().toUpperCase());
+		}
+		return result;
+	}
  
 	public void updateUIService(final UIService service) {
 		daoService.updateService(convertFromUI(service));
 	}
 	
 	public void addUIService(final UIService service) {
+		
+		// add also in the same time a corresponding service send function ... 
+		String fonctionName = SERVICE_SEND_FUNCTION_PREFIX + service.key.toUpperCase();
+		Fonction fonction = new Fonction();
+		fonction.setName(fonctionName);
+		daoService.addFonction(fonction);
+		
 		daoService.addService(convertFromUI(service));
 	}
 	
 	public void deleteUIService(final int id) {
-		daoService.deleteService(daoService.getServiceById(id));
+		Service service2Delete =  daoService.getServiceById(id);
+		String fonctionName2Delete = SERVICE_SEND_FUNCTION_PREFIX + service2Delete.getKey().toUpperCase();
+		Fonction fonction = daoService.getFonctionByName(fonctionName2Delete);
+		if(fonction != null)
+			daoService.deleteFonction(fonction);
+		daoService.deleteService(service2Delete);
 	}
 
 	/**
 	 * @param key
 	 * @param id 
 	 * @return true if no other service has the same key or if key unmodified
+	 * 				AND key is not equals to ServiceManager.SERVICE_SEND_FUNCTION_CG 
 	 */
 	public Boolean isKeyAvailable(final String key, final Integer id) {
 		Service existingService = daoService.getServiceByKey(key);
-		return existingService == null 
-				|| id != null && id.equals(existingService.getId());
+		return (existingService == null || id != null && id.equals(existingService.getId()))
+				&& !ServiceManager.SERVICE_SEND_FUNCTION_CG.equals(key);
 	}
 	
 	/**
@@ -83,5 +131,6 @@ public class ServiceManager {
 		List<Message> listMessages = daoService.getMessagesByService(service);
 		return listMessages.isEmpty();
 	}
+
 
 }

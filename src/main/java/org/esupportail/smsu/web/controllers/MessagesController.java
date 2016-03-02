@@ -22,6 +22,7 @@ import javax.ws.rs.core.Context;
 import org.apache.log4j.Logger;
 import org.esupportail.smsu.business.MessageManager;
 import org.esupportail.smsu.business.SendSmsManager;
+import org.esupportail.smsu.business.ServiceManager;
 import org.esupportail.smsu.dao.beans.Message;
 import org.esupportail.smsu.domain.DomainService;
 import org.esupportail.smsu.domain.beans.message.MessageStatus;
@@ -31,6 +32,7 @@ import org.esupportail.smsu.services.smtp.SmtpServiceUtils;
 import org.esupportail.smsu.web.beans.MailToSend;
 import org.esupportail.smsu.web.beans.UIMessage;
 import org.esupportail.smsu.web.beans.UINewMessage;
+import org.esupportail.smsu.web.beans.UIService;
 import org.esupportail.smsuapi.exceptions.UnknownMessageIdException;
 import org.esupportail.smsuapi.utils.HttpException;
 import org.esupportail.ws.remote.beans.TrackInfos;
@@ -49,6 +51,7 @@ public class MessagesController {
 	@Autowired private MessageManager messageManager;
 	@Autowired private SendSmsManager sendSmsManager;
 	@Autowired private SmtpServiceUtils smtpServiceUtils;
+	@Autowired private ServiceManager serviceManager;
 
 	private Integer smsMaxSize;
 
@@ -104,6 +107,9 @@ public class MessagesController {
 		String login = request.getRemoteUser();
 		if (login == null) throw new InvalidParameterException("SERVICE.CLIENT.NOTDEFINED");
 		msg.login = login;
+		
+		serviceKeyValidation(msg.serviceKey, login);
+		if(ServiceManager.SERVICE_SEND_FUNCTION_CG.equals(msg.serviceKey)) msg.serviceKey = null;
 
 		recipientsValidation(msg, request, login);
 		userGroupValidation(msg.senderGroup, login);
@@ -156,6 +162,15 @@ public class MessagesController {
 		} else {
 			throw new InvalidParameterException(allowedSender + " is not allowed to view messages sent by " + wanted);
 		}
+	}
+	
+	private void serviceKeyValidation(String serviceKey, String login) {
+		 List<UIService> services = serviceManager.getUIServicesSendFctn(login);
+		 for(UIService service : services) {
+			 if(service.key.equals(serviceKey)) 
+				 return; // OK
+		 }	 
+		 throw new InvalidParameterException("user " + login + " has not the function to send to the service " + serviceKey);	 
 	}
 
 	private void recipientsValidation(UINewMessage msg, HttpServletRequest request, String login) {

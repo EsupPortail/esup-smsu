@@ -19,6 +19,7 @@ INSERT INTO fonction VALUES(12,'FCTN_SUIVI_ENVOIS_UTIL');
 INSERT INTO fonction VALUES(13,'FCTN_SUIVI_ENVOIS_ETABL');
 INSERT INTO fonction VALUES(14,'FCTN_GESTION_GROUPE');
 INSERT INTO fonction VALUES(16,'FCTN_SMS_ENVOI_LISTE_NUM_TEL');
+INSERT INTO fonction VALUES(17,'FCTN_SMS_ENVOI_SERVICE_CG');
 
 -- Ajout le role SUPER_ADMIN 
 INSERT INTO role VALUES(1,'SUPER_ADMIN');
@@ -39,6 +40,7 @@ INSERT INTO role_composition VALUES(1,12);
 INSERT INTO role_composition VALUES(1,13);
 INSERT INTO role_composition VALUES(1,14);
 INSERT INTO role_composition VALUES(1,16);
+INSERT INTO role_composition VALUES(1,17);
 
 -- Ajout du compte par defaut 
 INSERT INTO account VALUES (1, 'default_account');

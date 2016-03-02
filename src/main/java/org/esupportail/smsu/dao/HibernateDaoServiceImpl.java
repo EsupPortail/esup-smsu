@@ -845,6 +845,21 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 		criteria.addOrder(Order.asc(Fonction.PROP_ID));
 		return  getHibernateTemplate().findByCriteria(criteria);
 	}
+	
+	/**
+	 * @param fonction
+	 */
+	public void addFonction(Fonction fonction) {
+		addObject(fonction);
+	}
+	
+	/**
+	 * @param fonction
+	 */
+	public void deleteFonction(Fonction fonction) {
+		deleteObject(fonction);
+	}
+	
 
 	//////////////////////////////////////////////////////////////
 	// Mails
