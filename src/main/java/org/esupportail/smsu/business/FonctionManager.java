@@ -33,6 +33,7 @@ public class FonctionManager {
 			result.add(fct.getName());
 		}
 		result.addAll(serviceManager.getAllAddonServicesSendFctn());
+		result.addAll(serviceManager.getAllAddonServicesAdhFctn());
 		return result;
 	}
 

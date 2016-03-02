@@ -18,6 +18,8 @@ public class ServiceManager {
 	public static final String SERVICE_SEND_FUNCTION_PREFIX = "FCTN_SMS_ENVOI_SERVICE_";
 	public static final String SERVICE_SEND_FUNCTION_CG = SERVICE_SEND_FUNCTION_PREFIX + "CG";
 	
+	public static final String SERVICE_ADH_FUNCTION_PREFIX = "FCTN_SMS_ADHESION_SERVICE_";
+	
 	@Autowired private DaoService daoService;
 	
 	@Autowired private SecurityManager securityManager;
@@ -54,11 +56,34 @@ public class ServiceManager {
 		return allUiServices;
 	}
 	
+	/**
+	 * retrieve services defined in smsu database that this user can use to register to (adhésion).
+	 */
+	public List<UIService> getUIServicesAdhFctn(String login) {
+		List<UIService> allUiServices = new ArrayList<UIService>();
+		Set<String> allowedFonctions = securityManager.loadUserRightsByUsername(login);
+		for (Service service : daoService.getServices()) {			
+			if(allowedFonctions.contains(SERVICE_ADH_FUNCTION_PREFIX + service.getKey().toUpperCase())) {
+				allUiServices.add(convertToUI(service));
+			}
+		}
+		return allUiServices;
+	}
+		
 	public List<String> getAllAddonServicesSendFctn() {
 		List<String> result = new ArrayList<String>();
 		result.add(SERVICE_SEND_FUNCTION_CG);
 		for (Service service : daoService.getServices()) {
 			result.add(SERVICE_SEND_FUNCTION_PREFIX + service.getKey().toUpperCase());
+		}
+		return result;
+	}
+	
+	
+	public List<String> getAllAddonServicesAdhFctn() {
+		List<String> result = new ArrayList<String>();
+		for (Service service : daoService.getServices()) {
+			result.add(SERVICE_ADH_FUNCTION_PREFIX + service.getKey().toUpperCase());
 		}
 		return result;
 	}
@@ -75,15 +100,28 @@ public class ServiceManager {
 		fonction.setName(fonctionName);
 		daoService.addFonction(fonction);
 		
+		// add also in the same time a corresponding service adh function ... 
+		String adhFonctionName = SERVICE_ADH_FUNCTION_PREFIX + service.key.toUpperCase();
+		Fonction adhFonction = new Fonction();
+		adhFonction.setName(adhFonctionName);
+		daoService.addFonction(adhFonction);
+		
 		daoService.addService(convertFromUI(service));
 	}
 	
 	public void deleteUIService(final int id) {
 		Service service2Delete =  daoService.getServiceById(id);
+		
 		String fonctionName2Delete = SERVICE_SEND_FUNCTION_PREFIX + service2Delete.getKey().toUpperCase();
 		Fonction fonction = daoService.getFonctionByName(fonctionName2Delete);
 		if(fonction != null)
 			daoService.deleteFonction(fonction);
+		
+		String adhFonctionName2Delete = SERVICE_ADH_FUNCTION_PREFIX + service2Delete.getKey().toUpperCase();
+		Fonction adhFonction = daoService.getFonctionByName(adhFonctionName2Delete);
+		if(adhFonction != null)
+			daoService.deleteFonction(adhFonction);
+		
 		daoService.deleteService(service2Delete);
 	}
 
