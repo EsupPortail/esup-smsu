@@ -476,10 +476,11 @@ public class SendSmsManager  {
 	private List<CustomizedGroup> getSupervisorCustomizedGroup(final Message message) {
 
 		List<CustomizedGroup> l = getSupervisorCustomizedGroupByGroup(message.getGroupRecipient(), "destination");
-		if (!l.isEmpty()) return l;
 
 		CustomizedGroup r = getCustomizedGroupWithSupervisors(message.getGroupSender());
-		if (r != null) return singletonList(r);
+		if (r != null) l.add(r);
+
+		if (!l.isEmpty()) return l;
 
 		logger.debug("Supervisor needed without a group. Using the default supervisor : [" + defaultSupervisorLogin + "]");
 		r = new CustomizedGroup();
