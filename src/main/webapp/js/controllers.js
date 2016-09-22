@@ -400,20 +400,35 @@ app.controller('MembershipCtrl', function($scope, h) {
     var modify = function (method) {
 	var membershipRaw = h.objectSlice($scope.membership, ['login','phoneNumber', 'validCG']); // keep only modifiable fields
 	membershipRaw.validCP = h.set2array($scope.membership.validCP);
-	h.callRestModify(method, 'membership', membershipRaw).then(function () {
+	h.callRestModify(method, 'membership', membershipRaw).then(function (resp) {
 	    var prev = $scope.membership.prev_validCG;
 	    $scope.submitted_msg = 
 		!prev === !$scope.membership.validCG ? "Modifications enregistrées" :
 		$scope.membership.validCG ? "Adhésion enregistrée" : "Résiliation effectuée";
 	    set_prev_membership();
 	    $scope.myForm.$setPristine();
+	    $scope.membership.flagPending = resp.data!=='"OK"';
 	    isPhoneNumberInBlackList();
 	});
     };
     
+    var validCode = function (method) {
+    	var membershipRaw = h.objectSlice($scope.membership, ['login','phoneNumber', 'validCG', 'phoneNumberValidationCode']); 
+    	h.callRestModify(method, 'membership/validCode', membershipRaw).then(function (resp) {
+    		$scope.membership.flagPending = false;
+    	}, function (resp) {
+    		$scope.validationCode_msg = resp.error;
+    		$scope.membership.flagPending = true;
+    	});
+    };
+    
     $scope.submit = function () {
 	if (!$scope.myForm.$valid) return;
-	modify('post');
+		if(!$scope.membership.flagPending) {
+			modify('post');
+    	} else {
+    		validCode('post');
+    	}
     };
 
     h.callRest('membership').then(function (membership) {

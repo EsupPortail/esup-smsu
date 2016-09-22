@@ -3,7 +3,7 @@
  <div ng-show="submitted_msg" ng-class="{'invisible': myForm.$dirty}" class="alert alert-success" >
   {{submitted_msg}}</div>
 
- <form novalidate name="myForm" class="form-horizontal" ng-submit="submitted = 1; submit()" class="form-horizontal">
+ <form novalidate name="myForm" class="form-horizontal" ng-submit="submitted = 1; submit()" class="form-horizontal" ng-show="!membership.flagPending">
 
   <div class="form-group">
     <label class="col-md-3 control-label">Prénom</label>
@@ -63,7 +63,13 @@
           "Enregistrer"}}</button>
     </div>
   </div>
-
+  
  </form>
+ 
+   <form novalidate name="myForm" class="form-horizontal" ng-submit="submitted = 1; submit()" class="form-horizontal" ng-show="membership.flagPending">
+ 	Merci de valider l'enregistrement en saissant le code SMS reçu : <input type="text" name="phoneNumberValidationCode" ng-model="membership.phoneNumberValidationCode" maxlength="8" class="form-control">
+ 	 <button class="btn btn-primary" type="submit">Valider</button>
+ 	<b>{{validationCode_msg}}</b>
+  </form>
 
 </div>

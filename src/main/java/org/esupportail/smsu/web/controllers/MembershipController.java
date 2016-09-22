@@ -9,6 +9,7 @@ import javax.ws.rs.core.Context;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.esupportail.commons.services.i18n.I18nService;
 import org.esupportail.smsu.business.MemberManager;
 import org.esupportail.smsu.business.beans.Member;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
@@ -22,7 +23,9 @@ import org.springframework.beans.factory.annotation.Required;
 public class MembershipController {
 	
     @Autowired private MemberManager memberManager;
-	
+    
+    @Autowired private I18nService i18nService;
+    
 	protected static enum MembershipStatus {PENDING, OK};
 
 	/**
@@ -75,15 +78,24 @@ public class MembershipController {
 	 * @throws LdapUserNotFoundException 
 	 * @throws LdapWriteException 
 	 */
-	public String validCode(Member member) throws LdapUserNotFoundException, LdapWriteException  {
+	@POST
+	@Produces("application/json")
+	@Path("/validCode")
+	public Boolean validCode(Member member, @Context HttpServletRequest request) throws LdapUserNotFoundException, LdapWriteException  {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Valid the code");
 		}
 		// check if the code is correct
 		// and accept definitely the user inscription if the code is correct
 		final boolean valid = memberManager.valid(member);
+		
+		if (!valid) {
+			String i18nMessage = i18nService.getString("ADHESION.MESSAGE.MEMBERCODEKO");
+			throw new InvalidParameterException(i18nMessage);
+		}
+		
 		// create a message to give a feedback to the member
-		return valid ? "ADHESION.MESSAGE.MEMBERCODEOK" : "ADHESION.MESSAGE.MEMBERCODEKO"; 
+		return valid; 
 	}
 
 	
