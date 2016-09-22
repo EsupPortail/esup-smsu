@@ -734,7 +734,7 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 	public void deletePendingMember(final String login) {
 		final PendingMember pendingMember = (PendingMember) 
         getHibernateTemplate().get(PendingMember.class, login);		
-		getHibernateTemplate().delete(pendingMember);
+		deleteObject(pendingMember);
 	}
 
 	/**
