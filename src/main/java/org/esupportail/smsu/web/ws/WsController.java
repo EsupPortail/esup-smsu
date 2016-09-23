@@ -84,7 +84,7 @@ public class WsController {
 	 * -i \
 	 * -X GET \
 	 * -H "Content-Type: application/json" \
-	 * http://localhost:8080/ws/sms/member/loginTestSmsu
+	 * http://localhost:8080/ws/member/loginTestSmsu
 	 */
 	@GET
 	@Path("/member/{login}")
@@ -108,8 +108,8 @@ public class WsController {
 	 * -i \
 	 * -X POST \
 	 * -H "Content-Type: application/json" \
-	 * '{"login": "loginTestSmsu", "phoneNumber": "0612345678", "validCG": true, "validCP": ["cas"]}}' \
-	 * http://localhost:8080/ws/sms/member
+	 * -d '{"login": "loginTestSmsu", "phoneNumber": "0612345678", "validCG": true, "validCP": ["cas"]}}' \
+	 * http://localhost:8080/ws/member
 	 */
 	@POST
 	@Path("/member")
@@ -127,6 +127,32 @@ public class WsController {
 			boolean pending = memberManager.saveOrUpdateMember(member);
 	
 			return pending ? MembershipStatus.PENDING : MembershipStatus.OK;
+		} else {
+			throw new SmsuForbiddenException("You can't call this WS from this remote address");
+		}
+	}
+	
+	
+	/**
+	 * curl \
+	 * -i \
+	 * -X POST \
+	 * -H "Content-Type: application/json" \
+	 * -d '{"login": "loginTestSmsu", "phoneNumberValidationCode" : "12345"}' \
+	 * http://localhost:8080/ws/validCode
+	 */
+	@POST
+	@Path("/validCode")
+	@Produces("application/json")
+	public Boolean validCode(Member member, @Context HttpServletRequest request) throws LdapUserNotFoundException, LdapWriteException, HttpException, InsufficientQuotaException {
+		if(checkClient(request)) {
+			logger.debug("Valid code of a member");		
+			
+			// check if the code is correct
+			// and accept definitely the user inscription if the code is correct
+			final boolean valid = memberManager.valid(member);
+			
+			return valid;		
 		} else {
 			throw new SmsuForbiddenException("You can't call this WS from this remote address");
 		}
