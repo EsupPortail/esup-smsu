@@ -4,8 +4,10 @@
 package org.esupportail.smsu.web.controllers;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
@@ -24,9 +26,11 @@ import org.esupportail.smsu.business.MessageManager;
 import org.esupportail.smsu.business.SendSmsManager;
 import org.esupportail.smsu.business.ServiceManager;
 import org.esupportail.smsu.dao.beans.Message;
+import org.esupportail.smsu.dao.beans.Recipient;
 import org.esupportail.smsu.domain.DomainService;
 import org.esupportail.smsu.domain.beans.message.MessageStatus;
 import org.esupportail.smsu.exceptions.CreateMessageException;
+import org.esupportail.smsu.exceptions.CreateMessageException.EmptyGroup;
 import org.esupportail.smsu.services.ldap.beans.UserGroup;
 import org.esupportail.smsu.services.smtp.SmtpServiceUtils;
 import org.esupportail.smsu.web.beans.MailToSend;
@@ -122,6 +126,35 @@ public class MessagesController {
 
 		int messageId = sendSmsManager.sendMessage(msg, request);
 		return messageManager.getUIMessage(messageId, null);
+	}
+	
+
+	@RolesAllowed(
+			   {"FCTN_SMS_ENVOI_ADH",
+				"FCTN_SMS_ENVOI_GROUPES",
+				"FCTN_SMS_ENVOI_NUM_TEL",
+				"FCTN_SMS_ENVOI_LISTE_NUM_TEL",
+				"FCTN_SMS_REQ_LDAP_ADH"})
+	@POST
+	@Produces("application/json")
+	@Path("/recipients")
+	public int getReciptientsNumber(UINewMessage msg, @Context HttpServletRequest request) {	
+		String login = request.getRemoteUser();
+		if (login == null) throw new InvalidParameterException("SERVICE.CLIENT.NOTDEFINED");
+		msg.login = login;
+		
+		serviceKeyValidation(msg.serviceKey, login);
+		if(ServiceManager.SERVICE_SEND_FUNCTION_CG.equals(msg.serviceKey)) msg.serviceKey = null;
+		
+		// no need to return recipients list - and take care that recipient contains all messages of a recipient ... 
+		Set<Recipient> recipients;
+		try {
+			recipients = sendSmsManager.getRecipients(msg, msg.serviceKey);
+		} catch (EmptyGroup e) {
+			logger.debug("Empty group here - we return -1 : " + e.getMessage());
+			return -1;
+		}
+		return recipients.size();
 	}
 
 	@GET
@@ -239,6 +272,5 @@ public class MessagesController {
 	public void setSmsMaxSize(final Integer smsMaxSize) {
 		this.smsMaxSize = smsMaxSize;
 	}
-
 }
 

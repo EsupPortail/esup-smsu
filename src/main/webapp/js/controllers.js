@@ -527,7 +527,32 @@ app.controller('SendCtrl', function($scope, h, $location) {
     //$scope.msg.destLogins.push({id:"aanli", name: "Aymar Anli"});
     //$scope.msg.destGroup = {id:"foo", name: "Groupe Machin"};
 
-
+	function destIds(l) {
+	    var ids = h.array_map(l, function (e) { return e.id; });
+	    return ids.length ? ids : null;
+	}
+	
+	function updateRecipients() {
+		var msgToSend = h.objectSlice($scope.msg, ['senderGroup','serviceKey']);
+		var msg = $scope.msg;
+		msgToSend.recipientLogins = destIds(msg.destLogins);
+		msgToSend.recipientPhoneNumbers = msg.destPhoneNumbers.length ? msg.destPhoneNumbers : null;
+		msgToSend.recipientGroup = msg.destGroup && msg.destGroup.id
+		if(msg.serviceKey && (msg.recipientLogins || msgToSend.recipientPhoneNumbers || msgToSend.recipientGroup)) {
+			h.callRestModify('post', 'messages/recipients', msgToSend).then(function (resp) {
+			    var recipients = resp.data;
+			    console.log("recipients : " + recipients);
+			    if(recipients != -1) {
+			    	$scope.recipientsComputing = recipients;
+			    } else {
+			    	$scope.recipientsComputing = null;
+			    }
+			});
+		} else {
+			$scope.recipientsComputing = null;
+		}
+	}
+	
     $scope.searchUser = function (token) {
 	if (token.length < 4) {
 	    $scope.wip.logins = null;
@@ -558,14 +583,17 @@ app.controller('SendCtrl', function($scope, h, $location) {
 	}
 	$scope.msg.destLogins.push($scope.wip.login);
 	$scope.wip.login = null;
+	updateRecipients();
     };
     $scope.addDestPhoneNumber = function () {
 	$scope.msg.destPhoneNumbers.push($scope.wip.phoneNumber);
 	$scope.wip.phoneNumber = null;
+	updateRecipients();
     };
     $scope.addDestGroup = function () {
-	$scope.msg.destGroup = $scope.wip.group; 
-	$scope.wip.group = null;
+		$scope.msg.destGroup = $scope.wip.group; 
+		$scope.wip.group = null;
+		updateRecipients();
     };
     $scope.addListDestPhoneNumber = function () {
 	var s = $scope.wip.listPhoneNumbers;
@@ -576,8 +604,13 @@ app.controller('SendCtrl', function($scope, h, $location) {
 	    $scope.wip.listPhoneNumbers =
 		s.replace(phoneNumberPatternAll, '');	    
 	}
+	 updateRecipients();
     };
 
+    $scope.selectServiceKey = function () {
+    	updateRecipients();
+    }
+    
     //$scope.wip.login = { id: 'prigaux', name: 'P Rig' };
     //$scope.addDestLogin();
     
@@ -590,6 +623,7 @@ app.controller('SendCtrl', function($scope, h, $location) {
 	    h.array_remove_elt(msg.destLogins, e);
 	    h.array_remove_elt(msg.destPhoneNumbers, e);
 	}
+	updateRecipients();
     };
 
     $scope.submit = function () {
@@ -606,10 +640,6 @@ app.controller('SendCtrl', function($scope, h, $location) {
 	$scope.submitted = 1; 
 	if (!$scope.myForm.$valid) return;
 
-	function destIds(l) {
-	    var ids = h.array_map(l, function (e) { return e.id; });
-	    return ids.length ? ids : null;
-	}
 	var msg = $scope.msg;
 	var msgToSend = h.objectSlice($scope.msg, ['senderGroup','serviceKey']);
 	msgToSend.content = computeContent(msg.body, msg.template);
