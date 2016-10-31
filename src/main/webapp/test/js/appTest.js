@@ -239,6 +239,11 @@ myAppTest.run(function($http, $httpBackend, h, $rootScope) {
     $httpBackend.whenGET(/rest.membership/).respond(function () { return [200, loggedUserMembership() ]; });
     $httpBackend.whenPOST(/rest.membership/).respond(modify_object(loggedUserMembership));
 
+    $httpBackend.whenGET(/rest.services.sendFctn/).respond(function () {
+        var list = [ { "id": -1, "key": "FCTN_SMS_ENVOI_SERVICE_CG", "name": "Aucun", "isDeletable": false } ].concat(db.services);
+        return [200, list];
+    });
+
     function modify_object(object_getter) {
 	return function(method, url, data) {
 	    angular.extend(object_getter(), angular.fromJson(data));

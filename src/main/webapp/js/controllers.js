@@ -488,6 +488,7 @@ app.controller('SendCtrl', function($scope, h, $location) {
     });
     h.callRest('services/sendFctn').then(function (services) {
 	$scope.services = services;
+        $scope.msg.serviceKey = services[0].key;
     });
     h.callRest('templates').then(function (templates) {
 	$scope.templates = templates;
