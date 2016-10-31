@@ -1,7 +1,6 @@
 package org.esupportail.smsu.services.scheduler;
 
 import org.apache.log4j.Logger;
-import org.springframework.dao.DataAccessException;
 
 /**
  * Exception handler for quartz error.

@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
-import org.esupportail.smsu.services.wsgroups.UserGroupWsgroups;
 import org.junit.Test;
 
 public class HttpRequestWsgroupsTest {
