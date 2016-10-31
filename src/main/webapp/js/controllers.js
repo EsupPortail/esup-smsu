@@ -528,7 +528,18 @@ app.controller('SendCtrl', function($scope, h, $location) {
     //$scope.msg.destLogins.push({id:"aanli", name: "Aymar Anli"});
     //$scope.msg.destGroup = {id:"foo", name: "Groupe Machin"};
 
-
+    function computeMsgToSendRecipients(msg) {
+        function destIds(l) {
+            var ids = h.array_map(l, function (e) { return e.id; });
+            return ids.length ? ids : null;
+        }
+        var msgToSend = h.objectSlice(msg, ['senderGroup','serviceKey']);
+        msgToSend.recipientLogins = destIds(msg.destLogins);
+        msgToSend.recipientPhoneNumbers = msg.destPhoneNumbers.length ? msg.destPhoneNumbers : null;
+        msgToSend.recipientGroup = msg.destGroup && msg.destGroup.id;
+        return msgToSend;
+    }
+    
     $scope.searchUser = function (token) {
 	if (token.length < 4) {
 	    $scope.wip.logins = null;
@@ -607,17 +618,10 @@ app.controller('SendCtrl', function($scope, h, $location) {
 	$scope.submitted = 1; 
 	if (!$scope.myForm.$valid) return;
 
-	function destIds(l) {
-	    var ids = h.array_map(l, function (e) { return e.id; });
-	    return ids.length ? ids : null;
-	}
 	var msg = $scope.msg;
-	var msgToSend = h.objectSlice($scope.msg, ['senderGroup','serviceKey']);
+	var msgToSend = computeMsgToSendRecipients($scope.msg);
 	msgToSend.content = computeContent(msg.body, msg.template);
 	msgToSend.smsTemplate = msg.template && msg.template.label; // for statistics on templates usage
-	msgToSend.recipientLogins = destIds(msg.destLogins);
-	msgToSend.recipientPhoneNumbers = msg.destPhoneNumbers.length ? msg.destPhoneNumbers : null;
-	msgToSend.recipientGroup = msg.destGroup && msg.destGroup.id;
 	if (msg.mailOption) {
 	    var otherRecipients = msg.mailToSend.mailOtherRecipients;
 	    msgToSend.mailToSend =
