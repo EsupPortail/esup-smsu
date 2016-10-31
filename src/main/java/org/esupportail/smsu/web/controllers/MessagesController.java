@@ -27,6 +27,7 @@ import org.esupportail.smsu.dao.beans.Message;
 import org.esupportail.smsu.domain.DomainService;
 import org.esupportail.smsu.domain.beans.message.MessageStatus;
 import org.esupportail.smsu.exceptions.CreateMessageException;
+import org.esupportail.smsu.exceptions.CreateMessageException.EmptyGroup;
 import org.esupportail.smsu.services.ldap.beans.UserGroup;
 import org.esupportail.smsu.services.smtp.SmtpServiceUtils;
 import org.esupportail.smsu.web.beans.MailToSend;
@@ -122,6 +123,32 @@ public class MessagesController {
 
 		int messageId = sendSmsManager.sendMessage(msg, request);
 		return messageManager.getUIMessage(messageId, null);
+	}
+	
+
+	@RolesAllowed(
+			   {"FCTN_SMS_ENVOI_ADH",
+				"FCTN_SMS_ENVOI_GROUPES",
+				"FCTN_SMS_ENVOI_NUM_TEL",
+				"FCTN_SMS_ENVOI_LISTE_NUM_TEL",
+				"FCTN_SMS_REQ_LDAP_ADH"})
+	@POST
+	@Produces("application/json")
+	@Path("/nbRecipients")
+	public int nbRecipients(UINewMessage msg, @Context HttpServletRequest request) {	
+		String login = request.getRemoteUser();
+		if (login == null) throw new InvalidParameterException("SERVICE.CLIENT.NOTDEFINED");
+		msg.login = login;
+		
+		serviceKeyValidation(msg.serviceKey, login);
+		if (ServiceManager.SERVICE_SEND_FUNCTION_CG.equals(msg.serviceKey)) msg.serviceKey = null;
+		
+		try {
+			return sendSmsManager.getRecipients(msg, msg.serviceKey).size();
+		} catch (EmptyGroup e) {
+			logger.debug("Empty group here - we return -1 : " + e.getMessage());
+			return -1;
+		}
 	}
 
 	@GET

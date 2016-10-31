@@ -540,6 +540,23 @@ app.controller('SendCtrl', function($scope, h, $location) {
         return msgToSend;
     }
     
+    function updateNbRecipients() {
+        var msg = $scope.msg;
+        $scope.nbRecipients = null;
+        if (msg.destGroup || msg.serviceKey !== 'FCTN_SMS_ENVOI_SERVICE_CG' && (msg.destLogins.length || msg.destPhoneNumbers.length)) {
+            var msgToSend = computeMsgToSendRecipients($scope.msg);
+            h.callRestModify('post', 'messages/nbRecipients', msgToSend).then(function (resp) {
+                var recipients = resp.data;
+                $scope.nbRecipients = recipients != -1 && recipients;
+            });
+        }
+    }
+
+    $scope.$watch('msg.serviceKey', updateNbRecipients);
+    $scope.$watch('msg.destGroup', updateNbRecipients);
+    $scope.$watch('msg.destLogins', updateNbRecipients, true);
+    $scope.$watch('msg.destPhoneNumbers', updateNbRecipients, true);
+    
     $scope.searchUser = function (token) {
 	if (token.length < 4) {
 	    $scope.wip.logins = null;

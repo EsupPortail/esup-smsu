@@ -227,6 +227,7 @@ myAppTest.run(function($http, $httpBackend, h, $rootScope) {
     $httpBackend.whenGET(/rest.messages.groupLeaves/).respond(function () { return [200, userGroupLeaves()]; });
     $httpBackend.whenGET(/rest.messages.senders/).respond(function () { return [200, senders()]; });
     $httpBackend.whenGET(/rest.messages/).respond(get_list(db.msgs));
+    $httpBackend.whenPOST(/rest.messages.nbRecipients/).respond(function () { return [200, 666]; });
     $httpBackend.whenPOST(/rest.messages/).respond(function (method, url, data) {
 	var msg = createMsg(angular.fromJson(data));
 	if (!msg) return [500, '{"error":"group empty"}'];
