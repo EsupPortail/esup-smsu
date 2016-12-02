@@ -56,6 +56,7 @@ app.config(function ($translateProvider) {
       SMS_ENVOI_GROUPES         : "Groupe d'utilisateurs",
       SMS_ENVOI_ADH             : "Utilisateur adhérent",
       SMS_ENVOI_NUM_TEL         : "Numéros de téléphone",
+      SMS_REQ_LDAP_ADH          : "Recherche des destinataires adhérents via une requête LDAP",
   });
   $translateProvider.preferredLanguage('fr');
 });

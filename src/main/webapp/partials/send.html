@@ -76,6 +76,20 @@
 	 </span>
       </div>
 
+      <div ng-switch-when="SMS_REQ_LDAP_ADH">
+	<div class="input-group">
+         <input type="text" name="ldapFilter" ng-model="wip.ldapFilter" class="form-control">
+	 <span class="input-group-btn">
+           <button class="btn btn-default" type="button" 
+		   ng-click="addLdapFilterResults()"
+		   ng-disabled="!wip.ldapFilter">
+	    <span class="glyphicon glyphicon-plus"></span>
+	   </button>
+	 </span>
+	</div>
+	<span ng-show="submitted && myForm.ldapFilter.$error.format" class="help-block">Invalide</span>
+      </div>
+
       <ul class="not-inline multiSelectSelected">
 	<li ng-repeat="e in msg.destLogins">
 	  <a ng-click="removeRecipient(e)">

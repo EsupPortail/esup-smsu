@@ -466,7 +466,7 @@ app.controller('ApprovalsCtrl', function($scope, h) {
 app.controller('SendCtrl', function($scope, h, $location) {
     $scope.wip = { phoneNumber: null, login: null }; // temp
     $scope.msg = {};
-    var allRecipientTypes = ['SMS_ENVOI_ADH', 'SMS_ENVOI_GROUPES', 'SMS_ENVOI_NUM_TEL', 'SMS_ENVOI_LISTE_NUM_TEL'];
+    var allRecipientTypes = ['SMS_ENVOI_ADH', 'SMS_ENVOI_GROUPES', 'SMS_ENVOI_NUM_TEL', 'SMS_ENVOI_LISTE_NUM_TEL', 'SMS_REQ_LDAP_ADH'];
     $scope.$watch('loggedUser', function () {
 	$scope.recipientTypes = $.grep(allRecipientTypes, function (e) { 
 	    return $scope.loggedUser && $scope.loggedUser.can["FCTN_" + e];
@@ -605,6 +605,12 @@ app.controller('SendCtrl', function($scope, h, $location) {
 	    $scope.wip.listPhoneNumbers =
 		s.replace(phoneNumberPatternAll, '');	    
 	}
+    };
+    $scope.addLdapFilterResults = function () {
+        h.callRest('users/search', { ldapFilter: $scope.wip.ldapFilter, service: $scope.msg.serviceKey })
+	    .then(function (logins) {
+	        $scope.msg.destLogins = $scope.msg.destLogins.concat(logins);
+	    });
     };
 
     //$scope.wip.login = { id: 'prigaux', name: 'P Rig' };
