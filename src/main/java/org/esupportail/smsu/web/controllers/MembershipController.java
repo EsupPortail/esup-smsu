@@ -62,6 +62,8 @@ public class MembershipController {
 		
 		if (StringUtils.isEmpty(member.getPhoneNumber())) {
 			if (member.getValidCG()) throw new InvalidParameterException("ADHESION.ERROR.PHONEREQUIRED");
+                        // normalize
+                        member.setPhoneNumber(null);
 		} else { 
 			validatePhoneNumber(member.getPhoneNumber());
 		}
