@@ -2,11 +2,13 @@ package org.esupportail.smsu.web.controllers;
 
 import java.util.LinkedList;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 
 import org.apache.commons.lang.StringUtils;
 import org.esupportail.commons.services.ldap.LdapException;
@@ -41,12 +43,15 @@ public class UsersController {
 				@QueryParam("token") String token, 
 				@QueryParam("service") String serviceKey,
 				@QueryParam("id") String id, 
-				@QueryParam("ldapFilter") String ldapFilter) {
+				@QueryParam("ldapFilter") String ldapFilter,
+                                @Context HttpServletRequest request) {
 		if(ServiceManager.SERVICE_SEND_FUNCTION_CG.equals(serviceKey)) 
 			serviceKey = null;
-		if (ldapFilter != null)
+		if (ldapFilter != null) {
+			if (!request.isUserInRole("FCTN_SMS_REQ_LDAP_ADH"))
+				throw new InvalidParameterException("user is not allowed to search using LDAP filter");
 			return searchLdapWithFilter(ldapFilter);
-		else if (token != null)
+                } else if (token != null)
 			return searchLdapUser(token, serviceKey);
 		else if (id != null)
 			return searchLdapUserId(id, serviceKey);
