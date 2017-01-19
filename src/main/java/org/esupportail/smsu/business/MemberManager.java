@@ -54,11 +54,9 @@ public class MemberManager {
 	 */
 	private String titleSmsValidation;
 
-	/**
-	 * a prefix to remove.
-	 */
-	private String phoneNumberPrefixToRemove = "";
-
+	private boolean displayFrenchPhoneNumber = true;
+	private boolean storeFrenchPhoneNumber = true;
+    
 	private final Logger logger = Logger.getLogger(getClass());
 
 	///////////////////////////////////////
@@ -152,6 +150,7 @@ public class MemberManager {
 	private boolean savePhoneNumber(final Member member) throws LdapUserNotFoundException, LdapWriteException {
 		String login = member.getLogin();
 		String wanted = member.getPhoneNumber();
+		if (!storeFrenchPhoneNumber) wanted = fromFrenchPhoneNumber(wanted);
 		String previous = ldapUtils.getUserPagerByUid(login);
 		boolean hasChanged = previous == null || !previous.equals(wanted);
 
@@ -183,6 +182,7 @@ public class MemberManager {
 		member.firstName = ldapUtils.getUserFirstNameByUid(userIdentifier);
 		member.lastName = ldapUtils.getUserLastNameByUid(userIdentifier);
 		member.phoneNumber = ldapUtils.getUserPagerByUid(userIdentifier);
+		if (displayFrenchPhoneNumber) member.phoneNumber = toFrenchPhoneNumber(member.phoneNumber);
 		member.validCP = ldapUtils.getSpecificConditionsValidateByUid(userIdentifier);
 		member.flagPending = activateValidation && daoService.isPendingMember(userIdentifier);
 		member.validCG = member.flagPending || ldapUtils.isGeneralConditionValidateByUid(userIdentifier);
@@ -190,13 +190,18 @@ public class MemberManager {
 		return member;
 	}
 
-	private String normalizePhoneNumber(String phoneNumber) {
-		String s = phoneNumber.replaceAll(" ", "");
-		if (!phoneNumberPrefixToRemove.equals("")) {
-				logger.debug("phone Number Prefix To Remove " + phoneNumberPrefixToRemove);
-			s = s.replaceAll(phoneNumberPrefixToRemove, "0");
-		}
-		return s;
+	public String toFrenchPhoneNumber(String phoneNumber) {
+	    String s = phoneNumber.replaceAll(" ", "");
+	    s = s.replaceAll("^\\+33", "0");
+	    return s;
+	}
+
+	public String fromFrenchPhoneNumber(String phoneNumber) {
+	    String s = phoneNumber.replaceAll(" ", "");
+	    if (s.matches("^0[1-9]\\d{8}")) {
+	        s = s .replaceAll("\\d\\d", " $0").replaceAll("^ 0", "+33 ");
+	    }
+	    return s;
 	}
 
 	/**
@@ -317,9 +322,15 @@ public class MemberManager {
 		this.titleSmsValidation = titleSmsValidation;
 	}
 
-	@Required
+	@Deprecated
 	public void setPhoneNumberPrefixToRemove(final String phoneNumberPrefixToRemove) {
-		this.phoneNumberPrefixToRemove = phoneNumberPrefixToRemove;
+	}
+
+	public void setStoreFrenchPhoneNumber(final Boolean storeFrenchPhoneNumber) {
+		this.storeFrenchPhoneNumber = storeFrenchPhoneNumber;
+	}
+	public void setDisplayFrenchPhoneNumber(final Boolean displayFrenchPhoneNumber) {
+		this.displayFrenchPhoneNumber = displayFrenchPhoneNumber;
 	}
 
 	@Required

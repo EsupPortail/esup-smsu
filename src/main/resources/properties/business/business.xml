@@ -24,7 +24,8 @@
 		<property name="titleSmsValidation"> 
 			<value type="java.lang.String">${adhesion.titleSmsValidation}</value>
 		</property>
-		<property name="phoneNumberPrefixToRemove" value="${adhesion.phoneNumberPrefixToRemove}"/>
+		<property name="displayFrenchPhoneNumber" value="${adhesion.displayFrenchPhoneNumber}"/>
+		<property name="storeFrenchPhoneNumber" value="${adhesion.storeFrenchPhoneNumber}"/>
 	</bean>
 	
 	<bean id="sendSmsManager"
