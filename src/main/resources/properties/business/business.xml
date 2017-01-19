@@ -24,10 +24,6 @@
 		<property name="titleSmsValidation"> 
 			<value type="java.lang.String">${adhesion.titleSmsValidation}</value>
 		</property>
-		<property name="phoneAttributesAsString"> 
-			<value type="java.lang.String">${adhesion.phoneNumberAttributes}</value>
-		</property>
-		<property name="phoneNumberPattern" value="${adhesion.phoneNumberPattern}"/>
 		<property name="phoneNumberPrefixToRemove" value="${adhesion.phoneNumberPrefixToRemove}"/>
 	</bean>
 	

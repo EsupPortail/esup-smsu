@@ -24,10 +24,6 @@ public class Member {
 	public String phoneNumber;
 
 	/**
-	 * available phone numbers.
-	 */
-	public List<String> availablePhoneNumbers;
-	/**
 	 * validation code for membership activation.
 	 */
 	public String phoneNumberValidationCode;
@@ -209,25 +205,5 @@ public class Member {
 		}
 		return this.hashCode;
 	}
-
-
-
-	/**
-	 * @param availablePhoneNumbers
-	 */
-	public void setAvailablePhoneNumbers(final List<String> availablePhoneNumbers) {
-		this.availablePhoneNumbers = availablePhoneNumbers;
-	}
-
-
-
-	/**
-	 * @return the list of available phone numbers.
-	 */
-	public List<String> getAvailablePhoneNumbers() {
-		return availablePhoneNumbers;
-	}
-
-
 	
 }

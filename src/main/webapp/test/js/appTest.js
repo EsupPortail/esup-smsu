@@ -81,7 +81,7 @@ myAppTest.run(function($http, $httpBackend, h, $rootScope) {
 		{"id":3,"name":"sender","fonctions":["FCTN_SMS_ENVOI_GROUPES","FCTN_SUIVI_ENVOIS_UTIL","FCTN_SMS_ENVOI_ADH","FCTN_SMS_AJOUT_MAIL"]}],
 	services: [],
  	templates: [{"id":1,"label":"U","heading":"Foo","body":"","signature":""}],
-	membership: [{"firstName":"The","lastName":"Boss","phoneNumber":"0601010101","availablePhoneNumbers":[],"phoneNumberValidationCode":null,"validCG":true,"validCP":[],"login":"admin","flagPending":false}],
+	membership: [{"firstName":"The","lastName":"Boss","phoneNumber":"0601010101","phoneNumberValidationCode":null,"validCG":true,"validCP":[],"login":"admin","flagPending":false}],
     };
 
     var msg34 = {"id":34,"date":1396984471000,"content":"test BL esup-smu-new",

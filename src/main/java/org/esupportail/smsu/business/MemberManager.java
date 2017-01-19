@@ -1,7 +1,5 @@
 package org.esupportail.smsu.business;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -20,7 +18,6 @@ import org.esupportail.smsuapi.exceptions.InsufficientQuotaException;
 import org.esupportail.smsuapi.utils.HttpException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
-import org.springframework.util.StringUtils;
 
 /**
  * Business layer concerning smsu member.
@@ -31,11 +28,6 @@ public class MemberManager {
 	@Autowired private LdapUtils ldapUtils;
 	@Autowired private DaoService daoService;
 	@Autowired private SmsuapiWS smsuapiWS;
-
-	/**
-	 * list of the ldap phone attributes.
-	 */
-	private List<String> phoneAttribute;
 
 	/**
 	 * flag that indicates if it is necessary to validate the phone number.
@@ -61,11 +53,6 @@ public class MemberManager {
 	 * title to used in the sms message.
 	 */
 	private String titleSmsValidation;
-
-	/**
-	 * expression used to match a mobile number.
-	 */
-	private String phoneNumberPattern;
 
 	/**
 	 * a prefix to remove.
@@ -196,40 +183,11 @@ public class MemberManager {
 		member.firstName = ldapUtils.getUserFirstNameByUid(userIdentifier);
 		member.lastName = ldapUtils.getUserLastNameByUid(userIdentifier);
 		member.phoneNumber = ldapUtils.getUserPagerByUid(userIdentifier);
-		member.availablePhoneNumbers = getAvailablePhoneNumbers(userIdentifier);
 		member.validCP = ldapUtils.getSpecificConditionsValidateByUid(userIdentifier);
 		member.flagPending = activateValidation && daoService.isPendingMember(userIdentifier);
 		member.validCG = member.flagPending || ldapUtils.isGeneralConditionValidateByUid(userIdentifier);
 		member.phoneNumberValidationCode = null;
 		return member;
-	}
-
-	/**
-	 * try to find mobile phone numbers in various LDAP attributes
-	 * @param userIdentifier
-	 * @return the list of available phone numbers
-	 * @throws LdapUserNotFoundException
-	 */
-	private List<String> getAvailablePhoneNumbers(final String userIdentifier) throws LdapUserNotFoundException {
-		List<String> phoneNumbers = new ArrayList<String>();
-		for (String attribute : this.phoneAttribute) {
-			getAvailablePhoneNumbers(phoneNumbers, userIdentifier, attribute);
-		}	
-		return phoneNumbers;
-	}
-
-	private void getAvailablePhoneNumbers(List<String> phoneNumbers, String userIdentifier, String attribute)
-			throws LdapUserNotFoundException {
-		logger.debug("Search phone number with attribute " + attribute);
-		List<String> values = ldapUtils.getLdapAttributesByUidAndName(userIdentifier, attribute);
-		for (String value : values) {
-			String nValue = normalizePhoneNumber(value);
-			logger.debug("test pattern with value " + nValue);
-			if (nValue.matches(this.phoneNumberPattern)) {
-				phoneNumbers.add(nValue);
-				logger.debug("phone number found from attribute " + attribute);
-			}
-		}
 	}
 
 	private String normalizePhoneNumber(String phoneNumber) {
@@ -327,26 +285,16 @@ public class MemberManager {
 	/**
 	 * @param attributes 
 	 */
-	@Required
+	@Deprecated
 	public void setPhoneAttributesAsString(final String attributes) {
-		final List<String> list = new LinkedList<String>();
-		for (String attribute : attributes.split(",")) {
-			if (StringUtils.hasText(attribute)) {
-				if (!list.contains(attribute)) {
-					list.add(attribute);
-				}
-			}
-		}
-		setPhoneAttribute(list);
 	}
 
+	@Deprecated
 	public void setPhoneAttribute(final List<String> phoneAttribute) {
-		this.phoneAttribute = phoneAttribute;
 	}
 
-	@Required
+	@Deprecated
 	public void setPhoneNumberPattern(final String phoneNumberPattern) {
-		this.phoneNumberPattern = phoneNumberPattern;
 	}
 
 	@Required
