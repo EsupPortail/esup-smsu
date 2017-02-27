@@ -5,7 +5,7 @@
   <artifactId>esup-smsu</artifactId>
   <packaging>war</packaging>
   <name>esup-smsu</name>
-  <version>2.0.0</version>
+  <version>3.0.0</version>
 
   <build>
     <!--finalName>${project.name}</finalName-->
@@ -223,7 +223,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 		<dependency>
 		  <groupId>org.esup-portail</groupId>
 		  <artifactId>esup-smsu-api</artifactId>
-		  <version>2.0.0</version>
+		  <version>3.0.0</version>
 		  <type>jar</type>
 		</dependency>
 
