@@ -191,12 +191,14 @@ public class MemberManager {
 	}
 
 	public String toFrenchPhoneNumber(String phoneNumber) {
+	    if (phoneNumber == null) return null;
 	    String s = phoneNumber.replaceAll(" ", "");
 	    s = s.replaceAll("^\\+33", "0");
 	    return s;
 	}
 
 	public String fromFrenchPhoneNumber(String phoneNumber) {
+	    if (phoneNumber == null) return null;
 	    String s = phoneNumber.replaceAll(" ", "");
 	    if (s.matches("^0[1-9]\\d{8}")) {
 	        s = s .replaceAll("\\d\\d", " $0").replaceAll("^ 0", "+33 ");
