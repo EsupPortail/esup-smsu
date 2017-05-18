@@ -3,7 +3,7 @@
 
 var app = angular.module('myApp');
 
-app.service('restWsHelpers', function ($http, $rootScope, globals, $q, $timeout, basicHelpers, login, loginSuccess, $location) {
+app.service('restWsHelpers', function ($http, $rootScope, globals, $q, $timeout, basicHelpers, login, loginSuccess, $location, $translate) {
 
 // loginSuccess need restWsHelpers but it would create a circular deps, resolve it by hand:
 loginSuccess.restWsHelpers = this;
@@ -126,7 +126,8 @@ function xhrRequest(args, flags) {
 	if (err.error === "Invalid CRSF prevention token")
 	    return onErrorCsrf(resp, err);
 	else {
-	    alert(err.error);
+	    var msgId = err.error.replace(/\./g, "_");
+	    $translate(msgId).catch(function () { return msgId; }).then(function (error) { alert(error); });
 	    return $q.reject(err);
 	}
     };

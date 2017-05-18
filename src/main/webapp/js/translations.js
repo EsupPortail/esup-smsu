@@ -57,6 +57,22 @@ app.config(function ($translateProvider) {
       SMS_ENVOI_ADH             : "Utilisateur adhérent",
       SMS_ENVOI_NUM_TEL         : "Numéros de téléphone",
       SMS_REQ_LDAP_ADH          : "Recherche des destinataires adhérents via une requête LDAP",
+
+      ADHESION_ERROR_INVALIDPHONENUMBER: "Numéro de téléphone non valide.",
+      GROUPE_ACCOUNT_ERROR_MESSAGE     : "Veuillez saisir un compte d''imputation",
+      GROUPE_LABEL_ERROR_MESSAGE       : "Veuillez saisir un libellé pour le groupe",
+      GROUPE_LABEL_EXIST_ERROR_MESSAGE : "Un groupe porte déjà ce libellé. Veuillez saisir un autre.",
+      GROUPE_ROLE_ERROR_MESSAGE        : "Veuillez choisir un rôle",
+      SEND_SEARCH_DATES_ERROR          : "Attention : Date début > Date fin !!!",
+      SENDSMS_MESSAGE_EMPTYMESSAGE     : "Le message est vide.",
+      SENDSMS_MESSAGE_LDAPREQUESTERROR : "Erreur de requête LDAP.",
+      SENDSMS_MESSAGE_MESSAGETOOLONG   : "Le message est trop long.",
+      SENDSMS_MESSAGE_RECIPIENTSMANDATORY: "Le message ne possède pas de destinataires.",
+      SERVICE_CLIENT_NOTDEFINED        : "Utilisateur non authentifié",
+      SERVICE_KEY_ERROR                : "La clé du service est déjà utilisée.",
+      SERVICE_NAME_ERROR               : "Le nom de service est déjà utilisé.",
+      TEMPLATE_BODY_ERROR              : "Le corps ne peut dépasser 160 caractères.",
+      TEMPLATE_LABEL_ERROR             : "Le libellé proposé est déjà utilisé.",     
   });
   $translateProvider.preferredLanguage('fr');
 });
