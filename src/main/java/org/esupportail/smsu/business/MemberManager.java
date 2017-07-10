@@ -1,5 +1,6 @@
 package org.esupportail.smsu.business;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -88,7 +89,7 @@ public class MemberManager {
 					+ " containing the validation code " + code);
 
 		String smsCode = titleSmsValidation + "\n" + code;
-		smsuapiWS.sendSMS(null, null, memberPhoneNumber, accountValidation, smsCode);
+		smsuapiWS.sendSMS(null, null, Collections.singleton(memberPhoneNumber), accountValidation, smsCode);
 
 		// the sms is sent, the group is consumption is updated.
 		CustomizedGroup cg = getOrCreateValidationCustomizedGroup();

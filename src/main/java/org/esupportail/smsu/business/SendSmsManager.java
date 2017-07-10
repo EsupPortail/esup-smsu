@@ -91,7 +91,7 @@ public class SendSmsManager  {
 	private final Logger logger = Logger.getLogger(getClass());
 
     public class CustomizedMessage {
-        public String recipiendPhoneNumber;
+        public Set<String> recipiendPhoneNumbers;
         public String message;
     }
 
@@ -702,9 +702,14 @@ public class SendSmsManager  {
 
 		final List<CustomizedMessage> customizedMessageList = new ArrayList<>();
 		if (contentWithoutExpTags != null) {
+		    boolean hasDestTags = !customizer.extractDestTags(contentWithoutExpTags).isEmpty();
 		    for (Recipient recipient : recipients) {
-			CustomizedMessage c = getCustomizedMessage(message, contentWithoutExpTags, recipient);
-			customizedMessageList.add(c);
+		        if (hasDestTags || customizedMessageList.isEmpty()) {
+		            customizedMessageList.add(getCustomizedMessage(message, contentWithoutExpTags, recipient));
+		        } else {
+		            // add all recipients to one big CustomizedMessage
+		            customizedMessageList.get(0).recipiendPhoneNumbers.add(recipient.getPhone());
+		        }
 		    }
 		}
 		return customizedMessageList;
@@ -719,7 +724,7 @@ public class SendSmsManager  {
 		}
 		// create the final message with all data needed to send it
 		final CustomizedMessage cm = new CustomizedMessage();
-		cm.recipiendPhoneNumber = recipient.getPhone();
+		cm.recipiendPhoneNumbers = new HashSet<>(Collections.singleton(recipient.getPhone()));
 		cm.message = msgContent;
 		return cm;
 	}
@@ -742,13 +747,13 @@ public class SendSmsManager  {
 				     " - sender id = " + senderId + 
 				     " - group sender id = " + groupSenderId + 
 				     " - service id = " + serviceId + 
-				     " - recipient phone number = " + cm.recipiendPhoneNumber + 
+				     " - recipient phone number = " + cm.recipiendPhoneNumbers + 
 				     " - user label account = " + userLabelAccount + 
 				     " - message = " + cm.message);
 		}
 		// send the message to the back office
 
-		smsuapiWS.sendSMS(messageId, senderId, cm.recipiendPhoneNumber, userLabelAccount, cm.message);
+		smsuapiWS.sendSMS(messageId, senderId, cm.recipiendPhoneNumbers, userLabelAccount, cm.message);
 
 	}
 

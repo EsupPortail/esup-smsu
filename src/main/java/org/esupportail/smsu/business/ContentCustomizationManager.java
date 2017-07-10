@@ -48,7 +48,7 @@ public class ContentCustomizationManager {
 	 * @param content
 	 * @return the list of recipient tags found in the content.
 	 */
-	private Set<String> extractDestTags(final String content) {
+	public Set<String> extractDestTags(final String content) {
 		Pattern tagPattern = Pattern.compile("<(DEST_[a-zA-Z_]+)>");
 		Set<String> tagList = findUniqueMatches1(tagPattern, content);
 		

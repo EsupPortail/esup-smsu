@@ -3,6 +3,7 @@
  */
 package org.esupportail.smsu.services.client; 
 
+import java.util.LinkedList;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -31,16 +32,17 @@ public class SmsuapiWS  {
 	}
 
 	public void sendSMS(final Integer msgId, final Integer perId, 
-			final String smsPhone, final String labelAccount, 
+			final Set<String> smsPhones, final String labelAccount, 
 			final String msgContent) throws HttpException, InsufficientQuotaException {
 		logger.info("SendSms client message : " + 
 				     " - message id = " + msgId + 
 				     " - sender id = " + perId + 
-				     " - recipient phone number = " + smsPhone + 
+				     " - recipient phone numbers = " + smsPhones + 
 				     " - user label account = " + labelAccount + 
 				     " - message = " + msgContent);
-		ws.sendSms(msgId, smsPhone, msgContent, labelAccount, perId);
+		ws.sendSms(msgId, new LinkedList<String>(smsPhones), msgContent, labelAccount, perId);
 	}
+
 	/**
 	 * @return a string to test the back office connexion.
 	 */
