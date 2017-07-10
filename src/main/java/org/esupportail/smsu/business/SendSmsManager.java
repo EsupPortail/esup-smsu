@@ -17,7 +17,6 @@ import org.apache.commons.lang.StringUtils;
 import org.esupportail.commons.services.i18n.I18nService;
 import org.esupportail.commons.services.ldap.LdapUser;
 import org.apache.log4j.Logger;
-import org.esupportail.smsu.business.beans.CustomizedMessage;
 import org.esupportail.smsu.dao.DaoService;
 import org.esupportail.smsu.dao.beans.Account;
 import org.esupportail.smsu.dao.beans.BasicGroup;
@@ -90,6 +89,11 @@ public class SendSmsManager  {
 	private String userEmailAttribute;
 	
 	private final Logger logger = Logger.getLogger(getClass());
+
+    public class CustomizedMessage {
+        public String recipiendPhoneNumber;
+        public String message;
+    }
 
 	//////////////////////////////////////////////////////////////
 	// Pricipal methods
@@ -208,7 +212,7 @@ public class SendSmsManager  {
 
 			// send the customized messages
 			for (CustomizedMessage customizedMessage : getCustomizedMessages(message)) {
-				sendCustomizedMessages(customizedMessage);
+				sendCustomizedMessages(customizedMessage, message);
 				cGroup.setConsumedSms(cGroup.getConsumedSms() + 1);
 				daoService.updateCustomizedGroup(cGroup);
 			}
@@ -714,16 +718,10 @@ public class SendSmsManager  {
 			msgContent = msgContent.substring(0, smsMaxSize);
 		}
 		// create the final message with all data needed to send it
-		final CustomizedMessage customizedMessage = new CustomizedMessage();
-		customizedMessage.setMessageId(message.getId());
-		customizedMessage.setSenderId(message.getSender().getId());
-		customizedMessage.setGroupSenderId(message.getGroupSender().getId());
-		customizedMessage.setServiceId(message.getService() != null ? message.getService().getId() : null);
-		customizedMessage.setUserAccountLabel(message.getAccount().getLabel());
-
-		customizedMessage.setRecipiendPhoneNumber(recipient.getPhone());
-		customizedMessage.setMessage(msgContent);
-		return customizedMessage;
+		final CustomizedMessage cm = new CustomizedMessage();
+		cm.recipiendPhoneNumber = recipient.getPhone();
+		cm.message = msgContent;
+		return cm;
 	}
 
 	/**
@@ -732,27 +730,25 @@ public class SendSmsManager  {
 	 * @throws InsufficientQuotaException 
 	 * @throws HttpException 
 	 */
-	private void sendCustomizedMessages(final CustomizedMessage customizedMessage) throws HttpException, InsufficientQuotaException {
-		final Integer messageId = customizedMessage.getMessageId();
-		final Integer senderId = customizedMessage.getSenderId();
-		final Integer groupSenderId = customizedMessage.getGroupSenderId();
-		final Integer serviceId = customizedMessage.getServiceId();
-		final String recipiendPhoneNumber = customizedMessage.getRecipiendPhoneNumber();
-		final String userLabelAccount = customizedMessage.getUserAccountLabel();
-		final String message = customizedMessage.getMessage();
+	private void sendCustomizedMessages(final CustomizedMessage cm, Message message) throws HttpException, InsufficientQuotaException {
+		final Integer messageId = message.getId();
+		final Integer senderId = message.getSender().getId();
+		final Integer groupSenderId = message.getGroupSender().getId();
+		final Integer serviceId = message.getService() != null ? message.getService().getId() : null;
+		final String userLabelAccount = message.getAccount().getLabel();
 		if (logger.isDebugEnabled()) {
 			logger.debug("Sending to back office message with : " + 
 				     " - message id = " + messageId + 
 				     " - sender id = " + senderId + 
 				     " - group sender id = " + groupSenderId + 
 				     " - service id = " + serviceId + 
-				     " - recipient phone number = " + recipiendPhoneNumber + 
+				     " - recipient phone number = " + cm.recipiendPhoneNumber + 
 				     " - user label account = " + userLabelAccount + 
-				     " - message = " + message);
+				     " - message = " + cm.message);
 		}
 		// send the message to the back office
 
-		smsuapiWS.sendSMS(messageId, senderId, recipiendPhoneNumber, userLabelAccount, message);
+		smsuapiWS.sendSMS(messageId, senderId, cm.recipiendPhoneNumber, userLabelAccount, cm.message);
 
 	}
 
