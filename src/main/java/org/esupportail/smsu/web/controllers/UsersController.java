@@ -15,7 +15,6 @@ import org.esupportail.commons.services.ldap.LdapException;
 import org.esupportail.commons.services.ldap.LdapUser;
 import org.apache.log4j.Logger;
 import org.esupportail.smsu.business.ServiceManager;
-import org.esupportail.smsu.domain.DomainService;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.web.beans.UIRecipientUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +26,6 @@ public class UsersController {
 	private static final long NB_MIN_CHARS_FOR_LDAP_SEARCH = 4;
 	
 	@Autowired private LdapUtils ldapUtils;
-	@Autowired private DomainService domainService;
 
 	/**
 	 * the phone number validation pattern.
