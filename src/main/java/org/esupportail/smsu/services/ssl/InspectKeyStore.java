@@ -23,9 +23,9 @@ public class InspectKeyStore
 
     public File checkFileReadable(File f, String context) {
 	try {
-	    new FileInputStream(f);
+	    new FileInputStream(f).close();
 	    return f;
-	} catch (java.io.FileNotFoundException e) {
+	} catch (java.io.IOException e) { // should always be FileNotFoundException
 	    logger.fatal(context + " error: " + e.getMessage());
 	    return null;
 	}
