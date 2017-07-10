@@ -26,7 +26,7 @@ public class FonctionManager {
 	 * @return
 	 */
 	public Set<String> getAllFonctions() {
-		Set<String> result = new HashSet<String>();
+		Set<String> result = new HashSet<>();
 		for (Fonction fct : daoService.getFonctions()) {
 			result.add(fct.getName());
 		}

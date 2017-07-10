@@ -143,7 +143,7 @@ public class SendSmsManager  {
 	private Set<Person> mayGetSupervisorsOrNull(Message message) {
 		if (MessageStatus.WAITING_FOR_APPROVAL.equals(message.getStateAsEnum())) {
 			logger.debug("Supervisors needed");
-			Set<Person> supervisors = new HashSet<Person>();
+			Set<Person> supervisors = new HashSet<>();
 			for (CustomizedGroup cGroup : getSupervisorCustomizedGroup(message)) {
 				supervisors.addAll(getSupervisors(cGroup));
 			}
@@ -313,14 +313,14 @@ public class SendSmsManager  {
 	}
 
 	private Set<Person> getSupervisors(CustomizedGroup cGroup) {
-		return new HashSet<Person>(cGroup.getSupervisors()); // nb: we need to copy the set to avoid "Found shared references to a collection" Hibernate exception
+		return new HashSet<>(cGroup.getSupervisors()); // nb: we need to copy the set to avoid "Found shared references to a collection" Hibernate exception
 	}
 
 	private List<String> getSupervisorsMails(final Set<Person> supervisors) {
 		if (supervisors == null) return null;
 		logger.debug("supervisors not null");
 
-		final List<String> uids = new LinkedList<String>();
+		final List<String> uids = new LinkedList<>();
 		for (Person supervisor : supervisors) {
 			uids.add(supervisor.getLogin());
 		}
@@ -380,10 +380,10 @@ public class SendSmsManager  {
 	}
 
 	private Set<MailRecipient> getMailRecipients(final Message message, final MailToSend mailToSend) {
-		final Set<MailRecipient> mailRecipients = new HashSet<MailRecipient>();
+		final Set<MailRecipient> mailRecipients = new HashSet<>();
 
 		if (mailToSend.getIsMailToRecipients()) {
-			final List<String> uids = new LinkedList<String>();
+			final List<String> uids = new LinkedList<>();
 			for (Recipient recipient : message.getRecipients()) {
 				uids.add(recipient.getLogin());
 			}
@@ -498,7 +498,7 @@ public class SendSmsManager  {
 	}
 
 	private List<CustomizedGroup> getSupervisorCustomizedGroupByGroup(final BasicGroup group, String groupKind) {
-		if (group == null) return new LinkedList<CustomizedGroup>();
+		if (group == null) return new LinkedList<>();
 
 		List<CustomizedGroup> cGroups = getSupervisorCustomizedGroupByLabel(group.getLabel());
 
@@ -522,9 +522,9 @@ public class SendSmsManager  {
 		Map<String, List<String>> groupAndParents = group2parents(groupLabel);
 		
 		Set<String> todo = Collections.singleton(groupLabel);
-		List<CustomizedGroup> found = new LinkedList<CustomizedGroup>();
+		List<CustomizedGroup> found = new LinkedList<>();
 		while (!todo.isEmpty()) {
-			Set<String> next = new LinkedHashSet<String>();
+			Set<String> next = new LinkedHashSet<>();
 			for (String label : todo) {
 			    CustomizedGroup cGroup = getCustomizedGroupByLabelWithSupervisors(label);
 			    if (cGroup != null) {
@@ -540,7 +540,7 @@ public class SendSmsManager  {
 	}
 
 	public Set<Recipient> getRecipients(UINewMessage msg, String serviceKey) throws EmptyGroup {
-		Set<Recipient> recipients = new HashSet<Recipient>();
+		Set<Recipient> recipients = new HashSet<>();
 		if (msg.recipientPhoneNumbers != null) addPhoneNumbersRecipients(recipients, msg.recipientPhoneNumbers);
 		if (msg.recipientLogins != null) addLoginsRecipients(recipients, msg.recipientLogins, serviceKey);
 		addGroupRecipients(recipients, msg.recipientGroup, serviceKey);
@@ -696,7 +696,7 @@ public class SendSmsManager  {
 			logger.error("discarding message with error " + e + " (this should not happen, the message should have been checked first!)");
 		}
 
-		final List<CustomizedMessage> customizedMessageList = new ArrayList<CustomizedMessage>();
+		final List<CustomizedMessage> customizedMessageList = new ArrayList<>();
 		if (contentWithoutExpTags != null) {
 		    for (Recipient recipient : recipients) {
 			CustomizedMessage c = getCustomizedMessage(message, contentWithoutExpTags, recipient);
@@ -865,7 +865,7 @@ public class SendSmsManager  {
 
 	
 	public List<UserGroup> getUserGroupLeaves(String uid) {
-		List<UserGroup> l = new LinkedList<UserGroup>();
+		List<UserGroup> l = new LinkedList<>();
 		for (UserGroup group : groupUtils.getUserGroupsPlusSelfGroup(uid)) {
 		    CustomizedGroup cgroup = getCustomizedGroupByLabel(group.id);
 			if (cgroup == null) continue;
@@ -876,7 +876,7 @@ public class SendSmsManager  {
 	}
 
 	private List<UserGroup> keepGroupLeaves(List<UserGroup> groups) {
-		Set<String> ids = new HashSet<String>();
+		Set<String> ids = new HashSet<>();
 		for (UserGroup g : groups) ids.add(g.id);
 		logger.debug("keepGroupLeaves: given ids " + ids);
 
@@ -894,7 +894,7 @@ public class SendSmsManager  {
 
 		logger.debug("keepGroupLeaves: kept ids: " + ids);
 
-		List<UserGroup> kept = new LinkedList<UserGroup>();
+		List<UserGroup> kept = new LinkedList<>();
 		for (UserGroup g : groups)
 			if (ids.contains(g.id))
 				kept.add(g);		
@@ -958,7 +958,7 @@ public class SendSmsManager  {
 	}
 
 	private <A> LinkedList<A> singletonList(A e) {
-		final LinkedList<A> l = new LinkedList<A>();
+		final LinkedList<A> l = new LinkedList<>();
 		l.add(e);
 		return l;
 	}	

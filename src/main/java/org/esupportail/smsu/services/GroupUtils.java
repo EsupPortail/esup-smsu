@@ -60,11 +60,11 @@ public class GroupUtils {
 	}
 	
 	public static <A> List<A> emptyList() {
-		return new LinkedList<A>();
+		return new LinkedList<>();
 	}
 	
 	public static <A,B> Map<A, B> singletonMap(A a, B b) {
-		Map<A, B> o = new HashMap<A,B>();
+		Map<A, B> o = new HashMap<>();
 		o.put(a, b);
 		return o;
 	}
@@ -86,7 +86,7 @@ public class GroupUtils {
 	}
     
 	public List<UserGroup> getUserGroupsPlusSelfGroup(String login) {
-		List<UserGroup> groups = new ArrayList<UserGroup>();
+		List<UserGroup> groups = new ArrayList<>();
 		try {
 		    groups.addAll(getUserGroups(login));
 		} catch (Exception e) {
@@ -100,7 +100,7 @@ public class GroupUtils {
 	}
 	
 	public List<CustomizedGroup> getCustomizedGroups(String login) {
-		List<CustomizedGroup> l = new ArrayList<CustomizedGroup>();
+		List<CustomizedGroup> l = new ArrayList<>();
 
 		for (UserGroup group : getUserGroupsPlusSelfGroup(login)) {
 			logger.debug("group login is: " + group.id);

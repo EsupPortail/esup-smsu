@@ -80,7 +80,7 @@ public class SmtpServiceUtils {
 	private InternetAddress[] createInternetAdresses(final List<String> adresses) {
 		if (adresses == null) return null;
 
-		final List<InternetAddress> l = new LinkedList<InternetAddress>();
+		final List<InternetAddress> l = new LinkedList<>();
 		for(String adress : adresses) {
 			try {
 				l.add(new InternetAddress(adress));
@@ -135,7 +135,7 @@ public class SmtpServiceUtils {
 	
 
 	private <A> LinkedList<A> singletonList(A e) {
-		final LinkedList<A> l = new LinkedList<A>();
+		final LinkedList<A> l = new LinkedList<>();
 		l.add(e);
 		return l;
 	}

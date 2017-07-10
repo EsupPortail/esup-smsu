@@ -31,7 +31,7 @@ public class ServiceManager {
 	 * retrieve all the service defined in smsu database.
 	 */
 	public List<UIService> getAllUIServices() {
-		List<UIService> allUiServices = new ArrayList<UIService>();
+		List<UIService> allUiServices = new ArrayList<>();
 		for (Service service : daoService.getServices()) {
 			allUiServices.add(convertToUI(service));
 		}
@@ -42,7 +42,7 @@ public class ServiceManager {
 	 * retrieve services defined in smsu database that this user can use to send mail to.
 	 */
 	public List<UIService> getUIServicesSendFctn(String login) {
-		List<UIService> allUiServices = new ArrayList<UIService>();
+		List<UIService> allUiServices = new ArrayList<>();
 		Set<String> allowedFonctions = securityManager.loadUserRightsByUsername(login);
 		if(allowedFonctions.contains(SERVICE_SEND_FUNCTION_CG)) {
 			allUiServices.add(UIService.CG_SERVICE);
@@ -60,7 +60,7 @@ public class ServiceManager {
 	 * retrieve services defined in smsu database that this user can use to register to (adhésion).
 	 */
 	public List<UIService> getUIServicesAdhFctn(String login) {
-		List<UIService> allUiServices = new ArrayList<UIService>();
+		List<UIService> allUiServices = new ArrayList<>();
 		Set<String> allowedFonctions = securityManager.loadUserRightsByUsername(login);
 		for (Service service : daoService.getServices()) {			
 			if(allowedFonctions.contains(SERVICE_ADH_FUNCTION_PREFIX + service.getKey().toUpperCase())) {
@@ -71,7 +71,7 @@ public class ServiceManager {
 	}
 		
 	public List<String> getAllAddonServicesSendFctn() {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		result.add(SERVICE_SEND_FUNCTION_CG);
 		for (Service service : daoService.getServices()) {
 			result.add(SERVICE_SEND_FUNCTION_PREFIX + service.getKey().toUpperCase());
@@ -81,7 +81,7 @@ public class ServiceManager {
 	
 	
 	public List<String> getAllAddonServicesAdhFctn() {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		for (Service service : daoService.getServices()) {
 			result.add(SERVICE_ADH_FUNCTION_PREFIX + service.getKey().toUpperCase());
 		}

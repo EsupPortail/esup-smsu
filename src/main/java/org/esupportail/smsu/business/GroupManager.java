@@ -71,7 +71,7 @@ public class GroupManager {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Retrieve the smsu roles from the database");
 		}
-		List<UICustomizedGroup> result = new LinkedList<UICustomizedGroup>();
+		List<UICustomizedGroup> result = new LinkedList<>();
 		for (CustomizedGroup group : daoService.getAllCustomizedGroups()) {
 			result.add(convertToUI(group));
 		}
@@ -94,7 +94,7 @@ public class GroupManager {
 	}
 	
 	public Map<String,String> convertToUI(Set<Person> persons) {
-		Map<String,String> result = new HashMap<String,String>(); 
+		Map<String,String> result = new HashMap<>(); 
 		for (Person person : persons) {
 			result.put(person.getLogin(), ldapUtils.getUserDisplayName(person));
 		}
@@ -130,7 +130,7 @@ public class GroupManager {
 	}
 
 	private Set<Person> convertFromUI(Map<String, String> supervisors) {
-		Set<Person> personsToAdd = new HashSet<Person>();
+		Set<Person> personsToAdd = new HashSet<>();
 		for (String uip : supervisors.keySet()) {			
 			if (daoService.getPersonByLogin(uip) == null) { 
 				// add new persons in Person DataBase

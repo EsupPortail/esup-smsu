@@ -80,7 +80,7 @@ public class MessageManager {
 	public List<UIMessage> convertToUI(List<Message> messages) {
 		Map<String, String> id2displayName = getIdToDisplayName(senderLogins(messages));
 
-		List<UIMessage> uimessages = new ArrayList<UIMessage>();
+		List<UIMessage> uimessages = new ArrayList<>();
 		for (Message mess : messages) {
 			uimessages.add(convertToUI(mess, id2displayName));
 		}
@@ -109,7 +109,7 @@ public class MessageManager {
 	
 	private List<String> convertToUI(Set<Person> supervisors) {
 		if (supervisors == null) return null;
-		List<String> t = new LinkedList<String>();
+		List<String> t = new LinkedList<>();
 		for (Person p : supervisors)
 			t.add(p.getLogin());
 		return t;
@@ -118,7 +118,7 @@ public class MessageManager {
 	private List<String> convertRecipientsToUI(Set<Recipient> recipients) {
 		if (recipients == null) return null;
 		
-		List<String> result = new LinkedList<String>();
+		List<String> result = new LinkedList<>();
 		for (Recipient r : recipients) {
 		    result.add(r.getLogin() != null ? r.getLogin() : r.getPhone());
 		}
@@ -134,14 +134,14 @@ public class MessageManager {
 	}
 
 	private LinkedHashSet<String> senderLogins(List<Message> messages) {
-		LinkedHashSet<String> l = new LinkedHashSet<String>();	       		
+		LinkedHashSet<String> l = new LinkedHashSet<>();	       		
 		for (Message mess : messages)
 			l.add(mess.getSender().getLogin());
 		return l;
 	}
 
 	private Map<String, String> getIdToDisplayName(Iterable<String> uids) {
-		Map<String, String> result = new TreeMap<String, String>();
+		Map<String, String> result = new TreeMap<>();
 		for (LdapUser u : ldapUtils.getUsersByUids(uids))
 		    result.put(u.getId(), ldapUtils.getUserDisplayName(u));
 		return result;

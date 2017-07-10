@@ -19,7 +19,7 @@ public class AggregateToFile {
 
 	@Inject private CachedDigest cachedDigest;
 	
-    private Map<String, String> file2sourceDigests = new ConcurrentHashMap<String,String>();
+    private Map<String, String> file2sourceDigests = new ConcurrentHashMap<>();
 
     static public interface Filter
     {

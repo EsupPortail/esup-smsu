@@ -51,7 +51,7 @@ public class TemplateManager {
 	}
 
 	public List<UITemplate> getUITemplates() {
-		List<UITemplate> listUiTemplates = new ArrayList<UITemplate>();
+		List<UITemplate> listUiTemplates = new ArrayList<>();
 		for (Template template : daoService.getTemplates()) {
 			listUiTemplates.add(convertToUI(template));
 		}	

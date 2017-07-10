@@ -135,7 +135,7 @@ public class ServerSideDirectives {
     }
     
     private String instantiate_serverSideConcat(String template, String regex, final ServletContextWrapper context) {
-    	final Map<String,List<File>> destination2sources = new TreeMap<String, List<File>>();
+    	final Map<String,List<File>> destination2sources = new TreeMap<>();
     	
     	String result = ReplaceAllWithCallback.doIt(template, regex, new ReplaceAllWithCallback.Callback() {			
 			public String replace(MatchResult m) {
@@ -148,7 +148,7 @@ public class ServerSideDirectives {
 				List<File> sources = destination2sources.get(dest);
 				boolean isFirst = sources == null;
 				if (isFirst) {
-					sources = new LinkedList<File>();
+					sources = new LinkedList<>();
 					destination2sources.put(dest, sources);
 				}
 				sources.add(src2file(context, srcVal));
@@ -184,7 +184,7 @@ public class ServerSideDirectives {
 
 				String urlPrefix = getServerSidePrefix(m.group(), env);
 
-				final Map<File,String> htmlFileToURL = new TreeMap<File, String>();
+				final Map<File,String> htmlFileToURL = new TreeMap<>();
 				for (String relative : templates.split("\\s+")) {
 					htmlFileToURL.put(src2file(context, relative), urlPrefix + "/" + relative);
 				}

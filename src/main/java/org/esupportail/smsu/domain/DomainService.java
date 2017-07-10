@@ -77,7 +77,7 @@ public class DomainService {
 	// Account
 	//////////////////////////////////////////////////////////////
 	public List<String> getAccounts() {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		List<Account> accounts = daoService.getAccounts();
 		for (Account acc : accounts) {
 			result.add(acc.getLabel());
@@ -90,15 +90,15 @@ public class DomainService {
 	//////////////////////////////////////////////////////////////
 	public Map<String, String> fakePersonsWithCurrentUser(String userId) {
 		User user = getUser(userId);
-		Map<String, String> result = new HashMap<String,String>();
+		Map<String, String> result = new HashMap<>();
 		result.put(user.getId(), user.getDisplayName());
 		return result;
 	}
 	
 	public Map<String, String> getPersons() {
-		Map<String, String> result = new HashMap<String,String>();
+		Map<String, String> result = new HashMap<>();
 
-		List<String> displayNameList = new ArrayList<String>();
+		List<String> displayNameList = new ArrayList<>();
 		for (Person per : daoService.getPersons()) {
 				displayNameList.add(per.getLogin());
 				result.put(per.getLogin(), per.getLogin()); // default value

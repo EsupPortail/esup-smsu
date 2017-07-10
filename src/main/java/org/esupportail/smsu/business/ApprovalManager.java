@@ -52,7 +52,7 @@ public class ApprovalManager {
 
 	private List<Message> filterApprovalMessagesASupervisorCanApprove(List<Message> msgs, String user) {
 		Person p = daoService.getPersonByLogin(user);
-		List<Message> messages = new ArrayList<Message>();
+		List<Message> messages = new ArrayList<>();
 		for (Message mess : msgs)
 			if (mess.getSupervisors().contains(p))
 				messages.add(mess);

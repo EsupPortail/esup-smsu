@@ -59,7 +59,7 @@ public class ContentCustomizationManager {
 	}
 	
 	private Set<String> findUniqueMatches1(Pattern regex, String s) {
-		Set<String> set = new TreeSet<String>();
+		Set<String> set = new TreeSet<>();
 		Matcher matcher = regex.matcher(s);
 		while (matcher.find()) set.add(matcher.group(1));
 		return set;

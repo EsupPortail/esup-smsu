@@ -14,8 +14,8 @@ import org.apache.commons.io.IOUtils;
 
 public class CachedDigest {
 
-    private Map<File, Long> file2lastModified= new ConcurrentHashMap<File,Long>();
-    private Map<File, String> file2digest = new ConcurrentHashMap<File,String>();
+    private Map<File, Long> file2lastModified= new ConcurrentHashMap<>();
+    private Map<File, String> file2digest = new ConcurrentHashMap<>();
 	
 	public String compute(File file) {
 		long lastModified = file.lastModified();

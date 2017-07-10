@@ -61,7 +61,7 @@ public class WriteableLdapUserServiceSMSUImpl extends WriteableLdapUserServiceIm
 	protected void mapToContext(final LdapUser ldapUser, final DirContextAdapter context) {
 		List<String> attributesNames = ldapUser.getAttributeNames();
 		for (String ldapAttributeName : attributesNames) {
-			List<String> listAttr = new ArrayList<String>();
+			List<String> listAttr = new ArrayList<>();
 			listAttr = ldapUser.getAttributes(ldapAttributeName);
 			// The attribute exists
 			if (listAttr != null && listAttr.size() != 0) {
@@ -138,7 +138,7 @@ public class WriteableLdapUserServiceSMSUImpl extends WriteableLdapUserServiceIm
 	}
 
 	private <A, B> Map<A, B> singletonMap(A key, B value) {
-		Map<A, B> r = new HashMap<A, B>();
+		Map<A, B> r = new HashMap<>();
 		r.put(key, value);
 		return r;
 	}
@@ -162,14 +162,14 @@ public class WriteableLdapUserServiceSMSUImpl extends WriteableLdapUserServiceIm
 		if (StringUtils.isEmpty(etiquette))
 			return wantedValues;
 
-		Set<String> set = new TreeSet<String>();
+		Set<String> set = new TreeSet<>();
 		if (currentValues != null) {
 		    for (String s : currentValues)
 			if (!s.startsWith(etiquette)) set.add(s);
 		}
 		for (String v : wantedValues) 
 			set.add(mayAddPrefix(etiquette, v));
-		return new ArrayList<String>(set);
+		return new ArrayList<>(set);
 	}
 
 	private String mayAddPrefix(String prefix, String s) {

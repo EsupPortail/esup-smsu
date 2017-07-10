@@ -32,7 +32,7 @@ public class RoleManager {
 	 */
 	public List<UIRole> getAllRoles() {
 		logger.debug("Retrieve the smsu roles from the database");
-		List<UIRole> allUIRoles = new ArrayList<UIRole>();
+		List<UIRole> allUIRoles = new ArrayList<>();
 		for (Role role : daoService.getRoles()) {
 			allUIRoles.add(convertToUI(role));
 		}
@@ -90,7 +90,7 @@ public class RoleManager {
 	}
 
 	private Set<Fonction> stringNamesToFonctions(List<String> selectedValues) {
-		Set<Fonction> fonctions = new HashSet<Fonction>();		
+		Set<Fonction> fonctions = new HashSet<>();		
 		for (String val : selectedValues) {
 			fonctions.add(stringNameToFonction(val));
 		}
@@ -117,7 +117,7 @@ public class RoleManager {
 	}
 
 	private List<String> fonctionsToStringNames(Set<Fonction> fonctions) {
-		List<String> selectedValues = new ArrayList<String>();
+		List<String> selectedValues = new ArrayList<>();
 		for (Fonction fct : fonctions) {
 			selectedValues.add(fct.getName());
 		}

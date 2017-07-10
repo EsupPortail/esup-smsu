@@ -248,7 +248,7 @@ public class LdapUtils {
 			final List<String> specificConditions) 
 			throws LdapUserNotFoundException, LdapWriteException {
 		addSpecificObjectClassIfNeeded(uid);
-		List<String> values = new LinkedList<String>();
+		List<String> values = new LinkedList<>();
 		if (validateGeneralCondition) values.add(cgKeyName);
 		if (specificConditions != null) values.addAll(specificConditions);
 		setOrClearLdapAttributeByUidAndName(uid, userTermsOfUseAttribute, userTermsOfUseAttributeEtiquetteSMSU, values);
@@ -398,7 +398,7 @@ public class LdapUtils {
 	 */
 	public List<String> getSpecificConditionsValidateByUid(final String uid) 
 	throws LdapUserNotFoundException {
-		List<String> termsOfuse = new LinkedList<String>();
+		List<String> termsOfuse = new LinkedList<>();
 
 		String etiquette = userTermsOfUseAttributeEtiquetteSMSU;
 		if (etiquette == null) etiquette = "";
@@ -464,7 +464,7 @@ public class LdapUtils {
 	}
 
 	private List<UserGroup> convertToUserGroups(final List<LdapGroup> groups) {
-		List<UserGroup> l = new LinkedList<UserGroup>();
+		List<UserGroup> l = new LinkedList<>();
 		for (LdapGroup group : groups) l.add(convertToUserGroup(group));
 		return l;
 	}
@@ -698,7 +698,7 @@ public class LdapUtils {
 	
 
 	private <A> LinkedList<A> singletonList(A e) {
-		final LinkedList<A> l = new LinkedList<A>();
+		final LinkedList<A> l = new LinkedList<>();
 		l.add(e);
 		return l;
 	}	

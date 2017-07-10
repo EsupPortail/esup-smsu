@@ -36,7 +36,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class CrossOriginFilter implements Filter
 {
-    private List<String> allowedOrigins = new ArrayList<String>();
+    private List<String> allowedOrigins = new ArrayList<>();
 
     // preflight cache duration in the browser
     private String maxAge = "600"; // 600 seconds = 10 minutes

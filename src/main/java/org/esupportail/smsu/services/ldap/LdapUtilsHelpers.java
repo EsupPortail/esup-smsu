@@ -152,7 +152,7 @@ public class LdapUtilsHelpers {
 		// we split the potentially big list of uids instead sublists.
 		// this helps keeping the ldap filter small enough.
 		// without this, on tests with openldap, it could be 10 times slower
-		List<LdapUser> r = new ArrayList<LdapUser>();
+		List<LdapUser> r = new ArrayList<>();
 		for (int i = 0; i < nbUids; i += breakApart) {
 			List<String> sub = uids.subList(i, Math.min(nbUids, i + breakApart));
 			r.addAll(getConditionFriendlyLdapUsersFromUidRaw(sub, cgKeyName, service));
@@ -169,7 +169,7 @@ public class LdapUtilsHelpers {
 		andPagerAndConditionsAndService(filter, cgKeyName, service);
 		
 		final OrFilter orFilter = orFilterOnUids(uids);
-		if (orFilter == null) return new LinkedList<LdapUser>();
+		if (orFilter == null) return new LinkedList<>();
 
 		filter.and(orFilter);		
 		return searchWithFilter(filter);
@@ -197,7 +197,7 @@ public class LdapUtilsHelpers {
 	public List<LdapUser> getUsersByUids(final Iterable<String> uids) {
 		final OrFilter filter = orFilterOnUids(uids);
 		if (filter == null) 
-		    return new LinkedList<LdapUser>();
+		    return new LinkedList<>();
 		else
 		    return searchWithFilter(filter);
 	}
@@ -207,7 +207,7 @@ public class LdapUtilsHelpers {
 	 * @return a list for user mails.
 	 */
 	public List<String> getUserMailsByUids(final Iterable<String> uids) {
-		final List<String> retVal = new ArrayList<String>();
+		final List<String> retVal = new ArrayList<>();
 		for (LdapUser ldapUser : getUsersByUids(uids)) {
 			String mail = ldapUser.getAttribute(userEmailAttribute);
 			if (mail != null) {

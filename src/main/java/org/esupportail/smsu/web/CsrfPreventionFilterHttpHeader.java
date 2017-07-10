@@ -70,7 +70,7 @@ public class CsrfPreventionFilterHttpHeader implements Filter {
     private static final Set<String> METHODS_TO_IGNORE;
 
     static {
-        Set<String> mti = new HashSet<String>();
+        Set<String> mti = new HashSet<>();
         mti.add("GET");
         mti.add("OPTIONS");
         mti.add("HEAD");

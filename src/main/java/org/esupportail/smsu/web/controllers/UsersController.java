@@ -86,7 +86,7 @@ public class UsersController {
 	}
 
 	private List<UIRecipientUser> convertToUI(List<LdapUser> list) {
-		List<UIRecipientUser> result = new LinkedList<UIRecipientUser>();
+		List<UIRecipientUser> result = new LinkedList<>();
 		for (LdapUser user : list) {
 			String userId = user.getId();
 			String displayName = ldapUtils.getUserDisplayName(user);
@@ -108,7 +108,7 @@ public class UsersController {
 	}
 
 	private <A> LinkedList<A> singletonList(A e) {
-		final LinkedList<A> l = new LinkedList<A>();
+		final LinkedList<A> l = new LinkedList<>();
 		l.add(e);
 		return l;
 	}	

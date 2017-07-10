@@ -33,7 +33,7 @@ public class SecurityManager {
 	 * if the authentication is successfull.
 	 */
 	public Set<String> loadUserRightsByUsername(final String login) {
-		Set<String> fonctions = new HashSet<String>();
+		Set<String> fonctions = new HashSet<>();
 		logger.debug("parameter login in loadUserRightsByUsername method is: " + login);
 		
 		for (CustomizedGroup grp : groupUtils.getCustomizedGroups(login)) {
