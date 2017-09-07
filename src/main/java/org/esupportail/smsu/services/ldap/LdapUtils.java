@@ -357,7 +357,7 @@ public class LdapUtils {
 	 * @throws LdapUserNotFoundException
 	 */
 	public boolean isGeneralConditionValidateByUid(final String uid) throws LdapUserNotFoundException {
-		return checkGeneralAndSpecificConditionValidate(getUserTermsOfUseByUid(uid), null, uid);
+		return checkGeneralAndSpecificConditionValidate(getUserTermsOfUseByUid(uid), uid);
 	}
 	
 	
@@ -371,18 +371,10 @@ public class LdapUtils {
 		setUserTermsOfUse(uid, true, getSpecificConditionsValidateByUid(uid));
 	}
 
-	public boolean isGeneralAndSpecificConditionValidate(final LdapUser user, final String specificConditionKey) {
-		final List<String> termsOfUse = user.getAttributes(userTermsOfUseAttribute);
-		return checkGeneralAndSpecificConditionValidate(termsOfUse, specificConditionKey, user.getId());
-	}
-
-	private boolean checkGeneralAndSpecificConditionValidate(final List<String> termsOfUse, String specificConditionKey, String uidForLog) {
+	private boolean checkGeneralAndSpecificConditionValidate(final List<String> termsOfUse, String uidForLog) {
 		if (!termsOfUse.contains(completeCgKeyName())) {
 			if (logger.isDebugEnabled()) logger.debug("CG not validated, user : " + uidForLog);
 			return false;
-		} else if (specificConditionKey != null) {
-			if (logger.isDebugEnabled()) logger.debug("Service filter activated");
-			return termsOfUse.contains(mayAddEtiquette(specificConditionKey));
 		} else {
 			if (logger.isDebugEnabled()) logger.debug("No service filter");
 			return true;
