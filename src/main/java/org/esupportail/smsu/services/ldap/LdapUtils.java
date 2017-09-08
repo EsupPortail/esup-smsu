@@ -408,8 +408,7 @@ public class LdapUtils {
 	 * @return a list of users
 	 */
 	public List<LdapUser> searchLdapUsersByToken(final String token) {
-		final List<LdapUser> userList = ldapUtilsHelpers.getLdapUsersFromToken(token);
-		return userList;
+		return ldapUtilsHelpers.getLdapUsersFromToken(token);
 	}
 	
 	/**
