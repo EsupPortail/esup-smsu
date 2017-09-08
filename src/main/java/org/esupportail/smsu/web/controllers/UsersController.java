@@ -39,28 +39,27 @@ public class UsersController {
 	@Path("/search")
 	public List<UIRecipientUser> search(
 				@QueryParam("token") String token, 
-				@QueryParam("service") String serviceKey,
+				@QueryParam("service") String service,
 				@QueryParam("id") String id, 
 				@QueryParam("ldapFilter") String ldapFilter,
                                 @Context HttpServletRequest request) {
-		if(ServiceManager.SERVICE_SEND_FUNCTION_CG.equals(serviceKey)) 
-			serviceKey = null;
+		String serviceKey = ServiceManager.SERVICE_SEND_FUNCTION_CG.equals(service) ? null : service;
 		if (ldapFilter != null) {
 			if (!request.isUserInRole("FCTN_SMS_REQ_LDAP_ADH"))
 				throw new InvalidParameterException("user is not allowed to search using LDAP filter");
 			return searchLdapWithFilter(ldapFilter);
                 } else if (token != null)
-			return searchLdapUser(token, serviceKey);
+			return searchLdapUser(token, service != null, serviceKey);
 		else if (id != null)
 			return searchLdapUserId(id, serviceKey);
 		else
 			throw new InvalidParameterException("missing param 'token' or 'id' or 'ldapFilter'");
 	}
 	
-	private List<UIRecipientUser> searchLdapUser(String token, String serviceKey) {
+	private List<UIRecipientUser> searchLdapUser(String token, boolean withPagerFilter, String serviceKey) {
 		if (token.trim().length() < NB_MIN_CHARS_FOR_LDAP_SEARCH ) throw new InvalidParameterException("token too short");
 		
-		List<LdapUser> list = serviceKey == null ?
+		List<LdapUser> list = !withPagerFilter ?
 			ldapUtils.searchLdapUsersByToken(token) :
 			ldapUtils.searchConditionFriendlyLdapUsersByToken(token, serviceKey);			
 		return convertToUI(list);
