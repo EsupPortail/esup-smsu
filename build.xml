@@ -141,6 +141,21 @@
 	  </hibernatetool>
 	</target>
 
+    <!-- usage: ant hotswap:w &  ant jetty.run-debug -->
+    <target name="jetty.run-debug">
+		<property file="build.properties" />
+        <exec executable="ant">
+            <arg value="jetty.run" />
+            <env key="ANT_OPTS" value="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=${jpdaAddress}" />
+         </exec>
+    </target>
+    <target name="hotswap:w">
+        <exec executable="sh">
+            <arg value="-c" />
+            <arg value="while inotifywait -e close_write -r src/main/java; do LC_ALL=C ant hotswap; done" />
+        </exec>
+    </target>
+
 	<target name="hotswap" depends="tstamp,compile">
 		<taskdef name="hotswap" classname="dak.ant.taskdefs.Hotswap">
 		  <classpath>
