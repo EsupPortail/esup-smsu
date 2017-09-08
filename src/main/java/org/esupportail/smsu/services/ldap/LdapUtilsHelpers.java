@@ -111,7 +111,9 @@ public class LdapUtilsHelpers {
 	public void andPagerAndConditionsAndService(final AndFilter filter,
 			final String cgKeyName, final String service) {
 		filter.and(new WhitespaceWildcardsFilter(userPagerAttribute, " "));
-		filter.and(new EqualsFilter(userTermsOfUseAttribute, cgKeyName));
+		if (cgKeyName != null) {
+		    filter.and(new EqualsFilter(userTermsOfUseAttribute, cgKeyName));
+		}
 		if (service != null) {
 			filter.and(new EqualsFilter(userTermsOfUseAttribute, service));
 		}

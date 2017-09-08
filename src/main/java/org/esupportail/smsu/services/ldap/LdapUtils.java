@@ -435,9 +435,14 @@ public class LdapUtils {
 	 * @param token
 	 * @return a list of users
 	 */
-	public List<LdapUser> searchConditionFriendlyLdapUsersByToken(final String token, final String service) {
+	public List<LdapUser> searchConditionFriendlyLdapUsersByToken(final String token, String service) {
+        String completeCgKeyName = completeCgKeyName();
+        if ("IGNORE_CG".equals(service)) {
+            completeCgKeyName = null;
+            service = null;
+        }
 		return ldapUtilsHelpers.getConditionFriendlyLdapUsersFromToken(
-			token, completeCgKeyName(), mayAddEtiquette(service));
+			token, completeCgKeyName, mayAddEtiquette(service));
 	}
 
 	/**
@@ -445,9 +450,14 @@ public class LdapUtils {
 	 * @param service
 	 * @return a list of users
 	 */
-	public List<LdapUser> getConditionFriendlyLdapUsersFromUid(final List<String> uids, final String service) {
+	public List<LdapUser> getConditionFriendlyLdapUsersFromUid(final List<String> uids, String service) {
+        String completeCgKeyName = completeCgKeyName();
+        if ("IGNORE_CG".equals(service)) {
+            completeCgKeyName = null;
+            service = null;
+        }
 		return ldapUtilsHelpers.getConditionFriendlyLdapUsersFromUid(
-			uids, completeCgKeyName(), mayAddEtiquette(service));
+			uids, completeCgKeyName, mayAddEtiquette(service));
 	}
 
 	private UserGroup convertToUserGroup(final LdapGroup group) {
