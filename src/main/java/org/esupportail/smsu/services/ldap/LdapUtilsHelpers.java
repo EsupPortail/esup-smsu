@@ -99,7 +99,7 @@ public class LdapUtilsHelpers {
 		return searchWithFilter(tokenFilter(token));
 	}
 
-	private Filter tokenFilter(final String token) {
+	public Filter tokenFilter(final String token) {
 		AndFilter filter = new AndFilter();
 		for (String tok : token.split("\\p{Blank}")) {
 			if (tok.length() > 0)
@@ -225,20 +225,6 @@ public class LdapUtilsHelpers {
 			}
 		}
 		return retVal;
-	}
-	/**
-	 * Search an user by the search attribute and a token.
-	 * @param token
-	 * @param cgKeyName 
-	 * @param service 
-	 * @return 
-	 */
-	public List<LdapUser> getConditionFriendlyLdapUsersFromToken(final String token, 
-			final String cgKeyName, final String service) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("getConditionFriendlyLdapUsersFromToken : " + token);
-		}
-		return getConditionFriendlyLdapUsers(tokenFilter(token), cgKeyName, service);
 	}
 	
 	/**

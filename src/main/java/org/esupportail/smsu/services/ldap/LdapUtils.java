@@ -436,13 +436,16 @@ public class LdapUtils {
 	 * @return a list of users
 	 */
 	public List<LdapUser> searchConditionFriendlyLdapUsersByToken(final String token, String service) {
+        return getConditionFriendlyLdapUsers(ldapUtilsHelpers.tokenFilter(token), service);
+	}
+
+	private List<LdapUser> getConditionFriendlyLdapUsers(Filter filter, String service) {
         String completeCgKeyName = completeCgKeyName();
         if ("IGNORE_CG".equals(service)) {
             completeCgKeyName = null;
             service = null;
         }
-		return ldapUtilsHelpers.getConditionFriendlyLdapUsersFromToken(
-			token, completeCgKeyName, mayAddEtiquette(service));
+		return ldapUtilsHelpers.getConditionFriendlyLdapUsers(filter, completeCgKeyName, mayAddEtiquette(service));
 	}
 
 	/**
