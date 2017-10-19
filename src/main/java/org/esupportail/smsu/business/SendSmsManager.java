@@ -569,7 +569,6 @@ public class SendSmsManager  {
 	private void addGroupRecipients(Set<Recipient> recipients, final String groupId, String serviceKey) throws EmptyGroup {
 		if (groupId == null) return;
 		
-				// Group users are search from the portal.
 				List<LdapUser> groupUsers = getUsersByGroup(groupId,serviceKey);
 				if (groupUsers == null)
 					throw new InvalidParameterException("INVALID.GROUP");
