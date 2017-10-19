@@ -52,6 +52,13 @@ public class GroupUtils {
     }
 
     public List<LdapUser> getMemberIds(String groupId, String serviceKey) {
+        if (!wsgroups.inUse()) {
+            try {
+                return ldapUtils.getGroupUsers(groupId, serviceKey);
+            } catch (LdapUtils.NoMemberOfOverlay e) {
+                // fallback to 2-pass solution
+            }
+        }
         List<String> uids = getMemberIds(groupId);
         if (uids == null) return null;
         logger.debug("found " + uids.size() + " users in group " + groupId);

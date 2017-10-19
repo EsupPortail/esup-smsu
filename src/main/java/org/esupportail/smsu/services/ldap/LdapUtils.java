@@ -17,6 +17,8 @@ import org.esupportail.smsu.dao.beans.Person;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
 import org.esupportail.smsu.exceptions.ldap.LdapWriteException;
 import org.esupportail.smsu.services.ldap.beans.UserGroup;
+import org.springframework.ldap.filter.EqualsFilter;
+import org.springframework.ldap.filter.Filter;
 
 
 public class LdapUtils {
@@ -86,9 +88,11 @@ public class LdapUtils {
 	
 	private String userDnPath;
 	private String userIdAttribute;
+	private String userMemberAttribute;
 	private String groupMemberAttribute;
 	private String groupNameAttribute;	
 	private String groupMemberContainsUserAttribute;
+	private String groupDnPath;
 	
 	/**
 	 * The objectClass ldap attribute to add if the userTermsOfUseAttribute or userPagerAttribute need a specific ldap schema
@@ -430,6 +434,17 @@ public class LdapUtils {
 		return userList;
 	}
 	
+    /**
+     * Retrieve users whith memberOf and eligible for the service.
+     * @param groupId : group identifier in the LDAP
+     * @param service
+     * @return the users name
+     * @throws NoMemberOfOverlay
+     */
+    public List<LdapUser> getGroupUsers(String groupId, String service) throws NoMemberOfOverlay{
+        return getConditionFriendlyLdapUsers(filterUsersByGroup(groupId), service);
+    }    
+    
 	/**
 	 * Search filtered users by token.
 	 * @param token
@@ -463,6 +478,23 @@ public class LdapUtils {
 			uids, completeCgKeyName, mayAddEtiquette(service));
 	}
 
+    @SuppressWarnings("serial")
+    public class NoMemberOfOverlay extends Exception {}
+
+    private Filter filterUsersByGroup(final String groupId) throws NoMemberOfOverlay {
+        String val;
+        if (userMemberAttribute.equalsIgnoreCase("memberOf")){
+            logger.debug("getLdapUsers with memberOf");
+            val = groupNameAttribute + "=" + groupId + "," + groupDnPath;
+        } else if(userMemberAttribute.equalsIgnoreCase("isMemberOf")){
+            logger.debug("getLdapUsers with isMemberOf");
+            val = groupId;
+        } else {
+            throw new NoMemberOfOverlay();
+        }
+        return new EqualsFilter(userMemberAttribute, val);
+    }
+    
 	private UserGroup convertToUserGroup(final LdapGroup group) {
 		return new UserGroup(group.getId(), group.getAttribute(groupNameAttribute));
 	}
@@ -700,6 +732,13 @@ public class LdapUtils {
 		this.objectClassToAdd = objectClassToAdd;
 	}
 	
+	public void setUserMemberAttribute(String userMemberAttribute) {
+		this.userMemberAttribute = userMemberAttribute;
+	}
+
+	public void setGroupDnPath(String groupDnPath) {
+		this.groupDnPath = groupDnPath;
+	}
 
 	private <A> LinkedList<A> singletonList(A e) {
 		final LinkedList<A> l = new LinkedList<>();

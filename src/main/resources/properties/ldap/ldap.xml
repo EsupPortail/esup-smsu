@@ -228,6 +228,8 @@
 		<property name="cgKeyName" value="${ldap.key.cg}"/>
 		<property name="userDnPath" value="${ldap.dnSubPath},${ldap.base}"/>
 		<property name="userIdAttribute" value="${ldap.uidAttribute}"/>
+		<property name="userMemberAttribute" value="${ldap.memberAttribute}"/>
+		<property name="groupDnPath" value="${ldap.group.dnSubPath},${ldap.base}"/>
 		<property name="groupMemberAttribute" value="${ldap.group.groupMemberAttr}"/>
 		<property name="groupNameAttribute" value="${ldap.group.nameAttr}"/>
 		<property name="objectClassToAdd" value="${ldap.objectClassToAdd}"/>
