@@ -164,16 +164,21 @@ public class LdapUtilsHelpers {
 
 	private List<LdapUser> getConditionFriendlyLdapUsersFromUidRaw(final List<String> uids,
 			final String cgKeyName, final String service) {
+		final OrFilter orFilter = orFilterOnUids(uids);
+		if (orFilter == null) return new LinkedList<>();
+
+        return getConditionFriendlyLdapUsers(orFilter, cgKeyName, service);
+	}
+
+	public List<LdapUser> getConditionFriendlyLdapUsers(Filter baseFilter,
+			final String cgKeyName, final String service) {
 
 		final AndFilter filter = new AndFilter();
 		
 		//add the general condition, service and pager filter
 		andPagerAndConditionsAndService(filter, cgKeyName, service);
 		
-		final OrFilter orFilter = orFilterOnUids(uids);
-		if (orFilter == null) return new LinkedList<>();
-
-		filter.and(orFilter);		
+		filter.and(baseFilter);
 		return searchWithFilter(filter);
 	}
 
@@ -233,11 +238,7 @@ public class LdapUtilsHelpers {
 		if (logger.isDebugEnabled()) {
 			logger.debug("getConditionFriendlyLdapUsersFromToken : " + token);
 		}
-		final AndFilter filter = new AndFilter();
-		andPagerAndConditionsAndService(filter, cgKeyName, service);
-		filter.and(tokenFilter(token));
-
-		return searchWithFilter(filter);
+		return getConditionFriendlyLdapUsers(tokenFilter(token), cgKeyName, service);
 	}
 	
 	/**
