@@ -96,16 +96,16 @@ public class LdapUtilsHelpers {
 	 * @param token
 	 */
 	public List<LdapUser> getLdapUsersFromToken(final String token) {
-		final AndFilter filter = new AndFilter();
-		andTokenFilter(filter, token);			
-		return searchWithFilter(filter);
+		return searchWithFilter(tokenFilter(token));
 	}
 
-	private void andTokenFilter(final AndFilter filter, final String token) {
+	private Filter tokenFilter(final String token) {
+		AndFilter filter = new AndFilter();
 		for (String tok : token.split("\\p{Blank}")) {
 			if (tok.length() > 0)
 				filter.and(new WhitespaceWildcardsFilter(searchAttribute, tok));
 		}
+		return filter;
 	}
 
 	public void andPagerAndConditionsAndService(final AndFilter filter,
@@ -235,7 +235,7 @@ public class LdapUtilsHelpers {
 		}
 		final AndFilter filter = new AndFilter();
 		andPagerAndConditionsAndService(filter, cgKeyName, service);
-		andTokenFilter(filter, token);
+		filter.and(tokenFilter(token));
 
 		return searchWithFilter(filter);
 	}
