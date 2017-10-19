@@ -617,14 +617,7 @@ public class SendSmsManager  {
 	 */
 	public List<LdapUser> getUsersByGroup(final String groupId, String serviceKey) {
 		logger.debug("Search users for group [" + groupId + "]");
-
-		List<String> uids = groupUtils.getMemberIds(groupId);
-		if (uids == null) return null;
-		logger.debug("found " + uids.size() + " users in group " + groupId);
-
-		List<LdapUser> users = ldapUtils.getConditionFriendlyLdapUsersFromUid(uids, serviceKey);
-		logger.debug("found " + uids.size() + " users in group " + groupId + " and " + users.size() + " users having pager+CG");
-		return users;
+		return groupUtils.getMemberIds(groupId, serviceKey);
 	}
 
 	/**

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.esupportail.commons.services.ldap.LdapUser;
 import org.esupportail.smsu.dao.DaoService;
 import org.esupportail.smsu.dao.beans.BasicGroup;
 import org.esupportail.smsu.dao.beans.CustomizedGroup;
@@ -42,13 +43,23 @@ public class GroupUtils {
 		}
 	}
 
-	public List<String> getMemberIds(String groupId) {
+	private List<String> getMemberIds(String groupId) {
 		if (wsgroups.inUse()) {
 			return wsgroups.getMemberIds(groupId); 
 		} else {
 			return ldapUtils.getMemberIds(groupId);
 		}
-	}
+    }
+
+    public List<LdapUser> getMemberIds(String groupId, String serviceKey) {
+        List<String> uids = getMemberIds(groupId);
+        if (uids == null) return null;
+        logger.debug("found " + uids.size() + " users in group " + groupId);
+
+        List<LdapUser> users = ldapUtils.getConditionFriendlyLdapUsersFromUid(uids, serviceKey);
+        logger.debug("found " + uids.size() + " users in group " + groupId + " and " + users.size() + " users having pager+CG");
+        return users;
+    }
 
 	public Map<String,List<String>> group2parents(String label) {
 		if (wsgroups.inUse()) {
