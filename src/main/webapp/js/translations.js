@@ -24,7 +24,7 @@ app.config(function ($translateProvider) {
 
       APPROVALS_CANCEL           : "Refuser",
       APPROVALS_APPROVE          : "Approuver",
-      APPROVALS_NO_MESSAGES      : "Pas de message à approuver.",
+      APPROVALS_NO_MESSAGES      : "Tous les messages ont été approuvés",
 
       MSG_GROUP_RECIPIENT       : "Groupe destinataire",
       MSG_GROUP_SENDER          : "Groupe d'envoi",
