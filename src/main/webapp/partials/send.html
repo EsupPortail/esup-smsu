@@ -39,7 +39,7 @@
 	     on-select="addDestLogin()"
 	     >
 	</div>
-	<span ng-show="wip.logins.length === 0" class="has-error"><span class="help-block">No match</span></span>
+	<span ng-show="wip.logins.length === 0" class="has-error"><span class="help-block">Impossible de trouver un adhérent contenant ce nom</span></span>
       </div>
 
       <div ng-switch-when="SMS_ENVOI_GROUPES">
@@ -48,7 +48,7 @@
 	     on-select="addDestGroup()"
 	     >
 	</div>
-	<span ng-show="wip.groups.length === 0" class="has-error"><span class="help-block">No match</span></span>
+	<span ng-show="wip.groups.length === 0" class="has-error"><span class="help-block">Impossible de trouver un groupe contenant ce nom</span></span>
       </div>
 
       <div ng-switch-when="SMS_ENVOI_NUM_TEL">
