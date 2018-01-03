@@ -151,9 +151,9 @@ public class MessagesController {
 		}
 	}
 
+	@PermitAll
 	@GET
 	@Produces("application/json")
-	@PermitAll
 	@Path("/groupLeaves")
 	public List<UserGroup> getUserGroupLeaves(@Context HttpServletRequest request) {
 		return sendSmsManager.getUserGroupLeaves(request.getRemoteUser());
