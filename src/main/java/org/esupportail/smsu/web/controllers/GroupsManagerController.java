@@ -73,7 +73,7 @@ public class GroupsManagerController {
 	@RequestMapping(method = RequestMethod.GET, value = "/search")
 	@ResponseBody
 	@RolesAllowed({"FCTN_GESTION_GROUPE","FCTN_SMS_ENVOI_GROUPES"})
-	public List<UserGroup> search(@RequestParam(value = "token", required = false) String token) {
+	public List<UserGroup> search(@RequestParam("token") String token) {
 		return ldapUtils.searchGroupsByName(token);
 	}
 	
