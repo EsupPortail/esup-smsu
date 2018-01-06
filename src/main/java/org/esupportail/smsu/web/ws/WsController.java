@@ -28,7 +28,6 @@ import org.esupportail.smsu.web.beans.UIMessage;
 import org.esupportail.smsu.web.beans.UINewMessage;
 import org.esupportail.smsu.web.beans.UIService;
 import org.esupportail.smsu.web.controllers.InvalidParameterException;
-import org.esupportail.smsu.web.controllers.MembershipController;
 import org.esupportail.smsu.web.controllers.MessagesController;
 import org.esupportail.smsuapi.exceptions.InsufficientQuotaException;
 import org.esupportail.smsuapi.utils.HttpException;
@@ -47,7 +46,6 @@ public class WsController {
 	@Autowired private SendSmsManager sendSmsManager;
     @Autowired private MemberManager memberManager;
 	@Autowired private ServiceManager serviceManager;	
-    @Autowired private MembershipController membershipController;
     
 
 	private List<String> authorizedClientNames;
@@ -120,7 +118,7 @@ public class WsController {
 			if (StringUtils.isEmpty(member.getPhoneNumber())) {
 				if (member.getValidCG()) throw new InvalidParameterException("ADHESION.ERROR.PHONEREQUIRED");
 			} else { 
-				membershipController.validatePhoneNumber(member.getPhoneNumber());
+				memberManager.validatePhoneNumber(member.getPhoneNumber());
 			}
 	
 			// save datas into LDAP

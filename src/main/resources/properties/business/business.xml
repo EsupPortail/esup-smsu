@@ -24,6 +24,7 @@
 		<property name="titleSmsValidation"> 
 			<value type="java.lang.String">${adhesion.titleSmsValidation}</value>
 		</property>
+        <property name="phoneNumberPattern" value="${recipient.phoneNumberPattern}"/>
 		<property name="displayFrenchPhoneNumber" value="${adhesion.displayFrenchPhoneNumber}"/>
 		<property name="storeFrenchPhoneNumber" value="${adhesion.storeFrenchPhoneNumber}"/>
 	</bean>

@@ -17,7 +17,6 @@ import org.esupportail.smsu.exceptions.ldap.LdapWriteException;
 import org.esupportail.smsuapi.exceptions.InsufficientQuotaException;
 import org.esupportail.smsuapi.utils.HttpException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Required;
 
 @Path("/membership")
 public class MembershipController {
@@ -28,11 +27,6 @@ public class MembershipController {
     
 	protected static enum MembershipStatus {PENDING, OK};
 
-	/**
-	 * The pattern used to validate a phone number.
-	 */
-	private String phoneNumberPattern;
-	
 	private final Logger logger = Logger.getLogger(getClass());
 
 	@GET
@@ -65,7 +59,7 @@ public class MembershipController {
                         // normalize
                         member.setPhoneNumber(null);
 		} else { 
-			validatePhoneNumber(member.getPhoneNumber());
+			memberManager.validatePhoneNumber(member.getPhoneNumber());
 		}
 
 		// save datas into LDAP
@@ -100,18 +94,8 @@ public class MembershipController {
 		return valid; 
 	}
 
-	
-	public void validatePhoneNumber(String phoneNumber) {
-		if (!this.phoneNumberPattern.trim().equals("")) {
-			if (!phoneNumber.matches(this.phoneNumberPattern)) {
-				throw new InvalidParameterException("ADHESION.ERROR.INVALIDPHONENUMBER");
-			}
-		}
-	}
-
-	@Required
+	@Deprecated
 	public void setPhoneNumberPattern(final String phoneNumberPattern) {
-		this.phoneNumberPattern = phoneNumberPattern;
 	}
 
 }

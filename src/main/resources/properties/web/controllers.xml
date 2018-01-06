@@ -37,9 +37,7 @@
   <bean id="RolesController"		class="org.esupportail.smsu.web.controllers.RolesController" />
   <bean id="ServicesSmsuController"	class="org.esupportail.smsu.web.controllers.ServicesSmsuController" />
 
-  <bean id="MembershipController"	class="org.esupportail.smsu.web.controllers.MembershipController">
-		<property name="phoneNumberPattern" value="${recipient.phoneNumberPattern}"/>
-  </bean>
+  <bean id="MembershipController"	class="org.esupportail.smsu.web.controllers.MembershipController" />
   <bean id="MessagesController"		class="org.esupportail.smsu.web.controllers.MessagesController">
   	<property name="smsMaxSize" value="${sms.maxLength}" />
   </bean>

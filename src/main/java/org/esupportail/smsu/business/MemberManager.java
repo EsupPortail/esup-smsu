@@ -1,5 +1,6 @@
 package org.esupportail.smsu.business;
 
+import java.security.InvalidParameterException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -49,6 +50,11 @@ public class MemberManager {
 	 * the role name (usually a empty role)
 	 */
 	private String validationRoleName;
+
+    /**
+	 * The pattern used to validate a phone number.
+	 */
+	private String phoneNumberPattern;	
 
 	/**
 	 * title to used in the sms message.
@@ -206,6 +212,14 @@ public class MemberManager {
 	    }
 	    return s;
 	}
+	
+	public void validatePhoneNumber(String phoneNumber) {
+		if (!this.phoneNumberPattern.trim().equals("")) {
+			if (!phoneNumber.matches(this.phoneNumberPattern)) {
+				throw new InvalidParameterException("ADHESION.ERROR.INVALIDPHONENUMBER");
+			}
+		}
+	}
 
 	/**
 	 * save the member.
@@ -301,8 +315,9 @@ public class MemberManager {
 	public void setPhoneAttribute(final List<String> phoneAttribute) {
 	}
 
-	@Deprecated
+	@Required
 	public void setPhoneNumberPattern(final String phoneNumberPattern) {
+		this.phoneNumberPattern = phoneNumberPattern;
 	}
 
 	@Required
