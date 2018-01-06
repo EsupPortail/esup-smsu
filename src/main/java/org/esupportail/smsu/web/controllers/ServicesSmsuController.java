@@ -47,12 +47,12 @@ public class ServicesSmsuController {
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
-	public void create(UIService uiService) {
+	public void create(@RequestBody UIService uiService) {
 		createOrModify(uiService, true);
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id:\\d+}")
-	public void modify(UIService uiService, @PathVariable("id") int id) {
+	public void modify(@RequestBody UIService uiService, @PathVariable("id") int id) {
 		uiService.id = id;
 		createOrModify(uiService, false);
 	}

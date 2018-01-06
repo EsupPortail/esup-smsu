@@ -7,6 +7,7 @@ import javax.annotation.security.RolesAllowed;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import org.apache.log4j.Logger;
@@ -32,12 +33,12 @@ public class TemplateManagerController {
 	}
 	 
 	@RequestMapping(method = RequestMethod.POST)
-	public void create(UITemplate uiTemplate) {
+	public void create(@RequestBody UITemplate uiTemplate) {
 		createOrModify(uiTemplate, true);
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id:\\d+}")
-	public void modify(UITemplate uiTemplate, @PathVariable("id") int id) {
+	public void modify(@RequestBody UITemplate uiTemplate, @PathVariable("id") int id) {
 		uiTemplate.id = id;
 		createOrModify(uiTemplate, false);
 	}

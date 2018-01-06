@@ -94,7 +94,7 @@ public class MessagesController {
 				"FCTN_SMS_REQ_LDAP_ADH"})
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody
-	public UIMessage sendSMSAction(UINewMessage msg, HttpServletRequest request) throws CreateMessageException {		
+	public UIMessage sendSMSAction(@RequestBody UINewMessage msg, HttpServletRequest request) throws CreateMessageException {		
 		String login = request.getRemoteUser();
 		if (login == null) throw new InvalidParameterException("SERVICE.CLIENT.NOTDEFINED");
 		msg.login = login;
@@ -124,7 +124,7 @@ public class MessagesController {
 				"FCTN_SMS_REQ_LDAP_ADH"})
 	@RequestMapping(method = RequestMethod.POST, value = "/nbRecipients")
 	@ResponseBody
-	public int nbRecipients(UINewMessage msg, HttpServletRequest request) {	
+	public int nbRecipients(@RequestBody UINewMessage msg, HttpServletRequest request) {	
 		String login = request.getRemoteUser();
 		if (login == null) throw new InvalidParameterException("SERVICE.CLIENT.NOTDEFINED");
 		msg.login = login;

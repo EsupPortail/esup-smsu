@@ -57,7 +57,7 @@ public class WsController {
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/sms")
 	@ResponseBody
-	public UIMessage sendSMSAction(UINewMessage msg, HttpServletRequest request) throws CreateMessageException {		
+	public UIMessage sendSMSAction(@RequestBody UINewMessage msg, HttpServletRequest request) throws CreateMessageException {		
 		if(checkClient(request)) {
 			sendSmsManager.contentValidation(msg.content);
 			if (msg.mailToSend != null) {
@@ -106,7 +106,7 @@ public class WsController {
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/member")
 	@ResponseBody
-	public MembershipStatus saveMember(Member member, HttpServletRequest request) throws LdapUserNotFoundException, LdapWriteException, HttpException, InsufficientQuotaException {
+	public MembershipStatus saveMember(@RequestBody Member member, HttpServletRequest request) throws LdapUserNotFoundException, LdapWriteException, HttpException, InsufficientQuotaException {
 		if(checkClient(request)) {
 			logger.debug("Save data of a member");		
 			if (StringUtils.isEmpty(member.getPhoneNumber())) {
@@ -135,7 +135,7 @@ public class WsController {
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/validCode")
 	@ResponseBody
-	public Boolean validCode(Member member, HttpServletRequest request) throws LdapUserNotFoundException, LdapWriteException, HttpException, InsufficientQuotaException {
+	public Boolean validCode(@RequestBody Member member, HttpServletRequest request) throws LdapUserNotFoundException, LdapWriteException, HttpException, InsufficientQuotaException {
 		if(checkClient(request)) {
 			logger.debug("Valid code of a member");		
 			

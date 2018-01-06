@@ -43,7 +43,7 @@ public class MembershipController {
 
 	@RequestMapping(method = RequestMethod.POST)
 	@ResponseBody
-	public MembershipStatus save(Member member, HttpServletRequest request) throws LdapUserNotFoundException, LdapWriteException, HttpException, InsufficientQuotaException {
+	public MembershipStatus save(@RequestBody Member member, HttpServletRequest request) throws LdapUserNotFoundException, LdapWriteException, HttpException, InsufficientQuotaException {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Save data of a member");
 		}
@@ -74,7 +74,7 @@ public class MembershipController {
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/validCode")
 	@ResponseBody
-	public Boolean validCode(Member member, HttpServletRequest request) throws LdapUserNotFoundException, LdapWriteException  {
+	public Boolean validCode(@RequestBody Member member, HttpServletRequest request) throws LdapUserNotFoundException, LdapWriteException  {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Valid the code");
 		}

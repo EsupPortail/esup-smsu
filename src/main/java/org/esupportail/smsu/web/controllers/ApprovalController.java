@@ -35,7 +35,7 @@ public class ApprovalController {
     }
     
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id:\\d+}")
-	public void modify(@PathVariable("id") int id, HttpServletRequest request, UIMessage msg) throws CreateMessageException {
+	public void modify(@PathVariable("id") int id, HttpServletRequest request, @RequestBody UIMessage msg) throws CreateMessageException {
 		String status = msg.stateMessage;
 		if (status.equals("CANCEL") && status.equals("IN_PROGRESS")) {
 			throw new InvalidParameterException("unknown status " + status);

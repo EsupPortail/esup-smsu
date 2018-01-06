@@ -7,6 +7,7 @@ import javax.annotation.security.RolesAllowed;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import org.apache.log4j.Logger;
@@ -34,12 +35,12 @@ public class RolesController {
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
-	public void save(UIRole role) {
+	public void save(@RequestBody UIRole role) {
 		roleManager.saveRole(role);
 	}
 	
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id:\\d+}")
-	public void update(@PathVariable("id") int id, UIRole role) {
+	public void update(@PathVariable("id") int id, @RequestBody UIRole role) {
 		role.id = id;
 		roleManager.updateRole(role);
 	}

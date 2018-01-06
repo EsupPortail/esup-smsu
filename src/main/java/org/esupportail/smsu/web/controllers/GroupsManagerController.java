@@ -41,7 +41,7 @@ public class GroupsManagerController {
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
-	public void save(UICustomizedGroup uiCGroup, HttpServletRequest request) {
+	public void save(@RequestBody UICustomizedGroup uiCGroup, HttpServletRequest request) {
 		checkMandatoryUIParameters(uiCGroup);
 		if (groupManager.existsCustomizedGroupLabel(uiCGroup.label)) {
 			throw new InvalidParameterException("GROUPE.LABEL.EXIST.ERROR.MESSAGE");
@@ -50,7 +50,7 @@ public class GroupsManagerController {
 	}
 	
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id:\\d+}")
-	public void update(@PathVariable("id") int id, UICustomizedGroup uiCGroup, HttpServletRequest request) {
+	public void update(@PathVariable("id") int id, @RequestBody UICustomizedGroup uiCGroup, HttpServletRequest request) {
 		uiCGroup.id = id;
 		checkMandatoryUIParameters(uiCGroup);
 		if (groupManager.existsCustomizedGroupLabelWithOthersIds(uiCGroup.label, uiCGroup.id)) {
