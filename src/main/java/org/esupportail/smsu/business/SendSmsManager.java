@@ -543,6 +543,35 @@ public class SendSmsManager  {
 		return found;
 	}
 
+    /**
+	 * Content validation.
+	 */
+	public void contentValidation(final String content) {
+		Integer contentSize = content == null ? 0: content.length();
+		logger.debug("taille de message : " + contentSize.toString());
+		logger.debug("message : " + content);
+		if (contentSize == 0) {
+			throw new InvalidParameterException("SENDSMS.MESSAGE.EMPTYMESSAGE");
+		} else if (contentSize > smsMaxSize) {
+			throw new InvalidParameterException("SENDSMS.MESSAGE.MESSAGETOOLONG");
+		}		
+	}
+
+	public void mailsValidation(MailToSend mailToSend) {
+		List<String> mails = mailToSend.getMailOtherRecipients();
+		if (mails.isEmpty() && !mailToSend.getIsMailToRecipients()) {
+			throw new InvalidParameterException("SENDSMS.MESSAGE.RECIPIENTSMANDATORY");
+		}
+		for (String mail : mails) {
+			if (logger.isDebugEnabled()) logger.debug("mail validateOthersMails is :" + mail);
+			
+			if (!smtpServiceUtils.checkInternetAdresses(mail)) {
+				logger.info("validateOthersMails: " + mail + " is invalid");
+				throw new InvalidParameterException("SERVICE.FORMATMAIL.WRONG:" + mail);
+			}
+		}
+	}
+
 	public Set<Recipient> getRecipients(UINewMessage msg, String serviceKey) throws EmptyGroup {
 		Set<Recipient> recipients = new HashSet<>();
 		if (msg.recipientPhoneNumbers != null) addPhoneNumbersRecipients(recipients, msg.recipientPhoneNumbers);

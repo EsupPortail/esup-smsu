@@ -29,8 +29,6 @@ import org.esupportail.smsu.domain.beans.message.MessageStatus;
 import org.esupportail.smsu.exceptions.CreateMessageException;
 import org.esupportail.smsu.exceptions.CreateMessageException.EmptyGroup;
 import org.esupportail.smsu.services.ldap.beans.UserGroup;
-import org.esupportail.smsu.services.smtp.SmtpServiceUtils;
-import org.esupportail.smsu.web.beans.MailToSend;
 import org.esupportail.smsu.web.beans.UIMessage;
 import org.esupportail.smsu.web.beans.UINewMessage;
 import org.esupportail.smsu.web.beans.UIService;
@@ -38,7 +36,6 @@ import org.esupportail.smsuapi.exceptions.UnknownMessageIdException;
 import org.esupportail.smsuapi.utils.HttpException;
 import org.esupportail.ws.remote.beans.TrackInfos;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.StringUtils;
 
 /**
@@ -51,10 +48,7 @@ public class MessagesController {
 	@Autowired private DomainService domainService;
 	@Autowired private MessageManager messageManager;
 	@Autowired private SendSmsManager sendSmsManager;
-	@Autowired private SmtpServiceUtils smtpServiceUtils;
 	@Autowired private ServiceManager serviceManager;
-
-	private Integer smsMaxSize;
 
 	private final Logger logger = Logger.getLogger(getClass());
 
@@ -114,11 +108,11 @@ public class MessagesController {
 
 		recipientsValidation(msg, request, login);
 		userGroupValidation(msg.senderGroup, login);
-		contentValidation(msg.content);
+		sendSmsManager.contentValidation(msg.content);
 		if (msg.mailToSend != null) {
 			if (!request.isUserInRole("FCTN_SMS_AJOUT_MAIL"))
 				throw new InvalidParameterException("user " + login + " is not allowed to send mails");
-			mailsValidation(msg.mailToSend);
+                sendSmsManager.mailsValidation(msg.mailToSend);
 		}
 
 		int messageId = sendSmsManager.sendMessage(msg, request);
@@ -220,35 +214,6 @@ public class MessagesController {
 		throw new InvalidParameterException("user " + login + " is not in group " + userGroup);
 	}
 
-	/**
-	 * Content validation.
-	 */
-	public void contentValidation(final String content) {
-		Integer contentSize = content == null ? 0: content.length();
-		logger.debug("taille de message : " + contentSize.toString());
-		logger.debug("message : " + content);
-		if (contentSize == 0) {
-			throw new InvalidParameterException("SENDSMS.MESSAGE.EMPTYMESSAGE");
-		} else if (contentSize > smsMaxSize) {
-			throw new InvalidParameterException("SENDSMS.MESSAGE.MESSAGETOOLONG");
-		}		
-	}
-
-	public void mailsValidation(MailToSend mailToSend) {
-		List<String> mails = mailToSend.getMailOtherRecipients();
-		if (mails.isEmpty() && !mailToSend.getIsMailToRecipients()) {
-			throw new InvalidParameterException("SENDSMS.MESSAGE.RECIPIENTSMANDATORY");
-		}
-		for (String mail : mails) {
-			if (logger.isDebugEnabled()) logger.debug("mail validateOthersMails is :" + mail);
-			
-			if (!smtpServiceUtils.checkInternetAdresses(mail)) {
-				logger.info("validateOthersMails: " + mail + " is invalid");
-				throw new InvalidParameterException("SERVICE.FORMATMAIL.WRONG:" + mail);
-			}
-		}
-	}
-
 	//////////////////////////////////////////////////////////////
 	// Validation method
 	//////////////////////////////////////////////////////////////
@@ -262,9 +227,8 @@ public class MessagesController {
 
 	}
 	
-	@Required
+	@Deprecated
 	public void setSmsMaxSize(final Integer smsMaxSize) {
-		this.smsMaxSize = smsMaxSize;
 	}
 
 }

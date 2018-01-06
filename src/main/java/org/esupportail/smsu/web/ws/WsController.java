@@ -28,7 +28,6 @@ import org.esupportail.smsu.web.beans.UIMessage;
 import org.esupportail.smsu.web.beans.UINewMessage;
 import org.esupportail.smsu.web.beans.UIService;
 import org.esupportail.smsu.web.controllers.InvalidParameterException;
-import org.esupportail.smsu.web.controllers.MessagesController;
 import org.esupportail.smsuapi.exceptions.InsufficientQuotaException;
 import org.esupportail.smsuapi.utils.HttpException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +40,6 @@ public class WsController {
 	
 	protected static enum MembershipStatus {PENDING, OK};
 
-	@Autowired private MessagesController messagesController;
 	@Autowired private MessageManager messageManager;
 	@Autowired private SendSmsManager sendSmsManager;
     @Autowired private MemberManager memberManager;
@@ -63,9 +61,9 @@ public class WsController {
 	@Produces("application/json")
 	public UIMessage sendSMSAction(UINewMessage msg, @Context HttpServletRequest request) throws CreateMessageException {		
 		if(checkClient(request)) {
-			messagesController.contentValidation(msg.content);
+			sendSmsManager.contentValidation(msg.content);
 			if (msg.mailToSend != null) {
-				messagesController.mailsValidation(msg.mailToSend);
+				sendSmsManager.mailsValidation(msg.mailToSend);
 			}
 
 			int messageId = sendSmsManager.sendMessage(msg, request);
