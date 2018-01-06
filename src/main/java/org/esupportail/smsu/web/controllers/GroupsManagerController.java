@@ -59,8 +59,8 @@ public class GroupsManagerController {
 		groupManager.updateCustomizedGroup(uiCGroup, request);	
 	}
 
-	@RequestMapping(method = RequestMethod.DELETE)
-	public void delete(int id)  {
+	@RequestMapping(method = RequestMethod.DELETE, value = "/{id:\\d+}")
+	public void delete(@PathVariable("id") int id) {
 		groupManager.deleteCustomizedGroup(id);
 	}
 	
