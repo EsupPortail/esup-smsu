@@ -127,42 +127,30 @@
 	</filter-mapping>
 
 	<servlet>
-	  <servlet-name>jersey-serlvet</servlet-name>
-	  <servlet-class>com.sun.jersey.spi.spring.container.servlet.SpringServlet</servlet-class>
+	  <servlet-name>rest-serlvet</servlet-name>
+      	  <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 	  <init-param>
-	    <param-name>com.sun.jersey.config.property.packages</param-name>
-	    <param-value>org.esupportail.smsu.web.controllers</param-value>
-	  </init-param>
-	  <init-param>
-            <param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
-            <param-value>true</param-value>
-	  </init-param>
-	  <init-param>
-            <param-name>com.sun.jersey.spi.container.ResourceFilters</param-name>
-            <param-value>com.sun.jersey.api.container.filter.RolesAllowedResourceFilterFactory</param-value>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:/properties/web/controllers-rest.xml</param-value>
 	  </init-param>
 	  <load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
-	  <servlet-name>jersey-serlvet</servlet-name>
+	  <servlet-name>rest-serlvet</servlet-name>
 	  <url-pattern>/rest/*</url-pattern>
 	</servlet-mapping>
 	
 	<servlet>
-	  <servlet-name>jersey-serlvet-ws</servlet-name>
-	  <servlet-class>com.sun.jersey.spi.spring.container.servlet.SpringServlet</servlet-class>
+	  <servlet-name>rest-serlvet-ws</servlet-name>
+	  <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 	  <init-param>
-	    <param-name>com.sun.jersey.config.property.packages</param-name>
-	    <param-value>org.esupportail.smsu.web.ws</param-value>
-	  </init-param>
-	  <init-param>
-            <param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
-            <param-value>true</param-value>
+	    <param-name>contextConfigLocation</param-name>
+	    <param-value>classpath:/properties/web/controllers-ws.xml</param-value>
 	  </init-param>
 	  <load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
-	  <servlet-name>jersey-serlvet-ws</servlet-name>
+	  <servlet-name>rest-serlvet-ws</servlet-name>
 	  <url-pattern>/ws/*</url-pattern>
 	</servlet-mapping>
 

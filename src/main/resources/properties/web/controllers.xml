@@ -30,22 +30,4 @@
 	  <property name="jsonpDisabled" value="#{'${authentication}' == 'shibboleth'}" />
 	</bean>
   
-  <bean id="loginController"		class="org.esupportail.smsu.web.controllers.LoginController" />
-  <bean id="ApprovalController"		class="org.esupportail.smsu.web.controllers.ApprovalController" />
-  <bean id="GroupsManagerController"	class="org.esupportail.smsu.web.controllers.GroupsManagerController" />
-  <bean id="LoginController"		class="org.esupportail.smsu.web.controllers.LoginController" />
-  <bean id="RolesController"		class="org.esupportail.smsu.web.controllers.RolesController" />
-  <bean id="ServicesSmsuController"	class="org.esupportail.smsu.web.controllers.ServicesSmsuController" />
-
-  <bean id="MembershipController"	class="org.esupportail.smsu.web.controllers.MembershipController" />
-  <bean id="MessagesController"		class="org.esupportail.smsu.web.controllers.MessagesController">
-  	<property name="smsMaxSize" value="${sms.maxLength}" />
-  </bean>
-  <bean id="TemplateManagerController"	class="org.esupportail.smsu.web.controllers.TemplateManagerController" />
-  <bean id="UsersController"	class="org.esupportail.smsu.web.controllers.UsersController">
-		<property name="phoneNumberPattern" value="${recipient.phoneNumberPattern}"/>
-  </bean>
-  <bean id="WsController" class="org.esupportail.smsu.web.ws.WsController">
-		<property name="authorizedClientNames" value="${smsu.ws.authorizedClientNames}"></property>
-  </bean>
 </beans>

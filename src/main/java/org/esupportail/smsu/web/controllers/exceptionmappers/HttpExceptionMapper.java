@@ -1,17 +1,16 @@
 package org.esupportail.smsu.web.controllers.exceptionmappers;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.Provider;
-
 import org.esupportail.smsu.web.Helper;
 import org.esupportail.smsuapi.utils.HttpException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
-@Provider
-public class HttpExceptionMapper implements
-        ExceptionMapper<HttpException> {
-    @Override
-    public Response toResponse(HttpException ex) {
-        return Helper.jsonErrorResponse(400, ex.getClass().getSimpleName(), ex.toString());
+@ControllerAdvice
+public class HttpExceptionMapper {
+    @ExceptionHandler(HttpException.class)
+    public ResponseEntity<?> toResponse(HttpException ex) {
+        return Helper.jsonErrorResponse(HttpStatus.BAD_REQUEST, ex.getClass().getSimpleName(), ex.toString());
     }
 }

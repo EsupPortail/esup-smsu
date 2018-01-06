@@ -1,17 +1,17 @@
 package org.esupportail.smsu.web.controllers.exceptionmappers;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.Provider;
 
 import org.esupportail.smsu.web.Helper;
 import org.esupportail.smsu.web.controllers.InvalidParameterException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
-@Provider
-public class InvalidParameterExceptionMapper implements
-        ExceptionMapper<InvalidParameterException> {
-    @Override
-    public Response toResponse(InvalidParameterException ex) {
-        return Helper.jsonErrorResponse(400, ex.getMessage());
+@ControllerAdvice
+public class InvalidParameterExceptionMapper {
+    @ExceptionHandler(InvalidParameterException.class)
+    public ResponseEntity<?> toResponse(Exception ex) {
+        return Helper.jsonErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 }

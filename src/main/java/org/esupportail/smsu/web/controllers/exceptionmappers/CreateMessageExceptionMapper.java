@@ -1,18 +1,16 @@
 package org.esupportail.smsu.web.controllers.exceptionmappers;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.Provider;
-
 import org.esupportail.smsu.exceptions.CreateMessageException;
 import org.esupportail.smsu.web.Helper;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
-
-@Provider
-public class CreateMessageExceptionMapper implements
-        ExceptionMapper<CreateMessageException> {
-    @Override
-    public Response toResponse(CreateMessageException ex) {
-        return Helper.jsonErrorResponse(400, ex.toString());
+@ControllerAdvice
+public class CreateMessageExceptionMapper {
+    @ExceptionHandler(CreateMessageException.class)
+    public ResponseEntity<?> toResponse(Exception ex) {
+        return Helper.jsonErrorResponse(HttpStatus.BAD_REQUEST, ex.toString());
     }
 }
