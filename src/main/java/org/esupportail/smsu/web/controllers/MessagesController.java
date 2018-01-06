@@ -10,14 +10,12 @@ import java.util.Map;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import org.apache.log4j.Logger;
 import org.esupportail.smsu.business.MessageManager;
@@ -41,7 +39,7 @@ import org.springframework.util.StringUtils;
 /**
  * A bean to manage user preferences.
  */
-@Path("/messages")
+@RequestMapping(value = "/messages")
 @RolesAllowed({"FCTN_SUIVI_ENVOIS_ETABL","FCTN_SUIVI_ENVOIS_UTIL"})
 public class MessagesController {
 
@@ -53,33 +51,31 @@ public class MessagesController {
 	private final Logger logger = Logger.getLogger(getClass());
 
 	
-	@GET
-	@Produces("application/json")
+	@RequestMapping(method = RequestMethod.GET)
+	@ResponseBody
 	public List<UIMessage> getMessages(
-			@QueryParam("sender") String senderLogin,
-			@QueryParam("maxResults") @DefaultValue("0" /* no limit */) int maxResults,
-			@Context HttpServletRequest request) {
+			@RequestParam(value = "sender", required = false) String senderLogin,
+			@RequestParam(value = "maxResults", defaultValue = "0" /* no limit */) int maxResults,
+			HttpServletRequest request) {
 		senderLogin = allowedSender(request, senderLogin);
 		Date beginDate = null;
 		Date endDate = null;
 		return messageManager.getMessages(null, null, null, null, senderLogin, beginDate, endDate, maxResults);
 	}
 		
-	@GET
-	@Produces("application/json")
-	@Path("/{id:\\d+}")
+	@RequestMapping(method = RequestMethod.GET, value = "/{id:\\d+}")
+	@ResponseBody
 	public UIMessage getMessage(
-			@PathParam("id") int messageId,
-			@Context HttpServletRequest request) {			
+			@PathVariable("id") int messageId,
+			HttpServletRequest request) {			
 		return messageManager.getUIMessage(messageId, allowedSender(request));
 	}
 	
-	@GET
-	@Produces("application/json")
-	@Path("/{id:\\d+}/statuses")
+	@RequestMapping(method = RequestMethod.GET, value = "/{id:\\d+}/statuses")
+	@ResponseBody
 	public TrackInfos getMessageStatuses(
-			@PathParam("id") int messageId,
-			@Context HttpServletRequest request) throws HttpException, UnknownMessageIdException {			
+			@PathVariable("id") int messageId,
+			HttpServletRequest request) throws HttpException, UnknownMessageIdException {			
 		Message message = messageManager.getMessage(messageId, allowedSender(request));
 		if (message == null) {
 			throw new InvalidParameterException("unknow message " + messageId);
@@ -96,9 +92,9 @@ public class MessagesController {
 				"FCTN_SMS_ENVOI_NUM_TEL",
 				"FCTN_SMS_ENVOI_LISTE_NUM_TEL",
 				"FCTN_SMS_REQ_LDAP_ADH"})
-	@POST
-	@Produces("application/json")
-	public UIMessage sendSMSAction(UINewMessage msg, @Context HttpServletRequest request) throws CreateMessageException {		
+	@RequestMapping(method = RequestMethod.POST)
+	@ResponseBody
+	public UIMessage sendSMSAction(UINewMessage msg, HttpServletRequest request) throws CreateMessageException {		
 		String login = request.getRemoteUser();
 		if (login == null) throw new InvalidParameterException("SERVICE.CLIENT.NOTDEFINED");
 		msg.login = login;
@@ -126,10 +122,9 @@ public class MessagesController {
 				"FCTN_SMS_ENVOI_NUM_TEL",
 				"FCTN_SMS_ENVOI_LISTE_NUM_TEL",
 				"FCTN_SMS_REQ_LDAP_ADH"})
-	@POST
-	@Produces("application/json")
-	@Path("/nbRecipients")
-	public int nbRecipients(UINewMessage msg, @Context HttpServletRequest request) {	
+	@RequestMapping(method = RequestMethod.POST, value = "/nbRecipients")
+	@ResponseBody
+	public int nbRecipients(UINewMessage msg, HttpServletRequest request) {	
 		String login = request.getRemoteUser();
 		if (login == null) throw new InvalidParameterException("SERVICE.CLIENT.NOTDEFINED");
 		msg.login = login;
@@ -146,17 +141,15 @@ public class MessagesController {
 	}
 
 	@PermitAll
-	@GET
-	@Produces("application/json")
-	@Path("/groupLeaves")
-	public List<UserGroup> getUserGroupLeaves(@Context HttpServletRequest request) {
+	@RequestMapping(method = RequestMethod.GET, value = "/groupLeaves")
+	@ResponseBody
+	public List<UserGroup> getUserGroupLeaves(HttpServletRequest request) {
 		return sendSmsManager.getUserGroupLeaves(request.getRemoteUser());
 	}
 
-	@GET
-	@Produces("application/json")
-	@Path("/senders")
-	public Map<String,String> getUsersHavingSentASms(@Context HttpServletRequest request) {
+	@RequestMapping(method = RequestMethod.GET, value = "/senders")
+	@ResponseBody
+	public Map<String,String> getUsersHavingSentASms(HttpServletRequest request) {
 		if (request.isUserInRole("FCTN_SUIVI_ENVOIS_ETABL")) {
 			return domainService.getPersons();
 		} else {

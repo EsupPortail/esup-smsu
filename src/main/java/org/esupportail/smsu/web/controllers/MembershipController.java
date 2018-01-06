@@ -1,11 +1,10 @@
 package org.esupportail.smsu.web.controllers;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -18,7 +17,7 @@ import org.esupportail.smsuapi.exceptions.InsufficientQuotaException;
 import org.esupportail.smsuapi.utils.HttpException;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Path("/membership")
+@RequestMapping(value = "/membership")
 public class MembershipController {
 	
     @Autowired private MemberManager memberManager;
@@ -29,23 +28,22 @@ public class MembershipController {
 
 	private final Logger logger = Logger.getLogger(getClass());
 
-	@GET
-	@Produces("application/json")
-	public Member getCurrentMember(@Context HttpServletRequest request) throws LdapUserNotFoundException {
+	@RequestMapping(method = RequestMethod.GET)
+	@ResponseBody
+	public Member getCurrentMember(HttpServletRequest request) throws LdapUserNotFoundException {
 		return memberManager.getMember(request.getRemoteUser());
 	}
 
-	@GET
-	@Produces("application/json")
-	@Path("/isPhoneNumberInBlackList")
-	public boolean isPhoneNumberInBlackList(@Context HttpServletRequest request) throws LdapUserNotFoundException, HttpException {
+	@RequestMapping(method = RequestMethod.GET, value = "/isPhoneNumberInBlackList")
+	@ResponseBody
+	public boolean isPhoneNumberInBlackList(HttpServletRequest request) throws LdapUserNotFoundException, HttpException {
 		Member member = memberManager.getMember(request.getRemoteUser());
 		return memberManager.isPhoneNumberInBlackList(member.getPhoneNumber());
 	}
 
-	@POST
-	@Produces("application/json")
-	public MembershipStatus save(Member member, @Context HttpServletRequest request) throws LdapUserNotFoundException, LdapWriteException, HttpException, InsufficientQuotaException {
+	@RequestMapping(method = RequestMethod.POST)
+	@ResponseBody
+	public MembershipStatus save(Member member, HttpServletRequest request) throws LdapUserNotFoundException, LdapWriteException, HttpException, InsufficientQuotaException {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Save data of a member");
 		}
@@ -74,10 +72,9 @@ public class MembershipController {
 	 * @throws LdapUserNotFoundException 
 	 * @throws LdapWriteException 
 	 */
-	@POST
-	@Produces("application/json")
-	@Path("/validCode")
-	public Boolean validCode(Member member, @Context HttpServletRequest request) throws LdapUserNotFoundException, LdapWriteException  {
+	@RequestMapping(method = RequestMethod.POST, value = "/validCode")
+	@ResponseBody
+	public Boolean validCode(Member member, HttpServletRequest request) throws LdapUserNotFoundException, LdapWriteException  {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Valid the code");
 		}

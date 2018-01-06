@@ -3,9 +3,9 @@ package org.esupportail.smsu.web.controllers;
 import java.io.IOException;
 import java.net.URI;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Context;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +18,14 @@ import org.esupportail.smsu.domain.DomainService;
 import org.esupportail.smsu.domain.beans.User;
 import org.esupportail.smsu.services.UrlGenerator;
 
-@Path("/login")
+@RequestMapping(value = "/login")
 public class LoginController {
 	
     @Autowired private DomainService domainService;
     @Autowired private UrlGenerator urlGenerator;
     
-    @GET
-    public Response get(@Context HttpServletRequest request) throws IOException {
+    @RequestMapping(method = RequestMethod.GET)
+    public Response get(HttpServletRequest request) throws IOException {
     	boolean ourCookiesRejected = ourCookiesRejected(request);
 
 	String sessionId = ourCookiesRejected ? request.getSession().getId() : null;

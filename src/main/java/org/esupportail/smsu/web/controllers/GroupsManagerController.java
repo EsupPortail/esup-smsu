@@ -4,15 +4,12 @@ import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import org.apache.log4j.Logger;
 import org.esupportail.smsu.business.GroupManager;
@@ -26,7 +23,7 @@ import org.springframework.util.StringUtils;
 /**
  * A bean to manage files.
  */
-@Path("/groups")
+@RequestMapping(value = "/groups")
 @RolesAllowed("FCTN_GESTION_GROUPE")
 public class GroupsManagerController {
 	
@@ -37,14 +34,14 @@ public class GroupsManagerController {
 	@Autowired private DomainService domainService;
 	@Autowired private GroupManager groupManager;
 
-	@GET
-	@Produces("application/json")
+	@RequestMapping(method = RequestMethod.GET)
+	@ResponseBody
 	public List<UICustomizedGroup> allGroups() {
 		return groupManager.getAllGroups();
 	}
 	
-	@POST
-	public void save(UICustomizedGroup uiCGroup, @Context HttpServletRequest request) {
+	@RequestMapping(method = RequestMethod.POST)
+	public void save(UICustomizedGroup uiCGroup, HttpServletRequest request) {
 		checkMandatoryUIParameters(uiCGroup);
 		if (groupManager.existsCustomizedGroupLabel(uiCGroup.label)) {
 			throw new InvalidParameterException("GROUPE.LABEL.EXIST.ERROR.MESSAGE");
@@ -52,9 +49,8 @@ public class GroupsManagerController {
 		groupManager.addCustomizedGroup(uiCGroup, request);
 	}
 	
-	@PUT
-	@Path("/{id:\\d+}")
-	public void update(@PathParam("id") int id, UICustomizedGroup uiCGroup, @Context HttpServletRequest request) {
+	@RequestMapping(method = RequestMethod.PUT, value = "/{id:\\d+}")
+	public void update(@PathVariable("id") int id, UICustomizedGroup uiCGroup, HttpServletRequest request) {
 		uiCGroup.id = id;
 		checkMandatoryUIParameters(uiCGroup);
 		if (groupManager.existsCustomizedGroupLabelWithOthersIds(uiCGroup.label, uiCGroup.id)) {
@@ -63,23 +59,21 @@ public class GroupsManagerController {
 		groupManager.updateCustomizedGroup(uiCGroup, request);	
 	}
 
-	@DELETE
+	@RequestMapping(method = RequestMethod.DELETE)
 	public void delete(int id)  {
 		groupManager.deleteCustomizedGroup(id);
 	}
 	
-	@GET
-	@Produces("application/json")
-	@Path("/accounts")
+	@RequestMapping(method = RequestMethod.GET, value = "/accounts")
+	@ResponseBody
 	public List<String> getAccounts() {
 		return domainService.getAccounts();
 	}
 
-	@GET
-	@Produces("application/json")
-	@Path("/search")
+	@RequestMapping(method = RequestMethod.GET, value = "/search")
+	@ResponseBody
 	@RolesAllowed({"FCTN_GESTION_GROUPE","FCTN_SMS_ENVOI_GROUPES"})
-	public List<UserGroup> search(@QueryParam("token") String token) {
+	public List<UserGroup> search(@RequestParam(value = "token", required = false) String token) {
 		return ldapUtils.searchGroupsByName(token);
 	}
 	

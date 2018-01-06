@@ -6,12 +6,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -33,7 +32,7 @@ import org.esupportail.smsuapi.utils.HttpException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
 
-@Path("/")
+@RequestMapping(value = "/")
 public class WsController {
 
 	private final Logger logger = Logger.getLogger(getClass());
@@ -56,10 +55,9 @@ public class WsController {
 	 * -d '{"login":"loginTestSmsu","senderGroup":"loginTestSmsu","content":"yop","recipientLogins":["loginTestSmsu"],"recipientPhoneNumbers":null}' \
 	 * http://localhost:8080/ws/sms
 	 */
-	@POST
-	@Path("/sms")
-	@Produces("application/json")
-	public UIMessage sendSMSAction(UINewMessage msg, @Context HttpServletRequest request) throws CreateMessageException {		
+	@RequestMapping(method = RequestMethod.POST, value = "/sms")
+	@ResponseBody
+	public UIMessage sendSMSAction(UINewMessage msg, HttpServletRequest request) throws CreateMessageException {		
 		if(checkClient(request)) {
 			sendSmsManager.contentValidation(msg.content);
 			if (msg.mailToSend != null) {
@@ -82,10 +80,9 @@ public class WsController {
 	 * -H "Content-Type: application/json" \
 	 * http://localhost:8080/ws/member/loginTestSmsu
 	 */
-	@GET
-	@Path("/member/{login}")
-	@Produces("application/json")
-	public Member getMember(@PathParam("login") String login, @Context HttpServletRequest request) {		
+	@RequestMapping(method = RequestMethod.GET, value = "/member/{login}")
+	@ResponseBody
+	public Member getMember(@PathVariable("login") String login, HttpServletRequest request) {		
 		if(checkClient(request)) {
 			Member member = null;
 			try {
@@ -107,10 +104,9 @@ public class WsController {
 	 * -d '{"login": "loginTestSmsu", "phoneNumber": "0612345678", "validCG": true, "validCP": ["cas"]}}' \
 	 * http://localhost:8080/ws/member
 	 */
-	@POST
-	@Path("/member")
-	@Produces("application/json")
-	public MembershipStatus saveMember(Member member, @Context HttpServletRequest request) throws LdapUserNotFoundException, LdapWriteException, HttpException, InsufficientQuotaException {
+	@RequestMapping(method = RequestMethod.POST, value = "/member")
+	@ResponseBody
+	public MembershipStatus saveMember(Member member, HttpServletRequest request) throws LdapUserNotFoundException, LdapWriteException, HttpException, InsufficientQuotaException {
 		if(checkClient(request)) {
 			logger.debug("Save data of a member");		
 			if (StringUtils.isEmpty(member.getPhoneNumber())) {
@@ -137,10 +133,9 @@ public class WsController {
 	 * -d '{"login": "loginTestSmsu", "phoneNumberValidationCode" : "12345"}' \
 	 * http://localhost:8080/ws/validCode
 	 */
-	@POST
-	@Path("/validCode")
-	@Produces("application/json")
-	public Boolean validCode(Member member, @Context HttpServletRequest request) throws LdapUserNotFoundException, LdapWriteException, HttpException, InsufficientQuotaException {
+	@RequestMapping(method = RequestMethod.POST, value = "/validCode")
+	@ResponseBody
+	public Boolean validCode(Member member, HttpServletRequest request) throws LdapUserNotFoundException, LdapWriteException, HttpException, InsufficientQuotaException {
 		if(checkClient(request)) {
 			logger.debug("Valid code of a member");		
 			
@@ -161,10 +156,9 @@ public class WsController {
 	 * -H "Content-Type: application/json" \
 	 * http://localhost:8080/ws/services
 	 */
-	@GET
-	@Path("/services")
-	@Produces("application/json")
-	public List<UIService> getUIServices(@Context HttpServletRequest request) {
+	@RequestMapping(method = RequestMethod.GET, value = "/services")
+	@ResponseBody
+	public List<UIService> getUIServices(HttpServletRequest request) {
 		if(checkClient(request)) {
 			return serviceManager.getAllUIServices();
 		} else {
@@ -179,10 +173,9 @@ public class WsController {
 	 * -H "Content-Type: application/json" \
 	 * http://localhost:8080/ws/sms/member/loginTestSmsu/adhServicesAvailable
 	 */
-	@GET
-	@Path("/member/{login}/adhServicesAvailable")
-	@Produces("application/json")
-	public List<UIService> getUIServicesAdh(@PathParam("login") String login, @Context HttpServletRequest request) {
+	@RequestMapping(method = RequestMethod.GET, value = "/member/{login}/adhServicesAvailable")
+	@ResponseBody
+	public List<UIService> getUIServicesAdh(@PathVariable("login") String login, HttpServletRequest request) {
 		if(checkClient(request)) {
 			return serviceManager.getUIServicesAdhFctn(login);
 		} else {

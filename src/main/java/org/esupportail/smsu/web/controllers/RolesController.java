@@ -4,13 +4,10 @@ import java.util.List;
 import java.util.Set;
 
 import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import org.apache.log4j.Logger;
 import org.esupportail.smsu.business.FonctionManager;
@@ -19,7 +16,7 @@ import org.esupportail.smsu.web.beans.UIRole;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
-@Path("/roles")
+@RequestMapping(value = "/roles")
 @RolesAllowed("FCTN_GESTION_ROLES_CRUD")
 public class RolesController {
 
@@ -29,34 +26,31 @@ public class RolesController {
 	@Autowired private FonctionManager fonctionManager;
 	@Autowired private RoleManager roleManager;
 
-	@GET
-	@Produces("application/json")
+	@RequestMapping(method = RequestMethod.GET)
+	@ResponseBody
 	@RolesAllowed({"FCTN_GESTION_ROLES_CRUD","FCTN_GESTION_ROLES_AFFECT"})
 	public List<UIRole> getAllRoles() {
 		return roleManager.getAllRoles();
 	}
 	
-	@POST
+	@RequestMapping(method = RequestMethod.POST)
 	public void save(UIRole role) {
 		roleManager.saveRole(role);
 	}
 	
-	@PUT
-	@Path("/{id:\\d+}")
-	public void update(@PathParam("id") int id, UIRole role) {
+	@RequestMapping(method = RequestMethod.PUT, value = "/{id:\\d+}")
+	public void update(@PathVariable("id") int id, UIRole role) {
 		role.id = id;
 		roleManager.updateRole(role);
 	}
 
-	@DELETE
-	@Path("/{id:\\d+}")
-	public void delete(@PathParam("id") int id)  {
+	@RequestMapping(method = RequestMethod.DELETE, value = "/{id:\\d+}")
+	public void delete(@PathVariable("id") int id)  {
 		roleManager.deleteRole(id);
 	}
 	
-	@GET
-	@Produces("application/json")
-	@Path("/fonctions")
+	@RequestMapping(method = RequestMethod.GET, value = "/fonctions")
+	@ResponseBody
 	public Set<String> allFonctions() {
 		return fonctionManager.getAllFonctions();
 	}

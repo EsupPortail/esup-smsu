@@ -4,12 +4,11 @@ import java.util.List;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import org.esupportail.smsu.business.ApprovalManager;
 import org.esupportail.smsu.domain.DomainService;
@@ -20,7 +19,7 @@ import org.esupportail.smsu.web.beans.UIMessage;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Path("/approvals")
+@RequestMapping(value = "/approvals")
 @RolesAllowed("APPROBATION_ENVOI")
 public class ApprovalController {
 
@@ -29,15 +28,14 @@ public class ApprovalController {
     @Autowired private DomainService domainService;
     @Autowired private ApprovalManager approvalManager;
 
-    @GET
-	@Produces("application/json")
-    public List<UIMessage> getApprovalUIMessages(@Context HttpServletRequest request) {
+    @RequestMapping(method = RequestMethod.GET)
+    @ResponseBody
+    public List<UIMessage> getApprovalUIMessages(HttpServletRequest request) {
     	return approvalManager.getApprovalUIMessages(request);
     }
     
-	@PUT
-	@Path("/{id:\\d+}")
-	public void modify(@PathParam("id") int id, @Context HttpServletRequest request, UIMessage msg) throws CreateMessageException {
+	@RequestMapping(method = RequestMethod.PUT, value = "/{id:\\d+}")
+	public void modify(@PathVariable("id") int id, HttpServletRequest request, UIMessage msg) throws CreateMessageException {
 		String status = msg.stateMessage;
 		if (status.equals("CANCEL") && status.equals("IN_PROGRESS")) {
 			throw new InvalidParameterException("unknown status " + status);

@@ -5,67 +5,60 @@ import java.util.List;
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import org.esupportail.smsu.business.ServiceManager;
 import org.esupportail.smsu.web.beans.UIService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Path("/services")
+@RequestMapping(value = "/services")
 @RolesAllowed("FCTN_GESTION_SERVICES_CP")
 public class ServicesSmsuController {
 
 	@Autowired private ServiceManager serviceManager;
 	
-	@GET
-	@Produces("application/json")
+	@RequestMapping(method = RequestMethod.GET)
+	@ResponseBody
 	@PermitAll
 	public List<UIService> getUIServices() {
 		return serviceManager.getAllUIServices();
 	}
 	
-	@GET
-	@Produces("application/json")
-	@Path("/sendFctn")
+	@RequestMapping(method = RequestMethod.GET, value = "/sendFctn")
+	@ResponseBody
 	@PermitAll
-	public List<UIService> getUIServicesSendFctn(@Context HttpServletRequest request) {
+	public List<UIService> getUIServicesSendFctn(HttpServletRequest request) {
 		String login = request.getRemoteUser();
 		if (login == null) throw new InvalidParameterException("SERVICE.CLIENT.NOTDEFINED");
 		return serviceManager.getUIServicesSendFctn(login);
 	}
 	
-	@GET
-	@Produces("application/json")
-	@Path("/adhFctn")
+	@RequestMapping(method = RequestMethod.GET, value = "/adhFctn")
+	@ResponseBody
 	@PermitAll
-	public List<UIService> getUIServicesAdhFctn(@Context HttpServletRequest request) {
+	public List<UIService> getUIServicesAdhFctn(HttpServletRequest request) {
 		String login = request.getRemoteUser();
 		if (login == null) throw new InvalidParameterException("SERVICE.CLIENT.NOTDEFINED");
 		return serviceManager.getUIServicesAdhFctn(login);
 	}
 	
-	@POST
+	@RequestMapping(method = RequestMethod.POST)
 	public void create(UIService uiService) {
 		createOrModify(uiService, true);
 	}
 
-	@PUT
-	@Path("/{id:\\d+}")
-	public void modify(UIService uiService, @PathParam("id") int id) {
+	@RequestMapping(method = RequestMethod.PUT, value = "/{id:\\d+}")
+	public void modify(UIService uiService, @PathVariable("id") int id) {
 		uiService.id = id;
 		createOrModify(uiService, false);
 	}
 
-	@DELETE
-	@Path("/{id:\\d+}")
-	public void delete(@PathParam("id") int id) {
+	@RequestMapping(method = RequestMethod.DELETE, value = "/{id:\\d+}")
+	public void delete(@PathVariable("id") int id) {
 		serviceManager.deleteUIService(id);
 	}
 

@@ -4,13 +4,10 @@ import java.util.List;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import org.apache.log4j.Logger;
 import org.esupportail.smsu.business.TemplateManager;
@@ -18,7 +15,7 @@ import org.esupportail.smsu.web.beans.UITemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @RolesAllowed("FCTN_GESTION_MODELES")
-@Path("/templates")
+@RequestMapping(value = "/templates")
 public class TemplateManagerController {
 
 	private static final int LENGHTBODY = 160;
@@ -27,28 +24,26 @@ public class TemplateManagerController {
 	
 	private final Logger logger = Logger.getLogger(getClass());
 	
-	@GET
-	@Produces("application/json")
+	@RequestMapping(method = RequestMethod.GET)
+	@ResponseBody
 	@PermitAll
 	public List<UITemplate> getTemplates() {
 		return templateManager.getUITemplates();
 	}
 	 
-	@POST
+	@RequestMapping(method = RequestMethod.POST)
 	public void create(UITemplate uiTemplate) {
 		createOrModify(uiTemplate, true);
 	}
 
-	@PUT
-	@Path("/{id:\\d+}")
-	public void modify(UITemplate uiTemplate, @PathParam("id") int id) {
+	@RequestMapping(method = RequestMethod.PUT, value = "/{id:\\d+}")
+	public void modify(UITemplate uiTemplate, @PathVariable("id") int id) {
 		uiTemplate.id = id;
 		createOrModify(uiTemplate, false);
 	}
 
-	@DELETE
-	@Path("/{id:\\d+}")
-	public void delete(@PathParam("id") int id) {
+	@RequestMapping(method = RequestMethod.DELETE, value = "/{id:\\d+}")
+	public void delete(@PathVariable("id") int id) {
 		templateManager.deleteTemplate(id);
 	}
 	

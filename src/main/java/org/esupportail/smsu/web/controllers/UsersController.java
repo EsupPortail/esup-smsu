@@ -3,12 +3,12 @@ package org.esupportail.smsu.web.controllers;
 import java.util.LinkedList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import org.apache.commons.lang.StringUtils;
 import org.esupportail.commons.services.ldap.LdapException;
@@ -20,7 +20,7 @@ import org.esupportail.smsu.web.beans.UIRecipientUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
 
-@Path("/users")
+@RequestMapping(value = "/users")
 public class UsersController {
 
 	private static final long NB_MIN_CHARS_FOR_LDAP_SEARCH = 4;
@@ -34,15 +34,14 @@ public class UsersController {
 	
 	private final Logger logger = Logger.getLogger(getClass());
 
-	@GET
-	@Produces("application/json")
-	@Path("/search")
+	@RequestMapping(method = RequestMethod.GET, value = "/search")
+	@ResponseBody
 	public List<UIRecipientUser> search(
-				@QueryParam("token") String token, 
-				@QueryParam("service") String service,
-				@QueryParam("id") String id, 
-				@QueryParam("ldapFilter") String ldapFilter,
-                                @Context HttpServletRequest request) {
+				@RequestParam(value = "token", required = false) String token, 
+				@RequestParam(value = "service", required = false) String service,
+				@RequestParam(value = "id", required = false) String id, 
+				@RequestParam(value = "ldapFilter", required = false) String ldapFilter,
+                                HttpServletRequest request) {
 		String serviceKey = ServiceManager.SERVICE_SEND_FUNCTION_CG.equals(service) ? null : service;
 		if (ldapFilter != null) {
 			if (!request.isUserInRole("FCTN_SMS_REQ_LDAP_ADH"))
@@ -71,7 +70,7 @@ public class UsersController {
 		return convertToUI(list);
 	}
 
-	private List<UIRecipientUser> searchLdapWithFilter(@PathParam("filter") String ldapFilter) {
+	private List<UIRecipientUser> searchLdapWithFilter(@PathVariable("filter") String ldapFilter) {
 		if (StringUtils.isBlank(ldapFilter)) return null;
 
 		logger.debug("Execution de la requete utilisateur : " + ldapFilter);
