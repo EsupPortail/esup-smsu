@@ -245,16 +245,8 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         </dependency>
             
 		<dependency>
-		  <groupId>org.esupportail</groupId>
-		  <artifactId>esup-commons2-web</artifactId>
-		  <version>${esup-commons-version}</version>
-		<exclusions>
-		  <!-- spring-asm is no more in spring 3.2.x -->
-		  <exclusion>
 		    <groupId>org.springframework</groupId>
-		    <artifactId>spring-asm</artifactId>
-		  </exclusion>
-		</exclusions>
+		    <artifactId>spring-webmvc</artifactId>
 		</dependency>
 		
 		<!-- for @RolesAllowed : -->
