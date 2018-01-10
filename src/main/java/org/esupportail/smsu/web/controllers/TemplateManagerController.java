@@ -32,17 +32,20 @@ public class TemplateManagerController {
 		return templateManager.getUITemplates();
 	}
 	 
+	@ResponseBody
 	@RequestMapping(method = RequestMethod.POST)
 	public void create(@RequestBody UITemplate uiTemplate) {
 		createOrModify(uiTemplate, true);
 	}
 
+	@ResponseBody
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id:\\d+}")
 	public void modify(@RequestBody UITemplate uiTemplate, @PathVariable("id") int id) {
 		uiTemplate.id = id;
 		createOrModify(uiTemplate, false);
 	}
 
+	@ResponseBody
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id:\\d+}")
 	public void delete(@PathVariable("id") int id) {
 		templateManager.deleteTemplate(id);

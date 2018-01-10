@@ -34,6 +34,7 @@ public class ApprovalController {
     	return approvalManager.getApprovalUIMessages(request);
     }
     
+    @ResponseBody
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id:\\d+}")
 	public void modify(@PathVariable("id") int id, HttpServletRequest request, @RequestBody UIMessage msg) throws CreateMessageException {
 		String status = msg.stateMessage;

@@ -46,17 +46,20 @@ public class ServicesSmsuController {
 		return serviceManager.getUIServicesAdhFctn(login);
 	}
 	
+	@ResponseBody
 	@RequestMapping(method = RequestMethod.POST)
 	public void create(@RequestBody UIService uiService) {
 		createOrModify(uiService, true);
 	}
 
+	@ResponseBody
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id:\\d+}")
 	public void modify(@RequestBody UIService uiService, @PathVariable("id") int id) {
 		uiService.id = id;
 		createOrModify(uiService, false);
 	}
 
+	@ResponseBody
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id:\\d+}")
 	public void delete(@PathVariable("id") int id) {
 		serviceManager.deleteUIService(id);

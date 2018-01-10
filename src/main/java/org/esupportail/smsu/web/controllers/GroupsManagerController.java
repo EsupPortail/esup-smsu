@@ -40,6 +40,7 @@ public class GroupsManagerController {
 		return groupManager.getAllGroups();
 	}
 	
+	@ResponseBody
 	@RequestMapping(method = RequestMethod.POST)
 	public void save(@RequestBody UICustomizedGroup uiCGroup, HttpServletRequest request) {
 		checkMandatoryUIParameters(uiCGroup);
@@ -49,6 +50,7 @@ public class GroupsManagerController {
 		groupManager.addCustomizedGroup(uiCGroup, request);
 	}
 	
+	@ResponseBody
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id:\\d+}")
 	public void update(@PathVariable("id") int id, @RequestBody UICustomizedGroup uiCGroup, HttpServletRequest request) {
 		uiCGroup.id = id;
@@ -59,6 +61,7 @@ public class GroupsManagerController {
 		groupManager.updateCustomizedGroup(uiCGroup, request);	
 	}
 
+	@ResponseBody
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id:\\d+}")
 	public void delete(@PathVariable("id") int id) {
 		groupManager.deleteCustomizedGroup(id);

@@ -34,17 +34,20 @@ public class RolesController {
 		return roleManager.getAllRoles();
 	}
 	
+	@ResponseBody
 	@RequestMapping(method = RequestMethod.POST)
 	public void save(@RequestBody UIRole role) {
 		roleManager.saveRole(role);
 	}
 	
+	@ResponseBody
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id:\\d+}")
 	public void update(@PathVariable("id") int id, @RequestBody UIRole role) {
 		role.id = id;
 		roleManager.updateRole(role);
 	}
 
+	@ResponseBody
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id:\\d+}")
 	public void delete(@PathVariable("id") int id)  {
 		roleManager.deleteRole(id);
