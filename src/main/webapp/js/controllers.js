@@ -601,7 +601,7 @@ app.controller('SendCtrl', function($scope, h, $location) {
 	var numbers = s.match(phoneNumberPatternAll);
 	if (numbers) {
 	    $scope.msg.destPhoneNumbers = 
-		$scope.msg.destPhoneNumbers.concat(numbers);
+		h.uniq($scope.msg.destPhoneNumbers.concat(numbers));
 	    $scope.wip.listPhoneNumbers =
 		s.replace(phoneNumberPatternAll, '');	    
 	}
