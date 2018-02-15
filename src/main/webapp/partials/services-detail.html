@@ -16,7 +16,7 @@
   </div>
 
   <div class="form-group" ng-class="{'has-error': submitted && myForm.name.$invalid}">
-    <label class="col-md-3 control-label" for="name">Thème/Partenaire</label>
+    <label class="col-md-3 control-label" for="name">Condition particulière</label>
     <div class="col-md-6">
       <input type="text" name="name" ng-model="service.name" my-validator="{ unique: checkUniqueName }" required maxlength="30" class="form-control">
       <span display-required-if-needed input-name="myForm.name"></span>

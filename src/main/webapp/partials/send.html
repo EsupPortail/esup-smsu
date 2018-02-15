@@ -11,7 +11,7 @@
   </div>
 
   <div class="form-group" ng-class="{'has-error': submitted && myForm.service.$invalid}">
-    <label class="col-md-3 control-label" for="service">Conditions particulières</label>
+    <label class="col-md-3 control-label" for="service">Condition particulière</label>
     <div class="col-md-9">
       <select name="service" ng-model="msg.serviceKey" ng-options="service.key as service.name for service in services" class="form-control" required="required">
       </select>

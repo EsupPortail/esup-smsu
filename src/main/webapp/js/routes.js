@@ -12,7 +12,7 @@ function computeRoutes(baseURL) {
      { route: '/templates', mainText: "Modèles", show: 'loggedUser.can.FCTN_GESTION_MODELES', controller: 'TemplatesCtrl'},
      { route: '/roles', mainText: "Rôles", show: 'loggedUser.can.FCTN_GESTION_ROLES_CRUD', controller: 'RolesCtrl'},
      { route: '/groups', mainText: "Groupes", show: 'loggedUser.can.FCTN_GESTION_GROUPE', controller: 'GroupsCtrl'},
-     { route: '/services', mainText: "Thèmes/partenaires", show: 'loggedUser.can.FCTN_GESTION_SERVICES_CP', controller: 'ServicesCtrl'},
+     { route: '/services', mainText: "Conditions particulières", show: 'loggedUser.can.FCTN_GESTION_SERVICES_CP', controller: 'ServicesCtrl'},
      { route: '/logout', mainText: "Déconnexion", show: 'allowLogout', controller: 'EmptyCtrl' },
      { route: '/about', mainText: "A propos de", title: "A propos de SMSU-U", controller: 'EmptyCtrl'},
      { route: '/messages/:id', text: "Détail", parent: '/messages', controller: 'MessagesDetailCtrl', templateUrl: templatesBaseURL + '/messages-detail.html'},
