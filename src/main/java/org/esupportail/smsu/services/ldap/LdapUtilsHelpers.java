@@ -135,7 +135,7 @@ public class LdapUtilsHelpers {
 		final AndFilter filter = new AndFilter();
 		
 		//add the pager filter
-		filter.and(new WhitespaceWildcardsFilter(userPagerAttribute, token));	
+		filter.and(new EqualsFilter(userPagerAttribute, token));
 				
 		return searchWithFilter(filter);
 	}
