@@ -31,7 +31,10 @@ import org.esupportail.smsuapi.exceptions.InsufficientQuotaException;
 import org.esupportail.smsuapi.utils.HttpException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
 
+@Controller
 @RequestMapping(value = "/")
 public class WsController {
 
@@ -43,7 +46,6 @@ public class WsController {
 	@Autowired private SendSmsManager sendSmsManager;
     @Autowired private MemberManager memberManager;
 	@Autowired private ServiceManager serviceManager;	
-    
 
 	private List<String> authorizedClientNames;
 
@@ -219,6 +221,7 @@ public class WsController {
 
 
 	@Required
+	@Value("${smsu.ws.authorizedClientNames}")
 	public void setAuthorizedClientNames(String authorizedClientNamesWithComa) {
 		authorizedClientNamesWithComa = authorizedClientNamesWithComa.replaceAll(" ", "");
 		authorizedClientNames = Arrays.asList(StringUtils.split(authorizedClientNamesWithComa, ","));
