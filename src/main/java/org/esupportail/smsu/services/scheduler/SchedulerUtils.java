@@ -2,6 +2,7 @@ package org.esupportail.smsu.services.scheduler;
 
 import org.apache.log4j.Logger;
 import org.esupportail.smsu.services.scheduler.job.SuperviseSmsSending;
+import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 
@@ -36,7 +37,7 @@ public class SchedulerUtils {
 					     " - groupName : " + groupName + "\n");
 			}
 			
-			scheduler.triggerJob(jobName, groupName);
+			scheduler.triggerJob(new JobKey(jobName, groupName));
 			
 			if (logger.isDebugEnabled()) {
 				logger.debug("Job successfully launched");

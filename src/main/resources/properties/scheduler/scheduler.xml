@@ -12,16 +12,17 @@
 		class="org.esupportail.smsu.business.NotificationByMailForInvalidPhoneManager">
 	</bean>
 
-	<bean id="notificationByMailForInvalidPhoneJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+	<bean id="notificationByMailForInvalidPhoneJob" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
 		<property name="jobClass" value="org.esupportail.smsu.services.scheduler.job.NotificationByMailForInvalidPhoneJob" />
 		<property name="jobDataAsMap">
 		  <map>
 		    <entry key="beanName" value="notificationByMailForInvalidPhoneManager" />
 		  </map>
 		</property>
+        <property name="durability" value="true" />
 	</bean>
 	
-	<bean id="notificationByMailForInvalidPhoneTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<bean id="notificationByMailForInvalidPhoneTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
     	<property name="jobDetail" ref="notificationByMailForInvalidPhoneJob" />
 		<!-- Cron expression -->
 		<property name="cronExpression"> 
@@ -30,11 +31,12 @@
 	</bean>
 	
 	<!-- Supervise sms sending -->
-	<bean id="superviseSmsSendingJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+	<bean id="superviseSmsSendingJob" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
 		<property name="jobClass" value="org.esupportail.smsu.services.scheduler.job.SuperviseSmsSending" />
+		<property name="durability" value="true" />
 	</bean>
 	
-	<bean id="superviseSmsSendingTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<bean id="superviseSmsSendingTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
     	<property name="jobDetail" ref="superviseSmsSendingJob" />
 		<!-- Cron expression -->
 		<property name="cronExpression"> 
@@ -43,11 +45,12 @@
 	</bean>
 	
 	<!-- purgePendingMemberJob -->
-	<bean id="purgePendingMemberJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+	<bean id="purgePendingMemberJob" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
 		<property name="jobClass" value="org.esupportail.smsu.services.scheduler.job.PurgePendingMemberJob" />
+		<property name="durability" value="true" />
 	</bean>
 	
-	<bean id="purgePendingMemberTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<bean id="purgePendingMemberTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
     	<property name="jobDetail" ref="purgePendingMemberJob" />
 		<!-- Cron expression -->
 		<property name="cronExpression"> 
@@ -55,11 +58,12 @@
 		</property>
 	</bean>
 	
-	<bean id="periodicPurgeJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+	<bean id="periodicPurgeJob" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
 		<property name="jobClass" value="org.esupportail.smsu.services.scheduler.job.PeriodicPurgeJob" />
+		<property name="durability" value="true" />
 	</bean>
 	
-	<bean id="periodicPurgeTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<bean id="periodicPurgeTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
     	<property name="jobDetail" ref="periodicPurgeJob" />
 		<!-- Cron expression -->
 		<property name="cronExpression"> 
