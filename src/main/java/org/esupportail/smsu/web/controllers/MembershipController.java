@@ -16,7 +16,9 @@ import org.esupportail.smsu.exceptions.ldap.LdapWriteException;
 import org.esupportail.smsuapi.exceptions.InsufficientQuotaException;
 import org.esupportail.smsuapi.utils.HttpException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
+@Controller
 @RequestMapping(value = "/membership")
 public class MembershipController {
 	

@@ -18,11 +18,13 @@ import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.services.ldap.beans.UserGroup;
 import org.esupportail.smsu.web.beans.UICustomizedGroup;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 
 /**
  * A bean to manage files.
  */
+@Controller
 @RequestMapping(value = "/groups")
 @RolesAllowed("FCTN_GESTION_GROUPE")
 public class GroupsManagerController {

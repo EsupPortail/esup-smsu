@@ -18,7 +18,9 @@ import org.esupportail.smsu.exceptions.CreateMessageException;
 import org.esupportail.smsu.web.beans.UIMessage;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
+@Controller
 @RequestMapping(value = "/approvals")
 @RolesAllowed("APPROBATION_ENVOI")
 public class ApprovalController {

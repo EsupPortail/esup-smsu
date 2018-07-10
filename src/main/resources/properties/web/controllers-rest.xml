@@ -4,11 +4,14 @@
 	xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="
 		http://www.springframework.org/schema/beans
 		http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
         http://www.springframework.org/schema/mvc
-        http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
+        http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+        http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-3.2.xsd">
 
   <import resource="../init.xml" />
  
@@ -19,16 +22,7 @@
    <mvc:interceptors>
         <bean class="org.esupportail.smsu.web.Jsr250SecurityInterceptor" />
    </mvc:interceptors> 
-
-  <bean id="ApprovalController"		class="org.esupportail.smsu.web.controllers.ApprovalController" />
-  <bean id="GroupsManagerController"	class="org.esupportail.smsu.web.controllers.GroupsManagerController" />
-  <bean id="LoginController"		class="org.esupportail.smsu.web.controllers.LoginController" />
-  <bean id="RolesController"		class="org.esupportail.smsu.web.controllers.RolesController" />
-  <bean id="ServicesSmsuController"	class="org.esupportail.smsu.web.controllers.ServicesSmsuController" />
-  <bean id="MembershipController"	class="org.esupportail.smsu.web.controllers.MembershipController" />
-  <bean id="MessagesController"		class="org.esupportail.smsu.web.controllers.MessagesController" />
-  <bean id="TemplateManagerController"	class="org.esupportail.smsu.web.controllers.TemplateManagerController" />
-  <bean id="UsersController"	class="org.esupportail.smsu.web.controllers.UsersController">
-		<property name="phoneNumberPattern" value="${recipient.phoneNumberPattern}"/>
-  </bean>
+   
+  <context:component-scan base-package="org.esupportail.smsu.web.controllers"/>
+     
 </beans>

@@ -14,7 +14,9 @@ import org.apache.log4j.Logger;
 import org.esupportail.smsu.business.TemplateManager;
 import org.esupportail.smsu.web.beans.UITemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
+@Controller
 @RolesAllowed("FCTN_GESTION_MODELES")
 @RequestMapping(value = "/templates")
 public class TemplateManagerController {

@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.esupportail.smsu.business.ServiceManager;
 import org.esupportail.smsu.web.beans.UIService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
+@Controller
 @RequestMapping(value = "/services")
 @RolesAllowed("FCTN_GESTION_SERVICES_CP")
 public class ServicesSmsuController {

@@ -19,7 +19,10 @@ import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.web.beans.UIRecipientUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
 
+@Controller
 @RequestMapping(value = "/users")
 public class UsersController {
 
@@ -114,6 +117,7 @@ public class UsersController {
 	//////////////////////////////////////////////////////////////
 	// Setter
 	//////////////////////////////////////////////////////////////
+	@Value("${recipient.phoneNumberPattern}")
 	@Required
 	public void setPhoneNumberPattern(final String phoneNumberPattern) {
 		this.phoneNumberPattern = phoneNumberPattern;

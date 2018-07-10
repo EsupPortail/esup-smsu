@@ -15,8 +15,9 @@ import org.esupportail.smsu.business.FonctionManager;
 import org.esupportail.smsu.business.RoleManager;
 import org.esupportail.smsu.web.beans.UIRole;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
-
+@Controller
 @RequestMapping(value = "/roles")
 @RolesAllowed("FCTN_GESTION_ROLES_CRUD")
 public class RolesController {
