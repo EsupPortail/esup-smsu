@@ -662,8 +662,7 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 	 * @see org.esupportail.smsu.dao.DaoService#getFirstCustomizedGroup()
 	 */
 	public CustomizedGroup getFirstCustomizedGroup() {
-		Session currentSession = getCurrentSession();
-		Criteria criteria = currentSession.createCriteria(CustomizedGroup.class);
+		Criteria criteria = getCurrentSession().createCriteria(CustomizedGroup.class);
 		criteria.addOrder(Order.asc(CustomizedGroup.PROP_ID));
 		CustomizedGroup customizedGroup = (CustomizedGroup) getFirstResult(criteria);
 		return customizedGroup;
