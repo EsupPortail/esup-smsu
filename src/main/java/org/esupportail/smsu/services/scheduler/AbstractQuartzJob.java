@@ -3,6 +3,7 @@ package org.esupportail.smsu.services.scheduler;
 import org.apache.log4j.Logger;
 import org.esupportail.smsu.utils.HibernateUtils;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.Scheduler;
@@ -85,6 +86,7 @@ public abstract class AbstractQuartzJob extends QuartzJobBean implements Statefu
        	SessionFactory sessionFactory = HibernateUtils.getSessionFactory(applicationContext);
 
     	boolean participate = HibernateUtils.openSession(sessionFactory);
+        Transaction transaction = sessionFactory.getCurrentSession().beginTransaction();
     	try {     
         	executeJob(applicationContext);
         } catch (Throwable t) {
@@ -95,6 +97,7 @@ public abstract class AbstractQuartzJob extends QuartzJobBean implements Statefu
                 throw new UnsupportedOperationException("The exceptionHander has to be not null");
             }
         } finally {
+		transaction.commit();
 		HibernateUtils.closeSession(sessionFactory, participate);
 	}
 	}

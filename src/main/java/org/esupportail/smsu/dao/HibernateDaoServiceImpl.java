@@ -974,9 +974,7 @@ public class HibernateDaoServiceImpl implements DaoService {
 		if (logger.isDebugEnabled()) {
 			logger.debug("adding " + object + "...");
 		}
-		getCurrentSession().beginTransaction();
 		getCurrentSession().save(object);
-		getCurrentSession().getTransaction().commit();
 		if (logger.isDebugEnabled()) {
 			logger.debug("done.");
 		}
@@ -990,13 +988,11 @@ public class HibernateDaoServiceImpl implements DaoService {
 		if (logger.isDebugEnabled()) {
 			logger.debug("merging " + object + "...");
 		}
-		getCurrentSession().beginTransaction();
 		Object merged = getCurrentSession().merge(object);
 		if (logger.isDebugEnabled()) {
 			logger.debug("done, updating " + merged + "...");
 		}
 		getCurrentSession().update(merged);
-		getCurrentSession().getTransaction().commit();
 		if (logger.isDebugEnabled()) {
 			logger.debug("done.");
 		}
@@ -1010,13 +1006,11 @@ public class HibernateDaoServiceImpl implements DaoService {
 		if (logger.isDebugEnabled()) {
 			logger.debug("merging " + object + "...");
 		}
-		getCurrentSession().beginTransaction();
 		Object merged = getCurrentSession().merge(object);
 		if (logger.isDebugEnabled()) {
 			logger.debug("done, deleting " + merged + "...");
 		}
 		getCurrentSession().delete(merged);
-                getCurrentSession().getTransaction().commit();
 		if (logger.isDebugEnabled()) {
 			logger.debug("done.");
 		}
