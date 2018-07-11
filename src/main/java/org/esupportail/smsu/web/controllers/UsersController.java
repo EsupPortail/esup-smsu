@@ -6,7 +6,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -20,9 +19,9 @@ import org.esupportail.smsu.web.beans.UIRecipientUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @RequestMapping(value = "/users")
 public class UsersController {
 
@@ -38,7 +37,6 @@ public class UsersController {
 	private final Logger logger = Logger.getLogger(getClass());
 
 	@RequestMapping(method = RequestMethod.GET, value = "/search")
-	@ResponseBody
 	public List<UIRecipientUser> search(
 				@RequestParam(value = "token", required = false) String token, 
 				@RequestParam(value = "service", required = false) String service,

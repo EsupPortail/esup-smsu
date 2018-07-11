@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import org.apache.commons.lang.StringUtils;
@@ -32,9 +31,9 @@ import org.esupportail.smsuapi.utils.HttpException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @RequestMapping(value = "/")
 public class WsController {
 
@@ -58,7 +57,6 @@ public class WsController {
 	 * http://localhost:8080/ws/sms
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/sms")
-	@ResponseBody
 	public UIMessage sendSMSAction(@RequestBody UINewMessage msg, HttpServletRequest request) throws CreateMessageException {		
 		if(checkClient(request)) {
 			sendSmsManager.contentValidation(msg.content);
@@ -83,7 +81,6 @@ public class WsController {
 	 * http://localhost:8080/ws/member/loginTestSmsu
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/member/{login}")
-	@ResponseBody
 	public Member getMember(@PathVariable("login") String login, HttpServletRequest request) {		
 		if(checkClient(request)) {
 			Member member = null;
@@ -107,7 +104,6 @@ public class WsController {
 	 * http://localhost:8080/ws/member
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/member")
-	@ResponseBody
 	public MembershipStatus saveMember(@RequestBody Member member, HttpServletRequest request) throws LdapUserNotFoundException, LdapWriteException, HttpException, InsufficientQuotaException {
 		if(checkClient(request)) {
 			logger.debug("Save data of a member");		
@@ -136,7 +132,6 @@ public class WsController {
 	 * http://localhost:8080/ws/validCode
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/validCode")
-	@ResponseBody
 	public Boolean validCode(@RequestBody Member member, HttpServletRequest request) throws LdapUserNotFoundException, LdapWriteException, HttpException, InsufficientQuotaException {
 		if(checkClient(request)) {
 			logger.debug("Valid code of a member");		
@@ -159,7 +154,6 @@ public class WsController {
 	 * http://localhost:8080/ws/services
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/services")
-	@ResponseBody
 	public List<UIService> getUIServices(HttpServletRequest request) {
 		if(checkClient(request)) {
 			return serviceManager.getAllUIServices();
@@ -176,7 +170,6 @@ public class WsController {
 	 * http://localhost:8080/ws/sms/member/loginTestSmsu/adhServicesAvailable
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/member/{login}/adhServicesAvailable")
-	@ResponseBody
 	public List<UIService> getUIServicesAdh(@PathVariable("login") String login, HttpServletRequest request) {
 		if(checkClient(request)) {
 			return serviceManager.getUIServicesAdhFctn(login);

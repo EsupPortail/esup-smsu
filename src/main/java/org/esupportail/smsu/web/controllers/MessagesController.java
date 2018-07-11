@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -34,14 +33,14 @@ import org.esupportail.smsuapi.exceptions.UnknownMessageIdException;
 import org.esupportail.smsuapi.utils.HttpException;
 import org.esupportail.ws.remote.beans.TrackInfos;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.util.StringUtils;
 
 /**
  * A bean to manage user preferences.
  */
 
-@Controller
+@RestController
 @RequestMapping(value = "/messages")
 @RolesAllowed({"FCTN_SUIVI_ENVOIS_ETABL","FCTN_SUIVI_ENVOIS_UTIL"})
 public class MessagesController {
@@ -55,7 +54,6 @@ public class MessagesController {
 
 	
 	@RequestMapping(method = RequestMethod.GET)
-	@ResponseBody
 	public List<UIMessage> getMessages(
 			@RequestParam(value = "sender", required = false) String senderLogin,
 			@RequestParam(value = "maxResults", defaultValue = "0" /* no limit */) int maxResults,
@@ -67,7 +65,6 @@ public class MessagesController {
 	}
 		
 	@RequestMapping(method = RequestMethod.GET, value = "/{id:\\d+}")
-	@ResponseBody
 	public UIMessage getMessage(
 			@PathVariable("id") int messageId,
 			HttpServletRequest request) {			
@@ -75,7 +72,6 @@ public class MessagesController {
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/{id:\\d+}/statuses")
-	@ResponseBody
 	public TrackInfos getMessageStatuses(
 			@PathVariable("id") int messageId,
 			HttpServletRequest request) throws HttpException, UnknownMessageIdException {			
@@ -96,7 +92,6 @@ public class MessagesController {
 				"FCTN_SMS_ENVOI_LISTE_NUM_TEL",
 				"FCTN_SMS_REQ_LDAP_ADH"})
 	@RequestMapping(method = RequestMethod.POST)
-	@ResponseBody
 	public UIMessage sendSMSAction(@RequestBody UINewMessage msg, HttpServletRequest request) throws CreateMessageException {		
 		String login = request.getRemoteUser();
 		if (login == null) throw new InvalidParameterException("SERVICE.CLIENT.NOTDEFINED");
@@ -126,7 +121,6 @@ public class MessagesController {
 				"FCTN_SMS_ENVOI_LISTE_NUM_TEL",
 				"FCTN_SMS_REQ_LDAP_ADH"})
 	@RequestMapping(method = RequestMethod.POST, value = "/nbRecipients")
-	@ResponseBody
 	public int nbRecipients(@RequestBody UINewMessage msg, HttpServletRequest request) {	
 		String login = request.getRemoteUser();
 		if (login == null) throw new InvalidParameterException("SERVICE.CLIENT.NOTDEFINED");
@@ -145,13 +139,11 @@ public class MessagesController {
 
 	@PermitAll
 	@RequestMapping(method = RequestMethod.GET, value = "/groupLeaves")
-	@ResponseBody
 	public List<UserGroup> getUserGroupLeaves(HttpServletRequest request) {
 		return sendSmsManager.getUserGroupLeaves(request.getRemoteUser());
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/senders")
-	@ResponseBody
 	public Map<String,String> getUsersHavingSentASms(HttpServletRequest request) {
 		if (request.isUserInRole("FCTN_SUIVI_ENVOIS_ETABL")) {
 			return domainService.getPersons();

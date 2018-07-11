@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import org.esupportail.smsu.business.ApprovalManager;
@@ -18,9 +17,9 @@ import org.esupportail.smsu.exceptions.CreateMessageException;
 import org.esupportail.smsu.web.beans.UIMessage;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @RequestMapping(value = "/approvals")
 @RolesAllowed("APPROBATION_ENVOI")
 public class ApprovalController {
@@ -31,12 +30,10 @@ public class ApprovalController {
     @Autowired private ApprovalManager approvalManager;
 
     @RequestMapping(method = RequestMethod.GET)
-    @ResponseBody
     public List<UIMessage> getApprovalUIMessages(HttpServletRequest request) {
     	return approvalManager.getApprovalUIMessages(request);
     }
     
-    @ResponseBody
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id:\\d+}")
 	public void modify(@PathVariable("id") int id, HttpServletRequest request, @RequestBody UIMessage msg) throws CreateMessageException {
 		String status = msg.stateMessage;

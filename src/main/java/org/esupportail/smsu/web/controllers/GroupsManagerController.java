@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -18,13 +17,13 @@ import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.services.ldap.beans.UserGroup;
 import org.esupportail.smsu.web.beans.UICustomizedGroup;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.util.StringUtils;
 
 /**
  * A bean to manage files.
  */
-@Controller
+@RestController
 @RequestMapping(value = "/groups")
 @RolesAllowed("FCTN_GESTION_GROUPE")
 public class GroupsManagerController {
@@ -37,12 +36,10 @@ public class GroupsManagerController {
 	@Autowired private GroupManager groupManager;
 
 	@RequestMapping(method = RequestMethod.GET)
-	@ResponseBody
 	public List<UICustomizedGroup> allGroups() {
 		return groupManager.getAllGroups();
 	}
 	
-	@ResponseBody
 	@RequestMapping(method = RequestMethod.POST)
 	public void save(@RequestBody UICustomizedGroup uiCGroup, HttpServletRequest request) {
 		checkMandatoryUIParameters(uiCGroup);
@@ -52,7 +49,6 @@ public class GroupsManagerController {
 		groupManager.addCustomizedGroup(uiCGroup, request);
 	}
 	
-	@ResponseBody
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id:\\d+}")
 	public void update(@PathVariable("id") int id, @RequestBody UICustomizedGroup uiCGroup, HttpServletRequest request) {
 		uiCGroup.id = id;
@@ -63,20 +59,17 @@ public class GroupsManagerController {
 		groupManager.updateCustomizedGroup(uiCGroup, request);	
 	}
 
-	@ResponseBody
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id:\\d+}")
 	public void delete(@PathVariable("id") int id) {
 		groupManager.deleteCustomizedGroup(id);
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/accounts")
-	@ResponseBody
 	public List<String> getAccounts() {
 		return domainService.getAccounts();
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/search")
-	@ResponseBody
 	@RolesAllowed({"FCTN_GESTION_GROUPE","FCTN_SMS_ENVOI_GROUPES"})
 	public List<UserGroup> search(@RequestParam("token") String token) {
 		return ldapUtils.searchGroupsByName(token);

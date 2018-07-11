@@ -8,15 +8,14 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import org.esupportail.smsu.business.ServiceManager;
 import org.esupportail.smsu.web.beans.UIService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @RequestMapping(value = "/services")
 @RolesAllowed("FCTN_GESTION_SERVICES_CP")
 public class ServicesSmsuController {
@@ -24,14 +23,12 @@ public class ServicesSmsuController {
 	@Autowired private ServiceManager serviceManager;
 	
 	@RequestMapping(method = RequestMethod.GET)
-	@ResponseBody
 	@PermitAll
 	public List<UIService> getUIServices() {
 		return serviceManager.getAllUIServices();
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/sendFctn")
-	@ResponseBody
 	@PermitAll
 	public List<UIService> getUIServicesSendFctn(HttpServletRequest request) {
 		String login = request.getRemoteUser();
@@ -40,7 +37,6 @@ public class ServicesSmsuController {
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/adhFctn")
-	@ResponseBody
 	@PermitAll
 	public List<UIService> getUIServicesAdhFctn(HttpServletRequest request) {
 		String login = request.getRemoteUser();
@@ -48,20 +44,17 @@ public class ServicesSmsuController {
 		return serviceManager.getUIServicesAdhFctn(login);
 	}
 	
-	@ResponseBody
 	@RequestMapping(method = RequestMethod.POST)
 	public void create(@RequestBody UIService uiService) {
 		createOrModify(uiService, true);
 	}
 
-	@ResponseBody
 	@RequestMapping(method = RequestMethod.PUT, value = "/{id:\\d+}")
 	public void modify(@RequestBody UIService uiService, @PathVariable("id") int id) {
 		uiService.id = id;
 		createOrModify(uiService, false);
 	}
 
-	@ResponseBody
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{id:\\d+}")
 	public void delete(@PathVariable("id") int id) {
 		serviceManager.deleteUIService(id);
