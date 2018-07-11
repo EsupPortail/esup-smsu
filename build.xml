@@ -188,7 +188,7 @@
 	<target name="download-ant-extra" if="need-download-ant-extra">
 	      <artifact:dependencies filesetId="ant-extra.fileset">
 		<dependency groupId="org.mortbay.jetty" artifactId="jetty-ant" version="${jetty-version}" />
-		<dependency groupId="org.hibernate" artifactId="hibernate-tools" version="3.2.4.GA" />
+		<dependency groupId="org.hibernate" artifactId="hibernate-tools" version="4.3.5.Final" />
 	      </artifact:dependencies>
 
 	      <copy todir="tmp/ant-extra">

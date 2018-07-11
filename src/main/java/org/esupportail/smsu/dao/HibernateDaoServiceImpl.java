@@ -25,24 +25,27 @@ import org.esupportail.smsu.dao.beans.Template;
 import org.esupportail.smsu.domain.beans.message.MessageStatus;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
-import org.hibernate.classic.Session;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.dao.support.DataAccessUtils;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 /**
  * The Hiberate implementation of the DAO service.
  */
-public class HibernateDaoServiceImpl extends HibernateDaoSupport 
-									 implements DaoService, InitializingBean {
+public class HibernateDaoServiceImpl implements DaoService {
 
 	/**
 	 * The serialization id.
 	 */
 	private static final long serialVersionUID = 3152554337896617315L;
 
+	private SessionFactory sessionFactory;
+
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
+	}
 
 	/**
 	 * A logger.
@@ -64,7 +67,7 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 	 * @return
 	 */
 	private Session getCurrentSession() {
-		return getHibernateTemplate().getSessionFactory().getCurrentSession();
+		return sessionFactory.getCurrentSession();
 	}
 
 	//////////////////////////////////////////////////////////////

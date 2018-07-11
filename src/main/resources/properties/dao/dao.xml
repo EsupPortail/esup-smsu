@@ -17,17 +17,10 @@
 		This file is referenced by /properties/applicationContext.xml.
 	-->
 
-	<!-- Session factories -->
-
 	<bean 
-		id="abstractHibernateSessionFactory" 
-		abstract="true" 
-		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean"
+		id="sessionFactory" 
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean"
 		>
-		<description>
-			This bean is common to all the session factories (see below). It allows 
-			a single declaration of the mapping files.
-		</description>
 		<property name="mappingLocations">
 			<list>
 				<value>
@@ -35,58 +28,36 @@
 				</value>
 			</list>
 		</property>
-	</bean>
-	
-	<bean 
-		id="jdbcSessionFactory" 
-		parent="abstractHibernateSessionFactory"
-		lazy-init="true" 
-		>
-		<description>
-			An abstract session factory based on JDBC.
-		</description>
-
 		<property name="hibernateProperties">
 		  <props>
-		    <prop key="hibernate.connection.driver_class">${hibernate.connection.driver_class}</prop>
 		    <prop key="hibernate.dialect">${hibernate.dialect}</prop>
-		    <prop key="hibernate.connection.url">${hibernate.connection.jdbc.url}</prop>
-		    <prop key="hibernate.connection.username">${hibernate.connection.jdbc.username}</prop>
-		    <prop key="hibernate.connection.password">${hibernate.connection.jdbc.password}</prop>
 		    <prop key="hibernate.hbm2ddl.auto">validate</prop>
+            <prop key="hibernate.connection.autocommit">true</prop>
 		  </props>
 		</property>
-
-		<property name="configLocation"
-			value="classpath:/properties/dao/hibernate/hibernate-jdbc.cfg.xml" />
+		<property name="dataSource" ref="#{${hibernate.useJndi} ? 'jndiDataSource' : 'jdbcDataSource'}"/>
 	</bean>
 	
-	<bean 
-		id="jndiSessionFactory" 
-		parent="abstractHibernateSessionFactory"
-		lazy-init="true" 
-		>
-		<description>
-			An abstract session factory based on JDBC.
-		</description>
-
-		<property name="hibernateProperties">
-		  <props>
-		    <prop key="hibernate.connection.driver_class">${hibernate.connection.driver_class}</prop>
-		    <prop key="hibernate.dialect">${hibernate.dialect}</prop>
-		    <prop key="hibernate.connection.datasource">java:/comp/env/${hibernate.connection.jndi.datasource}</prop>
-		  </props>
-		</property>
-		    
-		<property name="configLocation"
-			value="classpath:/properties/dao/hibernate/hibernate-jndi.cfg.xml" />
+	<bean id="jdbcDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" lazy-init="true">
+        <property name="driverClassName" value="${hibernate.connection.driver_class}"/>
+        <property name="url" value="${hibernate.connection.jdbc.url}"/>
+        <property name="username" value="${hibernate.connection.jdbc.username}"/>
+        <property name="password" value="${hibernate.connection.jdbc.password}"/>
+        <property name="testOnBorrow" value="true" />
+        <property name="testOnReturn" value="true" />
+        <property name="testWhileIdle" value="true" />
+		<property name="timeBetweenEvictionRunsMillis" value="1800000" />
+        <property name="numTestsPerEvictionRun" value="3" />
+        <property name="minEvictableIdleTimeMillis" value="1800000" />
+        <property name="validationQuery" value="SELECT version();" />
 	</bean>
 	
-	<bean id="sessionFactoryBeanName" class="java.lang.String">
-	  <constructor-arg value="#{${hibernate.useJndi} ? 'jndiSessionFactory' : 'jdbcSessionFactory'}"/>
-	</bean>
 
-	<!-- end of the session factories -->
+	<bean id="jndiDataSource" class="org.springframework.jndi.JndiObjectFactoryBean" lazy-init="true">
+        <property name="jndiName" value="java:/comp/env/${hibernate.connection.jndi.datasource}" />
+        <property name="lookupOnStartup" value="false"/>
+		<property name="proxyInterface" value="javax.sql.DataSource"/>
+	</bean>
 
 	<bean 
 		id="daoService" 
@@ -97,13 +68,12 @@
 			This bean is the DAO service, the interface used by the domain service to access 
 			the database. It must implement interface org.esupportail.smsu.dao.DaoService.
 		</description>
-		<property name="sessionFactory" ref="#{sessionFactoryBeanName}"/>
+		<property name="sessionFactory" ref="sessionFactory"/>
 	</bean>
 
 	<bean id="OneHibernateSessionPerRequest"
-	      class="org.springframework.orm.hibernate3.support.OpenSessionInViewFilter">
-	      <property name="flushMode" value="AUTO" />
-	      <property name="sessionFactoryBeanName" value="#{sessionFactoryBeanName}" />
+	      class="org.esupportail.smsu.dao.AutoFlushOpenSessionInViewFilter">
+	      <property name="sessionFactoryBeanName" value="sessionFactory" />
 	</bean>
-		
+
 </beans>

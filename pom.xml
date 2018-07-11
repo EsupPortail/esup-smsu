@@ -234,17 +234,16 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         </dependency>
 
 		<dependency>
-		  <groupId>org.esupportail</groupId>
-		  <artifactId>esup-commons2-hibernate</artifactId>
-		  <version>${esup-commons-version}</version>
-		<exclusions>
-		  <!-- remove unneeded -->
-		  <exclusion>
-		    <groupId>postgresql</groupId>
-		    <artifactId>postgresql</artifactId>
-		  </exclusion>
-		</exclusions>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>1.4</version>
 		</dependency>
+        
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+        </dependency>
+            
 		<dependency>
 		  <groupId>org.esupportail</groupId>
 		  <artifactId>esup-commons2-web</artifactId>
@@ -285,11 +284,10 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 		  <scope>test</scope>
 		</dependency>
 
-		<!-- hibernate connection pooling -->
 		<dependency>
 		  <groupId>org.hibernate</groupId>
-		  <artifactId>hibernate-c3p0</artifactId>
-		  <version>3.3.2.GA</version>
+		  <artifactId>hibernate-entitymanager</artifactId>
+		  <version>4.1.12.Final</version>
 		</dependency>
 
     <dependency>
