@@ -82,19 +82,6 @@
 			value="classpath:/properties/dao/hibernate/hibernate-jndi.cfg.xml" />
 	</bean>
 	
-    <jdbc:embedded-database id="testDataSource">
-        <!--
-        <jdbc:script location="classpath:database/create_tables.sql"/>
-        <jdbc:script location="classpath:database/populate_tables_esup-smsu.sql"/>
-        -->
-    </jdbc:embedded-database>
-	<bean 
-		id="testSessionFactory" 
-		parent="abstractHibernateSessionFactory"
-		lazy-init="true">
-		<property name="dataSource" ref="testDataSource" />
-	</bean>
-
 	<bean id="sessionFactoryBeanName" class="java.lang.String">
 	  <constructor-arg value="#{${hibernate.useJndi} ? 'jndiSessionFactory' : 'jdbcSessionFactory'}"/>
 	</bean>
