@@ -26,7 +26,6 @@ import org.esupportail.smsu.domain.beans.message.MessageStatus;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.classic.Session;
-import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.InitializingBean;
@@ -157,11 +156,9 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Message> getMessagesByService(final Service service) {
-		DetachedCriteria criteria = DetachedCriteria.forClass(Message.class);
+		Criteria criteria = getCurrentSession().createCriteria(Message.class);
 		criteria.add(Restrictions.eq(Message.PROP_SERVICE, service));
-		
-		return getHibernateTemplate().findByCriteria(criteria);
-		
+		return criteria.list();
 	}
 	
 	/**
@@ -169,10 +166,9 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Message> getMessagesByTemplate(final Template template) {
-		DetachedCriteria criteria = DetachedCriteria.forClass(Message.class);
+		Criteria criteria = getCurrentSession().createCriteria(Message.class);
 		criteria.add(Restrictions.eq(Message.PROP_TEMPLATE, template));
-		
-		return getHibernateTemplate().findByCriteria(criteria);
+		return criteria.list();
 	}
 
 	
@@ -181,12 +177,9 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Message> getMessagesByState(final MessageStatus state) {
-		DetachedCriteria criteria = DetachedCriteria.forClass(Message.class);
+		Criteria criteria = getCurrentSession().createCriteria(Message.class);
 		criteria.add(Restrictions.eq(Message.PROP_STATE, state.name()));
-		
-		final List<Message> messageList = getHibernateTemplate().findByCriteria(criteria);
-		
-		return messageList;
+		return criteria.list();
 		
 	}
 	
@@ -258,18 +251,17 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Message> getApprovalMessages() {
-		DetachedCriteria criteria = DetachedCriteria.forClass(Message.class);
+		Criteria criteria = getCurrentSession().createCriteria(Message.class);
 		criteria.add(Restrictions.eq(Message.PROP_STATE, MessageStatus.WAITING_FOR_APPROVAL.toString()));
 		criteria.addOrder(Order.asc(Message.PROP_ID));
-
-		return getHibernateTemplate().findByCriteria(criteria);
+		return criteria.list();
 	}
 
 	/**
 	 * @see org.esupportail.smsu.dao.DaoService#getMessageById(java.lang.Integer)
 	 */
 	public Message getMessageById(final Integer id) {
-		return (Message) getHibernateTemplate().get(Message.class, id);
+		return (Message)  getCurrentSession().get(Message.class, id);
 	}
 	
 	//////////////////////////////////////////////////////////////
@@ -280,9 +272,9 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 	 */
 	@SuppressWarnings("unchecked")
 	public List<BasicGroup> getGroups() {
-		DetachedCriteria criteria = DetachedCriteria.forClass(BasicGroup.class);
+		Criteria criteria = getCurrentSession().createCriteria(BasicGroup.class);
 		criteria.addOrder(Order.asc(BasicGroup.PROP_ID));
-		return  getHibernateTemplate().findByCriteria(criteria);
+		return  criteria.list();
 	}
 
 	/**
@@ -338,16 +330,16 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Account> getAccounts() {
-		DetachedCriteria criteria = DetachedCriteria.forClass(Account.class);
+		Criteria criteria = getCurrentSession().createCriteria(Account.class);
 		criteria.addOrder(Order.asc(Account.PROP_LABEL));
-		return  getHibernateTemplate().findByCriteria(criteria);
+		return  criteria.list();
 	}
 
 	/**
 	 * @see org.esupportail.smsu.dao.DaoService#getAccountById(java.lang.Integer)
 	 */
 	public Account getAccountById(final Integer id) {
-		return (Account) getHibernateTemplate().get(Account.class, id);
+		return (Account) getCurrentSession().get(Account.class, id);
 	}
 	
 	/**
@@ -376,9 +368,9 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Person> getPersons() {
-		DetachedCriteria criteria = DetachedCriteria.forClass(Person.class);
+		Criteria criteria = getCurrentSession().createCriteria(Person.class);
 		criteria.addOrder(Order.asc(Person.PROP_ID));
-		return  getHibernateTemplate().findByCriteria(criteria);
+		return  criteria.list();
 	}
 
 	/**
@@ -436,9 +428,9 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Service> getServices() {
-		DetachedCriteria criteria = DetachedCriteria.forClass(Service.class);
+		Criteria criteria = getCurrentSession().createCriteria(Service.class);
 		criteria.addOrder(Order.asc(Service.PROP_NAME));
-		return  getHibernateTemplate().findByCriteria(criteria);
+		return criteria.list();
 	}
 
 	/**
@@ -489,7 +481,7 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 	 * @see org.esupportail.smsu.dao.DaoService#getServiceById(java.lang.Integer)
 	 */
 	public Service getServiceById(final Integer id) {
-		return (Service) getHibernateTemplate().get(Service.class, id);
+		return (Service) getCurrentSession().get(Service.class, id);
 	}
 
 	//////////////////////////////////////////////////////////////
@@ -500,9 +492,9 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Template> getTemplates() {
-		DetachedCriteria criteria = DetachedCriteria.forClass(Template.class);
+		Criteria criteria = getCurrentSession().createCriteria(Template.class);
 		criteria.addOrder(Order.asc(Template.PROP_LABEL));
-		return  getHibernateTemplate().findByCriteria(criteria);
+		return  criteria.list();
 	}
 
 
@@ -510,7 +502,7 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 	 * @see org.esupportail.smsu.dao.DaoService#getTemplateById(java.lang.Integer)
 	 */
 	public Template getTemplateById(final Integer id) {
-		return (Template) getHibernateTemplate().get(Template.class, id);
+		return (Template) getCurrentSession().get(Template.class, id);
 	}
 
 	/**
@@ -679,9 +671,9 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 	 */
 	@SuppressWarnings("unchecked")
 	public List<CustomizedGroup> getAllCustomizedGroups() {
-		DetachedCriteria criteria = DetachedCriteria.forClass(CustomizedGroup.class);
+		Criteria criteria = getCurrentSession().createCriteria(CustomizedGroup.class);
 		criteria.addOrder(Order.asc(CustomizedGroup.PROP_LABEL));
-		return  getHibernateTemplate().findByCriteria(criteria);
+		return  criteria.list();
     }
 	
 	/**
@@ -712,8 +704,7 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 	 * @see org.esupportail.smsu.dao.DaoService#isPendingMember(java.lang.String)
 	 */
 	public boolean isPendingMember(final String userIdentifier) {
-		final PendingMember pendingMember = (PendingMember) 
-		                getHibernateTemplate().get(PendingMember.class, userIdentifier);		
+		final PendingMember pendingMember = (PendingMember) getCurrentSession().get(PendingMember.class, userIdentifier);		
 		boolean result = pendingMember != null;
 		return result;
 	}
@@ -722,8 +713,7 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 	 * @see org.esupportail.smsu.dao.DaoService#getPendingMember(java.lang.String)
 	 */
 	public PendingMember getPendingMember(final String login) {
-		final PendingMember pendingMember = (PendingMember) 
-        getHibernateTemplate().get(PendingMember.class, login);		
+		final PendingMember pendingMember = (PendingMember) getCurrentSession().get(PendingMember.class, login);		
 		return pendingMember;
 	}
 
@@ -731,8 +721,7 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 	 * @see org.esupportail.smsu.dao.DaoService#deletePendingMember(java.lang.String)
 	 */
 	public void deletePendingMember(final String login) {
-		final PendingMember pendingMember = (PendingMember) 
-        getHibernateTemplate().get(PendingMember.class, login);		
+		final PendingMember pendingMember = (PendingMember) getCurrentSession().get(PendingMember.class, login);		
 		deleteObject(pendingMember);
 	}
 
@@ -741,8 +730,7 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 	 */
 	public void saveOrUpdatePendingMember(final String login, final String code) {
 		// retrieve the pendingMember if exists
-		final PendingMember pendingMember = (PendingMember) 
-        getHibernateTemplate().get(PendingMember.class, login);
+		final PendingMember pendingMember = (PendingMember) getCurrentSession().get(PendingMember.class, login);
 		// update or add the pending member
 		if (pendingMember == null) { 
 			final PendingMember newPendingMember = new PendingMember(login, code);
@@ -778,9 +766,9 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Role> getRoles() {
-		DetachedCriteria criteria = DetachedCriteria.forClass(Role.class);
+		Criteria criteria = getCurrentSession().createCriteria(Role.class);
 		criteria.addOrder(Order.asc(Role.PROP_NAME));
-		return  getHibernateTemplate().findByCriteria(criteria);
+		return  criteria.list();
 	}
 	
 	/**
@@ -808,7 +796,7 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 	 * @see org.esupportail.smsu.dao.DaoService#getRoleById(java.lang.Integer)
 	 */
 	public Role getRoleById(final Integer id) {
-		return (Role) getHibernateTemplate().get(Role.class, id);
+		return (Role) getCurrentSession().get(Role.class, id);
 	}
 	
 
@@ -827,7 +815,7 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 	 * @see org.esupportail.smsu.dao.DaoService#getFctsByRole
 	 */
 	public Set<Fonction> getFctsByRole(final Role role) {
-		Role roleTemp = (Role) getHibernateTemplate().get(Role.class, role.getId());
+		Role roleTemp = (Role) getCurrentSession().get(Role.class, role.getId());
 		Set<Fonction> fonctions = roleTemp.getFonctions();
 		return fonctions;
 	}
@@ -840,9 +828,9 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Fonction> getFonctions() {
-		DetachedCriteria criteria = DetachedCriteria.forClass(Fonction.class);
+		Criteria criteria = getCurrentSession().createCriteria(Fonction.class);
 		criteria.addOrder(Order.asc(Fonction.PROP_ID));
-		return  getHibernateTemplate().findByCriteria(criteria);
+		return  criteria.list();
 	}
 	
 	/**
@@ -868,14 +856,13 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Mail> getMailsByTemplate(final Template template) {
-		DetachedCriteria criteria = DetachedCriteria.forClass(Mail.class);
+		Criteria criteria = getCurrentSession().createCriteria(Mail.class);
 		criteria.add(Restrictions.eq(Mail.PROP_TEMPLATE, template));
-		
-		return getHibernateTemplate().findByCriteria(criteria);
+		return criteria.list();
 	}
 
 	public Fonction getFonctionById(final Integer id) {
-		return (Fonction) getHibernateTemplate().get(Fonction.class, id);
+		return (Fonction) getCurrentSession().get(Fonction.class, id);
 	}
 
 	public Fonction getFonctionByName(final String name) {
@@ -977,7 +964,7 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 	}
 
 	protected int getQueryIntResult(final String countQuery) {
-		return DataAccessUtils.intResult(getHibernateTemplate().find(countQuery));
+		return DataAccessUtils.intResult(getCurrentSession().createQuery(countQuery).list());
 	}
 
 	protected void addObject(final Object object) {
@@ -985,7 +972,7 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 			logger.debug("adding " + object + "...");
 		}
 		getCurrentSession().beginTransaction();
-		getHibernateTemplate().save(object);
+		getCurrentSession().save(object);
 		getCurrentSession().getTransaction().commit();
 		if (logger.isDebugEnabled()) {
 			logger.debug("done.");
@@ -1001,11 +988,11 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 			logger.debug("merging " + object + "...");
 		}
 		getCurrentSession().beginTransaction();
-		Object merged = getHibernateTemplate().merge(object);
+		Object merged = getCurrentSession().merge(object);
 		if (logger.isDebugEnabled()) {
 			logger.debug("done, updating " + merged + "...");
 		}
-		getHibernateTemplate().update(merged);
+		getCurrentSession().update(merged);
 		getCurrentSession().getTransaction().commit();
 		if (logger.isDebugEnabled()) {
 			logger.debug("done.");
@@ -1021,11 +1008,11 @@ public class HibernateDaoServiceImpl extends HibernateDaoSupport
 			logger.debug("merging " + object + "...");
 		}
 		getCurrentSession().beginTransaction();
-		Object merged = getHibernateTemplate().merge(object);
+		Object merged = getCurrentSession().merge(object);
 		if (logger.isDebugEnabled()) {
 			logger.debug("done, deleting " + merged + "...");
 		}
-		getHibernateTemplate().delete(merged);
+		getCurrentSession().delete(merged);
                 getCurrentSession().getTransaction().commit();
 		if (logger.isDebugEnabled()) {
 			logger.debug("done.");
