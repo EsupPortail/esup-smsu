@@ -7,7 +7,7 @@
 
 <div ng-repeat="msg in approvals">
   Le {{msg.date | date:"dd/MM/yyyy à HH:mm"}}, {{msg.senderName || msg.senderLogin}} souhaite envoyer
-  le message suivant à {{msg.nbRecipients}} personne(s).
+  le message suivant à {{msg.nbRecipients == 1 ? "1 personne" : msg.nbRecipients + " personnes"}}.
 
   <blockquote><p>
     <span ng-repeat='line in msg.content.split("\n") track by $index'>{{line}}<br></span>
