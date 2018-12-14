@@ -48,9 +48,7 @@ public class ServiceManager {
 			allUiServices.add(UIService.CG_SERVICE);
 		}
 		for (Service service : daoService.getServices()) {			
-			// SERVICE_SEND_FUNCTION_CG allows all services, except IGNORE_CG
-			if((allowedFonctions.contains(SERVICE_SEND_FUNCTION_CG) && !service.getKey().equals("IGNORE_CG")) ||
-					allowedFonctions.contains(SERVICE_SEND_FUNCTION_PREFIX + service.getKey().toUpperCase())) {
+			if(allowedFonctions.contains(SERVICE_SEND_FUNCTION_PREFIX + service.getKey().toUpperCase())) {
 				allUiServices.add(convertToUI(service));
 			}
 		}
