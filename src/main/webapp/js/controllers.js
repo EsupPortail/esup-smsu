@@ -249,23 +249,18 @@ app.controller('RolesCtrl', function($scope, h) {
     });
 });
 
-app.controller('RolesDetailCtrl', function($scope, h, $routeParams, $location, $translate, $filter) {
+app.controller('RolesDetailCtrl', function($scope, h, $routeParams, $location, $translate, $filter, $q) {
     var id = $routeParams.id;
     var fonction2text;
 
     $scope.forOrdering = function (fonction) { return fonction2text && fonction2text[fonction]; };
     $scope.fonctionText = function (fonction) {
-	return fonction2text[fonction]
+	return fonction2text && fonction2text[fonction]
 		.replace(/^\d+ /, '')
 		.replace('FCTN_SMS_ENVOI_SERVICE_CG', 'Envoi SMS en utilisant \'Aucun\' service')
 		.replace('FCTN_SMS_ENVOI_SERVICE_', 'Envoi SMS au service : ')
 		.replace('FCTN_SMS_ADHESION_SERVICE_', 'Adhésion au service : ');
     };
-
-    h.callRest('roles/fonctions').then(function (list) {
-	$scope.allFonctions = list;
-	$translate(list).then(function (h) { fonction2text = h; });
-    });
 
     var updateCurrentTabTitle = function () {
 	$scope.currentTab.text = $scope.role && $scope.role.name || (id === 'new' ? 'Création' : 'Modification');
@@ -306,22 +301,32 @@ app.controller('RolesDetailCtrl', function($scope, h, $routeParams, $location, $
 	modify('delete');
     };
 
-    h.getRoles().then(function (roles) {
-	$scope.name2role = h.array2hash(roles, 'name');
-	if (id === "new") {
-	    $scope.role = { isNew: true, fonctions: [] };
-	    updateAvailableFonctions();
-	} else {
-	    var id2role = h.array2hash(roles, 'id');
-	    if (id in id2role) {
-		$scope.role = id2role[id];
-		$scope.role.fonctions.sort();
-		updateAvailableFonctions();
-	    } else {
-		alert("invalid role " + id);
-	    }
-	}
-    });	
+    $q.when()
+    .then(function(){
+    	return h.callRest('roles/fonctions').then(function (list) {
+    		$scope.allFonctions = list;
+    		$translate(list).then(function (h) { fonction2text = h; });
+    	    });
+    })
+    .then(function(){
+    	return h.getRoles().then(function (roles) {
+    		$scope.name2role = h.array2hash(roles, 'name');
+    		if (id === "new") {
+    		    $scope.role = { isNew: true, fonctions: [] };
+    		    updateAvailableFonctions();
+    		} else {
+    		    var id2role = h.array2hash(roles, 'id');
+    		    if (id in id2role) {
+    				$scope.role = id2role[id];
+    				$scope.role.fonctions.sort();
+    				updateAvailableFonctions();
+    		    } else {
+    		    	alert("invalid role " + id);
+    		    }
+    		}
+        });
+    });
+    
 });
 
 app.controller('ServicesCtrl', function($scope, h) {
