@@ -3,7 +3,6 @@
  */
 package org.esupportail.smsu.dao;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -28,7 +27,7 @@ import org.esupportail.smsu.domain.beans.message.MessageStatus;
 /**
  * The DAO service interface.
  */
-public interface DaoService extends Serializable {
+public interface DaoService {
 
 	//////////////////////////////////////////////////////////////
 	// Message Count

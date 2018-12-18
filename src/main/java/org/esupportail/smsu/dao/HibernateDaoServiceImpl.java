@@ -36,11 +36,6 @@ import org.springframework.dao.support.DataAccessUtils;
  */
 public class HibernateDaoServiceImpl implements DaoService {
 
-	/**
-	 * The serialization id.
-	 */
-	private static final long serialVersionUID = 3152554337896617315L;
-
 	private SessionFactory sessionFactory;
 
 	public void setSessionFactory(SessionFactory sessionFactory) {
