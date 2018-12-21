@@ -660,7 +660,7 @@ app.controller('SendCtrl', function($scope, h, $location) {
 	    console.log(msgToSend);
 	    return h.callRestModify('post', 'messages', msgToSend).then(function (resp) {
 		var msg = resp.data;
-		$location.path(msg.supervisors && ($.inArray(msg.senderLogin,msg.supervisors) != -1) ? '/approvals' : '/messages' + msg.id);
+		$location.path(msg.supervisors && ($.inArray(msg.senderLogin,msg.supervisors) != -1) ? 'approvals/' : 'messages/' + msg.id);
 	    });
 	});
     };
