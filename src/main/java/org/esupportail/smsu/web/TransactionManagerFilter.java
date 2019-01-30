@@ -28,7 +28,12 @@ public class TransactionManagerFilter implements Filter {
         try {
     		filterChain.doFilter(request, response);
         } finally {
-            transaction.commit();
+        	try {
+        		transaction.commit();
+        	}
+            catch (Exception e) {
+            	transaction.rollback();
+			}
             HibernateUtils.closeSession(sessionFactory, participate);
         }
     }
