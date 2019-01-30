@@ -32,7 +32,6 @@
 		  <props>
 		    <prop key="hibernate.dialect">${hibernate.dialect}</prop>
 		    <prop key="hibernate.hbm2ddl.auto">validate</prop>
-            <prop key="hibernate.connection.autocommit">true</prop>
 		  </props>
 		</property>
 		<property name="dataSource" ref="#{${hibernate.useJndi} ? 'jndiDataSource' : 'jdbcDataSource'}"/>
