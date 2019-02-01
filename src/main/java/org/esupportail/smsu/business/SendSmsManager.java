@@ -167,7 +167,7 @@ public class SendSmsManager  {
 	public void treatMessage(final Message message, HttpServletRequest request) throws CreateMessageException.WebService {
 		try {
 			if (message.getStateAsEnum().equals(MessageStatus.NO_RECIPIENT_FOUND))
-				;
+				; // Nothing to do.
 			else if (message.getStateAsEnum().equals(MessageStatus.WAITING_FOR_APPROVAL))
 				// envoi du mail
 				sendApprovalMailToSupervisors(message, request);
