@@ -18,6 +18,6 @@
 	  </property>
 	</bean>
 
-   <!-- for spring annotation @Autowired -->
+   <!-- for spring annotation @Inject -->
    <context:annotation-config />
 </beans>

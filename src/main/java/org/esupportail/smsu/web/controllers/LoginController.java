@@ -4,8 +4,7 @@ import java.io.IOException;
 
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.inject.Inject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,8 +22,8 @@ import org.esupportail.smsu.web.Helper;
 @RequestMapping(value = "/login")
 public class LoginController {
 	
-    @Autowired private DomainService domainService;
-    @Autowired private UrlGenerator urlGenerator;
+	@Inject private DomainService domainService;
+	@Inject private UrlGenerator urlGenerator;
     
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<?> get(HttpServletRequest request) throws IOException {

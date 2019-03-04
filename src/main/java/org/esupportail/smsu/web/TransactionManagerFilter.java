@@ -12,12 +12,11 @@ import javax.servlet.FilterConfig;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.esupportail.smsu.utils.HibernateUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-
+import javax.inject.Inject;
 
 public class TransactionManagerFilter implements Filter {
 
-	@Autowired private SessionFactory sessionFactory;
+	@Inject private SessionFactory sessionFactory;
 
     public void destroy() {}
     public void init(FilterConfig config) {}

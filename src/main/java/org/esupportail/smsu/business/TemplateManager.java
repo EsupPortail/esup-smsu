@@ -9,12 +9,11 @@ import org.esupportail.smsu.dao.beans.Mail;
 import org.esupportail.smsu.dao.beans.Message;
 import org.esupportail.smsu.dao.beans.Template;
 import org.esupportail.smsu.web.beans.UITemplate;
-import org.springframework.beans.factory.annotation.Autowired;
-
+import javax.inject.Inject;
 
 public class TemplateManager {
 
-	@Autowired private DaoService daoService;
+	@Inject private DaoService daoService;
 
 	@SuppressWarnings("unused")
 	private final Logger logger = Logger.getLogger(getClass());

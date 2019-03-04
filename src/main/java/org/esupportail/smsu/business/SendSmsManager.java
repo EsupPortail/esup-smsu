@@ -46,21 +46,21 @@ import org.esupportail.smsu.web.controllers.InvalidParameterException;
 import org.esupportail.smsuapi.exceptions.InsufficientQuotaException;
 import org.esupportail.smsuapi.services.client.SmsuapiWS.AuthenticationFailedException;
 import org.esupportail.smsuapi.utils.HttpException;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.inject.Inject;
 import org.springframework.beans.factory.annotation.Required;
 
 
 public class SendSmsManager  {
 
-	@Autowired private DaoService daoService;
-	@Autowired private I18nService i18nService;
-	@Autowired private SmsuapiWS smsuapiWS;
-	@Autowired private SmtpServiceUtils smtpServiceUtils;
-	@Autowired private LdapUtils ldapUtils;
-	@Autowired private GroupUtils groupUtils;
-	@Autowired private SchedulerUtils schedulerUtils;
-	@Autowired private UrlGenerator urlGenerator;
-	@Autowired private ContentCustomizationManager customizer;
+	@Inject private DaoService daoService;
+	@Inject private I18nService i18nService;
+	@Inject private SmsuapiWS smsuapiWS;
+	@Inject private SmtpServiceUtils smtpServiceUtils;
+	@Inject private LdapUtils ldapUtils;
+	@Inject private GroupUtils groupUtils;
+	@Inject private SchedulerUtils schedulerUtils;
+	@Inject private UrlGenerator urlGenerator;
+	@Inject private ContentCustomizationManager customizer;
 
 	
 	/**

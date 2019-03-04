@@ -15,12 +15,12 @@ import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.services.ldap.beans.UserGroup;
 import org.esupportail.smsu.services.wsgroups.HttpRequestWsgroups;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.inject.Inject;
 
 public class GroupUtils {
-	@Autowired private LdapUtils ldapUtils;
-	@Autowired private DaoService daoService;
-	@Autowired private HttpRequestWsgroups wsgroups;
+	@Inject private LdapUtils ldapUtils;
+	@Inject private DaoService daoService;
+	@Inject private HttpRequestWsgroups wsgroups;
 	
 	private final Logger logger = Logger.getLogger(getClass());
 

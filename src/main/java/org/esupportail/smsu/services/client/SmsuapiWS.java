@@ -12,15 +12,14 @@ import org.esupportail.smsuapi.exceptions.UnknownMessageIdException;
 import org.esupportail.smsuapi.services.client.HttpRequestSmsuapiWS;
 import org.esupportail.smsuapi.utils.HttpException;
 import org.esupportail.ws.remote.beans.TrackInfos;
-import org.springframework.beans.factory.annotation.Autowired;
-
+import javax.inject.Inject;
 
 /**
  * The basic implementation of the information remote service.
  */
 public class SmsuapiWS  {
 	
-	@Autowired private HttpRequestSmsuapiWS ws;
+	@Inject private HttpRequestSmsuapiWS ws;
 	
 	private final Logger logger = Logger.getLogger(this.getClass());
 		

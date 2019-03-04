@@ -11,7 +11,7 @@ import org.esupportail.smsu.dao.beans.Fonction;
 import org.esupportail.smsu.dao.beans.Role;
 import org.esupportail.smsu.domain.beans.role.RoleEnum;
 import org.esupportail.smsu.web.beans.UIRole;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.inject.Inject;
 
 /**
  * Business layer concerning smsu service.
@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class RoleManager {
 	
-	@Autowired private DaoService daoService;
+	@Inject private DaoService daoService;
 	
 	/**
 	 * Log4j logger.

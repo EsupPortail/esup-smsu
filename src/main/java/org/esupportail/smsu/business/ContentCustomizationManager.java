@@ -16,12 +16,12 @@ import org.esupportail.smsu.exceptions.CreateMessageException.CustomizedTagValue
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
 import org.esupportail.smsu.services.GroupUtils;
 import org.esupportail.smsu.services.ldap.LdapUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.inject.Inject;
 
 public class ContentCustomizationManager {
 
-	@Autowired private LdapUtils ldapUtils;
-	@Autowired private GroupUtils groupUtils;
+	@Inject private LdapUtils ldapUtils;
+	@Inject private GroupUtils groupUtils;
 
 	/**
 	 * defaultNotFoundData.

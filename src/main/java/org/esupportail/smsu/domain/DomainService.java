@@ -30,16 +30,16 @@ import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsuapi.exceptions.UnknownMessageIdException;
 import org.esupportail.smsuapi.utils.HttpException;
 import org.esupportail.ws.remote.beans.TrackInfos;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.inject.Inject;
 import org.springframework.util.StringUtils;
 
 
 public class DomainService {
 
-	@Autowired private DaoService daoService;
-	@Autowired private LdapUtils ldapUtils;	
-	@Autowired private SecurityManager securityManager;	
-	@Autowired private SmsuapiWS smsuapiWS;
+	@Inject private DaoService daoService;
+	@Inject private LdapUtils ldapUtils;	
+	@Inject private SecurityManager securityManager;	
+	@Inject private SmsuapiWS smsuapiWS;
 
 	private final Logger logger = Logger.getLogger(getClass());
 

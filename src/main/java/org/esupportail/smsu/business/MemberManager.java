@@ -18,7 +18,7 @@ import org.esupportail.smsu.services.client.SmsuapiWS;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsuapi.exceptions.InsufficientQuotaException;
 import org.esupportail.smsuapi.utils.HttpException;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.inject.Inject;
 import org.springframework.beans.factory.annotation.Required;
 
 /**
@@ -27,9 +27,9 @@ import org.springframework.beans.factory.annotation.Required;
  */
 public class MemberManager {
 
-	@Autowired private LdapUtils ldapUtils;
-	@Autowired private DaoService daoService;
-	@Autowired private SmsuapiWS smsuapiWS;
+	@Inject private LdapUtils ldapUtils;
+	@Inject private DaoService daoService;
+	@Inject private SmsuapiWS smsuapiWS;
 
 	/**
 	 * flag that indicates if it is necessary to validate the phone number.

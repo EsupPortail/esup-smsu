@@ -12,7 +12,7 @@ import org.esupportail.smsu.services.client.SmsuapiWS;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.services.smtp.SmtpServiceUtils;
 import org.esupportail.smsuapi.utils.HttpException;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.inject.Inject;
 
 /**
  * Business layer concerning smsu notification invalid mail.
@@ -20,10 +20,10 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class NotificationByMailForInvalidPhoneManager {
 	
-	@Autowired private I18nService i18nService;
-	@Autowired private LdapUtils ldapUtils;
-	@Autowired private SmtpServiceUtils smtpServiceUtils;
-	@Autowired private SmsuapiWS smsuapiWS;
+	@Inject private I18nService i18nService;
+	@Inject private LdapUtils ldapUtils;
+	@Inject private SmtpServiceUtils smtpServiceUtils;
+	@Inject private SmsuapiWS smsuapiWS;
 
 	private final Logger logger = Logger.getLogger(getClass());
 		

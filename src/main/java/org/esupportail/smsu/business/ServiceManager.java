@@ -10,8 +10,7 @@ import org.esupportail.smsu.dao.beans.Fonction;
 import org.esupportail.smsu.dao.beans.Message;
 import org.esupportail.smsu.dao.beans.Service;
 import org.esupportail.smsu.web.beans.UIService;
-import org.springframework.beans.factory.annotation.Autowired;
-
+import javax.inject.Inject;
 
 public class ServiceManager {
 	
@@ -20,9 +19,9 @@ public class ServiceManager {
 	
 	public static final String SERVICE_ADH_FUNCTION_PREFIX = "FCTN_SMS_ADHESION_SERVICE_";
 	
-	@Autowired private DaoService daoService;
+	@Inject private DaoService daoService;
 	
-	@Autowired private SecurityManager securityManager;
+	@Inject private SecurityManager securityManager;
 	
 	@SuppressWarnings("unused")
 	private final Logger logger = Logger.getLogger(getClass());

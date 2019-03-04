@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.apache.log4j.Logger;
 import org.esupportail.smsu.business.TemplateManager;
 import org.esupportail.smsu.web.beans.UITemplate;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.inject.Inject;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -22,7 +22,7 @@ public class TemplateManagerController {
 
 	private static final int LENGHTBODY = 160;
 	
-	@Autowired private TemplateManager templateManager;
+	@Inject private TemplateManager templateManager;
 	
 	private final Logger logger = Logger.getLogger(getClass());
 	

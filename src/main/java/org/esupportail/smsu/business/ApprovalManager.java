@@ -1,6 +1,5 @@
 package org.esupportail.smsu.business;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,13 +14,13 @@ import org.esupportail.smsu.domain.beans.message.MessageStatus;
 import org.esupportail.smsu.exceptions.CreateMessageException;
 import org.esupportail.smsu.web.beans.UIMessage;
 import org.esupportail.smsu.web.controllers.InvalidParameterException;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.inject.Inject;
 
 public class ApprovalManager {
 	
-	@Autowired private DaoService daoService;
-	@Autowired private MessageManager messageManager;
-	@Autowired private SendSmsManager sendSmsManager;
+	@Inject private DaoService daoService;
+	@Inject private MessageManager messageManager;
+	@Inject private SendSmsManager sendSmsManager;
 
 	@SuppressWarnings("unused")
 	private final Logger logger = Logger.getLogger(getClass());

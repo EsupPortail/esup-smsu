@@ -9,16 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
-
-
-
-
-
-
-
-
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
@@ -29,7 +19,7 @@ import org.esupportail.smsu.dao.beans.Person;
 import org.esupportail.smsu.services.GroupUtils;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.web.beans.UICustomizedGroup;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.inject.Inject;
 
 /**
  * Business layer concerning smsu service.
@@ -37,9 +27,9 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class GroupManager {
 	
-	@Autowired private DaoService daoService;
-	@Autowired private LdapUtils ldapUtils;
-	@Autowired private GroupUtils groupUtils;
+	@Inject private DaoService daoService;
+	@Inject private LdapUtils ldapUtils;
+	@Inject private GroupUtils groupUtils;
 
 	private final Logger logger = Logger.getLogger(getClass());
 

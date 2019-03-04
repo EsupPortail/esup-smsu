@@ -14,16 +14,16 @@ import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
 import org.esupportail.smsu.exceptions.ldap.LdapWriteException;
 import org.esupportail.smsuapi.exceptions.InsufficientQuotaException;
 import org.esupportail.smsuapi.utils.HttpException;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.inject.Inject;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/membership")
 public class MembershipController {
 	
-    @Autowired private MemberManager memberManager;
+	@Inject private MemberManager memberManager;
     
-    @Autowired private I18nService i18nService;
+	@Inject private I18nService i18nService;
     
 	protected static enum MembershipStatus {PENDING, OK};
 

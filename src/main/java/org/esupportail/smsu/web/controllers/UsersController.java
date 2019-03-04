@@ -2,12 +2,12 @@ package org.esupportail.smsu.web.controllers;
 
 import java.util.LinkedList;
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import org.apache.commons.lang.StringUtils;
 import org.esupportail.commons.services.ldap.LdapException;
@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 import org.esupportail.smsu.business.ServiceManager;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.web.beans.UIRecipientUser;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.inject.Inject;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,7 +27,7 @@ public class UsersController {
 
 	private static final long NB_MIN_CHARS_FOR_LDAP_SEARCH = 4;
 	
-	@Autowired private LdapUtils ldapUtils;
+	@Inject private LdapUtils ldapUtils;
 
 	/**
 	 * the phone number validation pattern.

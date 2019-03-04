@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-
 import org.esupportail.commons.services.ldap.LdapUser;
+
 import org.apache.log4j.Logger;
 import org.esupportail.smsu.dao.DaoService;
 import org.esupportail.smsu.dao.beans.BasicGroup;
@@ -24,14 +24,13 @@ import org.esupportail.smsu.services.GroupUtils;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.web.beans.UIMessage;
 import org.esupportail.smsu.web.controllers.InvalidParameterException;
-import org.springframework.beans.factory.annotation.Autowired;
-
+import javax.inject.Inject;
 
 public class MessageManager {
 
-	@Autowired private DaoService daoService;
-	@Autowired private LdapUtils ldapUtils;
-	@Autowired private GroupUtils groupUtils;
+	@Inject private DaoService daoService;
+	@Inject private LdapUtils ldapUtils;
+	@Inject private GroupUtils groupUtils;
 	
 	private final Logger logger = Logger.getLogger(getClass());
 

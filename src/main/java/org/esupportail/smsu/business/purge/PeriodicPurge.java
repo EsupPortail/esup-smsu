@@ -6,7 +6,7 @@ import java.util.GregorianCalendar;
 
 import org.apache.log4j.Logger;
 import org.esupportail.smsu.dao.DaoService;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.inject.Inject;
 import org.springframework.beans.factory.annotation.Required;
 
 /**
@@ -21,7 +21,7 @@ public class PeriodicPurge {
 	 */
 	private int seniorityDay;
 	
-	@Autowired private DaoService daoService;
+	@Inject private DaoService daoService;
 
 	
 	/**

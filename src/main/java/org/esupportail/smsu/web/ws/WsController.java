@@ -28,7 +28,7 @@ import org.esupportail.smsu.web.beans.UIService;
 import org.esupportail.smsu.web.controllers.InvalidParameterException;
 import org.esupportail.smsuapi.exceptions.InsufficientQuotaException;
 import org.esupportail.smsuapi.utils.HttpException;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.inject.Inject;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,10 +41,10 @@ public class WsController {
 	
 	protected static enum MembershipStatus {PENDING, OK};
 
-	@Autowired private MessageManager messageManager;
-	@Autowired private SendSmsManager sendSmsManager;
-    @Autowired private MemberManager memberManager;
-	@Autowired private ServiceManager serviceManager;	
+	@Inject private MessageManager messageManager;
+	@Inject private SendSmsManager sendSmsManager;
+	@Inject private MemberManager memberManager;
+	@Inject private ServiceManager serviceManager;	
 
 	private List<String> authorizedClientNames;
 

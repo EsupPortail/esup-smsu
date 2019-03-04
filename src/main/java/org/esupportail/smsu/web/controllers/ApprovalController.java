@@ -16,7 +16,7 @@ import org.esupportail.smsu.domain.beans.message.MessageStatus;
 import org.esupportail.smsu.exceptions.CreateMessageException;
 import org.esupportail.smsu.web.beans.UIMessage;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.inject.Inject;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -26,8 +26,8 @@ public class ApprovalController {
 
 	private final Logger logger = Logger.getLogger(getClass());
 	
-    @Autowired private DomainService domainService;
-    @Autowired private ApprovalManager approvalManager;
+	@Inject private DomainService domainService;
+	@Inject private ApprovalManager approvalManager;
 
     @RequestMapping(method = RequestMethod.GET)
     public List<UIMessage> getApprovalUIMessages(HttpServletRequest request) {

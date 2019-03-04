@@ -21,7 +21,7 @@ import org.esupportail.smsu.services.GroupUtils;
 import org.esupportail.smsu.services.ldap.beans.UserGroup;
 import org.esupportail.smsuapi.utils.HttpException;
 import org.esupportail.smsuapi.utils.HttpUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.inject.Inject;
 
 public class HttpRequestWsgroups {
 
@@ -29,7 +29,7 @@ public class HttpRequestWsgroups {
 	
 	private static final String DEFAULT_CACHE_NAME = HttpRequestWsgroups.class.getName();
 
-	@Autowired private CacheManager cacheManager;
+	@Inject private CacheManager cacheManager;
 
 	private Cache cache;
 	

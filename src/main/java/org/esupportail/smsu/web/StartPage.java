@@ -10,12 +10,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.esupportail.smsu.services.UrlGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.inject.Inject;
 
 public class StartPage implements org.springframework.web.HttpRequestHandler {
 
-    @Autowired private UrlGenerator urlGenerator;
-    @Autowired private ServerSideDirectives serverSideDirectives;
+	@Inject private UrlGenerator urlGenerator;
+	@Inject private ServerSideDirectives serverSideDirectives;
     private String wsgroupsURL;
     
     private boolean jsonpDisabled = false;

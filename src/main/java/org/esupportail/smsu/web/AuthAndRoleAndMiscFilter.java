@@ -1,6 +1,7 @@
 package org.esupportail.smsu.web;
 
 import java.util.Set;
+
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -16,7 +17,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.inject.Inject;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.esupportail.smsu.business.SecurityManager;
@@ -26,8 +27,8 @@ import org.jasig.cas.client.util.CommonUtils;
 
 public final class AuthAndRoleAndMiscFilter implements Filter {
 	
-    @Autowired private UrlGenerator urlGenerator;
-    @Autowired private SecurityManager securityManager;
+	@Inject private UrlGenerator urlGenerator;
+	@Inject private SecurityManager securityManager;
 
     private String authentication = "cas";
     private boolean shibUseHeaders = false;

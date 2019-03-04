@@ -32,9 +32,10 @@ import org.esupportail.smsu.web.beans.UIService;
 import org.esupportail.smsuapi.exceptions.UnknownMessageIdException;
 import org.esupportail.smsuapi.utils.HttpException;
 import org.esupportail.ws.remote.beans.TrackInfos;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.inject.Inject;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.util.StringUtils;
+
 
 /**
  * A bean to manage user preferences.
@@ -45,10 +46,10 @@ import org.springframework.util.StringUtils;
 @RolesAllowed({"FCTN_SUIVI_ENVOIS_ETABL","FCTN_SUIVI_ENVOIS_UTIL"})
 public class MessagesController {
 
-	@Autowired private DomainService domainService;
-	@Autowired private MessageManager messageManager;
-	@Autowired private SendSmsManager sendSmsManager;
-	@Autowired private ServiceManager serviceManager;
+	@Inject private DomainService domainService;
+	@Inject private MessageManager messageManager;
+	@Inject private SendSmsManager sendSmsManager;
+	@Inject private ServiceManager serviceManager;
 
 	private final Logger logger = Logger.getLogger(getClass());
 

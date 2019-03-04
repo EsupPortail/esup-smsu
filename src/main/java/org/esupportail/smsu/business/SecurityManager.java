@@ -10,16 +10,15 @@ import org.esupportail.smsu.dao.beans.CustomizedGroup;
 import org.esupportail.smsu.dao.beans.Fonction;
 import org.esupportail.smsu.dao.beans.Person;
 import org.esupportail.smsu.services.GroupUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-
+import javax.inject.Inject;
 
 /**
  * Business layer concerning smsu service.
  *
  */
 public class SecurityManager {
-	@Autowired private DaoService daoService;
-	@Autowired private GroupUtils groupUtils;
+	@Inject private DaoService daoService;
+	@Inject private GroupUtils groupUtils;
 
 	private final Logger logger = Logger.getLogger(getClass());
 

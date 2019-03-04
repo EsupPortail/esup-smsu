@@ -16,7 +16,7 @@ import org.esupportail.smsu.domain.DomainService;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.services.ldap.beans.UserGroup;
 import org.esupportail.smsu.web.beans.UICustomizedGroup;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.inject.Inject;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.util.StringUtils;
 
@@ -31,9 +31,9 @@ public class GroupsManagerController {
 	@SuppressWarnings("unused")
 	private final Logger logger = Logger.getLogger(getClass());
 
-	@Autowired private LdapUtils ldapUtils;
-	@Autowired private DomainService domainService;
-	@Autowired private GroupManager groupManager;
+	@Inject private LdapUtils ldapUtils;
+	@Inject private DomainService domainService;
+	@Inject private GroupManager groupManager;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public List<UICustomizedGroup> allGroups() {

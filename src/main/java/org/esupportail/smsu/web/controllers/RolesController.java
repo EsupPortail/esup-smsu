@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 import org.esupportail.smsu.business.FonctionManager;
 import org.esupportail.smsu.business.RoleManager;
 import org.esupportail.smsu.web.beans.UIRole;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.inject.Inject;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -24,8 +24,8 @@ public class RolesController {
 	@SuppressWarnings("unused")
 	private final Logger logger = Logger.getLogger(getClass());
 
-	@Autowired private FonctionManager fonctionManager;
-	@Autowired private RoleManager roleManager;
+	@Inject private FonctionManager fonctionManager;
+	@Inject private RoleManager roleManager;
 
 	@RequestMapping(method = RequestMethod.GET)
 	@RolesAllowed({"FCTN_GESTION_ROLES_CRUD","FCTN_GESTION_ROLES_AFFECT"})

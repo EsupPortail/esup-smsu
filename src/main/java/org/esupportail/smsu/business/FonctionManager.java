@@ -6,7 +6,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.esupportail.smsu.dao.DaoService;
 import org.esupportail.smsu.dao.beans.Fonction;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.inject.Inject;
 
 /**
  * Business layer concerning smsu service.
@@ -14,9 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class FonctionManager {
 	
-	@Autowired private DaoService daoService;
+	@Inject private DaoService daoService;
 	
-	@Autowired private ServiceManager serviceManager;
+	@Inject private ServiceManager serviceManager;
 	
 	@SuppressWarnings("unused")
 	private final Logger logger = Logger.getLogger(getClass());
