@@ -167,7 +167,7 @@ public class WsController {
 	 * -i \
 	 * -X GET \
 	 * -H "Content-Type: application/json" \
-	 * http://localhost:8080/ws/sms/member/loginTestSmsu/adhServicesAvailable
+	 * http://localhost:8080/ws/member/loginTestSmsu/adhServicesAvailable
 	 */
 	@RequestMapping(method = RequestMethod.GET, value = "/member/{login}/adhServicesAvailable")
 	public List<UIService> getUIServicesAdh(@PathVariable("login") String login, HttpServletRequest request) {
