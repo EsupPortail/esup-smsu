@@ -6,6 +6,14 @@ public abstract class CreateMessageException extends Exception {
 
 	private static final long serialVersionUID = 6792087453400066168L;
 	
+	public CreateMessageException() {
+		super();
+	}
+	
+	public CreateMessageException(String errorMsg, Exception e) {
+		super(errorMsg, e);
+	}
+
 	abstract public String toI18nString(I18nService i18nService);
 
 	static public class Wrapper extends CreateMessageException {
@@ -16,6 +24,7 @@ public abstract class CreateMessageException extends Exception {
 		public Exception previousException;
 
 		public Wrapper(String errorMsg, Exception e) {
+			super(errorMsg, e);
 			this.errorMsg = errorMsg;
 			this.previousException = e;
 		}
