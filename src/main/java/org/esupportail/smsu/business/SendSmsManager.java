@@ -192,10 +192,8 @@ public class SendSmsManager  {
 
 	/**
 	 * Used to send message in state waiting_for_sending.
-	 * @throws InsufficientQuotaException 
-	 * @throws HttpException 
 	 */
-	public void sendWaitingForSendingMessage() throws HttpException, InsufficientQuotaException {
+	public void sendWaitingForSendingMessage() {
 		// get all message ready to be sent
 		final List<Message> messageList = daoService.getMessagesByState(MessageStatus.WAITING_FOR_SENDING);
 
@@ -204,34 +202,38 @@ public class SendSmsManager  {
 		}
 
 		for (Message message : messageList) {
-			if (logger.isDebugEnabled()) {
-				logger.debug("Start managment of message with id : " + message.getId());
-			}
-			// get the associated customized group
-			final CustomizedGroup cGroup = getCustomizedGroup(message.getGroupSender());
+			try {
+				if (logger.isDebugEnabled()) {
+					logger.debug("Start managment of message with id : " + message.getId());
+				}
+				// get the associated customized group
+				final CustomizedGroup cGroup = getCustomizedGroup(message.getGroupSender());
 
-			// send the customized messages
-			for (CustomizedMessage customizedMessage : getCustomizedMessages(message)) {
-				sendCustomizedMessages(customizedMessage, message);
-				cGroup.setConsumedSms(cGroup.getConsumedSms() + 1);
-				daoService.updateCustomizedGroup(cGroup);
-			}
+				// send the customized messages
+				for (CustomizedMessage customizedMessage : getCustomizedMessages(message)) {
+					sendCustomizedMessages(customizedMessage, message);
+					cGroup.setConsumedSms(cGroup.getConsumedSms() + 1);
+					daoService.updateCustomizedGroup(cGroup);
+				}
 
-			// update the message status in DB
-			message.setStateAsEnum(MessageStatus.SENT);
+				// update the message status in DB
+				message.setStateAsEnum(MessageStatus.SENT);
 
-			// force commit to database. do not allow rollback otherwise the message will be sent again!
-			daoService.updateMessage(message);
+				// force commit to database. do not allow rollback otherwise the message will be sent again!
+				daoService.updateMessage(message);
 
-			//Deal with the emails
-			if (message.getMail() != null) {
-				sendMails(message);
-			}
+				//Deal with the emails
+				if (message.getMail() != null) {
+					sendMails(message);
+				}
 
-			daoService.updateMessage(message);
+				daoService.updateMessage(message);
 
-			if (logger.isDebugEnabled()) {
-				logger.debug("End of managment of message with id : " + message.getId());
+				if (logger.isDebugEnabled()) {
+					logger.debug("End of managment of message with id : " + message.getId());
+				}
+			} catch (Exception e) {
+				logger.error(e);
 			}
 
 		}
