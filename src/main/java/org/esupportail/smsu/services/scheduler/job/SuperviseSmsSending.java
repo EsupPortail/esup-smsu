@@ -35,16 +35,9 @@ public class SuperviseSmsSending extends AbstractQuartzJob {
 		}
 		
 		final SendSmsManager sendSmsManager = (SendSmsManager) applicationContext.getBean(SEND_SMS_MANAGER_BEAN_NAME);
-		
-		try {
-			sendSmsManager.sendWaitingForSendingMessage();
-		} catch (HttpException e) {
-			logger.error(e);
-		} catch (InsufficientQuotaException e) {
-			logger.error(e);
-		}
 
-		
+		sendSmsManager.sendWaitingForSendingMessage();
+
 		if (logger.isDebugEnabled()) {
 			logger.debug("End of Quartz task SuperviseSmsSending");
 		}

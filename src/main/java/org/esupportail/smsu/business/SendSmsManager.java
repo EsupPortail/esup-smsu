@@ -42,8 +42,8 @@ import org.esupportail.smsu.services.scheduler.SchedulerUtils;
 import org.esupportail.smsu.services.smtp.SmtpServiceUtils;
 import org.esupportail.smsu.web.beans.MailToSend;
 import org.esupportail.smsu.web.beans.UINewMessage;
-import org.esupportail.smsu.web.controllers.InvalidParameterException;
 import org.esupportail.smsuapi.exceptions.InsufficientQuotaException;
+import org.esupportail.smsu.web.controllers.InvalidParameterException;
 import org.esupportail.smsuapi.services.client.SmsuapiWS.AuthenticationFailedException;
 import org.esupportail.smsuapi.utils.HttpException;
 import javax.inject.Inject;
@@ -90,7 +90,7 @@ public class SendSmsManager  {
 	
 	private final Logger logger = Logger.getLogger(getClass());
 
-    public class CustomizedMessage {
+	public class CustomizedMessage {
         public Set<String> recipiendPhoneNumbers;
         public String message;
     }
@@ -193,7 +193,7 @@ public class SendSmsManager  {
 	/**
 	 * Used to send message in state waiting_for_sending.
 	 */
-	public void sendWaitingForSendingMessage() {
+	public void sendWaitingForSendingMessage() throws HttpException, InsufficientQuotaException {
 		// get all message ready to be sent
 		final List<Message> messageList = daoService.getMessagesByState(MessageStatus.WAITING_FOR_SENDING);
 
@@ -232,7 +232,7 @@ public class SendSmsManager  {
 				if (logger.isDebugEnabled()) {
 					logger.debug("End of managment of message with id : " + message.getId());
 				}
-			} catch (Exception e) {
+			} catch (org.esupportail.smsuapi.exceptions.InvalidParameterException e) {
 				logger.error(e);
 			}
 
