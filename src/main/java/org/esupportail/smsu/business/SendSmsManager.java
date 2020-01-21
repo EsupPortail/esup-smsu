@@ -232,7 +232,7 @@ public class SendSmsManager  {
 				if (logger.isDebugEnabled()) {
 					logger.debug("End of managment of message with id : " + message.getId());
 				}
-			} catch (org.esupportail.smsuapi.exceptions.InvalidParameterException e) {
+			} catch (org.esupportail.smsuapi.exceptions.AlreadySentException e) {
 				message.setStateAsEnum(MessageStatus.ALREADY_SENT);
 				logger.error(e);
 			}
