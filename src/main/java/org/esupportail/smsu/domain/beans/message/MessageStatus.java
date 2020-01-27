@@ -22,6 +22,10 @@ public enum MessageStatus {
 	 */
 	SENT,
 	/**
+	 * The message has already been sent to the back office but something append before response.
+	 */
+	ALREADY_SENT,
+	/**
 	 * The service couldn't connect to the back office.
 	 */
 	WS_ERROR,

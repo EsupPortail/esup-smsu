@@ -41,6 +41,7 @@ app.config(function ($translateProvider) {
       MSG_INFO_NBR_BLACKLIST	: "Nb invalides",
 
       MSG_STATE_SENT		: "Envoyé",
+      MSG_STATE_ALREADY_SENT : "Déjà envoyé",
       MSG_STATE_CANCEL		: "Annulé",
       MSG_STATE_IN_PROGRESS     : "En cours",
       MSG_STATE_WAITING_FOR_APPROVAL : "En approbation",
