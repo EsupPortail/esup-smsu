@@ -631,23 +631,21 @@ public class SendSmsManager  {
 		}
 	}
 
-	private Recipient getOrCreateRecipient(String phone, String login) {
-		// check if the recipient is already in the database. 
-		Recipient recipient = daoService.getRecipient(phone, login);
-
-		if (recipient == null) {	
-			recipient = new Recipient(null, phone, login);
-			daoService.addRecipient(recipient);
-		}
-		return recipient;
-	}
-    
 	private Set<Recipient> saveRecipientsInDb(Map<String, String> recipients) {
 		Set<Recipient> r = new HashSet<>();
         
 		for (Map.Entry<String,String> kv : recipients.entrySet()) {
-			r.add(getOrCreateRecipient(kv.getKey(), kv.getValue()));
+			Recipient recipient = daoService.getRecipient(kv.getKey(), kv.getValue());
+                        if (recipient == null) {
+			    recipient = new Recipient(null, kv.getKey(), kv.getValue());
+			}
+			r.add(recipient);
 		}
+		for (Recipient recipient : r) {
+		    if (recipient.getId() == null)
+		        daoService.addRecipient(recipient);
+		}
+        
 		return r;
 	}
 
