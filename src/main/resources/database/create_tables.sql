@@ -16,6 +16,7 @@ create table supervisor_sender (MSG_ID integer not null, PER_ID integer not null
 create table template (TPL_ID integer not null auto_increment, TPL_LABEL varchar(32) not null unique, TPL_HEADING varchar(50), TPL_BODY varchar(160), TPL_SIGNATURE varchar(50), primary key (TPL_ID)) ENGINE=InnoDB;
 create table to_mail_recipient (MRC_ID integer not null, MAIL_ID integer not null, primary key (MRC_ID, MAIL_ID)) ENGINE=InnoDB;
 create table to_recipient (RCP_ID integer not null, MSG_ID integer not null, primary key (RCP_ID, MSG_ID)) ENGINE=InnoDB;
+create index RCP_PHONE_LOGIN on recipient (RCP_PHONE, RCP_LOGIN);
 alter table customized_group add index FKBA973141C7B62A7C (ROL_ID), add constraint FKBA973141C7B62A7C foreign key (ROL_ID) references role (ROL_ID);
 alter table customized_group add index FKBA973141B076996B (ACC_ID), add constraint FKBA973141B076996B foreign key (ACC_ID) references account (ACC_ID);
 alter table mail add index FK3305B7A17C89BF (TPL_ID), add constraint FK3305B7A17C89BF foreign key (TPL_ID) references template (TPL_ID);

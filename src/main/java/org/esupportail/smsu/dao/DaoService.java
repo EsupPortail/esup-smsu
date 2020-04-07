@@ -266,17 +266,12 @@ public interface DaoService {
 	 * @param strPhone 
 	 * @return the recipient.
 	 */
-	Recipient getRecipientByPhone(String strPhone);
+	Recipient getRecipient(String strPhone, String login);
 	
 	/**
 	 * @param recipient
 	 */
 	void addRecipient(Recipient recipient);
-	
-	/**
-	 * @param recipient
-	 */
-	void updateRecipient(Recipient recipient);
 	
 	/**
 	 * Delete mail recipient orphan.

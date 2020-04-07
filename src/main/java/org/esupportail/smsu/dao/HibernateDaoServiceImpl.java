@@ -545,12 +545,13 @@ public class HibernateDaoServiceImpl implements DaoService {
 	// Recipient
 	//////////////////////////////////////////////////////////////
 	/**
-	 * @see org.esupportail.smsu.dao.DaoService#getRecipientByPhone(java.lang.String)
+	 * @see org.esupportail.smsu.dao.DaoService#getRecipient(java.lang.String, java.lang.String)
 	 */
-	public Recipient getRecipientByPhone(final String strPhone) {
+	public Recipient getRecipient(final String strPhone, String login) {
 		Session currentSession = getCurrentSession();
 		Criteria criteria = currentSession.createCriteria(Recipient.class);
 		criteria.add(Restrictions.eq(Recipient.PROP_PHONE, strPhone));
+		criteria.add(Restrictions.eq(Recipient.PROP_LOGIN, login));
 		Recipient recipient = (Recipient) criteria.uniqueResult();
 		return recipient;
 	}
