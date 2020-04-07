@@ -22,7 +22,6 @@ import org.esupportail.smsu.dao.beans.Account;
 import org.esupportail.smsu.dao.beans.CustomizedGroup;
 import org.esupportail.smsu.dao.beans.Message;
 import org.esupportail.smsu.dao.beans.Person;
-import org.esupportail.smsu.dao.beans.Recipient;
 import org.esupportail.smsu.dao.beans.Service;
 import org.esupportail.smsu.domain.beans.User;
 import org.esupportail.smsu.services.client.SmsuapiWS;
@@ -121,17 +120,6 @@ public class DomainService {
 	public Service getServiceById(final Integer id) {
 		Service service = this.daoService.getServiceById(id);
 		return service;
-	}
-	
-	//////////////////////////////////////////////////////////////
-	// Recipient
-	//////////////////////////////////////////////////////////////
-	public Recipient getRecipientByPhone(final String strPhone) {
-		return this.daoService.getRecipientByPhone(strPhone);
-	}
-
-	public void addRecipient(final Recipient recipient) {
-		this.daoService.addRecipient(recipient);
 	}
 	
 	//////////////////////////////////////////////////////////////
