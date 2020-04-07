@@ -131,7 +131,7 @@ public class MessagesController {
 		if (ServiceManager.SERVICE_SEND_FUNCTION_CG.equals(msg.serviceKey)) msg.serviceKey = null;
 		
 		try {
-			return sendSmsManager.getRecipients(msg, msg.serviceKey).size();
+			return sendSmsManager.getRecipients_no_db(msg, msg.serviceKey).size();
 		} catch (EmptyGroup e) {
 			logger.debug("Empty group here - we return -1 : " + e.getMessage());
 			return -1;

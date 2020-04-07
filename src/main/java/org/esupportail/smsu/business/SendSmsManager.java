@@ -578,7 +578,7 @@ public class SendSmsManager  {
 	}
 
 
-	private Map<String, String> getRecipients_no_db(UINewMessage msg, String serviceKey) throws EmptyGroup {
+	public Map<String, String> getRecipients_no_db(UINewMessage msg, String serviceKey) throws EmptyGroup {
 		Map<String, String> recipients = new HashMap<>();
 		if (msg.recipientPhoneNumbers != null) addPhoneNumbersRecipients(recipients, msg.recipientPhoneNumbers);
 		if (msg.recipientLogins != null) addLoginsRecipients(recipients, msg.recipientLogins, serviceKey);
