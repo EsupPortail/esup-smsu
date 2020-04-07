@@ -3,6 +3,7 @@ package org.esupportail.smsu.business;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -576,20 +577,25 @@ public class SendSmsManager  {
 		}
 	}
 
-	public Set<Recipient> getRecipients(UINewMessage msg, String serviceKey) throws EmptyGroup {
-		Set<Recipient> recipients = new HashSet<>();
+
+	private Map<String, String> getRecipients_no_db(UINewMessage msg, String serviceKey) throws EmptyGroup {
+		Map<String, String> recipients = new HashMap<>();
 		if (msg.recipientPhoneNumbers != null) addPhoneNumbersRecipients(recipients, msg.recipientPhoneNumbers);
 		if (msg.recipientLogins != null) addLoginsRecipients(recipients, msg.recipientLogins, serviceKey);
 		addGroupRecipients(recipients, msg.recipientGroup, serviceKey);
 		return recipients;
 	}
 
-	private void addPhoneNumbersRecipients(Set<Recipient> recipients, List<String> phoneNumbers) {
+	public Set<Recipient> getRecipients(UINewMessage msg, String serviceKey) throws EmptyGroup {
+		return saveRecipientsInDb(getRecipients_no_db(msg, serviceKey));
+	}
+
+	private void addPhoneNumbersRecipients(Map<String, String> recipients, List<String> phoneNumbers) {
 		for (String phoneNumber : phoneNumbers)
 			mayAdd(recipients, phoneNumber, null);
 	}
 
-	private void addLoginsRecipients(Set<Recipient> recipients, List<String> logins, String serviceKey) {
+	private void addLoginsRecipients(Map<String, String> recipients, List<String> logins, String serviceKey) {
 		List<LdapUser> users = ldapUtils.getConditionFriendlyLdapUsersFromUid(logins, serviceKey);
 		for (LdapUser user : users) {
 			String phoneNumber = ldapUtils.getUserPagerByUser(user);
@@ -599,7 +605,7 @@ public class SendSmsManager  {
 		}
 	}
 
-	private void addGroupRecipients(Set<Recipient> recipients, final String groupId, String serviceKey) throws EmptyGroup {
+	private void addGroupRecipients(Map<String, String> recipients, final String groupId, String serviceKey) throws EmptyGroup {
 		if (groupId == null) return;
 		
 				List<LdapUser> groupUsers = getUsersByGroup(groupId,serviceKey);
@@ -616,10 +622,10 @@ public class SendSmsManager  {
 				}
 	}
 
-	private void mayAdd(Set<Recipient> recipients, String phone, String login) {
+	private void mayAdd(Map<String, String> recipients, String phone, String login) {
 		if (StringUtils.isEmpty(this.phoneNumberPattern) || 
 		    phone.matches(this.phoneNumberPattern)) {
-			recipients.add(getOrCreateRecipient(phone, login));
+			recipients.put(phone, login);
 		} else {
 			logger.debug("skipping weird phone number " + phone);
 		}
@@ -641,6 +647,15 @@ public class SendSmsManager  {
 			}
 		}
 		return recipient;
+	}
+    
+	private Set<Recipient> saveRecipientsInDb(Map<String, String> recipients) {
+		Set<Recipient> r = new HashSet<>();
+        
+		for (Map.Entry<String,String> kv : recipients.entrySet()) {
+			r.add(getOrCreateRecipient(kv.getKey(), kv.getValue()));
+		}
+		return r;
 	}
 
 	/**
