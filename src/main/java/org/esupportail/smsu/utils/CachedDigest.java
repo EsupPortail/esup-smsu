@@ -8,8 +8,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
-
 import org.apache.commons.io.IOUtils;
 
 public class CachedDigest {
@@ -37,7 +35,7 @@ public class CachedDigest {
 			//System.out.println("computing digest of " + file);
 			MessageDigest md = MessageDigest.getInstance("MD5");
 			byte[] digest = md.digest(IOUtils.toByteArray(new FileInputStream(file)));
-			return (new HexBinaryAdapter()).marshal(digest).toLowerCase();
+			return java.util.Base64.getEncoder().encodeToString(digest);
 		} catch (NoSuchAlgorithmException e) {
 			throw new RuntimeException(e);
 		} catch (IOException e) {
