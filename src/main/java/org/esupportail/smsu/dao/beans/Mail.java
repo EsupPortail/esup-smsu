@@ -247,15 +247,6 @@ public class Mail  implements Serializable {
 		this.mailRecipients = mailRecipients;
 	}
 
-	public void addToMailRecipients(final MailRecipient mailRecipient) {
-		if (null == getMailRecipients()) {
-			setMailRecipients(new java.util.TreeSet<MailRecipient>());
-		}
-		getMailRecipients().add(mailRecipient);
-	}
-
-
-
 
 	/**
 	 * @see java.lang.Object#equals(java.lang.Object)

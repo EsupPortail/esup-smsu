@@ -275,19 +275,6 @@ public class CustomizedGroup implements Serializable {
 		this.supervisors = supervisors;
 	}
 
-	/**
-	 * add person to the collection of supervisors.
-	 * @param person
-	 */
-	public void addToSupervisors(final Person person) {
-		if (null == getSupervisors()) {
-			setSupervisors(new java.util.TreeSet<Person>());
-		}
-		getSupervisors().add(person);
-	}
-
-
-
 
 	/**
 	 * @see java.lang.Object#equals(java.lang.Object)

@@ -423,19 +423,6 @@ public class Message  implements Serializable {
 	}
 
 	/**
-	 * add a recipient to the collection.
-	 * @param recipient
-	 */
-	public void addToRecipients(final Recipient recipient) {
-		if (null == getRecipients()) {
-			setRecipients(new java.util.TreeSet<Recipient>());
-		}
-		getRecipients().add(recipient);
-	}
-
-
-
-	/**
 	 * Return the value associated with the column: Supervisors.
 	 */
 	public java.util.Set<Person> getSupervisors() {
@@ -449,20 +436,6 @@ public class Message  implements Serializable {
 	public void setSupervisors(final java.util.Set<Person> supervisors) {
 		this.supervisors = supervisors;
 	}
-
-	/**
-	 * add a person to the collection of supervisors.
-	 * @param person
-	 */
-	public void addToSupervisors(final Person person) {
-		if (null == getSupervisors()) {
-			setSupervisors(new java.util.TreeSet<Person>());
-		}
-		getSupervisors().add(person);
-	}
-
-
-
 
 	/**
 	 * @see java.lang.Object#hashCode()
