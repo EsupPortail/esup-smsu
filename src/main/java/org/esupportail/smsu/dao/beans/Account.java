@@ -41,17 +41,6 @@ public class Account implements Serializable {
 	 */
 	private java.lang.String label;
 
-	
-	/**
-	 * Collection of messages associated to the account.
-	 */
-	private java.util.Set<Message> messages;
-	
-	/**
-	 * Collection of customized groups associated to the account.
-	 */
-	private java.util.Set<CustomizedGroup> customizedGroups;
-
 	/**
 	 * Bean constructor.
 	 */
@@ -111,65 +100,6 @@ public class Account implements Serializable {
 	public void setLabel(final java.lang.String label) {
 		this.label = label;
 	}
-
-
-
-	/**
-	 * Return the value associated with the column: Messages.
-	 */
-	public java.util.Set<Message> getMessages() {
-		return messages;
-	}
-
-	/**
-	 * Set the value related to the column: Messages.
-	 * @param messages the Messages value
-	 */
-	public void setMessages(final java.util.Set<Message> messages) {
-		this.messages = messages;
-	}
-
-	/**
-	 * add a message to the collection.
-	 * @param message
-	 */
-	public void addToMessages(final Message message) {
-		if (null == getMessages()) {
-			setMessages(new java.util.TreeSet<Message>());
-		}
-		getMessages().add(message);
-	}
-
-
-
-	/**
-	 * Return the value associated with the column: CustomizedGroups.
-	 */
-	public java.util.Set<CustomizedGroup> getCustomizedGroups() {
-		return customizedGroups;
-	}
-
-	/**
-	 * Set the value related to the column: CustomizedGroups.
-	 * @param customizedGroups the CustomizedGroups value
-	 */
-	public void setCustomizedGroups(final java.util.Set<CustomizedGroup> customizedGroups) {
-		this.customizedGroups = customizedGroups;
-	}
-
-	/**
-	 * add a customized group to the collection.
-	 * @param customizedGroup
-	 */
-	public void addToCustomizedGroups(final CustomizedGroup customizedGroup) {
-		if (null == getCustomizedGroups()) {
-			setCustomizedGroups(new java.util.TreeSet<CustomizedGroup>());
-		}
-		getCustomizedGroups().add(customizedGroup);
-	}
-
-
-
 
 	/**
 	 * @see java.lang.Object#hashCode()

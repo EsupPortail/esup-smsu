@@ -40,11 +40,6 @@ public class Role implements Serializable {
 	private java.lang.String name;
 
 	/**
-	 * collection of customized group that are associated to the role.
-	 */
-	private java.util.Set<CustomizedGroup> customizedGroups;
-
-	/**
 	 * Set of function access that define the role.
 	 */
 	private java.util.Set<Fonction> fonctions;
@@ -107,34 +102,6 @@ public class Role implements Serializable {
 		this.name = name;
 	}
 
-
-
-	/**
-	 * Return the value associated with the column: CustomizedGroups.
-	 */
-	public java.util.Set<CustomizedGroup> getCustomizedGroups() {
-		return customizedGroups;
-	}
-
-	/**
-	 * Set the value related to the column: CustomizedGroups.
-	 * @param customizedGroups the CustomizedGroups value
-	 */
-	public void setCustomizedGroups(final java.util.Set<CustomizedGroup> customizedGroups) {
-		this.customizedGroups = customizedGroups;
-	}
-
-	/**
-	 * Add a customizedGroup to the set associated to the role.
-	 * @param customizedGroup a customizedGroup value
-	 */
-	public void addToCustomizedGroups(final CustomizedGroup customizedGroup) {
-		if (null == getCustomizedGroups()) {
-			setCustomizedGroups(new java.util.TreeSet<CustomizedGroup>());
-		}
-		getCustomizedGroups().add(customizedGroup);
-	}
-
 	/**
 	 * Return the value associated with the column: Fonctions.
 	 */
@@ -149,18 +116,6 @@ public class Role implements Serializable {
 	public void setFonctions(final java.util.Set<Fonction> fonctions) {
 		this.fonctions = fonctions;
 	}
-
-	/**
-	 * Add a function to the set associated to the role.
-	 * @param fonction a function value
-	 */
-	public void addToFonctions(final Fonction fonction) {
-		if (null == getFonctions()) {
-			setFonctions(new java.util.TreeSet<Fonction>());
-		}
-		getFonctions().add(fonction);
-	}
-
 
 	/**
 	 * @see java.lang.Object#equals(java.lang.Object)

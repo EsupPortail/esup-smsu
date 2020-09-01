@@ -50,11 +50,6 @@ public class Service implements Serializable {
 	private java.lang.String key;
 
 	/**
-	 * collection of message for the service.
-	 */
-	private java.util.Set<Message> messages;
-
-	/**
 	 * Bean constructor.
 	 */
 	public Service() {
@@ -121,36 +116,6 @@ public class Service implements Serializable {
 	public void setKey(final java.lang.String key) {
 		this.key = key;
 	}
-
-
-	/**
-	 * Return the value associated with the column: Messages.
-	 */
-	public java.util.Set<Message> getMessages() {
-		return messages;
-	}
-
-	/**
-	 * Set the value related to the column: Messages.
-	 * @param messages the Messages value
-	 */
-	public void setMessages(final java.util.Set<Message> messages) {
-		this.messages = messages;
-	}
-
-	/**
-	 * Add a message to the set associated to the service.
-	 * @param message a message value
-	 */
-	public void addToMessages(final Message message) {
-		if (null == getMessages()) {
-			setMessages(new java.util.TreeSet<Message>());
-		}
-		getMessages().add(message);
-	}
-
-
-
 
 	/**
 	 * @see java.lang.Object#equals(java.lang.Object)

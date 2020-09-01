@@ -39,11 +39,6 @@ public class Fonction implements Serializable {
 	private java.lang.String name;
 
 	/**
-	 * set of roles associated to the function.
-	 */
-	private java.util.Set<Role> roles;
-
-	/**
 	 * Bean constructor.
 	 */
 	public Fonction() {
@@ -93,34 +88,6 @@ public class Fonction implements Serializable {
 	 */
 	public void setName(final java.lang.String name) {
 		this.name = name;
-	}
-
-
-
-	/**
-	 * Return the value associated with the column: Roles.
-	 */
-	public java.util.Set<Role> getRoles() {
-		return roles;
-	}
-
-	/**
-	 * Set the value related to the column: Roles.
-	 * @param roles the Roles value
-	 */
-	public void setRoles(final java.util.Set<Role> roles) {
-		this.roles = roles;
-	}
-
-	/**
-	 * Add a role to the set associated to the function.
-	 * @param role a role value
-	 */
-	public void addToRoles(final Role role) {
-		if (null == getRoles()) {
-			setRoles(new java.util.TreeSet<Role>());
-		}
-		getRoles().add(role);
 	}
 
 	/**

@@ -7,17 +7,5 @@
 			<generator class="native"/>
 		</id>
 		<property name="Login" column="PER_LOGIN" type="string" not-null="true" length="32" unique="true"/>
-		<set inverse="true" name="MessagesBySender">
-			<key column="PER_ID"/>
-			<one-to-many class="Message"/>
-		</set>
-		<set cascade="all" name="MessagesBySupervisor" table="supervisor_sender">
-			<key column="PER_ID"/>
-			<many-to-many class="Message" column="MSG_ID"/>
-		</set>
-		<set cascade="all" name="CustomizedGroups" table="supervisor">
-			<key column="PER_ID"/>
-			<many-to-many class="CustomizedGroup" column="CGR_ID"/>
-		</set>
 	</class>
 </hibernate-mapping>

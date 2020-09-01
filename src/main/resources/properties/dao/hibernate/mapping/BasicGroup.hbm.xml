@@ -13,15 +13,6 @@
 		<property name="Label" column="BGR_LABEL"
 			type="string" not-null="true" length="255" unique="true" />
 
-		<set inverse="true" name="MessagesByGrpSender">
-			<key column="BGR_Sender_ID" />
-			<one-to-many class="Message" />
-		</set>
-
-		<set inverse="true" name="MessagesByGrpRecipient">
-			<key column="BGR_Recipient_ID" />
-			<one-to-many class="Message" />
-		</set>
 	</class>	
 	
 </hibernate-mapping>

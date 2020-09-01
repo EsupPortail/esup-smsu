@@ -69,16 +69,6 @@ public class Template  implements Serializable {
 	private java.lang.String signature;
 
 	/**
-	 * collection of messages that used this template.
-	 */
-	private java.util.Set<Message> messages;
-
-	/**
-	 * collection of mails that used this template.
-	 */
-	private java.util.Set<Mail> mails;
-
-	/**
 	 * Bean constructor.
 	 */
 	public Template() {
@@ -182,63 +172,6 @@ public class Template  implements Serializable {
 	public void setSignature(final java.lang.String signature) {
 		this.signature = signature;
 	}
-
-
-
-	/**
-	 * Return the value associated with the column: Messages.
-	 */
-	public java.util.Set<Message> getMessages() {
-		return messages;
-	}
-
-	/**
-	 * Set the value related to the column: Messages.
-	 * @param messages the Messages value
-	 */
-	public void setMessages(final java.util.Set<Message> messages) {
-		this.messages = messages;
-	}
-
-	/**
-	 * add a message to the collection of messages.
-	 * @param message
-	 */
-	public void addToMessages(final Message message) {
-		if (null == getMessages()) {
-			setMessages(new java.util.TreeSet<Message>());
-		}
-		getMessages().add(message);
-	}
-
-
-
-	/**
-	 * Return the value associated with the column: Mails.
-	 */
-	public java.util.Set<Mail> getMails() {
-		return mails;
-	}
-
-	/**
-	 * Set the value related to the column: Mails.
-	 * @param mails the Mails value
-	 */
-	public void setMails(final java.util.Set<Mail> mails) {
-		this.mails = mails;
-	}
-
-	/**
-	 * Add a mail to the collection of mails.
-	 * @param mail
-	 */
-	public void addToMails(final Mail mail) {
-		if (null == getMails()) {
-			setMails(new java.util.TreeSet<Mail>());
-		}
-		getMails().add(mail);
-	}
-
 
 	/**
 	 * @see java.lang.Object#equals(java.lang.Object)

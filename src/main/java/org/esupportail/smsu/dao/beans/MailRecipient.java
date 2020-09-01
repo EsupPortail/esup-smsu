@@ -50,11 +50,6 @@ public class MailRecipient  implements Serializable {
 	private java.lang.String login;
 
 	/**
-	 * collection of mails associate to the recipient.
-	 */
-	private java.util.Set<Mail> mails;
-
-	/**
 	 * Bean constructor.
 	 */
 	public MailRecipient() {
@@ -126,35 +121,6 @@ public class MailRecipient  implements Serializable {
 	public void setAddress(final java.lang.String address) {
 		this.address = address;
 	}
-
-	/**
-	 * Return the value associated with the column: Mails.
-	 */
-	public java.util.Set<Mail> getMails() {
-		return mails;
-	}
-
-	/**
-	 * Set the value related to the column: Mails.
-	 * @param mails the Mails value
-	 */
-	public void setMails(final java.util.Set<Mail> mails) {
-		this.mails = mails;
-	}
-
-	/**
-	 * Add a mail to the collection of mails.
-	 * @param mail
-	 */
-	public void addToMails(final Mail mail) {
-		if (null == getMails()) {
-			setMails(new java.util.TreeSet<Mail>());
-		}
-		getMails().add(mail);
-	}
-
-
-
 
 	/**
 	 * @see java.lang.Object#equals(java.lang.Object)

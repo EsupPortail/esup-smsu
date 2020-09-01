@@ -11,11 +11,6 @@
 		</id>
 
 		<property name="Name" column="FCT_NAME"	type="string" not-null="true" length="64" unique="true" />
-
-		<set cascade="all" name="Roles"	table="role_composition">
-			<key column="FCT_ID" />
-			<many-to-many class="Role" column="ROL_ID" />
-		</set>
 	</class>	
 
 </hibernate-mapping>

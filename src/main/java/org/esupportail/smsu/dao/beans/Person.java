@@ -39,21 +39,6 @@ public class Person  implements Serializable {
 	private java.lang.String login;
 
 	/**
-	 * collection of messages by sender.
-	 */
-	private java.util.Set<Message> messagesBySender;
-
-	/**
-	 * collection messages by supervisor.
-	 */
-	private java.util.Set<Message> messagesBySupervisor;
-
-	/**
-	 * collection of customized group.
-	 */
-	private java.util.Set<CustomizedGroup> customizedGroups;
-
-	/**
 	 * Bean constructor.
 	 */
 	public Person() {
@@ -109,90 +94,6 @@ public class Person  implements Serializable {
 	 */
 	public void setLogin(final java.lang.String login) {
 		this.login = login;
-	}
-
-
-
-	/**
-	 * Return the value associated with the column: MessagesBySender.
-	 */
-	public java.util.Set<Message> getMessagesBySender() {
-		return messagesBySender;
-	}
-
-	/**
-	 * Set the value related to the column: MessagesBySender.
-	 * @param messagesBySender the MessagesBySender value
-	 */
-	public void setMessagesBySender(final java.util.Set<Message> messagesBySender) {
-		this.messagesBySender = messagesBySender;
-	}
-
-	/**
-	 * Add a message to the collection of messages messagesBySender.
-	 * @param message
-	 */
-	public void addToMessagesBySender(final Message message) {
-		if (null == getMessagesBySender()) {
-			setMessagesBySender(new java.util.TreeSet<Message>());
-		}
-		getMessagesBySender().add(message);
-	}
-
-
-
-	/**
-	 * Return the value associated with the column: MessagesBySupervisor.
-	 */
-	public java.util.Set<Message> getMessagesBySupervisor() {
-		return messagesBySupervisor;
-	}
-
-	/**
-	 * Set the value related to the column: MessagesBySupervisor.
-	 * @param messagesBySupervisor the MessagesBySupervisor value
-	 */
-	public void setMessagesBySupervisor(final java.util.Set<Message> messagesBySupervisor) {
-		this.messagesBySupervisor = messagesBySupervisor;
-	}
-
-	/**
-	 * Add a message to the collection of messages messagesBySupervisor.
-	 * @param message
-	 */
-	public void addToMessagesBySupervisor(final Message message) {
-		if (null == getMessagesBySupervisor()) {
-			setMessagesBySupervisor(new java.util.TreeSet<Message>());
-		}
-		getMessagesBySupervisor().add(message);
-	}
-
-
-
-	/**
-	 * Return the value associated with the column: CustomizedGroups.
-	 */
-	public java.util.Set<CustomizedGroup> getCustomizedGroups() {
-		return customizedGroups;
-	}
-
-	/**
-	 * Set the value related to the column: CustomizedGroups.
-	 * @param customizedGroups the CustomizedGroups value
-	 */
-	public void setCustomizedGroups(final java.util.Set<CustomizedGroup> customizedGroups) {
-		this.customizedGroups = customizedGroups;
-	}
-
-	/**
-	 * Add a customized group to the collection of customized groups.
-	 * @param message
-	 */
-	public void addToCustomizedGroups(final CustomizedGroup customizedGroup) {
-		if (null == getCustomizedGroups()) {
-			setCustomizedGroups(new java.util.TreeSet<CustomizedGroup>());
-		}
-		getCustomizedGroups().add(customizedGroup);
 	}
 
 	/**

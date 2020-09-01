@@ -11,16 +11,6 @@
 		</id>
 		<property name="Label" column="ACC_LABEL" unique="true" 
 		    type="string" not-null="true" length="32" />
-
-		<set inverse="true" name="Messages">
-			<key column="ACC_ID" />
-			<one-to-many class="Message" />
-		</set>
-
-		<set inverse="true" name="CustomizedGroups">
-			<key column="ACC_ID" />
-			<one-to-many class="CustomizedGroup" />
-		</set>
 	</class>	
 	
 </hibernate-mapping>

@@ -39,16 +39,6 @@ public class BasicGroup  implements Serializable {
 	private java.lang.String label;
 
 	/**
-	 * collection of messages for which the group is the sender group.
-	 */
-	private java.util.Set<Message> messagesByGrpSender;
-
-	/**
-	 * collection of messages for which the group is the recipient group.
-	 */
-	private java.util.Set<Message> messagesByGrpRecipient;
-
-	/**
 	 * Bean constructor.
 	 */
 	public BasicGroup() {
@@ -103,63 +93,6 @@ public class BasicGroup  implements Serializable {
 	public void setLabel(final java.lang.String label) {
 		this.label = label;
 	}
-
-
-
-	/**
-	 * Return the value associated with the column: MessagesByGrpSender.
-	 */
-	public java.util.Set<Message> getMessagesByGrpSender() {
-		return messagesByGrpSender;
-	}
-
-	/**
-	 * Set the value related to the column: MessagesByGrpSender.
-	 * @param messagesByGrpSender the MessagesByGrpSender value
-	 */
-	public void setMessagesByGrpSender(final java.util.Set<Message> messagesByGrpSender) {
-		this.messagesByGrpSender = messagesByGrpSender;
-	}
-
-	/**
-	 * Add a message to the collection of messages messagesByGrpSender.
-	 * @param message
-	 */
-	public void addToMessagesByGrpSender(final Message message) {
-		if (null == getMessagesByGrpSender()) {
-			setMessagesByGrpSender(new java.util.TreeSet<Message>());
-		}
-		getMessagesByGrpSender().add(message);
-	}
-
-
-
-	/**
-	 * Return the value associated with the column: MessagesByGrpRecipient.
-	 */
-	public java.util.Set<Message> getMessagesByGrpRecipient() {
-		return messagesByGrpRecipient;
-	}
-
-	/**
-	 * Set the value related to the column: MessagesByGrpRecipient.
-	 * @param messagesByGrpRecipient the MessagesByGrpRecipient value
-	 */
-	public void setMessagesByGrpRecipient(final java.util.Set<Message> messagesByGrpRecipient) {
-		this.messagesByGrpRecipient = messagesByGrpRecipient;
-	}
-
-	/**
-	 * Add a message to the collection of messages messagesByGrpRecipient.
-	 * @param message
-	 */
-	public void addToMessagesByGrpRecipient(final Message message) {
-		if (null == getMessagesByGrpRecipient()) {
-			setMessagesByGrpRecipient(new java.util.TreeSet<Message>());
-		}
-		getMessagesByGrpRecipient().add(message);
-	}
-
 
 	/**
 	 * @see java.lang.Object#equals(java.lang.Object)
