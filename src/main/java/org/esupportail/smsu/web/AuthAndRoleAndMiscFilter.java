@@ -92,7 +92,7 @@ public final class AuthAndRoleAndMiscFilter implements Filter {
 			user = request.getHeader("REMOTE_USER");
 			if (StringUtils.isBlank(user)) user = null; // why is this needed? is shibboleth SP with lazy sessions doing this? 
 			if (user != null && !shibUseHeaders)
-				throw new RuntimeException("Received HTTP header REMOTE_USER. You must be using \"ShibUserHeaders On\" in apache configuration. In that case set shibboleth.shibUserHeaders=true");
+				throw new RuntimeException("Received HTTP header REMOTE_USER. It seems you have \"ShibUserHeaders On\" in apache configuration. In that case you must set shibboleth.shibUserHeaders=true in smsu config.properties");
 		}
 		if (user != null) session.setAttribute(sessionAttributeName, user);
 		return user;
