@@ -38,7 +38,7 @@ public class LoginController {
 		return new ResponseEntity<>(Helper.headers("Location", url), HttpStatus.TEMPORARY_REDIRECT);		
 	}
 
-	User user = domainService.getUser(request.getRemoteUser());
+	User user = domainService.getUser(request);
 	if (ourCookiesRejected) {
 		user.sessionId = request.getSession().getId();
 	}

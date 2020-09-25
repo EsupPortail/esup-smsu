@@ -16,7 +16,6 @@ import java.util.Set;
 import org.esupportail.commons.services.ldap.LdapException;
 import org.esupportail.commons.services.ldap.LdapUser;
 import org.apache.log4j.Logger;
-import org.esupportail.smsu.business.SecurityManager;
 import org.esupportail.smsu.dao.DaoService;
 import org.esupportail.smsu.dao.beans.Account;
 import org.esupportail.smsu.dao.beans.CustomizedGroup;
@@ -30,6 +29,8 @@ import org.esupportail.smsuapi.exceptions.UnknownMessageIdException;
 import org.esupportail.smsuapi.utils.HttpException;
 import org.esupportail.ws.remote.beans.TrackInfos;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.util.StringUtils;
 
 
@@ -37,15 +38,22 @@ public class DomainService {
 
 	@Inject private DaoService daoService;
 	@Inject private LdapUtils ldapUtils;	
-	@Inject private SecurityManager securityManager;	
 	@Inject private SmsuapiWS smsuapiWS;
 
 	private final Logger logger = Logger.getLogger(getClass());
 
+    @SuppressWarnings("unchecked")
+    public static Set<String> getUserAllowedFonctions(HttpServletRequest request) {
+        return (Set<String>) request.getAttribute("allowedFonctions");
+    }
 	/**
 	 * create user from a LDAP search or create a simple one
 	 */
-	public User getUser(final String id) {
+    public User getUser(HttpServletRequest request) {
+        return getUser(request.getRemoteUser(), getUserAllowedFonctions(request));
+    }
+
+	public User getUser(String id, Set<String> rights) {
 		User user = new User();
 		user.setId(id);
 		try {
@@ -54,7 +62,7 @@ public class DomainService {
 				displayName = id;
 			}
 			user.setDisplayName(displayName);
-			user.rights = securityManager.loadUserRightsByUsername(id);
+			user.rights = rights;
 		} catch (LdapException e) {
 		}
 		return user;
@@ -88,7 +96,7 @@ public class DomainService {
 	// Person
 	//////////////////////////////////////////////////////////////
 	public Map<String, String> fakePersonsWithCurrentUser(String userId) {
-		User user = getUser(userId);
+		User user = getUser(userId, null);
 		Map<String, String> result = new HashMap<>();
 		result.put(user.getId(), user.getDisplayName());
 		return result;

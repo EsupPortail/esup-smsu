@@ -18,6 +18,7 @@ import org.esupportail.smsu.business.MessageManager;
 import org.esupportail.smsu.business.SendSmsManager;
 import org.esupportail.smsu.business.ServiceManager;
 import org.esupportail.smsu.business.beans.Member;
+import org.esupportail.smsu.domain.DomainService;
 import org.esupportail.smsu.exceptions.CreateMessageException;
 import org.esupportail.smsu.exceptions.SmsuForbiddenException;
 import org.esupportail.smsu.exceptions.ldap.LdapUserNotFoundException;
@@ -172,7 +173,7 @@ public class WsController {
 	@RequestMapping(method = RequestMethod.GET, value = "/member/{login}/adhServicesAvailable")
 	public List<UIService> getUIServicesAdh(@PathVariable("login") String login, HttpServletRequest request) {
 		if(checkClient(request)) {
-			return serviceManager.getUIServicesAdhFctn(login);
+			return serviceManager.getUIServicesAdhFctn(login, DomainService.getUserAllowedFonctions(request));
 		} else {
 			throw new SmsuForbiddenException("You can't call this WS from this remote address");
 		}

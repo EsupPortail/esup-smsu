@@ -40,7 +40,7 @@ public class ApprovalController {
 		if (status.equals("CANCEL") && status.equals("IN_PROGRESS")) {
 			throw new InvalidParameterException("unknown status " + status);
 		}
-		User currentUser = domainService.getUser(request.getRemoteUser());
+		User currentUser = domainService.getUser(request);
 		logger.info("" + currentUser + " " + (status.equals("CANCEL") ? "cancel" : "approve") + " message " + id);
 		approvalManager.cancelOrApproveMessage(id, currentUser, MessageStatus.valueOf(status), request);
 	}

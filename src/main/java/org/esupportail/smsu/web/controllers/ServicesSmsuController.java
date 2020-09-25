@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import org.esupportail.smsu.business.ServiceManager;
+import org.esupportail.smsu.domain.DomainService;
 import org.esupportail.smsu.web.beans.UIService;
 import javax.inject.Inject;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,7 +34,7 @@ public class ServicesSmsuController {
 	public List<UIService> getUIServicesSendFctn(HttpServletRequest request) {
 		String login = request.getRemoteUser();
 		if (login == null) throw new InvalidParameterException("SERVICE.CLIENT.NOTDEFINED");
-		return serviceManager.getUIServicesSendFctn(login);
+		return serviceManager.getUIServicesSendFctn(login, DomainService.getUserAllowedFonctions(request));
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = "/adhFctn")
@@ -41,7 +42,7 @@ public class ServicesSmsuController {
 	public List<UIService> getUIServicesAdhFctn(HttpServletRequest request) {
 		String login = request.getRemoteUser();
 		if (login == null) throw new InvalidParameterException("SERVICE.CLIENT.NOTDEFINED");
-		return serviceManager.getUIServicesAdhFctn(login);
+		return serviceManager.getUIServicesAdhFctn(login, DomainService.getUserAllowedFonctions(request));
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)

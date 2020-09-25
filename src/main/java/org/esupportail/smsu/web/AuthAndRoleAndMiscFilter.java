@@ -62,6 +62,7 @@ public final class AuthAndRoleAndMiscFilter implements Filter {
         	user = request.getHeader("X-Impersonate-User");
         	rights = securityManager.loadUserRightsByUsername(user);
         }
+        request.setAttribute("allowedFonctions", rights);
         
         // ugly hack for Internet Explorer. It would need to be done somewhere else...
         response.setHeader("Cache-Control", "no-cache");
