@@ -66,8 +66,10 @@ app.controller('GroupsDetailCtrl', function($scope, h, $routeParams, $location) 
 	'FCTN_SMS_ENVOI_SERVICE_CP' ];
 
     $scope.wip = {};
-    $scope.groupOrUserChoices = [{ key:"group", label:"Groupe" },
-				 { key:"user", label: "Utilisateur" }];
+    $scope.labelKindChoices = [{ key:"group", label:"Groupe" },
+                 { key:"user", label: "Utilisateur" },
+                 { key:"attrsRegex", label: "Regex sur les attributes utilisateur" }
+                ];
 
     h.getAccounts().then(function (list) {
 	$scope.accounts = list;
@@ -136,13 +138,12 @@ app.controller('GroupsDetailCtrl', function($scope, h, $routeParams, $location) 
 
 	if (id === "new") {
 	    $scope.group = { isNew: true, quotaSms: 0, supervisors: {} };
-	    $scope.groupOrUser = 'group';
+	    $scope.group.labelKind = 'group';
 	} else {
 	    var id2group = h.array2hash(groups, 'id');
 
 	    if (id in id2group) {
 		$scope.group = id2group[id];
-		$scope.groupOrUser = $scope.group.labelIsUserId ? 'user' : 'group';
 		$scope.wip.label = $scope.group.displayName;
 	    } else {
 		alert("invalid group " + id);

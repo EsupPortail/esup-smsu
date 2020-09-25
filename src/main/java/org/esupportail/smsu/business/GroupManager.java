@@ -78,8 +78,8 @@ public class GroupManager {
 		result.role = group.getRole().getName();
 		result.account = group.getAccount().getLabel();
 		result.supervisors = convertToUI(group.getSupervisors());
-		result.labelIsUserId= ldapUtils.mayGetLdapUserByUid(group.getLabel()) != null;
-		result.displayName = groupUtils.getGroupDisplayName(group);
+		result.labelKind = groupUtils.customizedGroupsUseAttrsRegex ? "attrsRegex" : ldapUtils.mayGetLdapUserByUid(group.getLabel()) != null ? "user" : "group";
+		result.displayName = groupUtils.customizedGroupsUseAttrsRegex ? group.getDisplayName() : groupUtils.getGroupDisplayName(group);
 		return result;
 	}
 	
@@ -98,6 +98,9 @@ public class GroupManager {
 			result.setId(uiCGroup.id);
 		}		
 		result.setLabel(uiCGroup.label.trim());
+		if (groupUtils.customizedGroupsUseAttrsRegex) {
+		    result.setDisplayName(uiCGroup.displayName);
+		}
 		result.setConsumedSms(Long.parseLong("0"));
 		if (request.isUserInRole("FCTN_GESTION_QUOTAS"))
 			result.setQuotaSms(uiCGroup.quotaSms);
@@ -150,6 +153,7 @@ public class GroupManager {
 		if (persistent == null) throw new InvalidParameterException("invalid application " + cGroup.getId());
 
 		persistent.setLabel(cGroup.getLabel());
+		persistent.setDisplayName(cGroup.getDisplayName());
 		if (request.isUserInRole("FCTN_GESTION_QUOTAS"))
 			persistent.setQuotaSms(cGroup.getQuotaSms());
 		if (request.isUserInRole("FCTN_GESTION_QUOTAS"))

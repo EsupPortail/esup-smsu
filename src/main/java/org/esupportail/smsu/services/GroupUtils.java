@@ -1,10 +1,12 @@
 package org.esupportail.smsu.services;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.esupportail.commons.services.ldap.LdapUser;
@@ -21,11 +23,15 @@ public class GroupUtils {
 	@Inject public LdapUtils ldapUtils;
 	@Inject private DaoService daoService;
 	@Inject private HttpRequestWsgroups wsgroups;
+	public boolean customizedGroupsUseAttrsRegex;
 	
 	private final Logger logger = Logger.getLogger(getClass());
 
 
     private String getGroupDisplayName_(final String id) {
+        if (customizedGroupsUseAttrsRegex) {
+            return id;
+        }
     	if (wsgroups.inUse()) {
 			return wsgroups.getGroupDisplayName(this, id);
     	} else {
@@ -34,6 +40,9 @@ public class GroupUtils {
 	}
     
 	private List<? extends UserGroup> getUserGroups(String login) {
+		if (customizedGroupsUseAttrsRegex) {
+		    return Collections.emptyList();
+		}
 		if (wsgroups.inUse()) {
 			logger.debug("Use ws groups and not ldap groups");
 			return wsgroups.getUserGroups(login);
@@ -94,6 +103,11 @@ public class GroupUtils {
 		return getGroupDisplayName(cg.getLabel());
 	}
 	public String getGroupDisplayName(final String id) {
+		if (customizedGroupsUseAttrsRegex) {
+		    CustomizedGroup cg = daoService.getCustomizedGroupByLabel(id);
+		    return cg != null ? cg.getDisplayName() : id;
+		}
+
 		String displayName;
 		try {
 			displayName = ldapUtils.getUserDisplayNameByUserUid(id);
@@ -117,8 +131,15 @@ public class GroupUtils {
 		return groups;
 	}
 	
-	public List<CustomizedGroup> getCustomizedGroups(String login) {
+	public List<CustomizedGroup> getCustomizedGroups(String login, String loggedUserSortedAttributes) {
 		List<CustomizedGroup> l = new ArrayList<>();
+
+		if (customizedGroupsUseAttrsRegex) {
+		    for (CustomizedGroup cg: daoService.getAllCustomizedGroups()) {
+		        if (regex_matches_loggedUserSortedAttributes(cg.getLabel(), loggedUserSortedAttributes)) l.add(cg);
+		    }
+		    return l;
+		}
 
 		for (UserGroup group : getUserGroupsPlusSelfGroup(login)) {
 			logger.debug("group login is: " + group.id);
@@ -128,4 +149,13 @@ public class GroupUtils {
 		return l;
 	}
 	
+    private boolean regex_matches_loggedUserSortedAttributes(String regex, String loggedUserSortedAttributes) {
+        boolean b = Pattern.compile(regex, Pattern.MULTILINE | Pattern.DOTALL).matcher(loggedUserSortedAttributes).find();
+        logger.debug("regex_matches_loggedUserSortedAttributes: " + regex + " => " + b);
+        return b;
+    }
+
+    public void setCustomizedGroupsUseAttrsRegex(boolean customizedGroupsUseAttrsRegex) {
+        this.customizedGroupsUseAttrsRegex = customizedGroupsUseAttrsRegex;
+    }
 }

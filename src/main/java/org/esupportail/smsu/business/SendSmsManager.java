@@ -892,7 +892,10 @@ public class SendSmsManager  {
 	}
 
 	
-	public List<UserGroup> getUserGroupLeaves(String uid) {
+	public List<UserGroup> getUserGroupLeaves(String uid, String loggedUserSortedAttributes) {
+		if (loggedUserSortedAttributes != null) {
+		    return groupUtils.getCustomizedGroups(uid, loggedUserSortedAttributes).stream().map(cg -> new UserGroup(cg.getLabel(), cg.getDisplayName())).collect(Collectors.toList());
+		}
 		List<UserGroup> l = new LinkedList<>();
 		for (UserGroup group : groupUtils.getUserGroupsPlusSelfGroup(uid)) {
 		    CustomizedGroup cgroup = getCustomizedGroupByLabel(group.id);

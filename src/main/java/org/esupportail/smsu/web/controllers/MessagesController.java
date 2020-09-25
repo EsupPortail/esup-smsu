@@ -27,6 +27,7 @@ import org.esupportail.smsu.domain.beans.message.MessageStatus;
 import org.esupportail.smsu.exceptions.CreateMessageException;
 import org.esupportail.smsu.exceptions.CreateMessageException.EmptyGroup;
 import org.esupportail.smsu.services.ldap.beans.UserGroup;
+import org.esupportail.smsu.web.AuthAndRoleAndMiscFilter;
 import org.esupportail.smsu.web.beans.UIMessage;
 import org.esupportail.smsu.web.beans.UINewMessage;
 import org.esupportail.smsu.web.beans.UIService;
@@ -103,7 +104,7 @@ public class MessagesController {
 		if(ServiceManager.SERVICE_SEND_FUNCTION_CG.equals(msg.serviceKey)) msg.serviceKey = null;
 
 		recipientsValidation(msg, request, login);
-		userGroupValidation(msg.senderGroup, login);
+		userGroupValidation(msg.senderGroup, login, AuthAndRoleAndMiscFilter.get_loggedUserSortedAttributes(request));
 		sendSmsManager.contentValidation(msg.content);
 		if (msg.mailToSend != null) {
 			if (!request.isUserInRole("FCTN_SMS_AJOUT_MAIL"))
@@ -142,7 +143,7 @@ public class MessagesController {
 	@PermitAll
 	@RequestMapping(method = RequestMethod.GET, value = "/groupLeaves")
 	public List<UserGroup> getUserGroupLeaves(HttpServletRequest request) {
-		return sendSmsManager.getUserGroupLeaves(request.getRemoteUser());
+		return sendSmsManager.getUserGroupLeaves(request.getRemoteUser(), AuthAndRoleAndMiscFilter.get_loggedUserSortedAttributes(request));
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/senders")
@@ -196,8 +197,8 @@ public class MessagesController {
 				throw new InvalidParameterException("user " + login + " is not allowed to send SMS to groups");
 	}
 
-	private void userGroupValidation(String userGroup, String login) {
-		for (UserGroup g : sendSmsManager.getUserGroupLeaves(login))
+	private void userGroupValidation(String userGroup, String login, String loggedUserSortedAttributes) {
+		for (UserGroup g : sendSmsManager.getUserGroupLeaves(login, loggedUserSortedAttributes))
  			if (g.id.equals(userGroup)) return; // OK
 
 		// not found

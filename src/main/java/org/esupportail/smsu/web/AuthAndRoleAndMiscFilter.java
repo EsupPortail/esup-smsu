@@ -1,6 +1,9 @@
 package org.esupportail.smsu.web;
 
+import java.util.Collections;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -35,6 +38,7 @@ public final class AuthAndRoleAndMiscFilter implements Filter {
     private String shibbolethSessionInitiatorUrl;
 
     private String sessionAttributeName = "MY_REMOTE_USER";
+    static private String session_userSortedAttributes_name = "MY_USER_SORTED_ATTRIBUTES";
     private String rightAllowingImpersonate = "FCTN_GESTION_ROLES_AFFECT";
 
     private final Logger logger = Logger.getLogger(getClass());
@@ -54,13 +58,13 @@ public final class AuthAndRoleAndMiscFilter implements Filter {
 	    return;
 	}
 
-        Set<String> rights = securityManager.loadUserRightsByUsername(user);
+        Set<String> rights = securityManager.loadUserRightsByUsername(user, get_loggedUserSortedAttributes(request));
         if (request.getHeader("X-Impersonate-User") != null) {
 	    if (!rights.contains(rightAllowingImpersonate))
 	        throw new RuntimeException("Impersonate not allowed");
 
         	user = request.getHeader("X-Impersonate-User");
-        	rights = securityManager.loadUserRightsByUsername(user);
+        	rights = securityManager.loadUserRightsByUsername(user, get_loggedUserSortedAttributes(request));
         }
         request.setAttribute("allowedFonctions", rights);
         
@@ -68,6 +72,10 @@ public final class AuthAndRoleAndMiscFilter implements Filter {
         response.setHeader("Cache-Control", "no-cache");
         
 		filterChain.doFilter(new MyHttpServletRequestWrapper(request, user, rights), response);
+    }
+
+    static public String get_loggedUserSortedAttributes(HttpServletRequest request) {
+        return (String) request.getSession().getAttribute(session_userSortedAttributes_name);
     }
 
 	private String getRemoteUser(HttpServletRequest request) {
@@ -95,10 +103,20 @@ public final class AuthAndRoleAndMiscFilter implements Filter {
 			if (user != null && !shibUseHeaders)
 				throw new RuntimeException("Received HTTP header REMOTE_USER. It seems you have \"ShibUserHeaders On\" in apache configuration. In that case you must set shibboleth.shibUserHeaders=true in smsu config.properties");
 		}
-		if (user != null) session.setAttribute(sessionAttributeName, user);
+		if (user != null) {
+		    session.setAttribute(sessionAttributeName, user);
+		    session.setAttribute(session_userSortedAttributes_name, loggedUserSortedAttributes(request));
+		}
 		return user;
 	}
-    
+
+    private String loggedUserSortedAttributes(HttpServletRequest request) {
+        Stream<String> attrs = shibUseHeaders ?
+            Collections.list(request.getHeaderNames()).stream().map(name -> name + "=" + request.getHeader(name)) :
+            Collections.list(request.getAttributeNames()).stream().map(name -> name + "=" + request.getAttribute(name));
+        return attrs.sorted().collect(Collectors.joining("\n"));
+    }
+
 	private void handleNotAuthenticated(HttpServletRequest request,	HttpServletResponse response) throws IOException {
 		if (allowShibbolethSPLogin(request)) {
 			shibbolethSessionInitiate(request, response);

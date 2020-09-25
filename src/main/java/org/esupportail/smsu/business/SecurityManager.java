@@ -31,11 +31,11 @@ public class SecurityManager {
 	 * @return an List of Strings objectrepresenting the authenticated user and his rights 
 	 * if the authentication is successfull.
 	 */
-	public Set<String> loadUserRightsByUsername(final String login) {
+	public Set<String> loadUserRightsByUsername(final String login, String loggedUserSortedAttributes) {
 		Set<String> fonctions = new HashSet<>();
 		logger.debug("parameter login in loadUserRightsByUsername method is: " + login);
 		
-		for (CustomizedGroup grp : groupUtils.getCustomizedGroups(login)) {
+		for (CustomizedGroup grp : groupUtils.getCustomizedGroups(login, loggedUserSortedAttributes)) {
 				logger.debug("group label in loadUserRightsByUsername method is: " + grp.getLabel());
 				addFonctions(fonctions, grp.getRole().getFonctions());
 		}

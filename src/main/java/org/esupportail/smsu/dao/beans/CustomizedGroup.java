@@ -55,14 +55,17 @@ public class CustomizedGroup implements Serializable {
 	private static final long serialVersionUID = -3409241721229863372L;
 
 	/**
-	 * customized group identifier.
+	 * database id
 	 */
 	private java.lang.Integer id;
 
 	/**
-	 * label of the group.
+	 * LDAP/wsgroups id or attrsRegex
 	 */
 	private java.lang.String label;
+
+	/* only for attrsRegex groups */
+	private java.lang.String displayName;
 
 	/**
 	 * quota of sms.
@@ -141,6 +144,13 @@ public class CustomizedGroup implements Serializable {
 		this.label = label;
 	}
 
+	public java.lang.String getDisplayName() {
+		return displayName;
+	}
+
+	public void setDisplayName(final java.lang.String displayName) {
+		this.displayName = displayName;
+	}
 
 
 	/**
@@ -285,8 +295,10 @@ public class CustomizedGroup implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return "CustomizedGroup#" + hashCode() + "[id=[" + id + "], label=[" + label 
-		+  "]]";
+	    return "CustomizedGroup#" + hashCode() + "[" +
+	        "id=[" + id + "], " + 
+	        "label=[" + label +  "], " +
+	        "displayName=[" + displayName +  "]]";
 	}
 
 

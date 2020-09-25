@@ -9,14 +9,14 @@
 
   <div class="form-group">
     <div class="col-md-offset-3 col-md-9">
-      <select ng-model="groupOrUser" ng-options="a.key as a.label for a in groupOrUserChoices" class="form-control">
+      <select ng-model="group.labelKind" ng-options="a.key as a.label for a in labelKindChoices" class="form-control">
       </select>
     </div>  
   </div>
 
   <div class="form-group" ng-class="{'has-error': submitted && myForm.label.$invalid}">
     <label class="col-md-3 control-label" for="label">Nom</label>
-    <div class="col-md-9" ng-switch on="groupOrUser">
+    <div class="col-md-9" ng-switch on="group.labelKind">
 
 	<div my-autocomplete="user" ng-switch-when="user"
 	     name="label" ng-model="wip.label" class="form-control"
@@ -32,10 +32,22 @@
 	     >
 	</div>
 
+    <input ng-switch-when="attrsRegex"
+	     name="label" ng-model="group.label" class="form-control">
+
       <!--input type="text" name="label" ng-model="group.label" my-validator="{ unique: checkUniqueLabel }" required maxlength="30" class="form-control"-->
       <span ng-show="submitted && myForm.label.$error.required" class="help-block">Required</span>
       <span ng-show="submitted && myForm.label.$error.unique" class="help-block">Already in use</span>
     </div>
+  </div>
+
+  <div class="form-group" ng-class="{'has-error': submitted && myForm.displayName.$invalid}" ng-if="group.labelKind === 'attrsRegex'">
+    <label class="col-md-3 control-label" for="displayName">Description</label>
+    <div class="col-md-9">
+        <input name="displayName" ng-model="group.displayName" class="form-control" required>
+        <span ng-show="submitted && myForm.displayName.$error.required" class="help-block">Required</span>
+    </div>
+
   </div>
 
   <div class="form-group" ng-class="{'has-error': submitted && myForm.role.$invalid}">

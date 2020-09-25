@@ -8,6 +8,7 @@
 
 	<bean id="groupUtils"
 		class="org.esupportail.smsu.services.GroupUtils">
+		<property name="customizedGroupsUseAttrsRegex" value="#{'${authentication}' == 'shibboleth'}"/>
 	</bean>
 
 	<bean id="httpRequestWsgroups"

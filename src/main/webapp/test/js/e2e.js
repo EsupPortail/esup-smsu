@@ -68,7 +68,7 @@ describe('Existing group view', function() {
     });
     it('should display test group and be editable', function () {
 	expect(title()).toBe('admin');	  
-	expect(input('groupOrUser').val()).toBe("1");
+	expect(input('labelKind').val()).toBe("1");
 	expect(input('wip.label').val()).toBe("The Boss");
 	expect(input('group.role').val()).toBe("SUPER_ADMIN");
 	expect(input('wip.supervisor').val()).toBe("");
@@ -100,7 +100,7 @@ describe('New group view', function() {
     });
     it('should check validity of new group and create it', function () {
 	expect(title()).toBe('Création');	  
-	expect(input('groupOrUser').val()).toBe("0");
+	expect(input('labelKind').val()).toBe("0");
 	expect(input('wip.label').val()).toBe("");
 	expect(input('group.role').val()).toBe("?");
 	expect(input('wip.supervisor').val()).toBe("");

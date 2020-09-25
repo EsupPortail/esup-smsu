@@ -48,7 +48,7 @@ INSERT INTO role_composition VALUES(1,18);
 INSERT INTO account VALUES (1, 'default_account');
 
 -- Ajout du compte par defaut 
-INSERT INTO customized_group VALUES (1, 1, 1, 'admin', 1, 1, 1);
+INSERT INTO customized_group VALUES (1, 1, 1, 'admin', 'admin', 1, 1, 1);
 
 -- Ajout du service "IGNORE_CG"
 INSERT INTO service (SVC_KEY, SVC_NAME) VALUES ('IGNORE_CG', 'Inclure les non adhérents');
