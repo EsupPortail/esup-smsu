@@ -6,6 +6,7 @@ package org.esupportail.smsu.web.controllers;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
@@ -98,7 +99,7 @@ public class MessagesController {
 		if (login == null) throw new InvalidParameterException("SERVICE.CLIENT.NOTDEFINED");
 		msg.login = login;
 		
-		serviceKeyValidation(msg.serviceKey, login);
+		serviceKeyValidation(msg.serviceKey, login, DomainService.getUserAllowedFonctions(request));
 		if(ServiceManager.SERVICE_SEND_FUNCTION_CG.equals(msg.serviceKey)) msg.serviceKey = null;
 
 		recipientsValidation(msg, request, login);
@@ -127,7 +128,7 @@ public class MessagesController {
 		if (login == null) throw new InvalidParameterException("SERVICE.CLIENT.NOTDEFINED");
 		msg.login = login;
 		
-		serviceKeyValidation(msg.serviceKey, login);
+		serviceKeyValidation(msg.serviceKey, login, DomainService.getUserAllowedFonctions(request));
 		if (ServiceManager.SERVICE_SEND_FUNCTION_CG.equals(msg.serviceKey)) msg.serviceKey = null;
 		
 		try {
@@ -174,8 +175,8 @@ public class MessagesController {
 		}
 	}
 	
-	private void serviceKeyValidation(String serviceKey, String login) {
-		 List<UIService> services = serviceManager.getUIServicesSendFctn(login);
+	private void serviceKeyValidation(String serviceKey, String login, Set<String> allowedFonctions) {
+		 List<UIService> services = serviceManager.getUIServicesSendFctn(login, allowedFonctions);
 		 for(UIService service : services) {
 			 if(service.key.equals(serviceKey)) 
 				 return; // OK

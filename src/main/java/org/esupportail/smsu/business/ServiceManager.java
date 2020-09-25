@@ -21,8 +21,6 @@ public class ServiceManager {
 	
 	@Inject private DaoService daoService;
 	
-	@Inject private SecurityManager securityManager;
-	
 	@SuppressWarnings("unused")
 	private final Logger logger = Logger.getLogger(getClass());
 
@@ -40,9 +38,8 @@ public class ServiceManager {
 	/**
 	 * retrieve services defined in smsu database that this user can use to send mail to.
 	 */
-	public List<UIService> getUIServicesSendFctn(String login) {
+	public List<UIService> getUIServicesSendFctn(String login, Set<String> allowedFonctions) {
 		List<UIService> allUiServices = new ArrayList<>();
-		Set<String> allowedFonctions = securityManager.loadUserRightsByUsername(login);
 		if(allowedFonctions.contains(SERVICE_SEND_FUNCTION_CG)) {
 			allUiServices.add(UIService.CG_SERVICE);
 		}
@@ -57,9 +54,8 @@ public class ServiceManager {
 	/**
 	 * retrieve services defined in smsu database that this user can use to register to (adhesion).
 	 */
-	public List<UIService> getUIServicesAdhFctn(String login) {
+	public List<UIService> getUIServicesAdhFctn(String login, Set<String> allowedFonctions) {
 		List<UIService> allUiServices = new ArrayList<>();
-		Set<String> allowedFonctions = securityManager.loadUserRightsByUsername(login);
 		for (Service service : daoService.getServices()) {			
 			if(allowedFonctions.contains(SERVICE_ADH_FUNCTION_PREFIX + service.getKey().toUpperCase())) {
 				allUiServices.add(convertToUI(service));
