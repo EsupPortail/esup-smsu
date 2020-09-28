@@ -55,7 +55,7 @@ public class ServiceManager {
 	}
 	
 	/**
-	 * retrieve services defined in smsu database that this user can use to register to (adhésion).
+	 * retrieve services defined in smsu database that this user can use to register to (adhesion).
 	 */
 	public List<UIService> getUIServicesAdhFctn(String login) {
 		List<UIService> allUiServices = new ArrayList<>();
