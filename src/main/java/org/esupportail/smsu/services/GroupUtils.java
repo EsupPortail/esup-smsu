@@ -18,7 +18,7 @@ import org.esupportail.smsu.services.wsgroups.HttpRequestWsgroups;
 import javax.inject.Inject;
 
 public class GroupUtils {
-	@Inject private LdapUtils ldapUtils;
+	@Inject public LdapUtils ldapUtils;
 	@Inject private DaoService daoService;
 	@Inject private HttpRequestWsgroups wsgroups;
 	

@@ -42,6 +42,9 @@ public class SecurityManager {
 		if (fonctions.contains("FCTN_GESTIONS_RESPONSABLES") || isSupervisor(login)) {
 			fonctions.add("APPROBATION_ENVOI");
 		}
+		if (!groupUtils.ldapUtils.disabled) {
+		    fonctions.add("FCTN_SMS_ADHESION_SERVICE_CG");
+		}
 		return fonctions;
 	}
 
