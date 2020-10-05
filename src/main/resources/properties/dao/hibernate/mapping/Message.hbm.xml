@@ -20,6 +20,10 @@
 		<many-to-one name="GroupSender" column="BGR_SENDER_ID" class="BasicGroup" not-null="true" cascade="all"/>
 		<many-to-one name="GroupRecipient" column="BGR_RECIPIENT_ID" class="BasicGroup" not-null="false" cascade="all"/>
 		
+		<set cascade="all" name="ContactRecipients" table="to_contact">
+			<key column="MSG_ID"/>
+			<many-to-many class="Contact" column="CONTACT_ID"/>
+		</set>
 		<set cascade="all" name="Recipients" table="to_recipient">
 			<key column="MSG_ID"/>
 			<many-to-many class="Recipient" column="RCP_ID"/>

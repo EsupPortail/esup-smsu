@@ -6,6 +6,7 @@ public class UINewMessage {
 	public String recipientGroup;
 	public List<String> recipientLogins;
 	public List<String> recipientPhoneNumbers;	
+	public List<Integer> recipientContacts;	
 	public String login;
 	public String content;
 	public String smsTemplate;

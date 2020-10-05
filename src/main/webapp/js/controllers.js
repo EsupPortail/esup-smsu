@@ -62,6 +62,7 @@ app.controller('GroupsDetailCtrl', function($scope, h, $routeParams, $location) 
 	'FCTN_SMS_ENVOI_GROUPES',
 	'FCTN_SMS_ENVOI_NUM_TEL',
 	'FCTN_SMS_ENVOI_LISTE_NUM_TEL',
+	'FCTN_SMS_ENVOI_CONTACT',
 	'FCTN_SMS_REQ_LDAP_ADH',
 	'FCTN_SMS_ENVOI_SERVICE_CP' ];
 
@@ -470,9 +471,9 @@ app.controller('ApprovalsCtrl', function($scope, h) {
 });
 
 app.controller('SendCtrl', function($scope, h, $location) {
-    $scope.wip = { phoneNumber: null, login: null }; // temp
+    $scope.wip = { phoneNumber: null, login: null, contact: null }; // temp
     $scope.msg = {};
-    var allRecipientTypes = ['SMS_ENVOI_ADH', 'SMS_ENVOI_GROUPES', 'SMS_ENVOI_NUM_TEL', 'SMS_ENVOI_LISTE_NUM_TEL', 'SMS_REQ_LDAP_ADH'];
+    var allRecipientTypes = ['SMS_ENVOI_ADH', 'SMS_ENVOI_GROUPES', 'SMS_ENVOI_CONTACT', 'SMS_ENVOI_NUM_TEL', 'SMS_ENVOI_LISTE_NUM_TEL', 'SMS_REQ_LDAP_ADH'];
     $scope.$watch('loggedUser', function () {
 	$scope.recipientTypes = $.grep(allRecipientTypes, function (e) { 
 	    return $scope.loggedUser && $scope.loggedUser.can["FCTN_" + e];
@@ -529,6 +530,7 @@ app.controller('SendCtrl', function($scope, h, $location) {
 
     $scope.msg.destLogins = [];
     $scope.msg.destPhoneNumbers = [];
+    $scope.msg.destContacts = [];
 
     // TEST
     //$scope.msg.destLogins.push({id:"aanli", name: "Aymar Anli"});
@@ -542,6 +544,7 @@ app.controller('SendCtrl', function($scope, h, $location) {
         var msgToSend = h.objectSlice(msg, ['senderGroup','serviceKey']);
         msgToSend.recipientLogins = destIds(msg.destLogins);
         msgToSend.recipientPhoneNumbers = msg.destPhoneNumbers.length ? msg.destPhoneNumbers : null;
+        msgToSend.recipientContacts = msg.destContacts.length ? destIds(msg.destContacts) : null;
         msgToSend.recipientGroup = msg.destGroup && msg.destGroup.id;
         return msgToSend;
     }
@@ -549,7 +552,7 @@ app.controller('SendCtrl', function($scope, h, $location) {
     function updateNbRecipients() {
         var msg = $scope.msg;
         $scope.nbRecipients = null;
-        if (msg.destGroup || msg.serviceKey !== 'FCTN_SMS_ENVOI_SERVICE_CG' && (msg.destLogins.length || msg.destPhoneNumbers.length)) {
+        if (msg.destGroup || msg.destContacts.length || msg.serviceKey !== 'FCTN_SMS_ENVOI_SERVICE_CG' && (msg.destLogins.length || msg.destPhoneNumbers.length)) {
             var msgToSend = computeMsgToSendRecipients($scope.msg);
             h.callRestModify('post', 'messages/nbRecipients', msgToSend).then(function (resp) {
                 var recipients = resp.data;
@@ -562,6 +565,7 @@ app.controller('SendCtrl', function($scope, h, $location) {
     $scope.$watch('msg.destGroup', updateNbRecipients);
     $scope.$watch('msg.destLogins', updateNbRecipients, true);
     $scope.$watch('msg.destPhoneNumbers', updateNbRecipients, true);
+    $scope.$watch('msg.destContacts', updateNbRecipients, true);
     
     $scope.searchUser = function (token) {
 	if (token.length < 4) {
@@ -587,6 +591,14 @@ app.controller('SendCtrl', function($scope, h, $location) {
 	    });
     };
 
+    $scope.searchContact = function (token) {
+        return h.callRest('contacts/search_sendContacts', { token: token })
+            .then(function (contacts) {
+                $scope.wip.contacts = $.map(contacts, function (name, id) { return { id: id, name: name } });
+                return $scope.wip.contacts;
+            });
+    };
+
     $scope.addDestLogin = function () {
 	if ($scope.wsgroupsURL) {
 	    h.get_noSMS($scope.wip.login, { service: $scope.msg.serviceKey });
@@ -601,6 +613,10 @@ app.controller('SendCtrl', function($scope, h, $location) {
     $scope.addDestGroup = function () {
 	$scope.msg.destGroup = $scope.wip.group; 
 	$scope.wip.group = null;
+    };
+    $scope.addDestContact = function () {
+        $scope.msg.destContacts.push($scope.wip.contact);
+        $scope.wip.contact = null;
     };
     $scope.addListDestPhoneNumber = function () {
 	var s = $scope.wip.listPhoneNumbers;
@@ -631,6 +647,10 @@ app.controller('SendCtrl', function($scope, h, $location) {
 	    h.array_remove_elt(msg.destLogins, e);
 	    h.array_remove_elt(msg.destPhoneNumbers, e);
 	}
+    };
+
+    $scope.removeContact = function (e) {
+        h.array_remove_elt($scope.msg.destContacts, e);
     };
 
     $scope.submit = function () {
@@ -739,12 +759,98 @@ app.controller('MessagesDetailCtrl', function($scope, h, $routeParams, $location
 
     $scope.getMsg = function () {
 	h.callRest('messages/' + id).then(function (msg) {
+	    msg.visible_recipients = msg.recipients.filter(function (rcpt) { return rcpt });
 	    $scope.msg = msg;
 	    h.mayGetMsgStatuses(msg);
 	});
     };
 
     $scope.getMsg();
+});
+
+app.controller('ContactsCtrl', function($scope, h) {
+    h.callRest('contacts').then(function (contacts) {
+        $scope.contacts = contacts;
+    });
+});
+
+app.controller('ContactsDetailCtrl', function($scope, h, $routeParams, $location) {
+    var id = $routeParams.id;
+
+    $scope.phoneNumbersToAdd = '';
+    
+    h.callRest('contacts').then(function (contacts) {
+        $scope.label2contact = h.array2hash(h.objectValues(contacts), 'label');
+        if (id === "new") {
+            $scope.contact = { isNew: true, label: "", phones: [] };
+        } else {
+            var id2contact = h.array2hash(contacts, 'id');
+            if (id in id2contact) {
+                $scope.contact = id2contact[id];
+            } else {
+                alert("invalid contact " + id);
+            }
+        }
+        if ($scope.loggedUser.can.FCTN_CONTACT_SHARE) {
+            h.callRest('messages/groupLeaves').then(function (allowed_shares) {
+                $scope.allowed_shares = allowed_shares;
+                var shares = $scope.shares = {};
+                allowed_shares.forEach(function (e) { shares[e.id] = false })
+                $scope.contact.sharedWith.forEach(function (s) { shares[s] = true })
+            });   
+        }    
+    });
+
+
+    var updateCurrentTabTitle = function () {
+        $scope.currentTab.text = $scope.contact && $scope.contact.label || (id === 'new' ? 'Création' : 'Modification');
+    };
+    updateCurrentTabTitle();
+    $scope.$watch('contact.label', updateCurrentTabTitle);
+    
+    $scope.checkUniqueName = function (name) {
+        var contact = $scope.label2contact[name];
+        return !contact || contact === $scope.contact;
+    };
+    
+    $scope.removePhone = function (e) {
+        h.array_remove_elt($scope.contact.phones, e);
+    };
+
+    $scope.addPhones = function () {
+        var s = $scope.phoneNumbersToAdd;
+        var numbers = s.match(phoneNumberPatternAll);
+        if (!numbers) {
+            numbers = s.replace(/ /g, '').match(phoneNumberPatternAll);
+        }
+        if (numbers) {
+            $scope.phoneNumbersToAdd = '';
+            $scope.contact.phones = h.uniq($scope.contact.phones.concat(numbers));
+        }
+    };
+
+    var modify = function (method) {
+        var contact = angular.copy($scope.contact);
+        delete contact.isNew;
+        h.callRestModify(method, 'contacts', contact).then(function () {
+            $location.path('/contacts');
+        });
+    };
+    
+    $scope.submit = function () {
+        if ($scope.phoneNumbersToAdd) {
+            $scope.addPhones();
+            return;
+        }
+        if (!$scope.myForm.$valid) return;
+        if ($scope.shares) {
+            $scope.contact.sharedWith = h.set2array($scope.shares);
+        }
+        modify($scope.contact.isNew ? 'post' : 'put');
+    };
+    $scope["delete"] = function () {
+        modify('delete');
+    };
 });
 
 })();

@@ -93,6 +93,7 @@ public class MessagesController {
 				"FCTN_SMS_ENVOI_GROUPES",
 				"FCTN_SMS_ENVOI_NUM_TEL",
 				"FCTN_SMS_ENVOI_LISTE_NUM_TEL",
+				"FCTN_SMS_ENVOI_CONTACT",
 				"FCTN_SMS_REQ_LDAP_ADH"})
 	@RequestMapping(method = RequestMethod.POST)
 	public UIMessage sendSMSAction(@RequestBody UINewMessage msg, HttpServletRequest request) throws CreateMessageException {		
@@ -122,6 +123,7 @@ public class MessagesController {
 				"FCTN_SMS_ENVOI_GROUPES",
 				"FCTN_SMS_ENVOI_NUM_TEL",
 				"FCTN_SMS_ENVOI_LISTE_NUM_TEL",
+				"FCTN_SMS_ENVOI_CONTACT",
 				"FCTN_SMS_REQ_LDAP_ADH"})
 	@RequestMapping(method = RequestMethod.POST, value = "/nbRecipients")
 	public int nbRecipients(@RequestBody UINewMessage msg, HttpServletRequest request) {	
@@ -192,6 +194,9 @@ public class MessagesController {
 		if (msg.recipientPhoneNumbers != null)
 			if (!request.isUserInRole("FCTN_SMS_ENVOI_NUM_TEL"))
 				throw new InvalidParameterException("user " + login + " is not allowed to send to phone numbers");
+		if (msg.recipientContacts != null)
+			if (!request.isUserInRole("FCTN_SMS_ENVOI_CONTACT"))
+				throw new InvalidParameterException("user " + login + " is not allowed to send SMS to contacts");
 		if (!StringUtils.isEmpty(msg.recipientGroup))
 			if (!request.isUserInRole("FCTN_SMS_ENVOI_GROUPES"))
 				throw new InvalidParameterException("user " + login + " is not allowed to send SMS to groups");

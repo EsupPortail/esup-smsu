@@ -6,10 +6,12 @@ package org.esupportail.smsu.dao;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 import org.esupportail.smsu.dao.beans.Account;
 import org.esupportail.smsu.dao.beans.BasicGroup;
+import org.esupportail.smsu.dao.beans.Contact;
 import org.esupportail.smsu.dao.beans.CustomizedGroup;
 import org.esupportail.smsu.dao.beans.Fonction;
 import org.esupportail.smsu.dao.beans.Mail;
@@ -23,10 +25,12 @@ import org.esupportail.smsu.dao.beans.Service;
 import org.esupportail.smsu.dao.beans.Supervisor;
 import org.esupportail.smsu.dao.beans.Template;
 import org.esupportail.smsu.domain.beans.message.MessageStatus;
+import org.esupportail.smsu.utils.Utils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.dao.support.DataAccessUtils;
@@ -939,6 +943,53 @@ public class HibernateDaoServiceImpl implements DaoService {
 		MailRecipient mailRecipient = (MailRecipient) criteria.uniqueResult();
 		return mailRecipient;
 	}
+
+    //////////////////////////////////////////////////////////////
+    // Contacts (address book)
+    //////////////////////////////////////////////////////////////
+
+    @SuppressWarnings("unchecked")
+    public List<Contact> getContactsByOwner(String owner) {
+		Criteria criteria = getCurrentSession().createCriteria(Contact.class);
+		criteria.add(Restrictions.eq("Owner", owner));
+		return criteria.list();
+    }
+
+    public List<Contact> searchOwnerOrSharedContacts(String token, String owner, List<CustomizedGroup> cgroups) {
+        return Utils.concat(
+            searchOwnedContacts(token, owner),
+            searchOnlySharedContacts(token, owner, cgroups));
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<Contact> searchOwnedContacts(String token, String owner) {
+        Criteria criteria = getCurrentSession().createCriteria(Contact.class);
+        criteria.add(Restrictions.like("Label", token, MatchMode.ANYWHERE));
+		criteria.add(Restrictions.eq("Owner", owner));
+        return criteria.list();
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<Contact> searchOnlySharedContacts(String token, String owner, List<CustomizedGroup> cgroups) {
+        Criteria criteria = getCurrentSession().createCriteria(Contact.class);
+        criteria.add(Restrictions.like("Label", token, MatchMode.ANYWHERE));
+        criteria.add(Restrictions.ne("Owner", owner));
+        criteria.createCriteria("SharedWith").add(Restrictions.in("Id", cgroups.stream().map(CustomizedGroup::getId).collect(Collectors.toList())));
+        return criteria.list();
+    }
+
+    public Contact getContactById(int id) {
+        return (Contact) getCurrentSession().get(Contact.class, id);
+    }
+    public void addContact(Contact contact) {
+        addObject(contact);
+    }
+    public void updateContact(Contact contact) {
+        updateObject(contact);
+    }
+    public void deleteContact(Contact contact) {
+        deleteObject(contact);
+    }
 
 	
 	public boolean isSupervisor(final Person person) {

@@ -22,6 +22,8 @@ public class UIMessage {
 	public String groupSenderName;
 	public String groupRecipientName;
 
+	public List<String> contactRecipientsNames;
+
 	public String accountLabel;
 	public String serviceName;
 	

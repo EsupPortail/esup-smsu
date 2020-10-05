@@ -1,0 +1,65 @@
+<div class="normalContent" ng-show="contact">
+ <a class="btn btn-default" ng-hide="contact.isNew" ng-click="delete()"><span class="glyphicon glyphicon-remove"></span> Supprimer</a>
+
+ <h4 style="margin-top: 2em" ng-hide="contact.isNew">Modifier</h4>
+
+ <form novalidate name="myForm" ng-submit="submitted = 1; submit()" class="form-horizontal">
+
+  <div class="form-group" ng-class="{'has-error': submitted && myForm.name.$invalid}">
+    <label class="col-md-3 control-label" for="name">Libellé</label>
+    <div class="col-md-6">
+      <input type="text" name="name" ng-model="contact.label" my-validator="{ unique: checkUniqueName }" required maxlength="30" class="form-control">
+      <span display-required-if-needed input-name="myForm.name"></span>
+      <span ng-show="submitted && myForm.name.$error.unique" class="help-block">Already in use</span>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="col-md-3 control-label" for="fonctions">Contacts</label>
+    <div class="col-md-9">
+
+        <div class="input-group">
+            <textarea ng-model="phoneNumbersToAdd" class="form-control" placeholder="Saisir un ou plusieurs numéro(s) de téléphones plus cliquez sur +"></textarea>
+            <span class="input-group-btn">
+            <button class="btn btn-default" type="button" ng-click="addPhones()">
+                <span class="glyphicon glyphicon-plus"></span>
+            </button>
+            </span>
+        </div>
+
+        <ul class="not-inline multiSelectSelected">
+            <li ng-repeat="e in contact.phones">
+                <a ng-click="removePhone(e)">
+                <span class="glyphicon glyphicon-earphone"></span>
+                {{e}}
+                <span class="glyphicon glyphicon-remove"></span>
+                </a>
+            </li>
+        </ul>
+    </div>
+  </div>
+
+  <div class="form-group" ng-if="shares">
+    <label class="col-md-3 control-label" for="share">Visibilité</label>
+    <div class="col-md-9">
+      En cochant les cases ci-après, vous pouvez partager ce contact avec un groupe : les membres du groupe pourront envoyer un SMS aux numéros de téléphones ci-dessus, mais ne les verront.
+      <div class="checkbox" ng-repeat="share in allowed_shares">
+        <label>
+        <input type="checkbox" name="share" ng-model="shares[share.id]">
+        {{share.name}}
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="col-md-offset-3 col-md-6">
+      <button class="btn btn-primary" type="submit">
+    <span class="glyphicon" ng-class="{'glyphicon-plus': contact.isNew, 'glyphicon-pencil': !contact.isNew}"></span>
+    {{contact.isNew &amp;&amp; "Créer" || "Enregistrer"}}</button>
+    </div>
+  </div>
+
+ </form>
+
+</div>

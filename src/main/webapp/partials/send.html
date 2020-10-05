@@ -51,6 +51,15 @@
 	<span ng-show="wip.groups.length === 0" class="has-error"><span class="help-block">Impossible de trouver un groupe contenant ce nom</span></span>
       </div>
 
+      <div ng-switch-when="SMS_ENVOI_CONTACT">
+        <div my-autocomplete="contact" ng-model="wip.contact" class="form-control"
+            do-search="searchContact($viewValue)" 
+            on-select="addDestContact()"
+            >
+        </div>
+        <span ng-show="wip.contacts.length === 0" class="has-error"><span class="help-block">Impossible de trouver un contact contenant ce nom</span></span>
+      </div>
+    
       <div ng-switch-when="SMS_ENVOI_NUM_TEL">
 	<div class="input-group">
          <input type="text" name="destPhoneNumber" ng-model="wip.phoneNumber" class="form-control" 
@@ -108,6 +117,14 @@
 	  </a>
 	</li>
 
+	<li ng-repeat="e in msg.destContacts">
+        <a ng-click="removeContact(e)">
+          <span class="glyphicon glyphicon-earphone"></span>
+          {{e.name}}
+          <span class="glyphicon glyphicon-remove"></span>
+        </a>
+    </li>
+  
 	<li ng-if="msg.destGroup">
 	  <a ng-click="removeRecipient(msg.destGroup)">
 	    <span class="glyphicon glyphicon-list"></span>

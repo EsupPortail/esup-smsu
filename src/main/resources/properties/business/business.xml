@@ -55,6 +55,11 @@
 		<description>The business layer concerning the templates.</description>
 	</bean>
 	
+	<bean id="contactManager"
+		class="org.esupportail.smsu.business.ContactManager">
+		<description>The business layer concerning the contacts.</description>
+	</bean>
+	
 	<bean id="securityManager"
 		class="org.esupportail.smsu.business.SecurityManager">
 		<description>The business layer concerning the templates.</description>

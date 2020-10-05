@@ -10,11 +10,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
+
 import org.esupportail.commons.services.ldap.LdapUser;
 
 import org.apache.log4j.Logger;
 import org.esupportail.smsu.dao.DaoService;
 import org.esupportail.smsu.dao.beans.BasicGroup;
+import org.esupportail.smsu.dao.beans.Contact;
 import org.esupportail.smsu.dao.beans.Mail;
 import org.esupportail.smsu.dao.beans.Message;
 import org.esupportail.smsu.dao.beans.Person;
@@ -100,6 +103,7 @@ public class MessageManager {
 		r.accountLabel = mess.getAccount().getLabel();
 		r.groupSenderName = retreiveNiceGroupName(mess.getGroupSender());
 		r.groupRecipientName = retreiveNiceGroupName(mess.getGroupRecipient());
+		r.contactRecipientsNames = mess.getContactRecipients() != null ? mess.getContactRecipients().stream().map(Contact::getLabel).collect(Collectors.toList()) : null;
 		r.serviceName = mess.getService() != null ? mess.getService().getName() : null;
 		r.stateMessage = convertToUI(mess.getStateAsEnum());
 		r.stateMail = convertToUI(mess.getMail());

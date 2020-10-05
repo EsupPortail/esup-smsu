@@ -22,7 +22,10 @@
   </dl>
 
   <dl class="dl-horizontal">
-    <dt>{{'MSG_RECIPIENTS'      | translate}}</dt><dd>{{msg.recipients.join(", ")}}</dd>
+    <dt ng-show="msg.visible_recipients.length"
+       >{{'MSG_RECIPIENTS'      | translate}}</dt><dd>{{msg.visible_recipients.join(", ")}}</dd>
+    <dt ng-show="msg.contactRecipientsNames.length"
+       >{{'MSG_CONTACTS'      | translate}}</dt><dd>{{msg.contactRecipientsNames.join(", ")}}</dd>
   </dl>
 
   <dl class="dl-horizontal" ng-if="msg.statuses">

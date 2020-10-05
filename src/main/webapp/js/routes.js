@@ -6,8 +6,9 @@ function computeRoutes(baseURL) {
   var l =
     [{ route: '/welcome', mainText: "Accueil", controller: 'WelcomeCtrl' }, 
      { route: '/membership', mainText: "Adhésion", controller: 'MembershipCtrl', show: 'loggedUser.can.FCTN_SMS_ADHESION_SERVICE_CG' },
-     { route: '/send', mainText: "Envoi SMS", show: 'loggedUser.can.FCTN_SMS_ENVOI_ADH || loggedUser.can.FCTN_SMS_ENVOI_GROUPES || loggedUser.can.FCTN_SMS_ENVOI_NUM_TEL || loggedUser.can.FCTN_SMS_ENVOI_LISTE_NUM_TEL || loggedUser.can.FCTN_SMS_REQ_LDAP_ADH', controller: 'SendCtrl'},
+     { route: '/send', mainText: "Envoi SMS", show: 'loggedUser.can.FCTN_SMS_ENVOI_ADH || loggedUser.can.FCTN_SMS_ENVOI_GROUPES || loggedUser.can.FCTN_SMS_ENVOI_NUM_TEL || loggedUser.can.FCTN_SMS_ENVOI_LISTE_NUM_TEL || loggedUser.can.FCTN_SMS_ENVOI_CONTACT || loggedUser.can.FCTN_SMS_REQ_LDAP_ADH', controller: 'SendCtrl'},
      { route: '/messages', mainText: "Suivi des envois", show: 'loggedUser.can.FCTN_SUIVI_ENVOIS_UTIL || loggedUser.can.FCTN_SUIVI_ENVOIS_ETABL', controller: 'MessagesCtrl'},
+     { route: '/contacts', mainText: "Carnet d'adresses", show: 'loggedUser.can.FCTN_CONTACT_CREATE', controller: 'ContactsCtrl'},
      { route: '/approvals', mainText: "Approbation des envois", show: 'loggedUser.can.APPROBATION_ENVOI', controller: 'ApprovalsCtrl'},
      { route: '/templates', mainText: "Modèles", show: 'loggedUser.can.FCTN_GESTION_MODELES', controller: 'TemplatesCtrl'},
      { route: '/roles', mainText: "Rôles", show: 'loggedUser.can.FCTN_GESTION_ROLES_CRUD', controller: 'RolesCtrl'},
@@ -16,6 +17,7 @@ function computeRoutes(baseURL) {
      { route: '/logout', mainText: "Déconnexion", show: 'allowLogout', controller: 'EmptyCtrl' },
      { route: '/about', mainText: "A propos de", title: "A propos de SMSU-U", controller: 'EmptyCtrl'},
      { route: '/messages/:id', text: "Détail", parent: '/messages', controller: 'MessagesDetailCtrl', templateUrl: templatesBaseURL + '/messages-detail.html'},
+     { route: '/contacts/:id', parent: '/contacts', controller: 'ContactsDetailCtrl', templateUrl: templatesBaseURL + '/contacts-detail.html'},
      { route: '/templates/:id', parent: '/templates', controller: 'TemplatesDetailCtrl', templateUrl: templatesBaseURL + '/templates-detail.html'},
      { route: '/roles/:id', parent: '/roles', controller: 'RolesDetailCtrl', templateUrl: templatesBaseURL + '/roles-detail.html'},
      { route: '/groups/:id', parent: '/groups', controller: 'GroupsDetailCtrl', templateUrl: templatesBaseURL + '/groups-detail.html'},

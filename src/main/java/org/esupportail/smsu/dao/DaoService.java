@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.esupportail.smsu.dao.beans.Account;
 import org.esupportail.smsu.dao.beans.BasicGroup;
+import org.esupportail.smsu.dao.beans.Contact;
 import org.esupportail.smsu.dao.beans.CustomizedGroup;
 import org.esupportail.smsu.dao.beans.Fonction;
 import org.esupportail.smsu.dao.beans.Mail;
@@ -461,6 +462,15 @@ public interface DaoService {
 	 */
 	MailRecipient getMailRecipientByAddress(String addresse);
 
+	//////////////////////////////////////////////////////////////
+	// Contacts
+	//////////////////////////////////////////////////////////////
+    List<Contact> getContactsByOwner(String owner);
+    List<Contact> searchOwnerOrSharedContacts(String token, String owner, List<CustomizedGroup> cgroups);
+    Contact getContactById(int id);
+    void addContact(Contact contact);
+    void updateContact(Contact contact);
+    void deleteContact(Contact contact);
 
 	
 	boolean isSupervisor(final Person person);

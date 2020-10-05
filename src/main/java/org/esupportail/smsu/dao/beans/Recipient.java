@@ -46,6 +46,8 @@ public class Recipient implements Serializable {
 
 	/**
 	 * recipient login.
+     * - if null, it means the phone number was given
+     * - if "", it means the phone number must be hidden (it phone number came from a group or a contact)
 	 */
 	private java.lang.String login;
 	

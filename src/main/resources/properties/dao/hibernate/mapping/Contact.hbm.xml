@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping package="org.esupportail.smsu.dao.beans">
+    
+    <class name="Contact" table="contact" lazy="false">
+        <id name="Id" type="integer" column="CONTACT_ID">
+            <generator class="native" />
+        </id>
+        <property name="Owner" column="OWNER" type="string" index="CONTACT_OWNER_LABEL" />
+        <property name="Label" column="LABEL" type="string" index="CONTACT_OWNER_LABEL" />
+        <property name="Phones" column="PHONES" type="text" not-null="true" />
+        <set cascade="all" name="SharedWith" table="contact_share">
+            <key column="CONTACT_ID"/>
+            <many-to-many class="CustomizedGroup" column="CGR_ID"/>
+        </set>
+    </class>    
+    
+</hibernate-mapping>

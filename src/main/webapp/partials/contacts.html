@@ -1,0 +1,16 @@
+<div class="normalContent">
+   <a class="btn btn-default" href="#/contacts/new"><span class="glyphicon glyphicon-plus"></span> Créer un contact ou une liste</a>
+</div>
+
+<p>
+
+<div>
+  <table class="table table-striped">
+    <thead><tr><th>Nom</th></tr></thead>
+    <tr ng-repeat="contact in contacts">
+      <td><a href="#/contacts/{{contact.id}}">
+        <span class="glyphicon" ng-class="{ 'glyphicon-list-alt': contact.phones.length !== 1, 'glyphicon-user': contact.phones.length === 1 }"></span>
+        {{contact.label}}</a></td>
+    </tr>
+  </table>
+</div>

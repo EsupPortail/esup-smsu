@@ -1,6 +1,7 @@
 package org.esupportail.smsu.dao.beans;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import org.esupportail.smsu.domain.beans.message.MessageStatus;
 
@@ -133,6 +134,11 @@ public class Message  implements Serializable {
 	 * message group recipient.
 	 */
 	private BasicGroup groupRecipient;
+
+	/**
+	 * message contact recipients
+	 */
+	private java.util.Set<Contact> contactRecipients;
 
 	/**
 	 * collection of recipients.
@@ -345,6 +351,14 @@ public class Message  implements Serializable {
 	 */
 	public BasicGroup getGroupRecipient() {
 		return groupRecipient;
+	}
+
+	public void setContactRecipients(final Set<Contact> contactRecipients) {
+		this.contactRecipients = contactRecipients;
+	}
+
+	public Set<Contact> getContactRecipients() {
+		return contactRecipients;
 	}
 
 	/**

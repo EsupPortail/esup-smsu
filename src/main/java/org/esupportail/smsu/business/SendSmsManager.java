@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.text.DateFormat;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +23,7 @@ import org.apache.log4j.Logger;
 import org.esupportail.smsu.dao.DaoService;
 import org.esupportail.smsu.dao.beans.Account;
 import org.esupportail.smsu.dao.beans.BasicGroup;
+import org.esupportail.smsu.dao.beans.Contact;
 import org.esupportail.smsu.dao.beans.CustomizedGroup;
 import org.esupportail.smsu.dao.beans.Mail;
 import org.esupportail.smsu.dao.beans.MailRecipient;
@@ -42,6 +44,7 @@ import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.services.ldap.beans.UserGroup;
 import org.esupportail.smsu.services.scheduler.SchedulerUtils;
 import org.esupportail.smsu.services.smtp.SmtpServiceUtils;
+import org.esupportail.smsu.web.AuthAndRoleAndMiscFilter;
 import org.esupportail.smsu.web.beans.MailToSend;
 import org.esupportail.smsu.web.beans.UINewMessage;
 import org.esupportail.smsu.web.controllers.InvalidParameterException;
@@ -60,6 +63,7 @@ public class SendSmsManager  {
 	@Inject private SmtpServiceUtils smtpServiceUtils;
 	@Inject private LdapUtils ldapUtils;
 	@Inject private GroupUtils groupUtils;
+	@Inject private ContactManager contactManager;
 	@Inject private SchedulerUtils schedulerUtils;
 	@Inject private UrlGenerator urlGenerator;
 	@Inject private ContentCustomizationManager customizer;
@@ -102,6 +106,7 @@ public class SendSmsManager  {
 	//////////////////////////////////////////////////////////////
 	public int sendMessage(UINewMessage msg, HttpServletRequest request) throws CreateMessageException {
 		Message message = createMessage(msg);
+		contactManager.contactsValidation(message.getContactRecipients(), request.getRemoteUser(), AuthAndRoleAndMiscFilter.get_loggedUserSortedAttributes(request));
 		daoService.addMessage(message);
 
 		//TODO verify unneeded 
@@ -134,6 +139,7 @@ public class SendSmsManager  {
 		message.setGroupSender(groupSender);
 		message.setRecipients(recipients);
 		message.setGroupRecipient(groupRecipient);			
+		if (msg.recipientContacts != null) message.setContactRecipients(msg.recipientContacts.stream().map(daoService::getContactById).collect(Collectors.toSet()));
 		message.setStateAsEnum(messageStatus);				
 		message.setSupervisors(mayGetSupervisorsOrNull(message));				
 		message.setDate(new Date());
@@ -578,6 +584,7 @@ public class SendSmsManager  {
 		Map<String, String> recipients = new HashMap<>();
 		if (msg.recipientPhoneNumbers != null) addPhoneNumbersRecipients(recipients, msg.recipientPhoneNumbers);
 		if (msg.recipientLogins != null) addLoginsRecipients(recipients, msg.recipientLogins, serviceKey);
+		if (msg.recipientContacts != null) addContactsRecipients(recipients, msg.recipientContacts);
 		addGroupRecipients(recipients, msg.recipientGroup, serviceKey);
 		return recipients;
 	}
@@ -600,6 +607,15 @@ public class SendSmsManager  {
 			mayAdd(recipients, phoneNumber, user.getId());
 		}
 	}
+
+    private void addContactsRecipients(Map<String, String> recipients, List<Integer> contacts) {
+        for (Integer id: contacts) {
+            Contact contact = daoService.getContactById(id);
+            for (String phoneNumber: contact.getPhonesList()) {
+                mayAdd(recipients, phoneNumber, ""); // hidden
+            }
+        }
+    }
 
 	private void addGroupRecipients(Map<String, String> recipients, final String groupId, String serviceKey) throws EmptyGroup {
 		if (groupId == null) return;
