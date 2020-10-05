@@ -1,5 +1,6 @@
 package org.esupportail.smsu.services.ldap;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,6 +24,7 @@ import org.springframework.ldap.filter.Filter;
 
 public class LdapUtils {
 
+	public boolean disabled;
 	/**
 	 * a logger.
 	 */
@@ -120,6 +122,7 @@ public class LdapUtils {
 	}
 
 	public LdapUser mayGetLdapUserByUid(final String uid) {
+		if (disabled) return null;
 		try {
 			return ldapService.getLdapUser(uid);
 		} catch (UserNotFoundException e) {
@@ -528,6 +531,7 @@ public class LdapUtils {
 		return getUserDisplayName(p.getLogin());
 	}
 	public String getUserDisplayName(final String uid) {
+		if (disabled) return uid;
 		try { 
 			return getUserDisplayNameByUserUid(uid);
 		} catch (LdapUserNotFoundException e) {
@@ -580,6 +584,7 @@ public class LdapUtils {
 	 * @return a list of LDAP user from a list of uids.
 	 */
 	public List<LdapUser> getUsersByUids(final Iterable<String> uids) {
+		if (disabled) return Collections.emptyList();
 		return ldapUtilsHelpers.getUsersByUids(uids);
 	}
 	
@@ -738,6 +743,10 @@ public class LdapUtils {
 
 	public void setGroupDnPath(String groupDnPath) {
 		this.groupDnPath = groupDnPath;
+	}
+    
+	public void setDisabled(boolean disabled) {
+		this.disabled = disabled;
 	}
 
 	private <A> LinkedList<A> singletonList(A e) {
