@@ -145,56 +145,6 @@ public class Message  implements Serializable {
 	private java.util.Set<Person> supervisors;
 
 	/**
-	 * Bean constructor.
-	 */
-	public Message() {
-		super();
-	}
-
-	/**
-	 * Bean constructor par copie.
-	 */
-	public Message(final Message message) {
-		this.setId(message.getId());
-		this.setDate(message.getDate());
-		this.setAccount(message.getAccount());
-		this.setSender(message.getSender());
-		this.setService(message.getService());
-		this.setGroupSender(message.getGroupSender());
-		this.setGroupRecipient(message.getGroupRecipient());
-		this.setContent(message.getContent());
-		this.setState(message.getState());
-		this.setMail(message.getMail());
-		// nb: setRecipients and setSupervisors are not done
-	}
-
-	/**
-	 * Constructor for required fields.
-	 */
-	public Message(
-		final java.lang.Integer id,
-		final Account account,
-		final Person sender,
-		final Service service,
-		final BasicGroup groupSender,
-		final BasicGroup groupRecipient,
-		final java.lang.String content,
-		final java.lang.String state) {
-		this.setId(id);
-		this.setAccount(account);
-		this.setSender(sender);
-		this.setService(service);
-		this.setGroupSender(groupSender);
-		this.setGroupRecipient(groupRecipient);
-		this.setContent(content);
-		this.setState(state);
-	}
-
-
-
-
-
-	/**
 	 * Return the unique identifier of this class.
      * @hibernate.id
      *  generator-class="native"
