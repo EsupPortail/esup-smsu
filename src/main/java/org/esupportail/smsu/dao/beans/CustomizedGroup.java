@@ -106,31 +106,6 @@ public class CustomizedGroup implements Serializable {
 
 
 	/**
-	 * Constructor for required fields.
-	 */
-	public CustomizedGroup(
-		final java.lang.Integer id,
-		final Account account,
-		final Role role,
-		final java.lang.String label,
-		final java.lang.Long quotaSms,
-		final java.lang.Long quotaOrder,
-		final java.lang.Long consumedSms) {
-
-		this.setId(id);
-		this.setAccount(account);
-		this.setRole(role);
-		this.setLabel(label);
-		this.setQuotaSms(quotaSms);
-		this.setQuotaOrder(quotaOrder);
-		this.setConsumedSms(consumedSms);
-	}
-
-
-
-
-
-	/**
 	 * Return the unique identifier of this class.
      * @hibernate.id
      *  generator-class="native"
