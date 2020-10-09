@@ -124,7 +124,7 @@
 <!-- ******************************************************************************** -->
 <!-- * below are helper targets ***************************************************** -->
 <!-- ******************************************************************************** -->
-	<target name="generate-ddl" depends="ant-extra,compile">
+	<target name="generate-ddl-raw">
 	  <path id="all.classpath">
 	    <fileset dir="tmp/ant-extra" includes="*.jar"/>
 	    <fileset dir="tmp/compile-lib" includes="*.jar" />
@@ -141,7 +141,19 @@
 	    </configuration>
 	    <hbm2ddl export="no" destdir="src/main/resources/database" outputfilename="create_tables.sql"/>
 	  </hibernatetool>
+
+   	  <condition property="is-InnoDB">
+	    <resourcecontains resource="src/main/resources/database/create_tables.sql" substring="ENGINE=InnoDB" />
+	  </condition>
 	</target>
+
+    <target name="handle-InnoDB-utf8mb4" if="is-InnoDB">
+      <!-- cf https://dev.mysql.com/doc/refman/5.7/en/charset-unicode-conversion.html -->
+      <replace file="src/main/resources/database/create_tables.sql" token="varchar(255)" value="varchar(191)"/>
+    </target>
+
+    <target name="generate-ddl" depends="ant-extra,compile,generate-ddl-raw,handle-InnoDB-utf8mb4">
+    </target>
 
     <!-- usage: ant hotswap:w &  ant jetty.run-debug -->
     <target name="jetty.run-debug">
