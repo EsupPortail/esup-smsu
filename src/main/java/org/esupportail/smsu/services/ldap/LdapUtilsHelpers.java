@@ -1,6 +1,7 @@
 package org.esupportail.smsu.services.ldap;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -213,7 +214,7 @@ public class LdapUtilsHelpers {
 	 * @param uids
 	 * @return a list for user mails.
 	 */
-	public List<String> getUserMailsByUids(final Iterable<String> uids) {
+	public Collection<String> getUserMailsByUids(final Iterable<String> uids) {
 		final List<String> retVal = new ArrayList<>();
 		for (LdapUser ldapUser : getUsersByUids(uids)) {
 			String mail = ldapUser.getAttribute(userEmailAttribute);
