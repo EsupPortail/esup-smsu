@@ -1,5 +1,6 @@
 package org.esupportail.smsu.web.controllers;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -57,6 +58,8 @@ public class UsersController {
 	}
 	
 	private List<UIRecipientUser> searchLdapUser(String token, boolean withPagerFilter, String serviceKey) {
+		if (ldapUtils.disabled) return Collections.singletonList(new UIRecipientUser(token, token, false));
+
 		if (token.trim().length() < NB_MIN_CHARS_FOR_LDAP_SEARCH ) throw new InvalidParameterException("token too short");
 		
 		List<LdapUser> list = !withPagerFilter ?

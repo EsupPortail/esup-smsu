@@ -558,6 +558,7 @@ public class LdapUtils {
 	 * @return a list of user mails.
 	 */
 	public Collection<String> getUserEmailsAdressByUids(final Collection<String> uids) {
+		if (disabled) return uids;
 		return ldapUtilsHelpers.getUserMailsByUids(uids);
 	}
 		
