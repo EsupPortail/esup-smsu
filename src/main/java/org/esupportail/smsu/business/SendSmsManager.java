@@ -1,6 +1,7 @@
 package org.esupportail.smsu.business;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -257,7 +258,7 @@ public class SendSmsManager  {
 		}
 	}
 	private void sendMailToSupervisorsRaw(final Message message, CustomizedGroup cGroup, MessageStatus status, User currentUser, HttpServletRequest request) {
-		List<String> toList = getSupervisorsMails(getSupervisors(cGroup));
+		Collection<String> toList = getSupervisorsMails(getSupervisors(cGroup));
 		if (toList == null || toList.isEmpty()) {
 			logger.error("no supervisors??");
 			return;
@@ -288,7 +289,7 @@ public class SendSmsManager  {
 	}
 
 	private void sendMailToSenderMessageApprovedOrCanceled(final Message message, MessageStatus status, User currentUser) {
-		List<String> toList = ldapUtils.getUserEmailsAdressByUids(Collections.singleton(message.getSender().getLogin()));
+		Collection<String> toList = ldapUtils.getUserEmailsAdressByUids(Collections.singleton(message.getSender().getLogin()));
 		if (toList.isEmpty()) {
 			logger.error("no way to notify sender that message has been approved");
 			return;
@@ -320,7 +321,7 @@ public class SendSmsManager  {
 		return new HashSet<>(cGroup.getSupervisors()); // nb: we need to copy the set to avoid "Found shared references to a collection" Hibernate exception
 	}
 
-	private List<String> getSupervisorsMails(final Set<Person> supervisors) {
+	private Collection<String> getSupervisorsMails(final Set<Person> supervisors) {
 		if (supervisors == null) return null;
 		logger.debug("supervisors not null");
 
