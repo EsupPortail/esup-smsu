@@ -100,7 +100,8 @@ public class SendSmsManager  {
 	// Pricipal methods
 	//////////////////////////////////////////////////////////////
 	public int sendMessage(UINewMessage msg, HttpServletRequest request) throws CreateMessageException {
-		Message message = composeMessage(msg);
+		Message message = createMessage(msg);
+		daoService.addMessage(message);
 
 		//TODO verify unneeded 
 		// by default, a SMS is considered as a sent one.
@@ -109,12 +110,6 @@ public class SendSmsManager  {
 		treatMessage(message, request);
 
 		return message.getId();
-	}
-
-	public Message composeMessage(UINewMessage msg) throws CreateMessageException {
-		Message message = createMessage(msg);
-		daoService.addMessage(message);
-		return message;
 	}
 
 	private Message createMessage(UINewMessage msg) throws CreateMessageException  {
