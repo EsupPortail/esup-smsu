@@ -1,5 +1,6 @@
 package org.esupportail.smsu.services.smtp;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -39,15 +40,15 @@ public class SmtpServiceUtils {
 		_sendMessage(toAdresses, copyAdresses, subject, null, textBody);
 	}
 
-	public void sendHTMLMessage(final List<String> toAdresses,
-							final List<String> copyAdresses,
+	public void sendHTMLMessage(final Collection<String> toAdresses,
+							final Collection<String> copyAdresses,
 							final String subject,
 							final String htmlBody) {
 		_sendMessage(toAdresses, copyAdresses, subject, htmlBody, null);
 	}
 
-	private void _sendMessage(final List<String> toAdresses,
-							final List<String> copyAdresses,
+	private void _sendMessage(final Collection<String> toAdresses,
+							final Collection<String> copyAdresses,
 							final String subject,
 							final String htmlBody,
 							final String textBody) {		
@@ -77,7 +78,7 @@ public class SmtpServiceUtils {
 	 * @param adresses
 	 * @return
 	 */
-	private InternetAddress[] createInternetAdresses(final List<String> adresses) {
+	private InternetAddress[] createInternetAdresses(final Collection<String> adresses) {
 		if (adresses == null) return null;
 
 		final List<InternetAddress> l = new LinkedList<>();
