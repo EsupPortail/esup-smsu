@@ -50,11 +50,6 @@ this.mayGetMsgStatuses = function (msg) {
 };
 
 this.searchUser = function (token, extraParams) {
-    function hash2array(h) {
-	return $.map(h, function (name, id) { 
-	    return { id: id, name: name };
-	});
-    }
 
     if (token.length < 4) {
 	return [];
