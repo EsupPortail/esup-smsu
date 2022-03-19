@@ -40,7 +40,6 @@ import org.esupportail.smsu.services.UrlGenerator;
 import org.esupportail.smsu.services.client.SmsuapiWS;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.services.ldap.beans.UserGroup;
-import org.esupportail.smsu.services.scheduler.SchedulerUtils;
 import org.esupportail.smsu.services.smtp.SmtpServiceUtils;
 import org.esupportail.smsu.web.beans.MailToSend;
 import org.esupportail.smsu.web.beans.UINewMessage;
@@ -60,7 +59,6 @@ public class SendSmsManager  {
 	@Inject private SmtpServiceUtils smtpServiceUtils;
 	@Inject private LdapUtils ldapUtils;
 	@Inject private GroupUtils groupUtils;
-	@Inject private SchedulerUtils schedulerUtils;
 	@Inject private UrlGenerator urlGenerator;
 	@Inject private ContentCustomizationManager customizer;
 
@@ -169,7 +167,7 @@ public class SendSmsManager  {
 				// envoi du mail
 				sendApprovalMailToSupervisors(message, request);
 			else 
-				maySendMessageInBackground(message);
+				maySendMessageInBackground(message, request);
 		} catch (AuthenticationFailedException e) {
 			message.setStateAsEnum(MessageStatus.WS_ERROR);
 			daoService.updateMessage(message);
@@ -335,7 +333,7 @@ public class SendSmsManager  {
 	}
 
 
-	private void maySendMessageInBackground(final Message message) throws HttpException, InsufficientQuotaException {
+	private void maySendMessageInBackground(final Message message, HttpServletRequest request) throws HttpException, InsufficientQuotaException {
 		checkBackOfficeQuotas(message);
 
 		// message is ready to be sent to the back office
@@ -345,8 +343,8 @@ public class SendSmsManager  {
 		message.setStateAsEnum(MessageStatus.WAITING_FOR_SENDING);
 		daoService.updateMessage(message);
 
-		// launch ASAP the task witch manage the sms sending
-		schedulerUtils.launchSuperviseSmsSending();
+		// tell TransactionManagerFilter what to trigger after committing transaction
+		request.setAttribute(org.esupportail.smsu.services.scheduler.job.SuperviseSmsSending.class.getName(), true);
 	}
 
 

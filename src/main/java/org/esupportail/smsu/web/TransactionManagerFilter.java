@@ -12,11 +12,13 @@ import javax.servlet.FilterConfig;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.esupportail.smsu.utils.HibernateUtils;
+import org.esupportail.smsu.services.scheduler.SchedulerUtils;
 import javax.inject.Inject;
 
 public class TransactionManagerFilter implements Filter {
 
 	@Inject private SessionFactory sessionFactory;
+	@Inject private SchedulerUtils schedulerUtils;
 
     public void destroy() {}
     public void init(FilterConfig config) {}
@@ -29,6 +31,11 @@ public class TransactionManagerFilter implements Filter {
         } finally {
         	try {
         		transaction.commit();
+
+        		// now trigger the Quartz tasks (which have their own Hibernate transaction)
+        		if (request.getAttribute(org.esupportail.smsu.services.scheduler.job.SuperviseSmsSending.class.getName()) != null) {
+        		    schedulerUtils.launchSuperviseSmsSending();
+        		}
         	}
             catch (Exception e) {
             	transaction.rollback();
