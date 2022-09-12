@@ -177,8 +177,8 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 		</dependency>
 
 		<dependency>
-		  <groupId>log4j</groupId>
-		  <artifactId>log4j</artifactId>
+		  <groupId>ch.qos.reload4j</groupId>
+		  <artifactId>reload4j</artifactId>
 		  <version>[1.2.12, 1.2.99]</version>
 		</dependency>
 
@@ -213,6 +213,10 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 		    <groupId>com.ibm.icu</groupId>
 		    <artifactId>icu4j</artifactId>
 		  </exclusion>
+		    <exclusion>
+		      <groupId>log4j</groupId>
+		      <artifactId>log4j</artifactId>
+		    </exclusion>          
 		  </exclusions>
 		</dependency>
 
