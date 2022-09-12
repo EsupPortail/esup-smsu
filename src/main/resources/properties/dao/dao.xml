@@ -19,7 +19,7 @@
 
 	<bean 
 		id="sessionFactory" 
-		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean"
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean"
 		>
 		<property name="mappingLocations">
 			<list>

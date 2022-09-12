@@ -146,6 +146,12 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
                         <scope>provided</scope>
                 </dependency>
 
+        <dependency>
+                <groupId>org.springframework.ldap</groupId>
+                <artifactId>spring-ldap-core-tiger</artifactId>
+                <version>2.3.8.RELEASE</version>
+        </dependency>
+
 		<!-- force a recent version of slf4j-simple required by esup-commons otherwise 
 		     it breaks cas-client slf4j-api -->
 		<dependency>
@@ -252,7 +258,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.5.1</version>
+            <version>2.13.4</version>
         </dependency>		
 
 		<!-- for @RolesAllowed : -->
@@ -285,7 +291,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 		<dependency>
 		  <groupId>org.hibernate</groupId>
 		  <artifactId>hibernate-entitymanager</artifactId>
-		  <version>4.1.12.Final</version>
+		  <version>5.6.7.Final</version>
 		</dependency>
 
     <dependency>
