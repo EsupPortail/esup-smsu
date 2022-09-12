@@ -9,11 +9,6 @@
 	<display-name>esup-smsu</display-name>
 
 	<context-param>
-		<param-name>log4jConfigLocation</param-name>
-		<param-value>classpath:properties/logging/log4j.properties</param-value>
-	</context-param>
-
-	<context-param>
         <!-- since we do not use ${webapp.root} we can set this to false -->
         <!-- (without this, you must set webAppRootKey to a unique name) -->
         <param-name>log4jExposeWebAppRoot</param-name>
@@ -30,12 +25,6 @@
 			classpath:/properties/applicationContext.xml
 		</param-value>
 	</context-param>
-
-	<listener>
-		<listener-class>
-			org.springframework.web.util.Log4jConfigListener
-		</listener-class>
-	</listener>
 
 	<listener>
 		<listener-class>

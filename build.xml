@@ -102,11 +102,8 @@
 			optimize="${compile.optimize}">
 			<classpath refid="compile.classpath" />
 		</javac>
-		<copy todir="${build.classes}/properties" overwrite="true" >
-			<fileset dir="src/main/resources/properties" />
-		</copy>
-		<copy todir="${build.classes}/database" overwrite="true" >
-			<fileset dir="src/main/resources/database" />
+		<copy todir="${build.classes}" overwrite="true" >
+			<fileset dir="src/main/resources" />
 		</copy>
 	</target>
 
