@@ -96,6 +96,7 @@ public class LdapUtils {
 	private String groupNameAttribute;	
 	private String groupMemberContainsUserAttribute;
 	private String groupDnPath;
+	private String groupIdAttribute;
 	
 	/**
 	 * The objectClass ldap attribute to add if the userTermsOfUseAttribute or userPagerAttribute need a specific ldap schema
@@ -489,7 +490,7 @@ public class LdapUtils {
         String val;
         if (userMemberAttribute.equalsIgnoreCase("memberOf")){
             logger.debug("getLdapUsers with memberOf");
-            val = groupNameAttribute + "=" + groupId + "," + groupDnPath;
+            val = groupIdAttribute + "=" + groupId + "," + groupDnPath;
         } else if(userMemberAttribute.equalsIgnoreCase("isMemberOf")){
             logger.debug("getLdapUsers with isMemberOf");
             val = groupId;
@@ -744,6 +745,10 @@ public class LdapUtils {
 
 	public void setGroupDnPath(String groupDnPath) {
 		this.groupDnPath = groupDnPath;
+	}
+    
+	public void setGroupIdAttribute(String groupIdAttribute) {
+		this.groupIdAttribute = groupIdAttribute;
 	}
     
 	public void setDisabled(boolean disabled) {
