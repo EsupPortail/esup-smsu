@@ -88,7 +88,7 @@
 
   <div class="form-group"
        ng-class="{'has-error': submitted && myForm.maxPerSms.$invalid}">
-    <label class="col-md-3 control-label" for="maxPerSms">Nb. max de destinataires/envoi</label>
+    <label class="col-md-3 control-label" for="maxPerSms">Nb. max de destinataires/envoi ne nécessitant pas de modération</label>
     <div class="col-md-9">
       <input type="number" name="maxPerSms" ng-model="group.maxPerSms" min="0" integer class="form-control">
       <span ng-show="submitted && myForm.maxPerSms.$invalid" class="help-block">Nombre positif</span>
