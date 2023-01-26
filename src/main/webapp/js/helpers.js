@@ -64,7 +64,12 @@ this.searchGroup = function (token) {
 	return [];
     }
 
-    return h.callRest('groups/search', { token: token });
+    return h.callRest('groups/search', { token: token }).then(function (groups) {        
+        for (const group of groups) {
+            group.name = "(" + group.id + ") " + group.name
+        }
+        return groups;
+    })
 };
 
 this.get_noSMS = function (user, extraParams) {
