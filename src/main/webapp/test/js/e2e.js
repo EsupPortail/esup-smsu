@@ -31,9 +31,9 @@ describe('Welcome view', function() {
 	expect(title()).toBe('Accueil');
 	expect(content()).toMatch('Bienvenue dans');
 
-	expect(repeater('.sidenav li').count()).toBe(10);
+	expect(repeater('.sidenav li').count()).toBe(9);
 	
-	var btn7 = element('.sidenav li:nth-child(10) a');
+	var btn7 = element('.sidenav li:nth-child(9) a');
 	expect(btn7.text()).toMatch('A propos de');
 	btn7.click();
 	expect(url()).toBe('/about');
@@ -119,14 +119,14 @@ describe('New group view', function() {
 	expect(element(".dropdown-menu:visible").count()).toBe(1);
 	expect(element(".dropdown-menu li a").count()).toBe(3);
 	element(".dropdown-menu li:nth(1) a").click();
-	expect(input('wip.label').val()).toBe("All Senders");
+	expect(input('wip.label').val()).toBe("(senders) All Senders");
 
 	element("form button").click();
 	expect(element(visibleErrors + ":first").text()).toBe("Already in use");
 
 	input('wip.label').enter('zzzz');
 	element(".dropdown-menu li:first a").click();
-	expect(input('wip.label').val()).toBe("GroupFoo");
+	expect(input('wip.label').val()).toBe("(gfoo) GroupFoo");
 
 	element("form button").click();
 	expect(element(visibleErrors + ":first").text()).toBe("Required");
