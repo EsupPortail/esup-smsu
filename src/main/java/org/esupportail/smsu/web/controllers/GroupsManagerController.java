@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestBody;
-
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.esupportail.smsu.business.GroupManager;
 import org.esupportail.smsu.domain.DomainService;
@@ -18,7 +18,6 @@ import org.esupportail.smsu.services.ldap.beans.UserGroup;
 import org.esupportail.smsu.web.beans.UICustomizedGroup;
 import javax.inject.Inject;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.util.StringUtils;
 
 /**
  * A bean to manage files.
@@ -78,11 +77,11 @@ public class GroupsManagerController {
 
 	//////////////////////////////////////////////////////////////
 	private void checkMandatoryUIParameters(UICustomizedGroup uiCGroup) {
-		if (!StringUtils.hasText(uiCGroup.label.trim())) {
+		if (StringUtils.isBlank(uiCGroup.label)) {
 			throw new InvalidParameterException("GROUPE.LABEL.ERROR.MESSAGE");
-		} else if (!StringUtils.hasText(uiCGroup.account.trim())) {
+		} else if (StringUtils.isBlank(uiCGroup.account)) {
 			throw new InvalidParameterException("GROUPE.ACCOUNT.ERROR.MESSAGE");
-		} else if (!StringUtils.hasText(uiCGroup.role)) {
+		} else if (StringUtils.isBlank(uiCGroup.role)) {
 			throw new InvalidParameterException("GROUPE.ROLE.ERROR.MESSAGE");
 		}
 	}

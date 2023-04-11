@@ -1,9 +1,7 @@
 package org.esupportail.smsu.business;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,6 +22,7 @@ import org.esupportail.smsu.services.GroupUtils;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.web.beans.UIMessage;
 import org.esupportail.smsu.web.controllers.InvalidParameterException;
+
 import javax.inject.Inject;
 
 public class MessageManager {
@@ -37,24 +36,22 @@ public class MessageManager {
 	//////////////////////////////////////////////////////////////
 	// Principal methods
 	//////////////////////////////////////////////////////////////
-	
-	public List<UIMessage> getMessages(final Integer userGroupId, final Integer userAccountId, 
-			final Integer userServiceId, final Integer userTemplateId, final String senderLogin, 
-			final Date beginDate, final Date endDate, int maxResults) {
-
+	/**
+	 *	if senderLogin is null, all messages are returned. 
+	 *	if senderLogin is not null, only the messages of the sender associated to senderLogin are returned. 
+	 *	If there is no sender associated to senderLogin, an empty list is returned.
+	 */
+	public List<UIMessage> getMessages(final String senderLogin, int maxResults) {
 		Person sender = null;
+		
 		if (senderLogin != null) {
 			sender = daoService.getPersonByLogin(senderLogin);
-			if (sender == null) return Collections.emptyList();
+			if (sender == null) {
+				return Collections.emptyList();
+			}
 		}
+		List<Message> messages = daoService.getMessages(sender, maxResults);
 		
-		java.sql.Date beginDateSQL = 
-			beginDate == null ? null : new java.sql.Date(beginDate.getTime()); // get rid of HH:MM:SS
-		java.sql.Date endDateSQL =
-			endDate == null ? null : new java.sql.Date(addOneDay(endDate).getTime());
-	
-		List<Message> messages = daoService.getMessages(userGroupId, userAccountId, userServiceId, 
-								 userTemplateId, sender, beginDateSQL, endDateSQL, maxResults);
 		return convertToUI(messages);
 	}
 
@@ -79,7 +76,7 @@ public class MessageManager {
 	public List<UIMessage> convertToUI(List<Message> messages) {
 		Map<String, String> id2displayName = getIdToDisplayName(senderLogins(messages));
 
-		List<UIMessage> uimessages = new ArrayList<>();
+		List<UIMessage> uimessages = new ArrayList<>(messages.size());
 		for (Message mess : messages) {
 			uimessages.add(convertToUI(mess, id2displayName));
 		}
@@ -122,14 +119,6 @@ public class MessageManager {
 		    result.add(r.getLogin() != null ? r.getLogin() : r.getPhone());
 		}
 		return result;
-	}
-
-
-	private Date addOneDay(Date d) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(d);
-		cal.add(Calendar.DATE, 1);
-		return cal.getTime();
 	}
 
 	private LinkedHashSet<String> senderLogins(List<Message> messages) {

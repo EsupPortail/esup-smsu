@@ -2,6 +2,15 @@ package org.esupportail.smsu.dao.beans;
 
 import java.io.Serializable;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import org.esupportail.smsu.dao.beans.idClass.SupervisorPk;
+
 
 /**
  * This is an object that contains data related to the supervisor table.
@@ -9,12 +18,15 @@ import java.io.Serializable;
  * @hibernate.class
  *  table="supervisor"
  */
-public class Supervisor  implements Serializable {
+@Entity
+@Table(name = "supervisor")
+@IdClass(SupervisorPk.class)
+public class Supervisor implements Serializable {
 
 	/**
 	 * Hibernate reference for account.
 	 */
-	public static final String REF = "Supervisor";
+	public static final String REF = "supervisor";
 
 	/**
 	 * The serialization id.
@@ -24,11 +36,17 @@ public class Supervisor  implements Serializable {
 	/**
 	 * customized group.
 	 */
+	@Id
+	@ManyToOne
+	@JoinColumn(name = "CGR_ID")
 	private CustomizedGroup group;
 
 	/**
 	 * person that identifies the supervisor.
 	 */
+	@Id
+	@ManyToOne
+	@JoinColumn(name = "PER_ID")
 	private Person person;
 
 	/**

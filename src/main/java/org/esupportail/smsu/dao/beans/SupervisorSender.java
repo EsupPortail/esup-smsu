@@ -2,6 +2,15 @@ package org.esupportail.smsu.dao.beans;
 
 import java.io.Serializable;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import org.esupportail.smsu.dao.beans.idClass.SupervisorSenderPk;
+
 
 /**
  * This is an object that contains data related to the supervisor_sender table.
@@ -9,13 +18,20 @@ import java.io.Serializable;
  * @hibernate.class
  *  table="supervisor_sender"
  */
+@Entity
+@Table(name = SupervisorSender.TABLE_NAME)
+@IdClass(SupervisorSenderPk.class)
 public class SupervisorSender  implements Serializable {
 
 	/**
 	 * Hibernate reference for supervisorSender.
 	 */
-	public static final String REF = "SupervisorSender";
+	public static final String REF = "supervisorSender";
 
+	public static final String TABLE_NAME = "supervisor_sender";
+	public static final String MSG_COLUMN = "MSG_ID";
+	public static final String SUPERVISOR_COLUMN = "PER_ID";
+	
 	/**
 	 * The serialization id.
 	 */
@@ -24,11 +40,17 @@ public class SupervisorSender  implements Serializable {
 	/**
 	 * supervisor identifier.
 	 */
+	@Id
+	@ManyToOne
+	@JoinColumn(name = SUPERVISOR_COLUMN)
 	private Person supervisor;
 
 	/**
 	 * message identifier.
 	 */
+	@Id
+	@ManyToOne
+	@JoinColumn(name = MSG_COLUMN)
 	private Message msg;
 
 	/**

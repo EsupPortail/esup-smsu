@@ -1,27 +1,42 @@
 package org.esupportail.smsu.dao.beans;
 
 import java.io.Serializable;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 
 /**
  * The class that represent role access.
  */
+@Entity
+@Table(name = "role")
 public class Role implements Serializable {
 
 	/**
 	 * Hibernate reference for role.
 	 */
-	public static final String REF = "Role";
+	public static final String REF = "role";
 
 	/**
 	 * Hibernate property for the name.
 	 */
-	public static final String PROP_NAME = "Name";
+	public static final String PROP_NAME = "name";
 
 	/**
 	 * Hibernate property for the identifier.
 	 */
-	public static final String PROP_ID = "Id";
+	public static final String PROP_ID = "id";
 
 	/**
 	 * The serialization id.
@@ -32,17 +47,26 @@ public class Role implements Serializable {
 	/**
 	 * role identifier.
 	 */
-	private java.lang.Integer id;
+	@Id
+	@Column(name = "ROL_ID")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
 	/**
 	 * role name.
 	 */
-	private java.lang.String name;
+	@Column(name = "ROL_NAME", nullable = false, length = 32, unique = true)
+	@NotNull
+	private String name;
 
 	/**
 	 * Set of function access that define the role.
 	 */
-	private java.util.Set<Fonction> fonctions;
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "role_composition", //
+			joinColumns = { @JoinColumn(name = "ROL_ID") }, //
+			inverseJoinColumns = { @JoinColumn(name = "FCT_ID") })
+	private Set<Fonction> fonctions;
 
 	/**
 	 * Bean constructor.
@@ -55,8 +79,8 @@ public class Role implements Serializable {
 	 * Constructor for required fields.
 	 */
 	public Role(
-		final java.lang.Integer id,
-		final java.lang.String name) {
+		final Integer id,
+		final String name) {
 		this.setId(id);
 		this.setName(name);
 	}
@@ -72,7 +96,7 @@ public class Role implements Serializable {
      *  generator-class="sequence"
      *  column="ROL_ID"
      */
-	public java.lang.Integer getId() {
+	public Integer getId() {
 		return id;
 	}
 
@@ -80,7 +104,7 @@ public class Role implements Serializable {
 	 * Set the unique identifier of this class.
 	 * @param id the new ID
 	 */
-	public void setId(final java.lang.Integer id) {
+	public void setId(final Integer id) {
 		this.id = id;
 	}
 
@@ -90,7 +114,7 @@ public class Role implements Serializable {
 	/**
 	 * Return the value associated with the column: ROL_NAME.
 	 */
-	public java.lang.String getName() {
+	public String getName() {
 		return name;
 	}
 
@@ -98,14 +122,14 @@ public class Role implements Serializable {
 	 * Set the value related to the column: ROL_NAME.
 	 * @param name the ROL_NAME value
 	 */
-	public void setName(final java.lang.String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
 	/**
 	 * Return the value associated with the column: Fonctions.
 	 */
-	public java.util.Set<Fonction> getFonctions() {
+	public Set<Fonction> getFonctions() {
 		return fonctions;
 	}
 
@@ -113,12 +137,12 @@ public class Role implements Serializable {
 	 * Set the value related to the column: Fonctions.
 	 * @param fonctions the Fonctions value
 	 */
-	public void setFonctions(final java.util.Set<Fonction> fonctions) {
+	public void setFonctions(final Set<Fonction> fonctions) {
 		this.fonctions = fonctions;
 	}
 
 	/**
-	 * @see java.lang.Object#equals(java.lang.Object)
+	 * @see Object#equals(Object)
 	 */
 	@Override
 	public boolean equals(final Object obj) {
@@ -138,7 +162,7 @@ public class Role implements Serializable {
 	}
 
 	/**
-	 * @see java.lang.Object#hashCode()
+	 * @see Object#hashCode()
 	 */
 	@Override
 	public int hashCode() {
@@ -147,7 +171,7 @@ public class Role implements Serializable {
 
 
 	/**
-	 * @see java.lang.Object#toString()
+	 * @see Object#toString()
 	 */
 	@Override
 	public String toString() {

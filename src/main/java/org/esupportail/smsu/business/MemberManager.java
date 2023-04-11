@@ -349,13 +349,6 @@ public class MemberManager {
 	/**
 	 * @param attributes 
 	 */
-	@Deprecated
-	public void setPhoneAttributesAsString(final String attributes) {
-	}
-
-	@Deprecated
-	public void setPhoneAttribute(final List<String> phoneAttribute) {
-	}
 
 	@Required
 	public void setPhoneNumberPattern(final String phoneNumberPattern) {
@@ -381,21 +374,17 @@ public class MemberManager {
 	public void setTitleSmsValidation(final String titleSmsValidation) {
 		this.titleSmsValidation = titleSmsValidation;
 	}
-
-	@Deprecated
-	public void setPhoneNumberPrefixToRemove(final String phoneNumberPrefixToRemove) {
-	}
-
-	public void setStoreFrenchPhoneNumber(final Boolean storeFrenchPhoneNumber) {
-		this.storeFrenchPhoneNumber = storeFrenchPhoneNumber;
-	}
-	public void setDisplayFrenchPhoneNumber(final Boolean displayFrenchPhoneNumber) {
-		this.displayFrenchPhoneNumber = displayFrenchPhoneNumber;
-	}
-
+	
 	@Required
 	public void setValidationRoleName(final String validationRoleName) {
 		this.validationRoleName = validationRoleName;
 	}
 
+	public void setStoreFrenchPhoneNumber(final Boolean storeFrenchPhoneNumber) {
+		this.storeFrenchPhoneNumber = storeFrenchPhoneNumber;
+	}
+	
+	public void setDisplayFrenchPhoneNumber(final Boolean displayFrenchPhoneNumber) {
+		this.displayFrenchPhoneNumber = displayFrenchPhoneNumber;
+	}
 }

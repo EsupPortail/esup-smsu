@@ -48,9 +48,12 @@ import org.esupportail.smsuapi.exceptions.InsufficientQuotaException;
 import org.esupportail.smsuapi.services.client.SmsuapiWS.AuthenticationFailedException;
 import org.esupportail.smsuapi.utils.HttpException;
 import javax.inject.Inject;
-import org.springframework.beans.factory.annotation.Required;
+
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
 
+@RequiredArgsConstructor
 public class SendSmsManager  {
 
 	@Inject private DaoService daoService;
@@ -66,27 +69,32 @@ public class SendSmsManager  {
 	/**
 	 * the default Supervisor login when the max SMS number is reach.
 	 */
-	private String defaultSupervisorLogin;
+	@NonNull
+	private final String defaultSupervisorLogin;
 
 	/**
 	 * The SMS max size.
 	 */
-	private Integer smsMaxSize;
+	@NonNull
+	private final Integer smsMaxSize;
 
 	/**
 	 * The default account.
 	 */
-	private String defaultAccount;
+	@NonNull
+	private final String defaultAccount;
 
 	/**
 	 * the phone number validation pattern.
 	 */
-	private String phoneNumberPattern;
+	@NonNull
+	private final String phoneNumberPattern;
 
 	/**
 	 * the LDAP Email attribute.
 	 */
-	private String userEmailAttribute;
+	@NonNull
+	private final String userEmailAttribute;
 	
 	private final Logger logger = Logger.getLogger(getClass());
 
@@ -988,32 +996,4 @@ public class SendSmsManager  {
 		l.add(e);
 		return l;
 	}	
-	
-	///////////////////////////////////
-	// setters
-	///////////////////////////////////
-	@Required
-	public void setSmsMaxSize(final Integer smsMaxSize) {
-		this.smsMaxSize = smsMaxSize;
-	}
-
-	@Required
-	public void setDefaultSupervisorLogin(final String defaultSupervisorLogin) {
-		this.defaultSupervisorLogin = defaultSupervisorLogin;
-	}
-
-	@Required
-	public void setDefaultAccount(final String defaultAccount) {
-		this.defaultAccount = defaultAccount;
-	}
-
-	@Required
-	public void setPhoneNumberPattern(final String phoneNumberPattern) {
-		this.phoneNumberPattern = phoneNumberPattern;
-	}
-
-	@Required
-	public void setUserEmailAttribute(final String userEmailAttribute) {
-		this.userEmailAttribute = userEmailAttribute;
-	}
 }

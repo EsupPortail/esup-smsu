@@ -2,31 +2,42 @@ package org.esupportail.smsu.dao.beans;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
 
 /**
  * The class that represent recipients.
  */
+@Entity
+@Table(name = "recipient", indexes = @Index(name = "RCP_PHONE_LOGIN", columnList = "RCP_PHONE, RCP_LOGIN"))
 public class Recipient implements Serializable {
 
 	/**
 	 * Hibernate reference for person.
 	 */
-	public static final String REF = "Recipient";
+	public static final String REF = "recipient";
 
 	/**
 	 * Hibernate property for the identifier.
 	 */
-	public static final String PROP_ID = "Id";
+	public static final String PROP_ID = "id";
 
 	/**
 	 * Hibernate property for the phone.
 	 */
-	public static final String PROP_PHONE = "Phone";
+	public static final String PROP_PHONE = "phone";
 	
 	/**
 	 * Hibernate property for the login.
 	 */
-	public static final String PROP_LOGIN = "Login";
+	public static final String PROP_LOGIN = "login";
 
 
 	/**
@@ -37,17 +48,23 @@ public class Recipient implements Serializable {
 	/**
 	 * recipient identifier.
 	 */
-	private java.lang.Integer id;
+	@Id
+	@Column(name = "RCP_ID")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
 	/**
 	 * recipient phone.
 	 */
-	private java.lang.String phone;
+	@Column(name = "RCP_PHONE", nullable = false, length = 255)
+	@NotNull
+	private String phone;
 
 	/**
 	 * recipient login.
 	 */
-	private java.lang.String login;
+	@Column(name = "RCP_LOGIN", length = 32)
+	private String login;
 	
 	/**
 	 * Bean constructor.
@@ -60,7 +77,7 @@ public class Recipient implements Serializable {
 	 * Constructor for required fields.
 	 */
 	public Recipient(
-		final java.lang.Integer id,
+		final Integer id,
 		final String phone, final String login) {
 		this.setId(id);
 		this.setPhone(phone);
@@ -76,7 +93,7 @@ public class Recipient implements Serializable {
      *  generator-class="native"
      *  column="RCP_ID"
      */
-	public java.lang.Integer getId() {
+	public Integer getId() {
 		return id;
 	}
 
@@ -84,14 +101,14 @@ public class Recipient implements Serializable {
 	 * Set the unique identifier of this class.
 	 * @param id the new ID
 	 */
-	public void setId(final java.lang.Integer id) {
+	public void setId(final Integer id) {
 		this.id = id;
 	}
 
 	/**
 	 * Return the value associated with the column: RCP_PHONE.
 	 */
-	public java.lang.String getPhone() {
+	public String getPhone() {
 		return phone;
 	}
 
@@ -99,7 +116,7 @@ public class Recipient implements Serializable {
 	 * Set the value related to the column: RCP_PHONE.
 	 * @param phone the RCP_PHONE value
 	 */
-	public void setPhone(final java.lang.String phone) {
+	public void setPhone(final String phone) {
 		this.phone = phone;
 	}
 
@@ -107,20 +124,20 @@ public class Recipient implements Serializable {
 	 * Set the value related to the column: RCP_LOGIN.
 	 * @param login the RCP_LOGIN value
 	 */
-	public void setLogin(final java.lang.String login) {
+	public void setLogin(final String login) {
 		this.login = login;
 	}
 
 	/**
 	 * Return the value associated with the column: RCP_LOGIN.
 	 */
-	public java.lang.String getLogin() {
+	public String getLogin() {
 		return login;
 	}
 	
 
 	/**
-	 * @see java.lang.Object#equals(java.lang.Object)
+	 * @see Object#equals(Object)
 	 */
 	@Override
 	public boolean equals(final Object obj) {
@@ -140,7 +157,7 @@ public class Recipient implements Serializable {
 	}
 
 	/**
-	 * @see java.lang.Object#hashCode()
+	 * @see Object#hashCode()
 	 */
 	@Override
 	public int hashCode() {
@@ -149,7 +166,7 @@ public class Recipient implements Serializable {
 
 
 	/**
-	 * @see java.lang.Object#toString()
+	 * @see Object#toString()
 	 */
 	@Override
 	public String toString() {

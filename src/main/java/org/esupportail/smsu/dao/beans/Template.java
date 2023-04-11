@@ -2,41 +2,51 @@ package org.esupportail.smsu.dao.beans;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
 
 /**
  * The class that represent template of mail or SMS.
  */
+@Entity
+@Table(name = "template")
 public class Template  implements Serializable {
 
 	/**
 	 * Hibernate reference for template.
 	 */
-	public static final String REF = "Template";
+	public static final String REF = "template";
 
 	/**
 	 * Hibernate property for the signature.
 	 */
-	public static final String PROP_SIGNATURE = "Signature";
+	public static final String PROP_SIGNATURE = "signature";
 	
 	/**
 	 * Hibernate property for the heading.
 	 */
-	public static final String PROP_HEADING = "Heading";
+	public static final String PROP_HEADING = "heading";
 	
 	/**
 	 * Hibernate property for the body.
 	 */
-	public static final String PROP_BODY = "Body";
+	public static final String PROP_BODY = "body";
 	
 	/**
 	 * Hibernate property for the label.
 	 */
-	public static final String PROP_LABEL = "Label";
+	public static final String PROP_LABEL = "label";
 	
 	/**
 	 * Hibernate property for the identifier.
 	 */
-	public static final String PROP_ID = "Id";
+	public static final String PROP_ID = "id";
 
 	/**
 	 * The serialization id.
@@ -46,27 +56,35 @@ public class Template  implements Serializable {
 	/**
 	 * template identifier.
 	 */
-	private java.lang.Integer id;
+	@Id
+	@Column(name = "TPL_ID")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
 	/**
 	 * template label.
 	 */
-	private java.lang.String label;
+	@Column(name = "TPL_LABEL", nullable = false, length = 32, unique = true)
+	@NotNull
+	private String label;
 	
 	/**
 	 * template heading.
 	 */
-	private java.lang.String heading;
+	@Column(name = "TPL_HEADING", length = 50)
+	private String heading;
 	
 	/**
 	 * template body.
 	 */
-	private java.lang.String body;
+	@Column(name = "TPL_BODY", length = 160)
+	private String body;
 	
 	/**
 	 * template signature.
 	 */
-	private java.lang.String signature;
+	@Column(name = "TPL_SIGNATURE", length = 50)
+	private String signature;
 
 	/**
 	 * Bean constructor.
@@ -80,8 +98,8 @@ public class Template  implements Serializable {
 	 * Constructor for required fields.
 	 */
 	public Template(
-		final java.lang.Integer id,
-		final java.lang.String label) {
+		final Integer id,
+		final String label) {
 
 		this.setId(id);
 		this.setLabel(label);
@@ -94,7 +112,7 @@ public class Template  implements Serializable {
      *  generator-class="native"
      *  column="TPL_ID"
      */
-	public java.lang.Integer getId() {
+	public Integer getId() {
 		return id;
 	}
 
@@ -102,7 +120,7 @@ public class Template  implements Serializable {
 	 * Set the unique identifier of this class.
 	 * @param id the new ID
 	 */
-	public void setId(final java.lang.Integer id) {
+	public void setId(final Integer id) {
 		this.id = id;
 	}
 
@@ -110,7 +128,7 @@ public class Template  implements Serializable {
 	/**
 	 * Return the value associated with the column: TPL_LABEL.
 	 */
-	public java.lang.String getLabel() {
+	public String getLabel() {
 		return label;
 	}
 
@@ -118,7 +136,7 @@ public class Template  implements Serializable {
 	 * Set the value related to the column: TPL_LABEL.
 	 * @param label the TPL_LABEL value
 	 */
-	public void setLabel(final java.lang.String label) {
+	public void setLabel(final String label) {
 		this.label = label;
 	}
 
@@ -127,7 +145,7 @@ public class Template  implements Serializable {
 	/**
 	 * Return the value associated with the column: TPL_HEADING.
 	 */
-	public java.lang.String getHeading() {
+	public String getHeading() {
 		return heading;
 	}
 
@@ -135,7 +153,7 @@ public class Template  implements Serializable {
 	 * Set the value related to the column: TPL_HEADING.
 	 * @param heading the TPL_HEADING value
 	 */
-	public void setHeading(final java.lang.String heading) {
+	public void setHeading(final String heading) {
 		this.heading = heading;
 	}
 
@@ -144,7 +162,7 @@ public class Template  implements Serializable {
 	/**
 	 * Return the value associated with the column: TPL_BODY.
 	 */
-	public java.lang.String getBody() {
+	public String getBody() {
 		return body;
 	}
 
@@ -152,7 +170,7 @@ public class Template  implements Serializable {
 	 * Set the value related to the column: TPL_BODY.
 	 * @param body the TPL_BODY value
 	 */
-	public void setBody(final java.lang.String body) {
+	public void setBody(final String body) {
 		this.body = body;
 	}
 
@@ -161,7 +179,7 @@ public class Template  implements Serializable {
 	/**
 	 * Return the value associated with the column: TPL_SIGNATURE.
 	 */
-	public java.lang.String getSignature() {
+	public String getSignature() {
 		return signature;
 	}
 
@@ -169,12 +187,12 @@ public class Template  implements Serializable {
 	 * Set the value related to the column: TPL_SIGNATURE.
 	 * @param signature the TPL_SIGNATURE value
 	 */
-	public void setSignature(final java.lang.String signature) {
+	public void setSignature(final String signature) {
 		this.signature = signature;
 	}
 
 	/**
-	 * @see java.lang.Object#equals(java.lang.Object)
+	 * @see Object#equals(Object)
 	 */
 	@Override
 	public boolean equals(final Object obj) {
@@ -194,7 +212,7 @@ public class Template  implements Serializable {
 	}
 
 	/**
-	 * @see java.lang.Object#hashCode()
+	 * @see Object#hashCode()
 	 */
 	@Override
 	public int hashCode() {
@@ -203,7 +221,7 @@ public class Template  implements Serializable {
 
 
 	/**
-	 * @see java.lang.Object#toString()
+	 * @see Object#toString()
 	 */
 	@Override
 	public String toString() {

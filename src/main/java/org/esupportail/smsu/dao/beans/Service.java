@@ -2,31 +2,41 @@ package org.esupportail.smsu.dao.beans;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
 
 /**
  * The class that represent services.
  */
+@Entity
+@Table(name = "service")
 public class Service implements Serializable {
 
 	/**
 	 * Hibernate reference for service.
 	 */
-	public static final String REF = "Service";
+	public static final String REF = "service";
 
 	/**
 	 * Hibernate property for the key.
 	 */
-	public static final String PROP_KEY = "Key";
+	public static final String PROP_KEY = "key";
 
 	/**
 	 * Hibernate property for the name.
 	 */
-	public static final String PROP_NAME = "Name";
+	public static final String PROP_NAME = "name";
 
 	/**
 	 * Hibernate property for the identifier.
 	 */
-	public static final String PROP_ID = "Id";
+	public static final String PROP_ID = "id";
 
 
 	/**
@@ -37,17 +47,24 @@ public class Service implements Serializable {
 	/**
 	 * Service identifier.
 	 */
-	private java.lang.Integer id;
+	@Id
+	@Column(name = "SVC_ID")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
 	/**
 	 * Service name.
 	 */
-	private java.lang.String name;
+	@Column(name = "SVC_NAME", nullable = false, length = 32, unique = true)
+	@NotNull
+	private String name;
 	
 	/**
 	 * Service key.
 	 */
-	private java.lang.String key;
+	@Column(name = "SVC_KEY", nullable = false, length = 16, unique = true)
+	@NotNull
+	private String key;
 
 	/**
 	 * Bean constructor.
@@ -59,9 +76,9 @@ public class Service implements Serializable {
 	/**
 	 * Constructor for required fields.
 	 */
-	public Service(final java.lang.Integer id,
-		final java.lang.String name,
-		final java.lang.String key) {
+	public Service(final Integer id,
+		final String name,
+		final String key) {
 		this.setId(id);
 		this.setName(name);
 		this.setKey(key);
@@ -73,7 +90,7 @@ public class Service implements Serializable {
      *  generator-class="native"
      *  column="SVC_ID"
      */
-	public java.lang.Integer getId() {
+	public Integer getId() {
 		return id;
 	}
 
@@ -81,14 +98,14 @@ public class Service implements Serializable {
 	 * Set the unique identifier of this class.
 	 * @param id the new ID
 	 */
-	public void setId(final java.lang.Integer id) {
+	public void setId(final Integer id) {
 		this.id = id;
 	}
 
 	/**
 	 * Return the value associated with the column: SVC_NAME.
 	 */
-	public java.lang.String getName() {
+	public String getName() {
 		return name;
 	}
 
@@ -96,7 +113,7 @@ public class Service implements Serializable {
 	 * Set the value related to the column: SVC_NAME.
 	 * @param name the SVC_NAME value
 	 */
-	public void setName(final java.lang.String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
@@ -105,7 +122,7 @@ public class Service implements Serializable {
 	/**
 	 * Return the value associated with the column: SVC_KEY.
 	 */
-	public java.lang.String getKey() {
+	public String getKey() {
 		return key;
 	}
 
@@ -113,12 +130,12 @@ public class Service implements Serializable {
 	 * Set the value related to the column: SVC_KEY.
 	 * @param key the SVC_KEY value
 	 */
-	public void setKey(final java.lang.String key) {
+	public void setKey(final String key) {
 		this.key = key;
 	}
 
 	/**
-	 * @see java.lang.Object#equals(java.lang.Object)
+	 * @see Object#equals(Object)
 	 */
 	@Override
 	public boolean equals(final Object obj) {
@@ -138,7 +155,7 @@ public class Service implements Serializable {
 	}
 
 	/**
-	 * @see java.lang.Object#hashCode()
+	 * @see Object#hashCode()
 	 */
 	@Override
 	public int hashCode() {
@@ -147,7 +164,7 @@ public class Service implements Serializable {
 
 
 	/**
-	 * @see java.lang.Object#toString()
+	 * @see Object#toString()
 	 */
 	@Override
 	public String toString() {

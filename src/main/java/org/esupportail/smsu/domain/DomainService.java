@@ -140,10 +140,6 @@ public class DomainService {
 	public CustomizedGroup getCustomizedGroupByLabel(final String label) {
 		return this.daoService.getCustomizedGroupByLabel(label);
 	}
-
-	public CustomizedGroup getFirstCustomizedGroup() {
-		return this.daoService.getFirstCustomizedGroup();
-	}
 	
 	//////////////////////////////////////////////////////////////
 	// Used by Date methods in MessagesController

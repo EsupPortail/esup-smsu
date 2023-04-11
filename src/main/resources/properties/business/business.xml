@@ -24,7 +24,7 @@
 		<property name="titleSmsValidation"> 
 			<value type="java.lang.String">${adhesion.titleSmsValidation}</value>
 		</property>
-        <property name="phoneNumberPattern" value="${recipient.phoneNumberPattern}"/>
+		<property name="phoneNumberPattern" value="${recipient.phoneNumberPattern}"/>
 		<property name="displayFrenchPhoneNumber" value="${adhesion.displayFrenchPhoneNumber}"/>
 		<property name="storeFrenchPhoneNumber" value="${adhesion.storeFrenchPhoneNumber}"/>
 	</bean>
@@ -32,11 +32,11 @@
 	<bean id="sendSmsManager"
 		class="org.esupportail.smsu.business.SendSmsManager">
 		<description>The business layer concerning the sending.</description>
-		<property name="defaultSupervisorLogin" value="${sms.defaultSupervisorLogin}"/>
-		<property name="smsMaxSize" value="${sms.maxLength}"/>
-		<property name="defaultAccount" value="${smsuapi.defaultAccount}"/>
-		<property name="phoneNumberPattern" value="${recipient.phoneNumberPattern}"/>
-		<property name="userEmailAttribute" value="${ldap.emailAttribute}"/>
+		<constructor-arg name="defaultSupervisorLogin" value="${sms.defaultSupervisorLogin}"/>
+		<constructor-arg name="smsMaxSize" value="${sms.maxLength}"/>
+		<constructor-arg name="defaultAccount" value="${smsuapi.defaultAccount}"/>
+		<constructor-arg name="phoneNumberPattern" value="${recipient.phoneNumberPattern}"/>
+		<constructor-arg name="userEmailAttribute" value="${ldap.emailAttribute}"/>
 	</bean>
 	
 	<bean id="customizer"

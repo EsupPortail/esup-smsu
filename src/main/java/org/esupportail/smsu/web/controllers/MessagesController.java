@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestBody;
-
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.esupportail.smsu.business.MessageManager;
 import org.esupportail.smsu.business.SendSmsManager;
@@ -35,7 +35,6 @@ import org.esupportail.smsuapi.utils.HttpException;
 import org.esupportail.ws.remote.beans.TrackInfos;
 import javax.inject.Inject;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.util.StringUtils;
 
 
 /**
@@ -61,9 +60,7 @@ public class MessagesController {
 			@RequestParam(value = "maxResults", defaultValue = "0" /* no limit */) int maxResults,
 			HttpServletRequest request) {
 		senderLogin = allowedSender(request, senderLogin);
-		Date beginDate = null;
-		Date endDate = null;
-		return messageManager.getMessages(null, null, null, null, senderLogin, beginDate, endDate, maxResults);
+		return messageManager.getMessages(senderLogin, maxResults);
 	}
 		
 	@RequestMapping(method = RequestMethod.GET, value = "/{id:\\d+}")
@@ -191,7 +188,7 @@ public class MessagesController {
 		if (msg.recipientPhoneNumbers != null)
 			if (!request.isUserInRole("FCTN_SMS_ENVOI_NUM_TEL"))
 				throw new InvalidParameterException("user " + login + " is not allowed to send to phone numbers");
-		if (!StringUtils.isEmpty(msg.recipientGroup))
+		if (StringUtils.isNotEmpty(msg.recipientGroup))
 			if (!request.isUserInRole("FCTN_SMS_ENVOI_GROUPES"))
 				throw new InvalidParameterException("user " + login + " is not allowed to send SMS to groups");
 	}

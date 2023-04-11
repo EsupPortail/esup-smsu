@@ -1,53 +1,68 @@
 package org.esupportail.smsu.dao.beans;
 
 import java.io.Serializable;
+import java.util.Set;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 
 
 /**
  * The class that represents customized groups.
  */
+@Entity
+@Table(name = "customized_group")
 public class CustomizedGroup implements Serializable {
 
 	/**
 	 * Hibernate reference for customized group.
 	 */
-	public static final String REF = "CustomizedGroup";
+	public static final String REF = "customizedGroup";
 
 	/**
 	 * Hibernate property for the account.
 	 */
-	public static final String PROP_ACCOUNT = "Account";
+	public static final String PROP_ACCOUNT = "account";
 
 	/**
 	 * Hibernate property for the number of recipient by sms.
 	 */
-	public static final String PROP_QUOTA_ORDER = "QuotaOrder";
+	public static final String PROP_QUOTA_ORDER = "quotaOrder";
 
 	/**
 	 * Hibernate property for the quota of sms.
 	 */
-	public static final String PROP_QUOTA_SMS = "QuotaSms";
+	public static final String PROP_QUOTA_SMS = "quotaSms";
 
 	/**
 	 * Hibernate property for the number of consumed sms.
 	 */
-	public static final String PROP_CONSUMED_SMS = "ConsumedSms";
+	public static final String PROP_CONSUMED_SMS = "consumedSms";
 
 	/**
 	 * Hibernate property for the role.
 	 */
-	public static final String PROP_ROLE = "Role";
+	public static final String PROP_ROLE = "role";
 
 	/**
 	 * Hibernate property for the label.
 	 */
-	public static final String PROP_LABEL = "Label";
+	public static final String PROP_LABEL = "label";
 
 	/**
 	 * Hibernate property for the identifier.
 	 */
-	public static final String PROP_ID = "Id";
+	public static final String PROP_ID = "id";
 
 	/**
 	 * The serialization id.
@@ -57,42 +72,63 @@ public class CustomizedGroup implements Serializable {
 	/**
 	 * customized group identifier.
 	 */
-	private java.lang.Integer id;
+	@Id
+	@Column(name = "CGR_ID")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
 	/**
 	 * label of the group.
 	 */
-	private java.lang.String label;
+	@Column(name = "CGR_LABEL", nullable = false, length = 255, unique = true)
+	@NotNull
+	private String label;
 
 	/**
 	 * quota of sms.
 	 */
-	private java.lang.Long quotaSms;
+	@Column(name = "CGR_QUOTA_SMS", nullable = false, length = 20)
+	@NotNull
+	private Long quotaSms;
 
 	/**
 	 * number of recipient by sms.
 	 */
-	private java.lang.Long quotaOrder;
+	@Column(name = "CGR_QUOTA_ORDER", nullable = false, length = 20)
+	@NotNull
+	private Long quotaOrder;
 	
 	/**
 	 * number of consumed sms.
 	 */
-	private java.lang.Long consumedSms;
+	@Column(name = "CGR_CONSUMED_SMS", nullable = false, length = 20)
+	@NotNull
+	private Long consumedSms;
 
 	/**
 	 * account associated to the group.
 	 */
+	@ManyToOne
+	@JoinColumn(name = "ACC_ID", nullable = false)
+	@NotNull
 	private Account account;
 	
 	/**
 	 * role.
 	 */
+	@ManyToOne
+	@JoinColumn(name = "ROL_ID", nullable = false)
+	@NotNull
 	private Role role;
 
 	/**
 	 * collection of supervisors.
 	 */
-	private java.util.Set<Person> supervisors;
+	@ManyToMany
+	@JoinTable(name = "supervisor", //
+			joinColumns = { @JoinColumn(name = "CGR_ID") }, //
+			inverseJoinColumns = { @JoinColumn(name = "PER_ID") })
+	private Set<Person> supervisors;
 
 	/**
 	 * Bean constructor.
@@ -111,7 +147,7 @@ public class CustomizedGroup implements Serializable {
      *  generator-class="native"
      *  column="CGR_ID"
      */
-	public java.lang.Integer getId() {
+	public Integer getId() {
 		return id;
 	}
 
@@ -119,7 +155,7 @@ public class CustomizedGroup implements Serializable {
 	 * Set the unique identifier of this class.
 	 * @param id the new ID
 	 */
-	public void setId(final java.lang.Integer id) {
+	public void setId(final Integer id) {
 		this.id = id;
 	}
 
@@ -129,7 +165,7 @@ public class CustomizedGroup implements Serializable {
 	/**
 	 * Return the value associated with the column: CGR_LABEL.
 	 */
-	public java.lang.String getLabel() {
+	public String getLabel() {
 		return label;
 	}
 
@@ -137,7 +173,7 @@ public class CustomizedGroup implements Serializable {
 	 * Set the value related to the column: CGR_LABEL.
 	 * @param label the CGR_LABEL value
 	 */
-	public void setLabel(final java.lang.String label) {
+	public void setLabel(final String label) {
 		this.label = label;
 	}
 
@@ -146,7 +182,7 @@ public class CustomizedGroup implements Serializable {
 	/**
 	 * Return the value associated with the column: CGR_QUOTA_SMS.
 	 */
-	public java.lang.Long getQuotaSms() {
+	public Long getQuotaSms() {
 		return quotaSms;
 	}
 
@@ -154,7 +190,7 @@ public class CustomizedGroup implements Serializable {
 	 * Set the value related to the column: CGR_QUOTA_SMS.
 	 * @param quotaSms the CGR_QUOTA_SMS value
 	 */
-	public void setQuotaSms(final java.lang.Long quotaSms) {
+	public void setQuotaSms(final Long quotaSms) {
 		this.quotaSms = quotaSms;
 	}
 
@@ -170,7 +206,7 @@ public class CustomizedGroup implements Serializable {
 	/**
 	 * Return the value associated with the column: CGR_QUOTA_ORDER.
 	 */
-	public java.lang.Long getQuotaOrder() {
+	public Long getQuotaOrder() {
 		return quotaOrder;
 	}
 
@@ -178,7 +214,7 @@ public class CustomizedGroup implements Serializable {
 	 * Set the value related to the column: CGR_QUOTA_ORDER.
 	 * @param quotaOrder the CGR_QUOTA_ORDER value
 	 */
-	public void setQuotaOrder(final java.lang.Long quotaOrder) {
+	public void setQuotaOrder(final Long quotaOrder) {
 		this.quotaOrder = quotaOrder;
 	}
 
@@ -187,7 +223,7 @@ public class CustomizedGroup implements Serializable {
 	/**
 	 * Return the value associated with the column: CGR_CONSUMED_SMS.
 	 */
-	public java.lang.Long getConsumedSms() {
+	public Long getConsumedSms() {
 		return consumedSms;
 	}
 
@@ -195,7 +231,7 @@ public class CustomizedGroup implements Serializable {
 	 * Set the value related to the column: CGR_CONSUMED_SMS.
 	 * @param consumedSms the CGR_CONSUMED_SMS value
 	 */
-	public void setConsumedSms(final java.lang.Long consumedSms) {
+	public void setConsumedSms(final Long consumedSms) {
 		this.consumedSms = consumedSms;
 	}
 
@@ -238,7 +274,7 @@ public class CustomizedGroup implements Serializable {
 	/**
 	 * Return the value associated with the column: Supervisors.
 	 */
-	public java.util.Set<Person> getSupervisors() {
+	public Set<Person> getSupervisors() {
 		return supervisors;
 	}
 
@@ -246,13 +282,13 @@ public class CustomizedGroup implements Serializable {
 	 * Set the value related to the column: Supervisors.
 	 * @param supervisors the Supervisors value
 	 */
-	public void setSupervisors(final java.util.Set<Person> supervisors) {
+	public void setSupervisors(final Set<Person> supervisors) {
 		this.supervisors = supervisors;
 	}
 
 
 	/**
-	 * @see java.lang.Object#equals(java.lang.Object)
+	 * @see Object#equals(Object)
 	 */
 	@Override
 	public boolean equals(final Object obj) {
@@ -272,7 +308,7 @@ public class CustomizedGroup implements Serializable {
 	}
 
 	/**
-	 * @see java.lang.Object#hashCode()
+	 * @see Object#hashCode()
 	 */
 	@Override
 	public int hashCode() {
@@ -281,7 +317,7 @@ public class CustomizedGroup implements Serializable {
 
 
 	/**
-	 * @see java.lang.Object#toString()
+	 * @see Object#toString()
 	 */
 	@Override
 	public String toString() {

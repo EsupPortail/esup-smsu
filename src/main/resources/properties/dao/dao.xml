@@ -4,10 +4,13 @@
 	xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
 	http://www.springframework.org/schema/beans/spring-beans.xsd
 	http://www.springframework.org/schema/jdbc
-	http://www.springframework.org/schema/jdbc/spring-jdbc.xsd"
+	http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+	http://www.springframework.org/schema/data/jpa
+	http://www.springframework.org/schema/data/jpa/spring-jpa.xsd"
 	>
 
 	<!-- 
@@ -17,16 +20,23 @@
 		This file is referenced by /properties/applicationContext.xml.
 	-->
 
+	<jpa:repositories base-package="org.esupportail.smsu.dao.repositories" 
+		entity-manager-factory-ref="sessionFactory"
+	/>
+	
+	<!-- 	used by jpa:repositories -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="#{${hibernate.useJndi} ? 'jndiDataSource' : 'jdbcDataSource'}"/>
+	</bean>
+	
 	<bean 
 		id="sessionFactory" 
-		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean"
-		>
-		<property name="mappingLocations">
-			<list>
-				<value>
-					classpath:/properties/dao/hibernate/mapping/*.hbm.xml
-				</value>
-			</list>
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<property name="packagesToScan">
+			<array>
+				<value>org.esupportail.smsu.dao.beans</value>
+				<value>org.esupportail.smsu.dao.beans.idClass</value>
+			</array>
 		</property>
 		<property name="hibernateProperties">
 		  <props>
@@ -34,9 +44,9 @@
 		    <prop key="hibernate.hbm2ddl.auto">validate</prop>
 		  </props>
 		</property>
-		<property name="dataSource" ref="#{${hibernate.useJndi} ? 'jndiDataSource' : 'jdbcDataSource'}"/>
+		<property name="dataSource" value="#{transactionManager.dataSource}"/>
 	</bean>
-	
+
 	<bean id="jdbcDataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close" lazy-init="true">
         <property name="driverClassName" value="${hibernate.connection.driver_class}"/>
         <property name="url" value="${hibernate.connection.jdbc.url}"/>
@@ -50,7 +60,6 @@
         <property name="minEvictableIdleTimeMillis" value="1800000" />
         <property name="validationQuery" value="SELECT version();" />
 	</bean>
-	
 
 	<bean id="jndiDataSource" class="org.springframework.jndi.JndiObjectFactoryBean" lazy-init="true">
         <property name="jndiName" value="java:/comp/env/${hibernate.connection.jndi.datasource}" />

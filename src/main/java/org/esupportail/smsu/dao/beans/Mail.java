@@ -1,6 +1,21 @@
 package org.esupportail.smsu.dao.beans;
 
 import java.io.Serializable;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import org.esupportail.smsu.domain.beans.mail.MailStatus;
 
@@ -8,42 +23,44 @@ import org.esupportail.smsu.domain.beans.mail.MailStatus;
 /**
  * The class that represents mails.
  */
+@Entity
+@Table(name = "mail")
 public class Mail  implements Serializable {
 
 	/**
 	 * Hibernate reference for the mail.
 	 */
-	public static final String REF = "Mail";
+	public static final String REF = "mail";
 
 	/**
 	 * Hibernate property for the subject.
 	 */
-	public static final String PROP_SUBJECT = "Subject";
+	public static final String PROP_SUBJECT = "subject";
 	
 	/**
 	 * Hibernate property for the state.
 	 */
-	public static final String PROP_STATE = "State";
+	public static final String PROP_STATE = "state";
 
 	/**
 	 * Hibernate property for the template.
 	 */
-	public static final String PROP_TEMPLATE = "Template";
+	public static final String PROP_TEMPLATE = "template";
 
 	/**
 	 * Hibernate property for the message.
 	 */
-	public static final String PROP_MESSAGE = "Message";
+	public static final String PROP_MESSAGE = "message";
 
 	/**
 	 * Hibernate property for the content.
 	 */
-	public static final String PROP_CONTENT = "Content";
+	public static final String PROP_CONTENT = "content";
 
 	/**
 	 * Hibernate property for the identifier.
 	 */
-	public static final String PROP_ID = "Id";
+	public static final String PROP_ID = "id";
 
 	/**
 	 * The serialization id.
@@ -53,38 +70,53 @@ public class Mail  implements Serializable {
 	/**
 	 * mail identifier.
 	 */
-	private java.lang.Integer id;
+	@Id
+	@Column(name = "MAIL_ID")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
 	/**
 	 * mail content.
 	 */
-	private java.lang.String content;
+	@Column(name = "MAIL_CONTENT", nullable = false, length = 300)
+	@NotNull
+	private String content;
 
 	/**
 	 * mail state.
 	 */
-	private java.lang.String state;
+	@Column(name = "MAIL_STATE", nullable = false, length = 16)
+	@NotNull
+	private String state;
 	
 	/**
 	 * mail state.
 	 */
-	private java.lang.String subject;
+	@Column(name = "MAIL_SUBJECT", length = 300)
+	private String subject;
 
 
 	/**
 	 * template of mail.
 	 */
+	@ManyToOne
+	@JoinColumn(name = "TPL_ID")
 	private Template template;
 
 	/**
 	 * message associated to the mail.
 	 */
+	@OneToOne(mappedBy = "mail")
 	private Message message;
 
 	/**
 	 * collection of mail recipients.
 	 */
-	private java.util.Set<MailRecipient> mailRecipients;
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = ToMailRecipient.TABLE_NAME, //
+			joinColumns = { @JoinColumn(name = ToMailRecipient.MAIL_COLUMN) }, //
+			inverseJoinColumns = { @JoinColumn(name = ToMailRecipient.MAIL_RECIPIENT_COLUMN) })
+	private Set<MailRecipient> mailRecipients;
 
 	/**
 	 * Bean constructor.
@@ -98,10 +130,10 @@ public class Mail  implements Serializable {
 	 * Constructor for required fields.
 	 */
 	public Mail(
-		final java.lang.Integer id,
-		final java.lang.String subject,
-		final java.lang.String content,
-		final java.lang.String state) {
+		final Integer id,
+		final String subject,
+		final String content,
+		final String state) {
 
 		this.setId(id);
 		this.setContent(content);
@@ -116,7 +148,7 @@ public class Mail  implements Serializable {
      *  generator-class="native"
      *  column="MAIL_ID"
      */
-	public java.lang.Integer getId() {
+	public Integer getId() {
 		return id;
 	}
 
@@ -124,7 +156,7 @@ public class Mail  implements Serializable {
 	 * Set the unique identifier of this class.
 	 * @param id the new ID
 	 */
-	public void setId(final java.lang.Integer id) {
+	public void setId(final Integer id) {
 		this.id = id;
 	}
 
@@ -134,14 +166,14 @@ public class Mail  implements Serializable {
 	/**
 	 * Return the value associated with the column: MAIL_CONTENT.
 	 */
-	public java.lang.String getContent() {
+	public String getContent() {
 		return content;
 	}
 	
 	/**
 	 * Return the value associated with the column: MAIL_SUBJECT.
 	 */
-	public java.lang.String getSubject() {
+	public String getSubject() {
 		return subject;
 	}
 	
@@ -149,7 +181,7 @@ public class Mail  implements Serializable {
 	 * Set the value related to the column: MAIL_CONTENT.
 	 * @param content the MAIL_CONTENT value
 	 */
-	public void setContent(final java.lang.String content) {
+	public void setContent(final String content) {
 		this.content = content;
 	}
 
@@ -157,7 +189,7 @@ public class Mail  implements Serializable {
 	 * Set the value related to the column: MAIL_SUBJECT.
 	 * @param contents the MAIL_SUBJECT value
 	 */
-	public void setSubject(final java.lang.String subject) {
+	public void setSubject(final String subject) {
 		this.subject = subject;
 	}
 
@@ -165,7 +197,7 @@ public class Mail  implements Serializable {
 	 * Return the value associated with the column: MAIL_STATE.
 	 */
 	@Deprecated
-	public java.lang.String getState() {
+	public String getState() {
 		return state;
 	}
 
@@ -182,7 +214,7 @@ public class Mail  implements Serializable {
 	 * @param state the MAIL_STATE value
 	 */
 	@Deprecated
-	public void setState(final java.lang.String state) {
+	public void setState(final String state) {
 		this.state = state;
 	}
 
@@ -235,7 +267,7 @@ public class Mail  implements Serializable {
 	/**
 	 * Return the value associated with the column: MailRecipients.
 	 */
-	public java.util.Set<MailRecipient> getMailRecipients() {
+	public Set<MailRecipient> getMailRecipients() {
 		return mailRecipients;
 	}
 
@@ -243,13 +275,13 @@ public class Mail  implements Serializable {
 	 * Set the value related to the column: MailRecipients.
 	 * @param mailRecipients the MailRecipients value
 	 */
-	public void setMailRecipients(final java.util.Set<MailRecipient> mailRecipients) {
+	public void setMailRecipients(final Set<MailRecipient> mailRecipients) {
 		this.mailRecipients = mailRecipients;
 	}
 
 
 	/**
-	 * @see java.lang.Object#equals(java.lang.Object)
+	 * @see Object#equals(Object)
 	 */
 	@Override
 	public boolean equals(final Object obj) {
@@ -270,7 +302,7 @@ public class Mail  implements Serializable {
 
 
 	/**
-	 * @see java.lang.Object#hashCode()
+	 * @see Object#hashCode()
 	 */
 	@Override
 	public int hashCode() {
@@ -279,7 +311,7 @@ public class Mail  implements Serializable {
 
 
 	/**
-	 * @see java.lang.Object#toString()
+	 * @see Object#toString()
 	 */
 	@Override
 	public String toString() {

@@ -3,30 +3,40 @@ package org.esupportail.smsu.dao.beans;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+
 
 /**
  * The class that represent users.
  */
+@Entity
+@Table(name = "pending_member")
 public class PendingMember  implements Serializable {
 	/**
 	 * Hibernate reference for pending member.
 	 */
-	public static final String REF = "PendingMember";
+	public static final String REF = "pendingMember";
 
 	/**
 	 * Hibernate property for the validation code.
 	 */
-	public static final String PROP_VALIDATION_CODE = "ValidationCode";
+	public static final String PROP_VALIDATION_CODE = "validationCode";
 
 	/**
 	 * Hibernate property for the subscription date.
 	 */
-	public static final String PROP_DATE_SUBSCRIPTION = "DateSubscription";
+	public static final String PROP_DATE_SUBSCRIPTION = "dateSubscription";
 
 	/**
 	 * Hibernate property for the identifier.
 	 */
-	public static final String PROP_ID = "Id";
+	public static final String PROP_ID = "id";
 
 	/**
 	 * The serialization id.
@@ -38,18 +48,24 @@ public class PendingMember  implements Serializable {
 	/**
 	 * Id of the pending member (corresponds to its login).
 	 */
-	private java.lang.String id;
-
+	@Id
+	@Column(name = "MBR_LOGIN")
+	private String id;
 	
 	/**
 	 * code to validate the subscription.
 	 */
-	private java.lang.String validationCode;
+	@Column(name = "MBR_VALIDATION_CODE", nullable = false, length = 8, unique = true)
+	@NotNull
+	private String validationCode;
 	
 	/**
 	 * subscription date.
 	 */
-	private java.util.Date dateSubscription;
+	@Column(name = "MBR_DATE_SUBSCRIPTION", nullable = false, length = 8, unique = true)
+	@NotNull
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date dateSubscription;
 
 	/**
 	 * Bean constructor.
@@ -63,8 +79,8 @@ public class PendingMember  implements Serializable {
 	 * Constructor for required fields.
 	 */
 	public PendingMember(
-		final java.lang.String id,
-		final java.lang.String validationCode) {
+		final String id,
+		final String validationCode) {
 
 		this.setId(id);
 		this.setValidationCode(validationCode);
@@ -78,7 +94,7 @@ public class PendingMember  implements Serializable {
      *  generator-class="assigned"
      *  column="MBR_LOGIN"
      */
-	public java.lang.String getId() {
+	public String getId() {
 		return id;
 	}
 
@@ -86,14 +102,14 @@ public class PendingMember  implements Serializable {
 	 * Set the unique identifier of this class.
 	 * @param id the new ID
 	 */
-	public void setId(final java.lang.String id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 
 	/**
 	 * Return the value associated with the column: MBR_VALIDATION_CODE.
 	 */
-	public java.lang.String getValidationCode() {
+	public String getValidationCode() {
 		return validationCode;
 	}
 
@@ -101,26 +117,26 @@ public class PendingMember  implements Serializable {
 	 * Set the value related to the column: MBR_VALIDATION_CODE.
 	 * @param validationCode the MBR_VALIDATION_CODE value
 	 */
-	public void setValidationCode(final java.lang.String validationCode) {
+	public void setValidationCode(final String validationCode) {
 		this.validationCode = validationCode;
 	}
 
 	/**
 	 * Return the value associated with the column: MBR_DATE_SUBSCRIPTION.
 	 */
-	public java.util.Date getDateSubscription() {
+	public Date getDateSubscription() {
 		return dateSubscription;
 	}
 
 	/**
 	 * @param dateSubscription
 	 */
-	public void setDateSubscription(final java.util.Date dateSubscription) {
+	public void setDateSubscription(final Date dateSubscription) {
 		this.dateSubscription = dateSubscription;
 	}
 	
 	/**
-	 * @see java.lang.Object#equals(java.lang.Object)
+	 * @see Object#equals(Object)
 	 */
 	@Override
 	public boolean equals(final Object obj) {
@@ -140,7 +156,7 @@ public class PendingMember  implements Serializable {
 	}
 
 	/**
-	 * @see java.lang.Object#hashCode()
+	 * @see Object#hashCode()
 	 */
 	@Override
 	public int hashCode() {
@@ -149,7 +165,7 @@ public class PendingMember  implements Serializable {
 
 
 	/**
-	 * @see java.lang.Object#toString()
+	 * @see Object#toString()
 	 */
 	@Override
 	public String toString() {

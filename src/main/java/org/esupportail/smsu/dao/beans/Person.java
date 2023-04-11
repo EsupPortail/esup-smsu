@@ -2,26 +2,36 @@ package org.esupportail.smsu.dao.beans;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
 
 /**
  * The class that represents persons.
  */
-public class Person  implements Serializable {
+@Entity
+@Table(name = "person")
+public class Person implements Serializable {
 
 	/**
 	 * Hibernate reference for person.
 	 */
-	public static final String REF = "Person";
+	public static final String REF = "person";
 
 	/**
 	 * Hibernate property for the identifier.
 	 */
-	public static final String PROP_ID = "Id";
+	public static final String PROP_ID = "id";
 
 	/**
 	 * Hibernate property for the login.
 	 */
-	public static final String PROP_LOGIN = "Login";
+	public static final String PROP_LOGIN = "login";
 
 	/**
 	 * The serialization id.
@@ -31,12 +41,17 @@ public class Person  implements Serializable {
 	/**
 	 * person identifier.
 	 */
-	private java.lang.Integer id;
+	@Id
+	@Column(name = "PER_ID")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
 	/**
 	 * login identifier.
 	 */
-	private java.lang.String login;
+	@Column(name = "PER_LOGIN", nullable = false, length = 32, unique = true)
+	@NotNull
+	private String login;
 
 	/**
 	 * Bean constructor.
@@ -50,8 +65,8 @@ public class Person  implements Serializable {
 	 * Constructor for required fields.
 	 */
 	public Person(
-		final java.lang.Integer id,
-		final java.lang.String login) {
+		final Integer id,
+		final String login) {
 
 		this.setId(id);
 		this.setLogin(login);
@@ -69,7 +84,7 @@ public class Person  implements Serializable {
      *  generator-class="native"
      *  column="PER_ID"
      */
-	public java.lang.Integer getId() {
+	public Integer getId() {
 		return id;
 	}
 
@@ -77,14 +92,14 @@ public class Person  implements Serializable {
 	 * Set the unique identifier of this class.
 	 * @param id the new ID
 	 */
-	public void setId(final java.lang.Integer id) {
+	public void setId(final Integer id) {
 		this.id = id;
 	}
 
 	/**
 	 * Return the value associated with the column: PER_LOGIN.
 	 */
-	public java.lang.String getLogin() {
+	public String getLogin() {
 		return login;
 	}
 
@@ -92,12 +107,12 @@ public class Person  implements Serializable {
 	 * Set the value related to the column: PER_LOGIN.
 	 * @param login the PER_LOGIN value
 	 */
-	public void setLogin(final java.lang.String login) {
+	public void setLogin(final String login) {
 		this.login = login;
 	}
 
 	/**
-	 * @see java.lang.Object#equals(java.lang.Object)
+	 * @see Object#equals(Object)
 	 */
 	@Override
 	public boolean equals(final Object obj) {
@@ -117,7 +132,7 @@ public class Person  implements Serializable {
 	}
 
 	/**
-	 * @see java.lang.Object#hashCode()
+	 * @see Object#hashCode()
 	 */
 	@Override
 	public int hashCode() {
@@ -126,7 +141,7 @@ public class Person  implements Serializable {
 
 
 	/**
-	 * @see java.lang.Object#toString()
+	 * @see Object#toString()
 	 */
 	@Override
 	public String toString() {

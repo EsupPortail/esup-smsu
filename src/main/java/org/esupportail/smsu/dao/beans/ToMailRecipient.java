@@ -2,6 +2,15 @@ package org.esupportail.smsu.dao.beans;
 
 import java.io.Serializable;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import org.esupportail.smsu.dao.beans.idClass.ToMailRecipientPk;
+
 
 /**
  * This is an object that contains data related to the to_mail_recipient table.
@@ -9,13 +18,20 @@ import java.io.Serializable;
  * @hibernate.class
  *  table="to_mail_recipient"
  */
+@Entity
+@Table(name = ToMailRecipient.TABLE_NAME)
+@IdClass(ToMailRecipientPk.class)
 public class ToMailRecipient  implements Serializable {
 
 	/**
 	 * Hibernate reference for the association ToMailRecipient.
 	 */
-	public static final String REF = "ToMailRecipient";
+	public static final String REF = "toMailRecipient";
 
+	public static final String TABLE_NAME = "to_mail_recipient";
+	public static final String MAIL_COLUMN = "MAIL_ID";
+	public static final String MAIL_RECIPIENT_COLUMN = "MRC_ID";
+	
 	/**
 	 * The serialization id.
 	 */
@@ -24,11 +40,17 @@ public class ToMailRecipient  implements Serializable {
 	/**
 	 * mail recipient identifier.
 	 */
+	@Id
+	@ManyToOne
+	@JoinColumn(name = MAIL_RECIPIENT_COLUMN)
 	private MailRecipient mailRecipient;
 
 	/**
 	 * mail identifier.
 	 */
+	@Id
+	@ManyToOne
+	@JoinColumn(name = MAIL_COLUMN)
 	private Mail mail;
 
 	/**

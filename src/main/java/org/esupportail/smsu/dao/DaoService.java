@@ -5,7 +5,6 @@ package org.esupportail.smsu.dao;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import org.esupportail.smsu.dao.beans.Account;
 import org.esupportail.smsu.dao.beans.BasicGroup;
@@ -21,8 +20,6 @@ import org.esupportail.smsu.dao.beans.Role;
 import org.esupportail.smsu.dao.beans.Service;
 import org.esupportail.smsu.dao.beans.Template;
 import org.esupportail.smsu.domain.beans.message.MessageStatus;
-
-
 
 /**
  * The DAO service interface.
@@ -41,19 +38,7 @@ public interface DaoService {
 	//////////////////////////////////////////////////////////////
 	// Message
 	//////////////////////////////////////////////////////////////
-	/**
-	 * @param userGroupId 
-	 * @param userAccountId 
-	 * @param userServiceId 
-	 * @param userTemplateId 
-	 * @param userUserId 
-	 * @param beginDate 
-	 * @param endDate 
-	 * @return the messages.
-	 * @param[userGroupId, userAccountId, userServiceId, userTemplateId, userUserId, beginDate, endDate]
-	 */
-	List<Message> getMessages(Integer userGroupId, Integer userAccountId, Integer userServiceId, 
-			Integer userTemplateId, Person sender, java.sql.Date beginDate, java.sql.Date endDate, int maxResults);
+	List<Message> getMessages(Person sender, int maxResults);
 
 	/**
 	 * @param message
@@ -72,10 +57,26 @@ public interface DaoService {
 	List<Message> getMessagesByService(Service service);
 	
 	/**
+	 * @param service 
+	 * @return if messages are associated with this service
+	 */
+	default boolean existsMessagesByService(Service service) {
+		return getMessagesByService(service).isEmpty();
+	}
+	
+	/**
 	 * @param template
 	 * @return the list of messages
 	 */
 	List<Message> getMessagesByTemplate(Template template);
+	
+	/**
+	 * @param service 
+	 * @return if messages are associated with this service
+	 */
+	default boolean existsMessagesByTemplate(Template template) {
+		return getMessagesByTemplate(template).isEmpty();
+	}
 	
 	/**
 	 * Return all message by state.
@@ -304,11 +305,6 @@ public interface DaoService {
 	boolean isRoleInUse(Role role);
 	
 	/**
-	 * @return the first customized group from the table.
-	 */
-	CustomizedGroup getFirstCustomizedGroup();
-	
-	/**
 	 * add a customized group.
 	 * @param customizedGroup 
 	 */
@@ -407,11 +403,6 @@ public interface DaoService {
 	 */
 	Role getRoleByName(String name);
 	
-	/**
-	 * @return set of Fonction.
-	 */
-	Set<Fonction> getFctsByRole(Role role);
-	
 	//////////////////////////////////////////////////////////////
 	// Fonction
 	//////////////////////////////////////////////////////////////
@@ -439,6 +430,8 @@ public interface DaoService {
 	 * @return the mails.
 	 */
 	List<Mail> getMailsByTemplate(Template template);
+	
+	boolean existsMailsByTemplate(Template template);
 	
 	/**
 	 * Delete all emails(and To mail recipient associated).

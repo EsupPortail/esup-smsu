@@ -2,31 +2,41 @@ package org.esupportail.smsu.dao.beans;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
 
 /**
  * The class that represents mail recipients.
  */
+@Entity
+@Table(name = "mail_recipient")
 public class MailRecipient  implements Serializable {
 
 	/**
 	 * Hibernate reference for mail recipient.
 	 */
-	public static final String REF = "MailRecipient";
+	public static final String REF = "mailRecipient";
 
 	/**
 	 * Hibernate property for the address.
 	 */
-	public static final String PROP_ADDRESS = "Address";
+	public static final String PROP_ADDRESS = "address";
 
 	/**
 	 * Hibernate property for the address.
 	 */
-	public static final String PROP_LOGIN = "Login";
+	public static final String PROP_LOGIN = "login";
 
 	/**
 	 * Hibernate property for the identifier.
 	 */
-	public static final String PROP_ID = "Id";
+	public static final String PROP_ID = "id";
 
 	/**
 	 * The serialization id.
@@ -37,17 +47,23 @@ public class MailRecipient  implements Serializable {
 	/**
 	 * mail recipient identifier.
 	 */
-	private java.lang.Integer id;
+	@Id
+	@Column(name = "MRC_ID")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
 	/**
 	 * mail recipient address.
 	 */
-	private java.lang.String address;
+	@Column(name = "MRC_ADDRESS", nullable = false, length = 100, unique = true)
+	@NotNull
+	private String address;
 	
 	/**
 	 * mail recipient login.
 	 */
-	private java.lang.String login;
+	@Column(name = "MRC_LOGIN", length = 32)
+	private String login;
 
 	/**
 	 * Bean constructor.
@@ -60,8 +76,8 @@ public class MailRecipient  implements Serializable {
 	 * Constructor for required fields.
 	 */
 	public MailRecipient(
-		final java.lang.Integer id,
-		final java.lang.String address, final java.lang.String login) {
+		final Integer id,
+		final String address, final String login) {
 
 		this.setId(id);
 		this.setAddress(address);
@@ -77,7 +93,7 @@ public class MailRecipient  implements Serializable {
      *  generator-class="native"
      *  column="MRC_ID"
      */
-	public java.lang.Integer getId() {
+	public Integer getId() {
 		return id;
 	}
 
@@ -85,7 +101,7 @@ public class MailRecipient  implements Serializable {
 	 * Set the unique identifier of this class.
 	 * @param id the new ID
 	 */
-	public void setId(final java.lang.Integer id) {
+	public void setId(final Integer id) {
 		this.id = id;
 	}
 
@@ -95,7 +111,7 @@ public class MailRecipient  implements Serializable {
 	/**
 	 * Return the value associated with the column: MRC_ADDRESS.
 	 */
-	public java.lang.String getAddress() {
+	public String getAddress() {
 		return address;
 	}
 
@@ -103,14 +119,14 @@ public class MailRecipient  implements Serializable {
 	 * Set the value related to the column: MRC_LOGIN.
 	 * @param address the MRC_ADDRESS value
 	 */
-	public void setLogin(final java.lang.String login) {
+	public void setLogin(final String login) {
 		this.login = login;
 	}
 
 	/**
 	 * Return the value associated with the column: MRC_LOGIN.
 	 */
-	public java.lang.String getLogin() {
+	public String getLogin() {
 		return login;
 	}
 
@@ -118,12 +134,12 @@ public class MailRecipient  implements Serializable {
 	 * Set the value related to the column: MRC_ADDRESS.
 	 * @param address the MRC_ADDRESS value
 	 */
-	public void setAddress(final java.lang.String address) {
+	public void setAddress(final String address) {
 		this.address = address;
 	}
 
 	/**
-	 * @see java.lang.Object#equals(java.lang.Object)
+	 * @see Object#equals(Object)
 	 */
 	@Override
 	public boolean equals(final Object obj) {
@@ -143,7 +159,7 @@ public class MailRecipient  implements Serializable {
 	}
 
 	/**
-	 * @see java.lang.Object#hashCode()
+	 * @see Object#hashCode()
 	 */
 	@Override
 	public int hashCode() {
@@ -152,7 +168,7 @@ public class MailRecipient  implements Serializable {
 
 
 	/**
-	 * @see java.lang.Object#toString()
+	 * @see Object#toString()
 	 */
 	@Override
 	public String toString() {

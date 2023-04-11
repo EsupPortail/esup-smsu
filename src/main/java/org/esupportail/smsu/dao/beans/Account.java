@@ -2,28 +2,35 @@ package org.esupportail.smsu.dao.beans;
 
 import java.io.Serializable;
 
-
-
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 /**
  * The class that represents accounts.
  */
+@Entity
+@Table(name = "account")
 public class Account implements Serializable {
 
 	/**
 	 * Hibernate reference for account.
 	 */
-	public static final String REF = "Account";
+	public static final String REF = "account";
 
 	/**
 	 * Hibernate property for the identifier.
 	 */
-	public static final String PROP_ID = "Id";
+	public static final String PROP_ID = "id";
 	
 	/**
 	 * Hibernate property for the label.
 	 */
-	public static final String PROP_LABEL = "Label";
+	public static final String PROP_LABEL = "label";
 	
 
 	/**
@@ -34,12 +41,17 @@ public class Account implements Serializable {
 	/**
 	 * Account identifier.
 	 */
-	private java.lang.Integer id;
+	@Id
+	@Column(name = "ACC_ID")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
 
 	/**
 	 * Account label.
 	 */
-	private java.lang.String label;
+	@Column(name = "ACC_LABEL", nullable = false, length = 32, unique = true)
+	@NotNull
+	private String label;
 
 	/**
 	 * Bean constructor.
@@ -53,8 +65,8 @@ public class Account implements Serializable {
 	 * Constructor for required fields.
 	 */
 	public Account(
-		final java.lang.Integer id,
-		final java.lang.String label) {
+		final Integer id,
+		final String label) {
 
 		this.setId(id);
 		this.setLabel(label);
@@ -71,7 +83,7 @@ public class Account implements Serializable {
      *  generator-class="native"
      *  column="ACC_ID"
      */
-	public java.lang.Integer getId() {
+	public Integer getId() {
 		return id;
 	}
 
@@ -79,7 +91,7 @@ public class Account implements Serializable {
 	 * Set the unique identifier of this class.
 	 * @param id the new ID
 	 */
-	public void setId(final java.lang.Integer id) {
+	public void setId(final Integer id) {
 		this.id = id;
 	}
 
@@ -89,7 +101,7 @@ public class Account implements Serializable {
 	/**
 	 * Return the value associated with the column: ACC_LABEL.
 	 */
-	public java.lang.String getLabel() {
+	public String getLabel() {
 		return label;
 	}
 
@@ -97,12 +109,12 @@ public class Account implements Serializable {
 	 * Set the value related to the column: ACC_LABEL.
 	 * @param label the ACC_LABEL value
 	 */
-	public void setLabel(final java.lang.String label) {
+	public void setLabel(final String label) {
 		this.label = label;
 	}
 
 	/**
-	 * @see java.lang.Object#hashCode()
+	 * @see Object#hashCode()
 	 */
 	@Override
 	public boolean equals(final Object obj) {
@@ -122,7 +134,7 @@ public class Account implements Serializable {
 	}
 
 	/**
-	 * @see java.lang.Object#hashCode()
+	 * @see Object#hashCode()
 	 */
 	@Override
 	public int hashCode() {
@@ -130,7 +142,7 @@ public class Account implements Serializable {
 	}
 
 	/**
-	 * @see java.lang.Object#toString()
+	 * @see Object#toString()
 	 */
 	@Override
 	public String toString() {
