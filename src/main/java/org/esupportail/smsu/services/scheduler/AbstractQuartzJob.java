@@ -1,15 +1,15 @@
 package org.esupportail.smsu.services.scheduler;
 
+import javax.transaction.Transactional;
+
 import org.apache.log4j.Logger;
-import org.esupportail.smsu.utils.HibernateUtils;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
+import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.quartz.PersistJobDataAfterExecution;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerContext;
 import org.quartz.SchedulerException;
-import org.quartz.StatefulJob;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
@@ -18,7 +18,9 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
  * @author PRQD8824
  *
  */
-public abstract class AbstractQuartzJob extends QuartzJobBean implements StatefulJob {
+@PersistJobDataAfterExecution
+@DisallowConcurrentExecution
+public abstract class AbstractQuartzJob extends QuartzJobBean {
 
 	/**
      * logger.
@@ -74,7 +76,7 @@ public abstract class AbstractQuartzJob extends QuartzJobBean implements Statefu
         return exceptionHandler;
     }
     
-	
+    @Transactional
 	@Override
 	protected void executeInternal(final JobExecutionContext context) throws JobExecutionException {
 		// get the application context, usefull the get bean spring
@@ -82,11 +84,6 @@ public abstract class AbstractQuartzJob extends QuartzJobBean implements Statefu
         // get the quartz exception handler (use to manage error in job)
         final QuartzExceptionHandler exceptionHandler = getQuartzExceptionHandler(context);
 
-
-       	SessionFactory sessionFactory = HibernateUtils.getSessionFactory(applicationContext);
-
-    	boolean participate = HibernateUtils.openSession(sessionFactory);
-        Transaction transaction = sessionFactory.getCurrentSession().beginTransaction();
     	try {     
         	executeJob(applicationContext);
         } catch (Throwable t) {
@@ -96,10 +93,7 @@ public abstract class AbstractQuartzJob extends QuartzJobBean implements Statefu
             } else {
                 throw new UnsupportedOperationException("The exceptionHander has to be not null");
             }
-        } finally {
-		transaction.commit();
-		HibernateUtils.closeSession(sessionFactory, participate);
-	}
+        }
 	}
 	
 	/**

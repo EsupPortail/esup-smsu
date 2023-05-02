@@ -6,9 +6,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import org.apache.commons.lang3.StringUtils;
@@ -18,6 +19,7 @@ import org.esupportail.smsu.business.MessageManager;
 import org.esupportail.smsu.business.SendSmsManager;
 import org.esupportail.smsu.business.ServiceManager;
 import org.esupportail.smsu.business.beans.Member;
+import org.esupportail.smsu.configuration.SmsuApplication;
 import org.esupportail.smsu.domain.DomainService;
 import org.esupportail.smsu.exceptions.CreateMessageException;
 import org.esupportail.smsu.exceptions.SmsuForbiddenException;
@@ -30,25 +32,29 @@ import org.esupportail.smsu.web.controllers.InvalidParameterException;
 import org.esupportail.smsuapi.exceptions.InsufficientQuotaException;
 import org.esupportail.smsuapi.utils.HttpException;
 import javax.inject.Inject;
-import org.springframework.beans.factory.annotation.Required;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.i18n.phonenumbers.NumberParseException;
 
 @RestController
-@RequestMapping(value = "/")
+@RequestMapping(value = SmsuApplication.WS_ROOT_URI)
 public class WsController {
 
 	private final Logger logger = Logger.getLogger(getClass());
 	
 	protected static enum MembershipStatus {PENDING, OK};
 
+	public WsController() {
+		System.out.println("WsController.WsController()");
+	}
+
 	@Inject private MessageManager messageManager;
 	@Inject private SendSmsManager sendSmsManager;
 	@Inject private MemberManager memberManager;
-	@Inject private ServiceManager serviceManager;	
-
+	@Inject private ServiceManager serviceManager;
+	
 	private List<String> authorizedClientNames;
 
 	/**
@@ -59,7 +65,7 @@ public class WsController {
 	 * -d '{"login":"loginTestSmsu","senderGroup":"loginTestSmsu","content":"yop","recipientLogins":["loginTestSmsu"],"recipientPhoneNumbers":null}' \
 	 * http://localhost:8080/ws/sms
 	 */
-	@RequestMapping(method = RequestMethod.POST, value = "/sms")
+	@PostMapping("/sms")
 	public UIMessage sendSMSAction(@RequestBody UINewMessage msg, HttpServletRequest request) throws CreateMessageException {		
 		if(checkClient(request)) {
 			sendSmsManager.contentValidation(msg.content);
@@ -83,7 +89,7 @@ public class WsController {
 	 * -H "Content-Type: application/json" \
 	 * http://localhost:8080/ws/member/loginTestSmsu
 	 */
-	@RequestMapping(method = RequestMethod.GET, value = "/member/{login}")
+	@GetMapping("/member/{login}")
 	public Member getMember(@PathVariable("login") String login, HttpServletRequest request) {		
 		if(checkClient(request)) {
 			Member member = null;
@@ -107,7 +113,7 @@ public class WsController {
 	 * http://localhost:8080/ws/member
 	 * @throws NumberParseException 
 	 */
-	@RequestMapping(method = RequestMethod.POST, value = "/member")
+	@PostMapping("/member")
 	public MembershipStatus saveMember(@RequestBody Member member, HttpServletRequest request) throws LdapUserNotFoundException, LdapWriteException, HttpException, InsufficientQuotaException, NumberParseException {
 		if(checkClient(request)) {
 			logger.debug("Save data of a member");		
@@ -133,7 +139,7 @@ public class WsController {
 	 * -d '{"login": "loginTestSmsu", "phoneNumberValidationCode" : "12345"}' \
 	 * http://localhost:8080/ws/validCode
 	 */
-	@RequestMapping(method = RequestMethod.POST, value = "/validCode")
+	@PostMapping("/validCode")
 	public Boolean validCode(@RequestBody Member member, HttpServletRequest request) throws LdapUserNotFoundException, LdapWriteException, HttpException, InsufficientQuotaException {
 		if(checkClient(request)) {
 			logger.debug("Valid code of a member");		
@@ -155,7 +161,7 @@ public class WsController {
 	 * -H "Content-Type: application/json" \
 	 * http://localhost:8080/ws/services
 	 */
-	@RequestMapping(method = RequestMethod.GET, value = "/services")
+	@GetMapping("/services")
 	public List<UIService> getUIServices(HttpServletRequest request) {
 		if(checkClient(request)) {
 			return serviceManager.getAllUIServices();
@@ -171,7 +177,7 @@ public class WsController {
 	 * -H "Content-Type: application/json" \
 	 * http://localhost:8080/ws/member/loginTestSmsu/adhServicesAvailable
 	 */
-	@RequestMapping(method = RequestMethod.GET, value = "/member/{login}/adhServicesAvailable")
+	@GetMapping("/member/{login}/adhServicesAvailable")
 	public List<UIService> getUIServicesAdh(@PathVariable("login") String login, HttpServletRequest request) {
 		if(checkClient(request)) {
 			return serviceManager.getUIServicesAdhFctn(login, DomainService.getUserAllowedFonctions(request));
@@ -214,13 +220,10 @@ public class WsController {
 		}
 	}
 
-
-	@Required
-	@Value("${smsu.ws.authorizedClientNames}")
-	public void setAuthorizedClientNames(String authorizedClientNamesWithComa) {
+	@Autowired
+	public void setAuthorizedClientNames(@Value("${smsu.ws.authorizedClientNames}") String authorizedClientNamesWithComa) {
 		authorizedClientNamesWithComa = authorizedClientNamesWithComa.replaceAll(" ", "");
 		authorizedClientNames = Arrays.asList(StringUtils.split(authorizedClientNamesWithComa, ","));
 		logger.info("WS authorizedClientNames : " + authorizedClientNames);
 	}
-
 }

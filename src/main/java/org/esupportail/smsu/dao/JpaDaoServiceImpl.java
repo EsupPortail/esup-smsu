@@ -12,21 +12,18 @@ import org.apache.log4j.Logger;
 import org.esupportail.smsu.dao.beans.*;
 import org.esupportail.smsu.dao.repositories.*;
 import org.esupportail.smsu.domain.beans.message.MessageStatus;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 /**
- * The Hiberate implementation of the DAO service.
+ * The JPA implementation of the DAO service.
  */
 @Transactional
-public class HibernateDaoServiceImpl implements DaoService {
-	
-	private SessionFactory sessionFactory;
-	
+@org.springframework.stereotype.Service
+public class JpaDaoServiceImpl implements DaoService {
+		
 	@Autowired
 	private MessageRepository messageRepository;
 	
@@ -77,10 +74,6 @@ public class HibernateDaoServiceImpl implements DaoService {
 	
 	@Autowired
 	private ToMailRecipientRepository toMailRecipientRepository;
-	
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
 
 	/**
 	 * A logger.
@@ -93,16 +86,8 @@ public class HibernateDaoServiceImpl implements DaoService {
 	/**
 	 * Bean constructor.
 	 */
-	public HibernateDaoServiceImpl() {
+	public JpaDaoServiceImpl() {
 		super();
-	}
-
-	/**
-	 * retrieve the current session.
-	 * @return
-	 */
-	private Session getCurrentSession() {
-		return sessionFactory.getCurrentSession();
 	}
 
 	//////////////////////////////////////////////////////////////
@@ -140,14 +125,14 @@ public class HibernateDaoServiceImpl implements DaoService {
 	 * @see org.esupportail.smsu.dao.DaoService#addMessage(org.esupportail.smsu.dao.beans.Message)
 	 */
 	public void addMessage(final Message message) {
-		addObject(message);
+		messageRepository.save(message);
 	}
 
 	/**
 	 * @see org.esupportail.smsu.dao.DaoService#updateMessage(org.esupportail.smsu.dao.beans.Message)
 	 */
 	public void updateMessage(final Message message) {
-		updateObject(message);
+		messageRepository.save(message);
 
 	}
 
@@ -276,7 +261,7 @@ public class HibernateDaoServiceImpl implements DaoService {
 	 * @see org.esupportail.smsu.dao.DaoService#addBasicGroup(org.esupportail.smsu.dao.beans.BasicGroup)
 	 */
 	public void addBasicGroup(final BasicGroup group) {
-		addObject(group);
+		basicGroupRepository.save(group);
 	}
 
 	//////////////////////////////////////////////////////////////
@@ -306,7 +291,7 @@ public class HibernateDaoServiceImpl implements DaoService {
 	}
 
 	public void saveAccount(final Account account) {
-		addObject(account);
+		accountRepository.save(account);
 	}
 	
 	//////////////////////////////////////////////////////////////
@@ -331,7 +316,7 @@ public class HibernateDaoServiceImpl implements DaoService {
 	 * @see org.esupportail.smsu.dao.DaoService#addPerson(org.esupportail.smsu.dao.beans.Person)
 	 */
 	public void addPerson(final Person person) {
-		addObject(person);
+		personRepository.save(person);
 
 	}
 	
@@ -363,21 +348,21 @@ public class HibernateDaoServiceImpl implements DaoService {
 	 * @see org.esupportail.smsu.dao.DaoService#updateService(org.esupportail.smsu.dao.beans.Service)
 	 */
 	public void updateService(final Service service) {
-		updateObject(service);
+		addService(service);
 	}
 	
 	/**
 	 * @see org.esupportail.smsu.dao.DaoService#addService(org.esupportail.smsu.dao.beans.Service)
 	 */
 	public void addService(final Service service) {
-		addObject(service);
+		serviceRepository.save(service);
 	}
 	
 	/**
 	 * @see org.esupportail.smsu.dao.DaoService#deleteService(org.esupportail.smsu.dao.beans.Service)
 	 */
 	public void deleteService(final Service service) {
-		deleteObject(service);
+		serviceRepository.delete(service);
 	}
 	
 	/**
@@ -425,7 +410,7 @@ public class HibernateDaoServiceImpl implements DaoService {
 	 * @see org.esupportail.smsu.dao.DaoService#addTemplate(org.esupportail.smsu.dao.beans.Template)
 	 */
 	public void addTemplate(final Template template) {
-		addObject(template);
+		templateRepository.save(template);
 		
 	}
 
@@ -433,7 +418,7 @@ public class HibernateDaoServiceImpl implements DaoService {
 	 * @see org.esupportail.smsu.dao.DaoService#deleteTemplate(org.esupportail.smsu.dao.beans.Template)
 	 */
 	public void deleteTemplate(final Template template) {
-		deleteObject(template);
+		templateRepository.delete(template);
 		
 	}
 	
@@ -441,7 +426,7 @@ public class HibernateDaoServiceImpl implements DaoService {
 	 * @see org.esupportail.smsu.dao.DaoService#updateTemplate(org.esupportail.smsu.dao.beans.Template)
 	 */
 	public void updateTemplate(final Template template) {
-		updateObject(template);
+		addTemplate(template);
 		
 	}
 	
@@ -468,14 +453,14 @@ public class HibernateDaoServiceImpl implements DaoService {
 	 * @see org.esupportail.smsu.dao.DaoService#addRecipient(org.esupportail.smsu.dao.beans.Recipient)
 	 */
 	public void addRecipient(final Recipient recipient) {
-		addObject(recipient);
+		recipientRepository.save(recipient);
 	}
 
 	/**
 	 * @see org.esupportail.smsu.dao.DaoService#updateRecipient(org.esupportail.smsu.dao.beans.Recipient)
 	 */
 	public void updateRecipient(final Recipient recipient) {
-		updateObject(recipient);
+		addRecipient(recipient);
 	}
 	
 	
@@ -500,7 +485,7 @@ public class HibernateDaoServiceImpl implements DaoService {
 	 * @see org.esupportail.smsu.dao.DaoService#addCustomizedGroup(org.esupportail.smsu.dao.beans.CustomizedGroup)
 	 */
 	public void addCustomizedGroup(final CustomizedGroup customizedGroup) {
-		addObject(customizedGroup);
+		saveCustomizedGroup(customizedGroup);
 	}
 
 	/**
@@ -543,21 +528,21 @@ public class HibernateDaoServiceImpl implements DaoService {
 	 * @see org.esupportail.example.dao.DaoService#saveCustomizedGroup
 	 */
 	public void saveCustomizedGroup(final CustomizedGroup group) {
-		addObject(group);
+		customizedGroupRepository.save(group);
 	}
 	
 	/**
 	 * @see org.esupportail.example.dao.DaoService#deleteCustomizedGroup
 	 */
 	public void deleteCustomizedGroup(final CustomizedGroup group) {
-		deleteObject(group);
+		customizedGroupRepository.delete(group);
 	}
 	
 	/**
 	 * @see org.esupportail.example.dao.DaoService#updateCustomizedGroup
 	 */
 	public void updateCustomizedGroup(final CustomizedGroup group) {
-		updateObject(group);
+		saveCustomizedGroup(group);
 	}
 	
 	//////////////////////////////////////////////////////////////
@@ -589,15 +574,14 @@ public class HibernateDaoServiceImpl implements DaoService {
 	 */
 	public void saveOrUpdatePendingMember(final String login, final String code) {
 		// retrieve the pendingMember if exists
-		final PendingMember pendingMember = getPendingMember(login);
+		PendingMember pendingMember = getPendingMember(login);
 		// update or add the pending member
 		if (pendingMember == null) { 
-			final PendingMember newPendingMember = new PendingMember(login, code);
-			addObject(newPendingMember);
+			pendingMember = new PendingMember(login, code);
 		} else {
 			pendingMember.setValidationCode(code);
-			updateObject(pendingMember);
 		}
+		pendingMemberRepository.save(pendingMember);
 	}
 	
 	/* (non-Javadoc)
@@ -622,21 +606,21 @@ public class HibernateDaoServiceImpl implements DaoService {
 	 * @see org.esupportail.example.dao.DaoService#saveRole()
 	 */
 	public void saveRole(final Role role) {
-		addObject(role);
+		roleRepository.save(null);
 	}
 	
 	/**
 	 * @see org.esupportail.example.dao.DaoService#deleteRole()
 	 */
 	public void deleteRole(final Role role) {
-		deleteObject(role);
+		roleRepository.delete(role);
 	}
 	
 	/**
 	 * @see org.esupportail.example.dao.DaoService#updateRole()
 	 */
 	public void updateRole(final Role role) {
-		updateObject(role);
+		saveRole(role);
 	}
 	
 	/**
@@ -667,14 +651,14 @@ public class HibernateDaoServiceImpl implements DaoService {
 	 * @param fonction
 	 */
 	public void addFonction(Fonction fonction) {
-		addObject(fonction);
+		fonctionRepository.save(fonction);
 	}
 	
 	/**
 	 * @param fonction
 	 */
 	public void deleteFonction(Fonction fonction) {
-		deleteObject(fonction);
+		fonctionRepository.delete(fonction);
 	}
 	
 
@@ -749,51 +733,4 @@ public class HibernateDaoServiceImpl implements DaoService {
 	public boolean isSupervisor(final Person person) {
 		return supervisorRepository.existsByPerson(person);
 	}
-
-	protected void addObject(final Object object) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("adding " + object + "...");
-		}
-		getCurrentSession().save(object);
-		if (logger.isDebugEnabled()) {
-			logger.debug("done.");
-		}
-	}
-
-	/**
-	 * Update an object in the database.
-	 * @param object
-	 */
-	protected void updateObject(final Object object) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("merging " + object + "...");
-		}
-		Object merged = getCurrentSession().merge(object);
-		if (logger.isDebugEnabled()) {
-			logger.debug("done, updating " + merged + "...");
-		}
-		getCurrentSession().update(merged);
-		if (logger.isDebugEnabled()) {
-			logger.debug("done.");
-		}
-	}
-
-	/**
-	 * Delete an object from the database.
-	 * @param object
-	 */
-	protected void deleteObject(final Object object) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("merging " + object + "...");
-		}
-		Object merged = getCurrentSession().merge(object);
-		if (logger.isDebugEnabled()) {
-			logger.debug("done, deleting " + merged + "...");
-		}
-		getCurrentSession().delete(merged);
-		if (logger.isDebugEnabled()) {
-			logger.debug("done.");
-		}
-	}
-
 }

@@ -2,30 +2,31 @@ package org.esupportail.smsu.web.controllers;
 
 import java.io.IOException;
 
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestMapping;
 import javax.inject.Inject;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RestController;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.esupportail.smsu.configuration.SmsuApplication;
 import org.esupportail.smsu.domain.DomainService;
 import org.esupportail.smsu.domain.beans.User;
 import org.esupportail.smsu.services.UrlGenerator;
 import org.esupportail.smsu.web.Helper;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
-@RequestMapping(value = "/login")
+@RequestMapping(value = SmsuApplication.REST_ROOT_URI + "/login")
 public class LoginController {
 	
 	@Inject private DomainService domainService;
 	@Inject private UrlGenerator urlGenerator;
     
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public ResponseEntity<?> get(HttpServletRequest request) throws IOException {
     	boolean ourCookiesRejected = ourCookiesRejected(request);
 

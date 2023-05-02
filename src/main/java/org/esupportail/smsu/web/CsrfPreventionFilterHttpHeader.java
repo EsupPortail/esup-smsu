@@ -25,7 +25,6 @@ import java.util.Set;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -76,9 +75,6 @@ public class CsrfPreventionFilterHttpHeader implements Filter {
         mti.add("HEAD");
         METHODS_TO_IGNORE = Collections.unmodifiableSet(mti);
     }
-
-    public void destroy() {}
-    public void init(FilterConfig config) {}
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response,

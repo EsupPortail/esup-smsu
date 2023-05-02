@@ -90,10 +90,6 @@
 		<property name="quartzProperties">
 			<props>
 				<prop key="org.quartz.scheduler.instanceName">${quartz.scheduler.instanceName}</prop>
-				<prop key="org.quartz.dataSource.myDS.driver">${jdbc.driver}</prop>
-				<prop key="org.quartz.dataSource.myDS.URL">${hibernate.connection.jdbc.url}</prop>
-				<prop key="org.quartz.dataSource.myDS.user">${hibernate.connection.jdbc.username}</prop>
-				<prop key="org.quartz.dataSource.myDS.password">${hibernate.connection.jdbc.password}</prop>
 			</props>
 		</property>
 

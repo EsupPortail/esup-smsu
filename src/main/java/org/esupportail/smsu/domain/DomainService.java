@@ -15,6 +15,7 @@ import java.util.Set;
 
 import org.esupportail.commons.services.ldap.LdapException;
 import org.esupportail.commons.services.ldap.LdapUser;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.esupportail.smsu.dao.DaoService;
 import org.esupportail.smsu.dao.beans.Account;
@@ -30,9 +31,6 @@ import org.esupportail.smsuapi.utils.HttpException;
 import org.esupportail.ws.remote.beans.TrackInfos;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.util.StringUtils;
-
 
 public class DomainService {
 
@@ -114,7 +112,7 @@ public class DomainService {
 
 		for (LdapUser ldapUser : ldapUserList) {
 			String displayName = ldapUtils.getUserDisplayName(ldapUser);
-			if (!StringUtils.isEmpty(displayName)) {
+			if (StringUtils.isNotEmpty(displayName)) {
 				logger.debug("displayName is: " + displayName);	
 				result.put(ldapUser.getId(), displayName);
 			}

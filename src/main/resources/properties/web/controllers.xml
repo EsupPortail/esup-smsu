@@ -7,28 +7,10 @@
 		http://www.springframework.org/schema/beans
 		http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-   <bean id="AuthAndRoleAndMiscFilter" class="org.esupportail.smsu.web.AuthAndRoleAndMiscFilter">
-      <property name="authentication" value="${authentication}" />
-      <property name="shibUseHeaders" value="${shibboleth.shibUseHeaders}" />
-      <property name="shibbolethSessionInitiatorUrl" value="${shibboleth.sessionInitiator.url}" />
-   </bean>
-
    <bean id="cachedDigest" class="org.esupportail.smsu.utils.CachedDigest" />
    <bean id="aggregateToFile" class="org.esupportail.smsu.utils.AggregateToFile" />
    <bean id="serverSideDirectives" class="org.esupportail.smsu.web.ServerSideDirectives" />
 
-   <bean id="urlGenerator" class="org.esupportail.smsu.services.UrlGenerator">
-  	  <property name="serverURL" value="${server.url}" />
-  	  <property name="contextPath" value="${contextPath}" />
-	</bean>
-
    <!-- for StartPagePortlet -->
    <bean id="applicationContextHolder" class="org.esupportail.commons.context.ApplicationContextHolder" />
-
-   <bean id="StartPage" class="org.esupportail.smsu.web.StartPage">
-  	  <property name="wsgroupsURL" value="${wsgroups.url}" />
-	  <property name="jsonpDisabled" value="#{'${authentication}' == 'shibboleth'}" />
-	  <property name="phoneNumberPattern" value="${recipient.phoneNumberPattern}" />
-	</bean>
-  
 </beans>

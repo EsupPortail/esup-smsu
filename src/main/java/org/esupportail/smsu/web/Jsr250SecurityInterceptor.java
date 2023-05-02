@@ -12,9 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.method.HandlerMethod;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.HandlerInterceptor;
 
-class Jsr250SecurityInterceptor extends HandlerInterceptorAdapter { 
+class Jsr250SecurityInterceptor implements HandlerInterceptor { 
 
     @ResponseStatus(value = HttpStatus.FORBIDDEN)
     public class ForbiddenException extends RuntimeException {}

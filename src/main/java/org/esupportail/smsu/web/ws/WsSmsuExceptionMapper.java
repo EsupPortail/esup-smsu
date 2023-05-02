@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 
-@ControllerAdvice
+@ControllerAdvice(basePackageClasses = WsController.class)
 public class WsSmsuExceptionMapper {
 
 	private final Logger logger = Logger.getLogger(WsSmsuExceptionMapper.class);

@@ -1,0 +1,186 @@
+.content { max-width: 800px; }
+
+.bootstrap-smsu .page-header h1 small,
+.bootstrap-smsu .page-header h1 span {
+    color: #800;
+}
+
+.bootstrap-smsu .page-header h1 small {
+    display: none;
+}
+
+.bootstrap-smsu footer {
+    display: none;	
+}
+
+.bootstrap-smsu footer a {
+    color: #800;
+}
+  
+.windowOpenLoginDiv {
+    display: block;
+    z-index: 999;
+    position: absolute;
+    left: 25%;
+    right: 25%;
+    top: 25%;
+    height: 10em;
+    cursor: pointer;
+}
+.windowOpenLoginDiv .glyphicon {
+    display: block;
+    width: 100% !important;
+    font-size: 200%;
+    text-align: center;
+    margin-top: 1em;
+}
+
+.gridStyle {
+    border: 1px solid rgb(212,212,212);
+    height: 400px
+}
+
+.sidenav > li:first-child > a {
+    border-radius: 6px 6px 0 0;
+}
+.sidenav > li:last-child > a {
+    border-radius: 0 0 6px 6px;
+}
+/* remove bootstrap stuff */
+.nav-stacked > li + li {
+    margin-top: 0 !important;
+}
+.sidenav > li > a {
+    border: 1px solid #E5E5E5;
+    display: block;
+    margin: 0 0 -1px;
+    padding: 8px 14px !important;
+}
+.sidenav li.active a {
+    background-color: #428bca !important;
+}
+
+/* ensure jquery-ui autocomplete is above bootstrap textarea */
+.ui-autocomplete { 
+    z-index: 3 !important;
+}
+
+/* override uportal fss framework shit */
+.sidenav { margin-left: 0; margin-right: 0; }
+.sidenav li { list-style: none; }
+.sidenav li.active a { color: white !important; }
+.sidenav, #page { font-family: "Helvetica Neue",Helvetica,Arial,sans-serif !important; }
+ul.breadcrumb { margin-left: 0; }
+.fl-theme-mist th { background-color: #eaeaea !important; border-left: none; border-right: none; }
+.container { background: white; }
+
+.sidenav .glyphicon-chevron-right {
+    float: right;
+    margin-right: -6px;
+    margin-top: 2px;
+    opacity: 0.25;
+}
+
+.loadInProgress {
+    opacity: 0.2;
+}
+
+.input-group-long-addons {
+    width: 100%;
+}
+
+@media (max-width: 1200px) {
+.input-group-long-addons .input-group-addon {
+    display: block !important;
+    width: 100%;
+}
+}
+@media (min-width: 1200px) {
+.input-group-long-addons .input-group-addon {
+    white-space: normal !important;
+    word-wrap: break-word;
+    max-width: 10em;
+}
+}
+
+.not-inline.multiSelectSelected, .not-inline.multiSelectAvailable {
+  padding-top: 7px !important; /* make it same as .control-label */
+  padding-left: 14px !important; /* reduce it */
+  margin-bottom: 0 !important; /* unneeded, .form-group has some already */
+}
+.list-inline.multiSelectSelected, .list-inline.multiSelectAvailable {
+  padding-left: 0 !important;
+  margin-bottom: 0 !important; /* unneeded, .form-group has some already */
+}
+
+.list-inline.multiSelectSelected li, .list-inline.multiSelectAvailable li {
+  padding-left: 0;
+  padding-bottom: 7px;
+}
+
+.not-inline.multiSelectSelected li, .not-inline.multiSelectAvailable li {
+  min-width: 30em;
+}
+.multiSelectSelected a, .multiSelectAvailable a {
+  color: black !important;
+}
+.multiSelectSelected .glyphicon-remove {
+  color: red !important;
+}
+.multiSelectSelected a:hover {
+  color: red !important;
+  text-decoration: line-through !important;
+}
+
+.multiSelectAvailable .glyphicon {
+  color: green !important;
+}
+
+.breadcrumb .active {
+    font-size: 120% !important;
+}
+
+@media (min-width: 992px) {
+  .ifBottomNavbar, .breadcrumb .ifBottomNavbar { 
+     display: none !important;
+  }
+
+  /* if not displayed, hide the separator */
+  .breadcrumb li.ifBottomNavbar + li:before {
+     content: none !important;
+  }
+  
+  .bootstrap-smsu .page-header {
+    margin-top: 0;
+    background: url("../img/logo-esup.png") no-repeat right;
+  }
+  .bootstrap-smsu .page-header h1 {
+    background: url("../img/esup-smsu-telephone.png") no-repeat;
+    padding-left: 200px;
+    min-height: 150px;
+    margin-top: 0;
+  }
+  .bootstrap-smsu .page-header h1 span {
+    display: none;
+  }
+  .bootstrap-smsu .page-header h1 small {
+    text-align: center;
+    display: block;
+    padding-top: 50px;
+  }
+	
+  .bootstrap-smsu footer {
+    display: block;
+    text-align: center;
+    padding: 30px 0;
+    margin-top: 70px;
+    border-top: 1px solid #e5e5e5;
+    background-color: #f5f5f5;
+  }
+}
+
+@media (max-width: 992px) {
+  .ifSideNavbar { 
+    display: none;
+  }
+}

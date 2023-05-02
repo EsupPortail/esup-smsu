@@ -8,12 +8,20 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
+import lombok.Getter;
+
+@Service
 public class UrlGenerator {
 
 	private final Logger logger = Logger.getLogger(getClass());
 
+	@Getter
+	@Value("${server.url}")
 	private String serverURL;
+	@Value("${contextPath}")
 	private String contextPath;
 	
 	public String baseURL(HttpServletRequest request) {
@@ -67,17 +75,4 @@ public class UrlGenerator {
             throw new RuntimeException("urlencode failed on '" + s + "'");
         }
     }
-
-	public String getServerURL() {
-		return serverURL;
-	}
-
-	public void setServerURL(String serverURL) {
-		this.serverURL = cleanupServerUrl(serverURL);
-	}
-
-	public void setContextPath(String contextPath) {
-		this.contextPath = contextPath;
-	}
-    
 }

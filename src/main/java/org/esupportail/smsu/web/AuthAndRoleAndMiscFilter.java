@@ -4,7 +4,6 @@ import java.util.Set;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -17,30 +16,34 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.esupportail.smsu.business.SecurityManager;
 import org.esupportail.smsu.services.UrlGenerator;
 import org.jasig.cas.client.util.CommonUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
-
+@Service
 public final class AuthAndRoleAndMiscFilter implements Filter {
 	
-	@Inject private UrlGenerator urlGenerator;
-	@Inject private SecurityManager securityManager;
+	@Autowired 
+	private UrlGenerator urlGenerator;
+	@Autowired 
+	private SecurityManager securityManager;
 
+	@Value("${authentication}")
     private String authentication = "cas";
+	@Value("${shibboleth.shibUseHeaders}")
     private boolean shibUseHeaders = false;
+	@Value("${shibboleth.sessionInitiator.url}")
     private String shibbolethSessionInitiatorUrl;
 
     private String sessionAttributeName = "MY_REMOTE_USER";
     private String rightAllowingImpersonate = "FCTN_GESTION_ROLES_AFFECT";
 
     private final Logger logger = Logger.getLogger(getClass());
-
-    public void destroy() {}
-    public void init(FilterConfig config) {}
 
     /**
      * Wraps the HttpServletRequest in a wrapper class that delegates <code>request.isUserInRole</code> 

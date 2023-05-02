@@ -12,8 +12,6 @@
         http://www.springframework.org/schema/mvc/spring-mvc.xsd
         http://www.springframework.org/schema/context
 		http://www.springframework.org/schema/context/spring-context.xsd">
-
-  <import resource="../init.xml" />
  
   <mvc:annotation-driven validator="validator" />
   <!-- we do not use JSR 303 validator annotations, so disable validation -->
@@ -21,8 +19,6 @@
       
    <mvc:interceptors>
         <bean class="org.esupportail.smsu.web.Jsr250SecurityInterceptor" />
-   </mvc:interceptors> 
-   
-  <context:component-scan base-package="org.esupportail.smsu.web.controllers"/>
+   </mvc:interceptors>
      
 </beans>

@@ -16,12 +16,8 @@
 		This file is referenced by /webapp/WEB-INF/web.xml.
 	-->
 
-   <import resource="init.xml" />
-
-	<import resource="auth/auth.xml" />
 	<import resource="business/business.xml" />
 	<import resource="cache/cache.xml" />
-	<import resource="dao/dao.xml" />
  	<import resource="domain/domain.xml" />
  	<import resource="client/client.xml" />
 	<import resource="i18n/i18n.xml" />

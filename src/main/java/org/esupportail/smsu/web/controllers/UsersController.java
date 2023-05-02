@@ -4,26 +4,27 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.esupportail.commons.services.ldap.LdapException;
 import org.esupportail.commons.services.ldap.LdapUser;
-import org.apache.log4j.Logger;
 import org.esupportail.smsu.business.ServiceManager;
+import org.esupportail.smsu.configuration.SmsuApplication;
 import org.esupportail.smsu.services.ldap.LdapUtils;
 import org.esupportail.smsu.web.beans.UIRecipientUser;
-import javax.inject.Inject;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/users")
+@RequestMapping(value = SmsuApplication.REST_ROOT_URI + "/users")
 public class UsersController {
 
 	private static final long NB_MIN_CHARS_FOR_LDAP_SEARCH = 4;
@@ -37,7 +38,7 @@ public class UsersController {
 	
 	private final Logger logger = Logger.getLogger(getClass());
 
-	@RequestMapping(method = RequestMethod.GET, value = "/search")
+	@GetMapping("/search")
 	public List<UIRecipientUser> search(
 				@RequestParam(value = "token", required = false) String token, 
 				@RequestParam(value = "service", required = false) String service,

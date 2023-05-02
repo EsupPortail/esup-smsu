@@ -7,7 +7,7 @@ import org.springframework.validation.Errors;
 /* use our own version until we switch to spring 4 */
 public class NoValidation implements Validator {
 
-    public boolean supports(Class clazz) {
+    public boolean supports(Class<?> clazz) {
        return false;
     }
 
