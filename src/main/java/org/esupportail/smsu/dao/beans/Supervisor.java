@@ -11,13 +11,22 @@ import javax.persistence.Table;
 
 import org.esupportail.smsu.dao.beans.idClass.SupervisorPk;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * This is an object that contains data related to the supervisor table.
  *
- * @hibernate.class
- *  table="supervisor"
+ * @hibernate.class table="supervisor"
  */
+// lombok
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+// JPA
 @Entity
 @Table(name = "supervisor")
 @IdClass(SupervisorPk.class)
@@ -50,65 +59,6 @@ public class Supervisor implements Serializable {
 	private Person person;
 
 	/**
-	 * Bean constructor.
-	 */
-	public Supervisor() {
-		super();
-	}
-
-	/**
-	 * Constructor for primary key.
-	 */
-	public Supervisor(
-		final CustomizedGroup group,
-		final Person person) {
-
-		this.setGroup(group);
-		this.setPerson(person);
-	}
-
-
-
-
-	/**
-     * @hibernate.property
-     *  column=CGR_ID
-	 * not-null=true
-	 */
-	public CustomizedGroup getGroup() {
-		return this.group;
-	}
-
-	/**
-	 * Set the value related to the column: CGR_ID.
-	 * @param group the CGR_ID value
-	 */
-	public void setGroup(final CustomizedGroup group) {
-		this.group = group;
-	}
-
-	/**
-     * @hibernate.property
-     *  column=PER_ID
-	 * not-null=true
-	 */
-	public Person getPerson() {
-		return this.person;
-	}
-
-	/**
-	 * Set the value related to the column: PER_ID.
-	 * @param person the PER_ID value
-	 */
-	public void setPerson(final Person person) {
-		this.person = person;
-	}
-
-
-
-
-
-	/**
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -139,21 +89,10 @@ public class Supervisor implements Serializable {
 	}
 
 	/**
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
-
-	/**
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "Supervisor#" + hashCode() + "[Customized group=[" + group + "], person=[" + person 
-		+  "]]";
+		return "Supervisor#" + hashCode() + "[Customized group=[" + group + "], person=[" + person + "]]";
 	}
-
-
 }

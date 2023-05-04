@@ -10,8 +10,10 @@ import org.esupportail.smsu.dao.beans.Recipient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+// lombok
 @Data
 @AllArgsConstructor
+// JPA
 @Embeddable
 public class ToRecipientPk implements Serializable {
 	private Recipient rcp;

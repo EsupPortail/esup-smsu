@@ -11,6 +11,7 @@ import java.util.List;
 import org.esupportail.smsu.dao.beans.Message;
 import org.esupportail.smsu.dao.beans.Service;
 import org.esupportail.smsu.dao.beans.Template;
+import org.esupportail.smsu.domain.beans.message.MessageStatus;
 
 public interface MessageRepository extends JpaRepository<Message, Integer> {
 	List<Message> findByService(Service service);
@@ -19,9 +20,9 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
 	List<Message> findByTemplate(Template template);
 	boolean existsByTemplate(Template template);
 
-	List<Message> findByState(String state);
+	List<Message> findByState(MessageStatus state);
 
-	List<Message> findByStateOrderByIdAsc(String state);
+	List<Message> findByStateOrderByIdAsc(MessageStatus state);
 	
 	@Modifying
 	@Query("""

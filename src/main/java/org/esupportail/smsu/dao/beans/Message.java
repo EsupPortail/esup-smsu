@@ -7,6 +7,8 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,23 +25,27 @@ import org.esupportail.smsu.domain.beans.message.MessageStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
- * This is an object that contains data related to the message table.
- * Do not modify this class because it will be overwritten if the configuration file
+ * This is an object that contains data related to the message table. Do not
+ * modify this class because it will be overwritten if the configuration file
  * related to this class is modified.
  *
- * @hibernate.class
- *  table="message"
+ * @hibernate.class table="message"
  */
-
+// lombok
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
+// JPA
 @Entity
 @Table(name = "message")
-public class Message  implements Serializable {
+public class Message implements Serializable {
 	/**
 	 * Hibernate reference for message.
 	 */
@@ -103,7 +109,7 @@ public class Message  implements Serializable {
 	/**
 	 * The serialization id.
 	 */
-	private static final long serialVersionUID = -873902932158754471L;
+	private static final long serialVersionUID = 4912497159307656533L;
 
 	/**
 	 * message identifier.
@@ -120,20 +126,21 @@ public class Message  implements Serializable {
 	@NotNull
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date date;
-	
+
 	/**
 	 * message content.
 	 */
 	@Column(name = "MSG_CONTENT", nullable = false, length = 255)
 	@NotNull
 	private String content;
-	
+
 	/**
 	 * message state.
 	 */
 	@Column(name = "MSG_STATE", nullable = false, length = 32)
 	@NotNull
-	private String state;
+	@Enumerated(EnumType.STRING)
+	private MessageStatus state;
 
 	/**
 	 * associated account.
@@ -142,14 +149,14 @@ public class Message  implements Serializable {
 	@JoinColumn(name = "ACC_ID", nullable = false)
 	@NotNull
 	private Account account;
-	
+
 	/**
 	 * associated template.
 	 */
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "TPL_ID")
 	private Template template;
-	
+
 	/**
 	 * message sender.
 	 */
@@ -157,21 +164,21 @@ public class Message  implements Serializable {
 	@JoinColumn(name = "PER_ID", nullable = false)
 	@NotNull
 	private Person sender;
-	
+
 	/**
 	 * message service.
 	 */
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "SVC_ID")
 	private Service service;
-	
+
 	/**
 	 * associated mail.
 	 */
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "MAIL_ID", unique = true)
 	private Mail mail;
-	
+
 	/**
 	 * message group sender.
 	 */
@@ -179,7 +186,7 @@ public class Message  implements Serializable {
 	@JoinColumn(name = "BGR_SENDER_ID", nullable = false)
 	@NotNull
 	private BasicGroup groupSender;
-	
+
 	/**
 	 * message group recipient.
 	 */
@@ -195,7 +202,7 @@ public class Message  implements Serializable {
 			joinColumns = { @JoinColumn(name = ToRecipient.MSG_COLUMN) }, //
 			inverseJoinColumns = { @JoinColumn(name = ToRecipient.RECIPIENT_COLUMN) })
 	private Set<Recipient> recipients;
-	
+
 	/**
 	 * collection of supervisors.
 	 */
@@ -206,250 +213,7 @@ public class Message  implements Serializable {
 	private Set<Person> supervisors;
 
 	/**
-	 * Return the unique identifier of this class.
-     * @hibernate.id
-     *  generator-class="native"
-     *  column="MSG_ID"
-     */
-	public Integer getId() {
-		return id;
-	}
-
-	/**
-	 * Set the unique identifier of this class.
-	 * @param id the new ID
-	 */
-	public void setId(final Integer id) {
-		this.id = id;
-	}
-
-
-
-
-	/**
-	 * Return the value associated with the column: MSG_DATE.
-	 */
-	public Date getDate() {
-		return date;
-	}
-
-	/**
-	 * Set the value related to the column: MSG_DATE.
-	 * @param date the MSG_DATE value
-	 */
-	public void setDate(final Date date) {
-		this.date = date;
-	}
-
-
-
-	/**
-	 * Return the value associated with the column: MSG_CONTENT.
-	 */
-	public String getContent() {
-		return content;
-	}
-
-	/**
-	 * Set the value related to the column: MSG_CONTENT.
-	 * @param content the MSG_CONTENT value
-	 */
-	public void setContent(final String content) {
-		this.content = content;
-	}
-
-
-
-	/**
-	 * Return the value associated with the column: MSG_STATE.
-	 */
-	@Deprecated
-	public String getState() {
-		return state;
-	}
-
-	/**
-	 * Return the value associated with the column: MSG_STATE as an MessageStatus.
-	 * @return
-	 */
-	public MessageStatus getStateAsEnum() {
-		final MessageStatus state = MessageStatus.valueOf(this.state);
-		return state;
-	}
-	
-	/**
-	 * Set the value related to the column: MSG_STATE.
-	 * @param state the MSG_STATE value
-	 */
-	@Deprecated
-	public void setState(final String state) {
-		this.state = state;
-	}
-
-	/**
-	 * Set the value related to the column: MSG_STATE.
-	 * @param stateAsEnum
-	 */
-	public void setStateAsEnum(final MessageStatus stateAsEnum) {
-		if (stateAsEnum != null) {
-			this.state = stateAsEnum.name();
-		} else {
-			this.state = null;
-		}
-	}
-
-
-	/**
-	 * Return the value associated with the column: ACC_ID.
-	 */
-	public Account getAccount() {
-		return account;
-	}
-
-	/**
-	 * Set the value related to the column: ACC_ID.
-	 * @param account the ACC_ID value
-	 */
-	public void setAccount(final Account account) {
-		this.account = account;
-	}
-
-
-
-	/**
-	 * Return the value associated with the column: TPL_ID.
-	 */
-	public Template getTemplate() {
-		return template;
-	}
-
-	/**
-	 * Set the value related to the column: TPL_ID.
-	 * @param template the TPL_ID value
-	 */
-	public void setTemplate(final Template template) {
-		this.template = template;
-	}
-
-
-
-	/**
-	 * Return the value associated with the column: PER_ID.
-	 */
-	public Person getSender() {
-		return sender;
-	}
-
-	/**
-	 * Set the value related to the column: PER_ID.
-	 * @param sender the PER_ID value
-	 */
-	public void setSender(final Person sender) {
-		this.sender = sender;
-	}
-
-
-
-	/**
-	 * Return the value associated with the column: SVC_ID.
-	 */
-	public Service getService() {
-		return service;
-	}
-
-	/**
-	 * Set the value related to the column: SVC_ID.
-	 * @param service the SVC_ID value
-	 */
-	public void setService(final Service service) {
-		this.service = service;
-	}
-
-
-
-	/**
-	 * Return the value associated with the column: MAIL_ID.
-	 */
-	public Mail getMail() {
-		return mail;
-	}
-
-	/**
-	 * Set the value related to the column: MAIL_ID.
-	 * @param mail the MAIL_ID value
-	 */
-	public void setMail(final Mail mail) {
-		this.mail = mail;
-	}
-
-
-
-	/**
-	 * Return the value associated with the column: BGR_SENDER_ID.
-	 */
-	public BasicGroup getGroupSender() {
-		return groupSender;
-	}
-
-	/**
-	 * Set the value related to the column: BGR_SENDER_ID.
-	 * @param groupSender the BGR_SENDER_ID value
-	 */
-	public void setGroupSender(final BasicGroup groupSender) {
-		this.groupSender = groupSender;
-	}
-
-
-
-	/**
-	 * Return the value associated with the column: BGR_RECIPIENT_ID.
-	 */
-	public BasicGroup getGroupRecipient() {
-		return groupRecipient;
-	}
-
-	/**
-	 * Set the value related to the column: BGR_RECIPIENT_ID.
-	 * @param groupRecipient the BGR_RECIPIENT_ID value
-	 */
-	public void setGroupRecipient(final BasicGroup groupRecipient) {
-		this.groupRecipient = groupRecipient;
-	}
-
-
-
-	/**
-	 * Return the value associated with the column: Recipients.
-	 */
-	public Set<Recipient> getRecipients() {
-		return recipients;
-	}
-
-	/**
-	 * Set the value related to the column: Recipients.
-	 * @param recipients the Recipients value
-	 */
-	public void setRecipients(final Set<Recipient> recipients) {
-		this.recipients = recipients;
-	}
-
-	/**
-	 * Return the value associated with the column: Supervisors.
-	 */
-	public Set<Person> getSupervisors() {
-		return supervisors;
-	}
-
-	/**
-	 * Set the value related to the column: Supervisors.
-	 * @param supervisors the Supervisors value
-	 */
-	public void setSupervisors(final Set<Person> supervisors) {
-		this.supervisors = supervisors;
-	}
-
-	/**
-	 * @see Object#hashCode()
+	 * @see Object#equals()
 	 */
 	@Override
 	public boolean equals(final Object obj) {
@@ -469,20 +233,11 @@ public class Message  implements Serializable {
 	}
 
 	/**
-	 * @see Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
-
-	/**
 	 * @see Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "Message#" + hashCode() + "[id=[" + id + "], content=[" + content 
-		+ "], state=[" + state +  "]]";
+		return "Message#" + hashCode() + "[id=[" + id + "], content=[" + content + "], state=[" + state + "]]";
 	}
 
 }

@@ -11,26 +11,36 @@ import javax.persistence.Table;
 
 import org.esupportail.smsu.dao.beans.idClass.ToRecipientPk;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * This is an object that contains data related to the to_recipient table.
- * @hibernate.class
- *  table="to_recipient"
+ * 
+ * @hibernate.class table="to_recipient"
  */
+// lombok
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+// JPA
 @Entity
 @Table(name = ToRecipient.TABLE_NAME)
 @IdClass(ToRecipientPk.class)
-public class ToRecipient  implements Serializable {
+public class ToRecipient implements Serializable {
 
 	/**
 	 * Hibernate reference for the association ToRecipient.
 	 */
 	public static final String REF = "toRecipient";
 
-	public static final String TABLE_NAME = "to_recipient";
-	public static final String MSG_COLUMN = "MSG_ID";
-	public static final String RECIPIENT_COLUMN = "RCP_ID";
-	
+	static final String TABLE_NAME = "to_recipient";
+	static final String MSG_COLUMN = "MSG_ID";
+	static final String RECIPIENT_COLUMN = "RCP_ID";
+
 	/**
 	 * The serialization id.
 	 */
@@ -51,60 +61,6 @@ public class ToRecipient  implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = MSG_COLUMN)
 	private Message msg;
-
-
-	/**
-	 * Bean constructor.
-	 */
-	public ToRecipient() {
-		super();
-	}
-
-	/**
-	 * Constructor for required fields.
-	 */
-	public ToRecipient(final Recipient rcp, final Message msg) {
-		this.setRcp(rcp);
-		this.setMsg(msg);
-	}
-
-
-
-	/**
-     * @hibernate.property
-     *  column=RCP_ID
-	 * not-null=true
-	 */
-	public Recipient getRcp() {
-		return this.rcp;
-	}
-
-	/**
-	 * Set the value related to the column: RCP_ID.
-	 * @param rcp the RCP_ID value
-	 */
-	public void setRcp(final Recipient rcp) {
-		this.rcp = rcp;
-	}
-
-	/**
-     * @hibernate.property
-     *  column=MSG_ID
-	 * not-null=true
-	 */
-	public Message getMsg() {
-		return this.msg;
-	}
-
-	/**
-	 * Set the value related to the column: MSG_ID.
-	 * @param msg the MSG_ID value
-	 */
-	public void setMsg(final Message msg) {
-		this.msg = msg;
-	}
-
-
 
 	/**
 	 * @see java.lang.Object#equals(java.lang.Object)
@@ -137,22 +93,10 @@ public class ToRecipient  implements Serializable {
 	}
 
 	/**
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
-
-
-	/**
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "ToRecipient#" + hashCode() + "[recipient=[" + rcp + "], message=[" + msg 
-		+ "]]";
+		return "ToRecipient#" + hashCode() + "[recipient=[" + rcp + "], message=[" + msg + "]]";
 	}
-
-
 }

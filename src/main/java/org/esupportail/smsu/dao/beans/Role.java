@@ -15,10 +15,20 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * The class that represent role access.
  */
+// lombok
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+// JPA
 @Entity
 @Table(name = "role")
 public class Role implements Serializable {
@@ -42,7 +52,6 @@ public class Role implements Serializable {
 	 * The serialization id.
 	 */
 	private static final long serialVersionUID = -2392564724576331578L;
-
 
 	/**
 	 * role identifier.
@@ -69,76 +78,15 @@ public class Role implements Serializable {
 	private Set<Fonction> fonctions;
 
 	/**
-	 * Bean constructor.
-	 */
-	public Role() {
-		super();
-	}
-
-	/**
 	 * Constructor for required fields.
 	 */
-	public Role(
-		final Integer id,
-		final String name) {
+	public Role(final Integer id, final String name) {
 		this.setId(id);
 		this.setName(name);
 	}
 
 	public Role(final Role role) {
 		this(role.getId(), role.getName().trim());
-	}
-
-
-	/**
-	 * Return the unique identifier of this class.
-     * @hibernate.id
-     *  generator-class="sequence"
-     *  column="ROL_ID"
-     */
-	public Integer getId() {
-		return id;
-	}
-
-	/**
-	 * Set the unique identifier of this class.
-	 * @param id the new ID
-	 */
-	public void setId(final Integer id) {
-		this.id = id;
-	}
-
-
-
-
-	/**
-	 * Return the value associated with the column: ROL_NAME.
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * Set the value related to the column: ROL_NAME.
-	 * @param name the ROL_NAME value
-	 */
-	public void setName(final String name) {
-		this.name = name;
-	}
-
-	/**
-	 * Return the value associated with the column: Fonctions.
-	 */
-	public Set<Fonction> getFonctions() {
-		return fonctions;
-	}
-
-	/**
-	 * Set the value related to the column: Fonctions.
-	 * @param fonctions the Fonctions value
-	 */
-	public void setFonctions(final Set<Fonction> fonctions) {
-		this.fonctions = fonctions;
 	}
 
 	/**
@@ -162,22 +110,10 @@ public class Role implements Serializable {
 	}
 
 	/**
-	 * @see Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
-
-
-	/**
 	 * @see Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "Role#" + hashCode() + "[id=[" + id + "], name=[" + name 
-		+ "], functions=[" + fonctions + "]]";
+		return "Role#" + hashCode() + "[id=[" + id + "], name=[" + name + "], functions=[" + fonctions + "]]";
 	}
-
-
 }

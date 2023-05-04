@@ -11,27 +11,36 @@ import javax.persistence.Table;
 
 import org.esupportail.smsu.dao.beans.idClass.ToMailRecipientPk;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * This is an object that contains data related to the to_mail_recipient table.
  *
- * @hibernate.class
- *  table="to_mail_recipient"
+ * @hibernate.class table="to_mail_recipient"
  */
+// lombok
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+// JPA
 @Entity
 @Table(name = ToMailRecipient.TABLE_NAME)
 @IdClass(ToMailRecipientPk.class)
-public class ToMailRecipient  implements Serializable {
+public class ToMailRecipient implements Serializable {
 
 	/**
 	 * Hibernate reference for the association ToMailRecipient.
 	 */
 	public static final String REF = "toMailRecipient";
 
-	public static final String TABLE_NAME = "to_mail_recipient";
-	public static final String MAIL_COLUMN = "MAIL_ID";
-	public static final String MAIL_RECIPIENT_COLUMN = "MRC_ID";
-	
+	static final String TABLE_NAME = "to_mail_recipient";
+	static final String MAIL_COLUMN = "MAIL_ID";
+	static final String MAIL_RECIPIENT_COLUMN = "MRC_ID";
+
 	/**
 	 * The serialization id.
 	 */
@@ -52,59 +61,6 @@ public class ToMailRecipient  implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = MAIL_COLUMN)
 	private Mail mail;
-
-	/**
-	 * Bean constructor.
-	 */
-	public ToMailRecipient() {
-		super();
-	}
-
-	/**
-	 * Constructor for required fields.
-	 */
-	public ToMailRecipient(
-		final MailRecipient mailRecipient,
-		final Mail mail) {
-
-		this.setMailRecipient(mailRecipient);
-		this.setMail(mail);
-	}
-
-
-	/**
-     * @hibernate.property
-     *  column=MRC_ID
-	 * not-null=true
-	 */
-	public MailRecipient getMailRecipient() {
-		return this.mailRecipient;
-	}
-
-	/**
-	 * Set the value related to the column: MRC_ID.
-	 * @param mailRecipient the MRC_ID value
-	 */
-	public void setMailRecipient(final MailRecipient mailRecipient) {
-		this.mailRecipient = mailRecipient;
-	}
-
-	/**
-     * @hibernate.property
-     *  column=MAIL_ID
-	 * not-null=true
-	 */
-	public Mail getMail() {
-		return this.mail;
-	}
-
-	/**
-	 * Set the value related to the column: MAIL_ID.
-	 * @param mail the MAIL_ID value
-	 */
-	public void setMail(final Mail mail) {
-		this.mail = mail;
-	}
 
 	/**
 	 * @see java.lang.Object#equals(java.lang.Object)
@@ -137,22 +93,10 @@ public class ToMailRecipient  implements Serializable {
 	}
 
 	/**
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
-
-
-	/**
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "ToMailRecipient#" + hashCode() + "[mail=[" + mail + "], recipient=[" + mailRecipient 
-		+ "]]";
+		return "ToMailRecipient#" + hashCode() + "[mail=[" + mail + "], recipient=[" + mailRecipient + "]]";
 	}
-
-
 }

@@ -10,13 +10,23 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * The class that represent template of mail or SMS.
  */
+// lombok
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+// JPA
 @Entity
 @Table(name = "template")
-public class Template  implements Serializable {
+public class Template implements Serializable {
 
 	/**
 	 * Hibernate reference for template.
@@ -27,22 +37,22 @@ public class Template  implements Serializable {
 	 * Hibernate property for the signature.
 	 */
 	public static final String PROP_SIGNATURE = "signature";
-	
+
 	/**
 	 * Hibernate property for the heading.
 	 */
 	public static final String PROP_HEADING = "heading";
-	
+
 	/**
 	 * Hibernate property for the body.
 	 */
 	public static final String PROP_BODY = "body";
-	
+
 	/**
 	 * Hibernate property for the label.
 	 */
 	public static final String PROP_LABEL = "label";
-	
+
 	/**
 	 * Hibernate property for the identifier.
 	 */
@@ -67,19 +77,19 @@ public class Template  implements Serializable {
 	@Column(name = "TPL_LABEL", nullable = false, length = 32, unique = true)
 	@NotNull
 	private String label;
-	
+
 	/**
 	 * template heading.
 	 */
 	@Column(name = "TPL_HEADING", length = 50)
 	private String heading;
-	
+
 	/**
 	 * template body.
 	 */
 	@Column(name = "TPL_BODY", length = 160)
 	private String body;
-	
+
 	/**
 	 * template signature.
 	 */
@@ -87,108 +97,11 @@ public class Template  implements Serializable {
 	private String signature;
 
 	/**
-	 * Bean constructor.
-	 */
-	public Template() {
-		super();
-	}
-
-
-	/**
 	 * Constructor for required fields.
 	 */
-	public Template(
-		final Integer id,
-		final String label) {
-
+	public Template(Integer id, String label) {
 		this.setId(id);
 		this.setLabel(label);
-	}
-
-
-	/**
-	 * Return the unique identifier of this class.
-     * @hibernate.id
-     *  generator-class="native"
-     *  column="TPL_ID"
-     */
-	public Integer getId() {
-		return id;
-	}
-
-	/**
-	 * Set the unique identifier of this class.
-	 * @param id the new ID
-	 */
-	public void setId(final Integer id) {
-		this.id = id;
-	}
-
-
-	/**
-	 * Return the value associated with the column: TPL_LABEL.
-	 */
-	public String getLabel() {
-		return label;
-	}
-
-	/**
-	 * Set the value related to the column: TPL_LABEL.
-	 * @param label the TPL_LABEL value
-	 */
-	public void setLabel(final String label) {
-		this.label = label;
-	}
-
-
-
-	/**
-	 * Return the value associated with the column: TPL_HEADING.
-	 */
-	public String getHeading() {
-		return heading;
-	}
-
-	/**
-	 * Set the value related to the column: TPL_HEADING.
-	 * @param heading the TPL_HEADING value
-	 */
-	public void setHeading(final String heading) {
-		this.heading = heading;
-	}
-
-
-
-	/**
-	 * Return the value associated with the column: TPL_BODY.
-	 */
-	public String getBody() {
-		return body;
-	}
-
-	/**
-	 * Set the value related to the column: TPL_BODY.
-	 * @param body the TPL_BODY value
-	 */
-	public void setBody(final String body) {
-		this.body = body;
-	}
-
-
-
-	/**
-	 * Return the value associated with the column: TPL_SIGNATURE.
-	 */
-	public String getSignature() {
-		return signature;
-	}
-
-	/**
-	 * Set the value related to the column: TPL_SIGNATURE.
-	 * @param signature the TPL_SIGNATURE value
-	 */
-	public void setSignature(final String signature) {
-		this.signature = signature;
 	}
 
 	/**
@@ -212,21 +125,11 @@ public class Template  implements Serializable {
 	}
 
 	/**
-	 * @see Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
-
-
-	/**
 	 * @see Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "Template#" + hashCode() + "[id=[" + id + "], label=[" + label 
-		+ "], heading=[" + heading + "], body=[" + body + "], signature=[" + signature + "]]";
+		return "Template#" + hashCode() + "[id=[" + id + "], label=[" + label + "], heading=[" + heading + "], body=["
+				+ body + "], signature=[" + signature + "]]";
 	}
-
 }

@@ -10,13 +10,23 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * The class that represents mail recipients.
  */
+// lombok
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+// JPA
 @Entity
 @Table(name = "mail_recipient")
-public class MailRecipient  implements Serializable {
+public class MailRecipient implements Serializable {
 
 	/**
 	 * Hibernate reference for mail recipient.
@@ -43,7 +53,6 @@ public class MailRecipient  implements Serializable {
 	 */
 	private static final long serialVersionUID = -6480239557091230008L;
 
-
 	/**
 	 * mail recipient identifier.
 	 */
@@ -58,85 +67,12 @@ public class MailRecipient  implements Serializable {
 	@Column(name = "MRC_ADDRESS", nullable = false, length = 100, unique = true)
 	@NotNull
 	private String address;
-	
+
 	/**
 	 * mail recipient login.
 	 */
 	@Column(name = "MRC_LOGIN", length = 32)
 	private String login;
-
-	/**
-	 * Bean constructor.
-	 */
-	public MailRecipient() {
-		super();
-	}
-
-	/**
-	 * Constructor for required fields.
-	 */
-	public MailRecipient(
-		final Integer id,
-		final String address, final String login) {
-
-		this.setId(id);
-		this.setAddress(address);
-		this.setLogin(login);
-	}
-
-
-
-
-	/**
-	 * Return the unique identifier of this class.
-     * @hibernate.id
-     *  generator-class="native"
-     *  column="MRC_ID"
-     */
-	public Integer getId() {
-		return id;
-	}
-
-	/**
-	 * Set the unique identifier of this class.
-	 * @param id the new ID
-	 */
-	public void setId(final Integer id) {
-		this.id = id;
-	}
-
-
-
-
-	/**
-	 * Return the value associated with the column: MRC_ADDRESS.
-	 */
-	public String getAddress() {
-		return address;
-	}
-
-	/**
-	 * Set the value related to the column: MRC_LOGIN.
-	 * @param address the MRC_ADDRESS value
-	 */
-	public void setLogin(final String login) {
-		this.login = login;
-	}
-
-	/**
-	 * Return the value associated with the column: MRC_LOGIN.
-	 */
-	public String getLogin() {
-		return login;
-	}
-
-	/**
-	 * Set the value related to the column: MRC_ADDRESS.
-	 * @param address the MRC_ADDRESS value
-	 */
-	public void setAddress(final String address) {
-		this.address = address;
-	}
 
 	/**
 	 * @see Object#equals(Object)
@@ -159,22 +95,10 @@ public class MailRecipient  implements Serializable {
 	}
 
 	/**
-	 * @see Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
-
-
-	/**
 	 * @see Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "MailRecipient#" + hashCode() + "[id=[" + id + "], address=[" + address 
-		+ "], login[" + login + "]]";
+		return "MailRecipient#" + hashCode() + "[id=[" + id + "], address=[" + address + "], login[" + login + "]]";
 	}
-
-
 }

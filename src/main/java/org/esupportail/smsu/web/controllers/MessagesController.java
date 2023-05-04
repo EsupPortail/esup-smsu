@@ -78,7 +78,7 @@ public class MessagesController {
 		if (message == null) {
 			throw new InvalidParameterException("unknow message " + messageId);
 		}
-		if (MessageStatus.SENT.name().equals(message.getStateAsEnum().name())) {
+		if (MessageStatus.SENT.name().equals(message.getState().name())) {
 			return domainService.getMessageStatuses(messageId);
 		}
 		return null;

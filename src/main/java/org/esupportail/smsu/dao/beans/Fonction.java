@@ -10,10 +10,20 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * The class that represent fonctions (right access).
  */
+// lombok
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+// JPA
 @Entity
 @Table(name = "fonction")
 public class Fonction implements Serializable {
@@ -27,7 +37,7 @@ public class Fonction implements Serializable {
 	 * Hibernate property for the name.
 	 */
 	public static final String PROP_NAME = "name";
-	
+
 	/**
 	 * Hibernate property for the identifier.
 	 */
@@ -52,58 +62,6 @@ public class Fonction implements Serializable {
 	@Column(name = "FCT_NAME", nullable = false, length = 64, unique = true)
 	@NotNull
 	private String name;
-
-	/**
-	 * Bean constructor.
-	 */
-	public Fonction() {
-		super();
-	}
-
-	/**
-	 * Constructor for required fields.
-	 */
-	public Fonction(
-		final Integer id,
-		final String name) {
-		this.setId(id);
-		this.setName(name);
-	}
-
-
-	/**
-	 * Return the unique identifier of this class.
-     * @hibernate.id
-     *  generator-class="native"
-     *  column="FCT_ID"
-     */
-	public Integer getId() {
-		return id;
-	}
-
-	/**
-	 * Set the unique identifier of this class.
-	 * @param id the new ID
-	 */
-	public void setId(final Integer id) {
-		this.id = id;
-	}
-
-
-	/**
-	 * Return the value associated with the column: FCT_NAME.
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * Set the value related to the column: FCT_NAME.
-	 * @param name the FCT_NAME value
-	 */
-	public void setName(final String name) {
-		this.name = name;
-	}
 
 	/**
 	 * @see Object#equals(Object)
@@ -133,15 +91,11 @@ public class Fonction implements Serializable {
 		return super.hashCode();
 	}
 
-
 	/**
 	 * @see Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "Function#" + hashCode() + "[id=[" + id + "], name=[" + name 
-		+ "]]";
+		return "Function#" + hashCode() + "[id=[" + id + "], name=[" + name + "]]";
 	}
-
-
 }

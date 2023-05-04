@@ -140,7 +140,7 @@ public class SendSmsManager  {
 		message.setGroupSender(groupSender);
 		message.setRecipients(recipients);
 		message.setGroupRecipient(groupRecipient);			
-		message.setStateAsEnum(messageStatus);				
+		message.setState(messageStatus);				
 		message.setSupervisors(mayGetSupervisorsOrNull(message));				
 		message.setDate(new Date());
 		if (msg.mailToSend != null) message.setMail(getMail(message, msg.mailToSend));
@@ -148,7 +148,7 @@ public class SendSmsManager  {
 	}
 
 	private Set<Person> mayGetSupervisorsOrNull(Message message) {
-		if (MessageStatus.WAITING_FOR_APPROVAL.equals(message.getStateAsEnum())) {
+		if (MessageStatus.WAITING_FOR_APPROVAL.equals(message.getState())) {
 			logger.debug("Supervisors needed");
 			Set<Person> supervisors = new HashSet<>();
 			for (CustomizedGroup cGroup : getSupervisorCustomizedGroup(message)) {
@@ -169,25 +169,25 @@ public class SendSmsManager  {
 	 */
 	public void treatMessage(final Message message, HttpServletRequest request) throws CreateMessageException.WebService {
 		try {
-			if (message.getStateAsEnum().equals(MessageStatus.NO_RECIPIENT_FOUND))
+			if (message.getState().equals(MessageStatus.NO_RECIPIENT_FOUND))
 				; // Nothing to do.
-			else if (message.getStateAsEnum().equals(MessageStatus.WAITING_FOR_APPROVAL))
+			else if (message.getState().equals(MessageStatus.WAITING_FOR_APPROVAL))
 				// envoi du mail
 				sendApprovalMailToSupervisors(message, request);
 			else 
 				maySendMessageInBackground(message, request);
 		} catch (AuthenticationFailedException e) {
-			message.setStateAsEnum(MessageStatus.WS_ERROR);
+			message.setState(MessageStatus.WS_ERROR);
 			daoService.updateMessage(message);
 			logger.error("Application unknown", e);
 			throw new CreateMessageException.WebServiceUnknownApplication(e);
 		} catch (InsufficientQuotaException e) {
-			message.setStateAsEnum(MessageStatus.WS_QUOTA_ERROR);
+			message.setState(MessageStatus.WS_QUOTA_ERROR);
 			daoService.updateMessage(message);
 			logger.error("Quota error", e);
 			throw new CreateMessageException.WebServiceInsufficientQuota(e);
 		} catch (HttpException e) {
-			message.setStateAsEnum(MessageStatus.WS_ERROR);
+			message.setState(MessageStatus.WS_ERROR);
 			daoService.updateMessage(message);
 			throw new CreateMessageException.BackOfficeUnreachable(e);
 		}
@@ -222,7 +222,7 @@ public class SendSmsManager  {
 			}
 
 			// update the message status in DB
-			message.setStateAsEnum(MessageStatus.SENT);
+			message.setState(MessageStatus.SENT);
 
 			// force commit to database. do not allow rollback otherwise the message will be sent again!
 			daoService.updateMessage(message);
@@ -238,7 +238,7 @@ public class SendSmsManager  {
 				logger.debug("End of managment of message with id : " + message.getId());
 			}
 		    } catch (org.esupportail.smsuapi.exceptions.AlreadySentException e) {
-		        message.setStateAsEnum(MessageStatus.ALREADY_SENT);
+		        message.setState(MessageStatus.ALREADY_SENT);
 		        logger.error(e);
 		    }
 		}
@@ -348,7 +348,7 @@ public class SendSmsManager  {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Setting to state WAINTING_FOR_SENDING message with ID : " + message.getId());
 		}
-		message.setStateAsEnum(MessageStatus.WAITING_FOR_SENDING);
+		message.setState(MessageStatus.WAITING_FOR_SENDING);
 		daoService.updateMessage(message);
 
 		// tell TransactionManagerFilter what to trigger after committing transaction
@@ -384,7 +384,7 @@ public class SendSmsManager  {
 			mail.setSubject(subject);
 			mail.setContent(content);
 			mail.setTemplate(template);
-			mail.setStateAsEnum(MailStatus.WAITING);		
+			mail.setState(MailStatus.WAITING);		
 			mail.setMailRecipients(mailRecipients);
 			return mail;
 		}
@@ -477,10 +477,10 @@ public class SendSmsManager  {
 						smtpServiceUtils.sendOneMessage(mailAddress, mailSubject, customizedContentMail);
 					}
 				}
-				message.getMail().setStateAsEnum(MailStatus.SENT);
+				message.getMail().setState(MailStatus.SENT);
 			} catch (CreateMessageException e) {
 				logger.error("discarding message with " + e + " (this should not happen, the message should have been checked first!)");
-				message.getMail().setStateAsEnum(MailStatus.ERROR);
+				message.getMail().setState(MailStatus.ERROR);
 			} 
 	}
 

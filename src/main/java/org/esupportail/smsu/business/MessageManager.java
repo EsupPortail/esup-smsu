@@ -98,7 +98,7 @@ public class MessageManager {
 		r.groupSenderName = retreiveNiceGroupName(mess.getGroupSender());
 		r.groupRecipientName = retreiveNiceGroupName(mess.getGroupRecipient());
 		r.serviceName = mess.getService() != null ? mess.getService().getName() : null;
-		r.stateMessage = convertToUI(mess.getStateAsEnum());
+		r.stateMessage = convertToUI(mess.getState());
 		r.stateMail = convertToUI(mess.getMail());
 		return r;
 	}
@@ -146,7 +146,7 @@ public class MessageManager {
 	}
 
 	private String convertToUI(Mail mail) {
-		return mail != null ? mail.getStateAsEnum().name() : null;
+		return mail != null ? mail.getState().name() : null;
 	}
 	
 }

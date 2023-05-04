@@ -15,11 +15,20 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.math.NumberUtils;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * The class that represents customized groups.
  */
+// lombok
+@AllArgsConstructor
+@Getter
+@Setter
+// JPA
 @Entity
 @Table(name = "customized_group")
 public class CustomizedGroup implements Serializable {
@@ -97,7 +106,7 @@ public class CustomizedGroup implements Serializable {
 	@Column(name = "CGR_QUOTA_ORDER", nullable = false, length = 20)
 	@NotNull
 	private Long quotaOrder;
-	
+
 	/**
 	 * number of consumed sms.
 	 */
@@ -112,7 +121,7 @@ public class CustomizedGroup implements Serializable {
 	@JoinColumn(name = "ACC_ID", nullable = false)
 	@NotNull
 	private Account account;
-	
+
 	/**
 	 * role.
 	 */
@@ -134,158 +143,18 @@ public class CustomizedGroup implements Serializable {
 	 * Bean constructor.
 	 */
 	public CustomizedGroup() {
-		super();
-		quotaSms = Long.parseLong("0");
-		quotaOrder = Long.parseLong("0");
-		consumedSms = Long.parseLong("0");
-	}
-
-
-	/**
-	 * Return the unique identifier of this class.
-     * @hibernate.id
-     *  generator-class="native"
-     *  column="CGR_ID"
-     */
-	public Integer getId() {
-		return id;
-	}
-
-	/**
-	 * Set the unique identifier of this class.
-	 * @param id the new ID
-	 */
-	public void setId(final Integer id) {
-		this.id = id;
-	}
-
-
-
-
-	/**
-	 * Return the value associated with the column: CGR_LABEL.
-	 */
-	public String getLabel() {
-		return label;
-	}
-
-	/**
-	 * Set the value related to the column: CGR_LABEL.
-	 * @param label the CGR_LABEL value
-	 */
-	public void setLabel(final String label) {
-		this.label = label;
-	}
-
-
-
-	/**
-	 * Return the value associated with the column: CGR_QUOTA_SMS.
-	 */
-	public Long getQuotaSms() {
-		return quotaSms;
-	}
-
-	/**
-	 * Set the value related to the column: CGR_QUOTA_SMS.
-	 * @param quotaSms the CGR_QUOTA_SMS value
-	 */
-	public void setQuotaSms(final Long quotaSms) {
-		this.quotaSms = quotaSms;
+		setQuotaSms(NumberUtils.LONG_ZERO);
+		setQuotaOrder(NumberUtils.LONG_ZERO);
+		setConsumedSms(NumberUtils.LONG_ZERO);
 	}
 
 	/**
 	 * Check whether the account is allowed to send nbSms
 	 */
 	public boolean checkQuotaSms(int nbToSend) {
-		long nbAvailable = getQuotaSms() - getConsumedSms(); 		
+		long nbAvailable = getQuotaSms() - getConsumedSms();
 		return nbAvailable >= nbToSend;
 	}
-
-
-	/**
-	 * Return the value associated with the column: CGR_QUOTA_ORDER.
-	 */
-	public Long getQuotaOrder() {
-		return quotaOrder;
-	}
-
-	/**
-	 * Set the value related to the column: CGR_QUOTA_ORDER.
-	 * @param quotaOrder the CGR_QUOTA_ORDER value
-	 */
-	public void setQuotaOrder(final Long quotaOrder) {
-		this.quotaOrder = quotaOrder;
-	}
-
-
-
-	/**
-	 * Return the value associated with the column: CGR_CONSUMED_SMS.
-	 */
-	public Long getConsumedSms() {
-		return consumedSms;
-	}
-
-	/**
-	 * Set the value related to the column: CGR_CONSUMED_SMS.
-	 * @param consumedSms the CGR_CONSUMED_SMS value
-	 */
-	public void setConsumedSms(final Long consumedSms) {
-		this.consumedSms = consumedSms;
-	}
-
-
-
-	/**
-	 * Return the value associated with the column: ACC_ID.
-	 */
-	public Account getAccount() {
-		return account;
-	}
-
-	/**
-	 * Set the value related to the column: ACC_ID.
-	 * @param account the ACC_ID value
-	 */
-	public void setAccount(final Account account) {
-		this.account = account;
-	}
-
-
-
-	/**
-	 * Return the value associated with the column: ROL_ID.
-	 */
-	public Role getRole() {
-		return role;
-	}
-
-	/**
-	 * Set the value related to the column: ROL_ID.
-	 * @param role the ROL_ID value
-	 */
-	public void setRole(final Role role) {
-		this.role = role;
-	}
-
-
-
-	/**
-	 * Return the value associated with the column: Supervisors.
-	 */
-	public Set<Person> getSupervisors() {
-		return supervisors;
-	}
-
-	/**
-	 * Set the value related to the column: Supervisors.
-	 * @param supervisors the Supervisors value
-	 */
-	public void setSupervisors(final Set<Person> supervisors) {
-		this.supervisors = supervisors;
-	}
-
 
 	/**
 	 * @see Object#equals(Object)
@@ -308,22 +177,10 @@ public class CustomizedGroup implements Serializable {
 	}
 
 	/**
-	 * @see Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
-
-
-	/**
 	 * @see Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "CustomizedGroup#" + hashCode() + "[id=[" + id + "], label=[" + label 
-		+  "]]";
+		return "CustomizedGroup#" + hashCode() + "[id=[" + id + "], label=[" + label + "]]";
 	}
-
-
 }

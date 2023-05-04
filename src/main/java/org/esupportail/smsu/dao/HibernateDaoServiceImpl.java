@@ -191,7 +191,7 @@ public class HibernateDaoServiceImpl implements DaoService {
 	 */
 	@Override
 	public List<Message> getMessagesByState(final MessageStatus state) {
-		return messageRepository.findByState(state.name());
+		return messageRepository.findByState(state);
 		
 	}
 	
@@ -231,7 +231,7 @@ public class HibernateDaoServiceImpl implements DaoService {
 	 */
 	@Override
 	public List<Message> getApprovalMessages() {
-		return messageRepository.findByStateOrderByIdAsc(MessageStatus.WAITING_FOR_APPROVAL.toString());
+		return messageRepository.findByStateOrderByIdAsc(MessageStatus.WAITING_FOR_APPROVAL);
 	}
 
 	/**

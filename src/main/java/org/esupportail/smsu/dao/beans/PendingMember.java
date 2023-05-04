@@ -11,13 +11,23 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * The class that represent users.
  */
+// lombok
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+// JPA
 @Entity
 @Table(name = "pending_member")
-public class PendingMember  implements Serializable {
+public class PendingMember implements Serializable {
 	/**
 	 * Hibernate reference for pending member.
 	 */
@@ -42,8 +52,6 @@ public class PendingMember  implements Serializable {
 	 * The serialization id.
 	 */
 	private static final long serialVersionUID = -8373156029880260203L;
-	
-
 
 	/**
 	 * Id of the pending member (corresponds to its login).
@@ -51,14 +59,14 @@ public class PendingMember  implements Serializable {
 	@Id
 	@Column(name = "MBR_LOGIN")
 	private String id;
-	
+
 	/**
 	 * code to validate the subscription.
 	 */
 	@Column(name = "MBR_VALIDATION_CODE", nullable = false, length = 8, unique = true)
 	@NotNull
 	private String validationCode;
-	
+
 	/**
 	 * subscription date.
 	 */
@@ -68,73 +76,12 @@ public class PendingMember  implements Serializable {
 	private Date dateSubscription;
 
 	/**
-	 * Bean constructor.
-	 */
-	public PendingMember() {
-		super();
-	}
-
-
-	/**
 	 * Constructor for required fields.
 	 */
-	public PendingMember(
-		final String id,
-		final String validationCode) {
-
-		this.setId(id);
-		this.setValidationCode(validationCode);
-		this.setDateSubscription(new Date());
+	public PendingMember(String id, String validationCode) {
+		this(id, validationCode, new Date());
 	}
 
-
-	/**
-	 * Return the unique identifier of this class.
-     * @hibernate.id
-     *  generator-class="assigned"
-     *  column="MBR_LOGIN"
-     */
-	public String getId() {
-		return id;
-	}
-
-	/**
-	 * Set the unique identifier of this class.
-	 * @param id the new ID
-	 */
-	public void setId(final String id) {
-		this.id = id;
-	}
-
-	/**
-	 * Return the value associated with the column: MBR_VALIDATION_CODE.
-	 */
-	public String getValidationCode() {
-		return validationCode;
-	}
-
-	/**
-	 * Set the value related to the column: MBR_VALIDATION_CODE.
-	 * @param validationCode the MBR_VALIDATION_CODE value
-	 */
-	public void setValidationCode(final String validationCode) {
-		this.validationCode = validationCode;
-	}
-
-	/**
-	 * Return the value associated with the column: MBR_DATE_SUBSCRIPTION.
-	 */
-	public Date getDateSubscription() {
-		return dateSubscription;
-	}
-
-	/**
-	 * @param dateSubscription
-	 */
-	public void setDateSubscription(final Date dateSubscription) {
-		this.dateSubscription = dateSubscription;
-	}
-	
 	/**
 	 * @see Object#equals(Object)
 	 */
@@ -156,21 +103,11 @@ public class PendingMember  implements Serializable {
 	}
 
 	/**
-	 * @see Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
-
-
-	/**
 	 * @see Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "PendingMember#" + hashCode() + "[id=[" + id + "], validationCode=[" + validationCode 
-		+ "], dateSubscription=[" + dateSubscription + "]]";
+		return "PendingMember#" + hashCode() + "[id=[" + id + "], validationCode=[" + validationCode
+				+ "], dateSubscription=[" + dateSubscription + "]]";
 	}
-
 }

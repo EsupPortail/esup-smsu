@@ -10,13 +10,23 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * The class that represents basic groups.
  */
+// lombok
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+// JPA
 @Entity
 @Table(name = "basic_group")
-public class BasicGroup  implements Serializable {
+public class BasicGroup implements Serializable {
 
 	/**
 	 * Hibernate reference for the basic group.
@@ -54,62 +64,6 @@ public class BasicGroup  implements Serializable {
 	private String label;
 
 	/**
-	 * Bean constructor.
-	 */
-	public BasicGroup() {
-		super();
-	}
-
-
-	/**
-	 * Constructor for required fields.
-	 */
-	public BasicGroup(
-		final Integer id,
-		final String label) {
-
-		this.setId(id);
-		this.setLabel(label);
-	}
-
-
-	/**
-	 * Return the unique identifier of this class.
-     * @hibernate.id
-     *  generator-class="native"
-     *  column="BGR_ID"
-     */
-	public Integer getId() {
-		return id;
-	}
-
-	/**
-	 * Set the unique identifier of this class.
-	 * @param id the new ID
-	 */
-	public void setId(final Integer id) {
-		this.id = id;
-	}
-
-
-
-
-	/**
-	 * Return the value associated with the column: BGR_LABEL.
-	 */
-	public String getLabel() {
-		return label;
-	}
-
-	/**
-	 * Set the value related to the column: BGR_LABEL.
-	 * @param label the BGR_LABEL value
-	 */
-	public void setLabel(final String label) {
-		this.label = label;
-	}
-
-	/**
 	 * @see Object#equals(Object)
 	 */
 	@Override
@@ -130,21 +84,10 @@ public class BasicGroup  implements Serializable {
 	}
 
 	/**
-	 * @see Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
-
-
-	/**
 	 * @see Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "BasicGroup#" + hashCode() + "[id=[" + id + "], label=[" + label 
-		+  "]]";
+		return "BasicGroup#" + hashCode() + "[id=[" + id + "], label=[" + label + "]]";
 	}
-
 }

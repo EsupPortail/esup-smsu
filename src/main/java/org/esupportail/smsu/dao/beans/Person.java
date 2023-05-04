@@ -10,10 +10,20 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * The class that represents persons.
  */
+// lombok
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+// JPA
 @Entity
 @Table(name = "person")
 public class Person implements Serializable {
@@ -53,62 +63,8 @@ public class Person implements Serializable {
 	@NotNull
 	private String login;
 
-	/**
-	 * Bean constructor.
-	 */
-	public Person() {
-		super();
-	}
-
-
-	/**
-	 * Constructor for required fields.
-	 */
-	public Person(
-		final Integer id,
-		final String login) {
-
-		this.setId(id);
-		this.setLogin(login);
-	}
-
-
 	public Person(String login) {
 		this.setLogin(login);
-	}
-
-
-	/**
-	 * Return the unique identifier of this class.
-     * @hibernate.id
-     *  generator-class="native"
-     *  column="PER_ID"
-     */
-	public Integer getId() {
-		return id;
-	}
-
-	/**
-	 * Set the unique identifier of this class.
-	 * @param id the new ID
-	 */
-	public void setId(final Integer id) {
-		this.id = id;
-	}
-
-	/**
-	 * Return the value associated with the column: PER_LOGIN.
-	 */
-	public String getLogin() {
-		return login;
-	}
-
-	/**
-	 * Set the value related to the column: PER_LOGIN.
-	 * @param login the PER_LOGIN value
-	 */
-	public void setLogin(final String login) {
-		this.login = login;
 	}
 
 	/**
@@ -132,22 +88,10 @@ public class Person implements Serializable {
 	}
 
 	/**
-	 * @see Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
-
-
-	/**
 	 * @see Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "Person#" + hashCode() + "[id=[" + id + "], login=[" + login 
-		+  "]]";
+		return "Person#" + hashCode() + "[id=[" + id + "], login=[" + login + "]]";
 	}
-
-
 }

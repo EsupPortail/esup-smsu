@@ -10,9 +10,20 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 /**
  * The class that represents accounts.
  */
+// lombok
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+// JPA
 @Entity
 @Table(name = "account")
 public class Account implements Serializable {
@@ -26,12 +37,11 @@ public class Account implements Serializable {
 	 * Hibernate property for the identifier.
 	 */
 	public static final String PROP_ID = "id";
-	
+
 	/**
 	 * Hibernate property for the label.
 	 */
 	public static final String PROP_LABEL = "label";
-	
 
 	/**
 	 * The serialization id.
@@ -53,64 +63,8 @@ public class Account implements Serializable {
 	@NotNull
 	private String label;
 
-	/**
-	 * Bean constructor.
-	 */
-	public Account() {
-		super();
-	}
-
-
-	/**
-	 * Constructor for required fields.
-	 */
-	public Account(
-		final Integer id,
-		final String label) {
-
-		this.setId(id);
-		this.setLabel(label);
-	}
-
 	public Account(String label) {
 		this.setLabel(label);
-	}
-
-
-	/**
-	 * Return the unique identifier of this class.
-     * @hibernate.id
-     *  generator-class="native"
-     *  column="ACC_ID"
-     */
-	public Integer getId() {
-		return id;
-	}
-
-	/**
-	 * Set the unique identifier of this class.
-	 * @param id the new ID
-	 */
-	public void setId(final Integer id) {
-		this.id = id;
-	}
-
-
-
-
-	/**
-	 * Return the value associated with the column: ACC_LABEL.
-	 */
-	public String getLabel() {
-		return label;
-	}
-
-	/**
-	 * Set the value related to the column: ACC_LABEL.
-	 * @param label the ACC_LABEL value
-	 */
-	public void setLabel(final String label) {
-		this.label = label;
 	}
 
 	/**
@@ -134,21 +88,10 @@ public class Account implements Serializable {
 	}
 
 	/**
-	 * @see Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
-
-	/**
 	 * @see Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "Account#" + hashCode() + "[id=[" + id + "], label=[" + label 
-		+  "]]";
+		return "Account#" + hashCode() + "[id=[" + id + "], label=[" + label + "]]";
 	}
-
-
 }

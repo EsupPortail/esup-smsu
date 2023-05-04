@@ -36,12 +36,12 @@ public class ApprovalManager {
 		Message message = daoService.getMessageById(messageId);
 		if (message == null)
 			throw new InvalidParameterException("unknown message " + messageId);
-		if (!message.getStateAsEnum().equals(MessageStatus.WAITING_FOR_APPROVAL))
+		if (!message.getState().equals(MessageStatus.WAITING_FOR_APPROVAL))
 			throw new InvalidParameterException("message is not waiting for approval");
 		checkCanApprove(message, currentUser);
 
 		sendSmsManager.sendMailMessageApprovedOrCanceled(message, newStatus, currentUser, request);
-		message.setStateAsEnum(newStatus);
+		message.setState(newStatus);
 		if (newStatus.equals(MessageStatus.CANCEL)) {
 			daoService.updateMessage(message);
 		} else {

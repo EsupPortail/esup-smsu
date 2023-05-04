@@ -10,8 +10,10 @@ import org.esupportail.smsu.dao.beans.MailRecipient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+// lombok
 @Data
 @AllArgsConstructor
+// JPA
 @Embeddable
 public class ToMailRecipientPk implements Serializable {
 	private MailRecipient mailRecipient;

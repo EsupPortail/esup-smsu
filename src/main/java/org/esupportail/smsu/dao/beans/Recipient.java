@@ -11,10 +11,20 @@ import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * The class that represent recipients.
  */
+// lombok
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+// JPA
 @Entity
 @Table(name = "recipient", indexes = @Index(name = "RCP_PHONE_LOGIN", columnList = "RCP_PHONE, RCP_LOGIN"))
 public class Recipient implements Serializable {
@@ -33,12 +43,11 @@ public class Recipient implements Serializable {
 	 * Hibernate property for the phone.
 	 */
 	public static final String PROP_PHONE = "phone";
-	
+
 	/**
 	 * Hibernate property for the login.
 	 */
 	public static final String PROP_LOGIN = "login";
-
 
 	/**
 	 * The serialization id.
@@ -65,76 +74,6 @@ public class Recipient implements Serializable {
 	 */
 	@Column(name = "RCP_LOGIN", length = 32)
 	private String login;
-	
-	/**
-	 * Bean constructor.
-	 */
-	public Recipient() {
-		super();
-	}
-
-	/**
-	 * Constructor for required fields.
-	 */
-	public Recipient(
-		final Integer id,
-		final String phone, final String login) {
-		this.setId(id);
-		this.setPhone(phone);
-		this.setLogin(login);
-	}
-
-
-
-
-	/**
-	 * Return the unique identifier of this class.
-     * @hibernate.id
-     *  generator-class="native"
-     *  column="RCP_ID"
-     */
-	public Integer getId() {
-		return id;
-	}
-
-	/**
-	 * Set the unique identifier of this class.
-	 * @param id the new ID
-	 */
-	public void setId(final Integer id) {
-		this.id = id;
-	}
-
-	/**
-	 * Return the value associated with the column: RCP_PHONE.
-	 */
-	public String getPhone() {
-		return phone;
-	}
-
-	/**
-	 * Set the value related to the column: RCP_PHONE.
-	 * @param phone the RCP_PHONE value
-	 */
-	public void setPhone(final String phone) {
-		this.phone = phone;
-	}
-
-	/**
-	 * Set the value related to the column: RCP_LOGIN.
-	 * @param login the RCP_LOGIN value
-	 */
-	public void setLogin(final String login) {
-		this.login = login;
-	}
-
-	/**
-	 * Return the value associated with the column: RCP_LOGIN.
-	 */
-	public String getLogin() {
-		return login;
-	}
-	
 
 	/**
 	 * @see Object#equals(Object)
@@ -157,22 +96,10 @@ public class Recipient implements Serializable {
 	}
 
 	/**
-	 * @see Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
-
-
-	/**
 	 * @see Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "Recipient#" + hashCode() + "[id=[" + id + "], phone=[" + phone 
-		+ "], login=[" + login + "]]";
+		return "Recipient#" + hashCode() + "[id=[" + id + "], phone=[" + phone + "], login=[" + login + "]]";
 	}
-
-
 }
