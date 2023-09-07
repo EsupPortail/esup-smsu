@@ -17,6 +17,8 @@ import org.esupportail.smsuapi.utils.HttpException;
 import javax.inject.Inject;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.i18n.phonenumbers.NumberParseException;
+
 @RestController
 @RequestMapping(value = "/membership")
 public class MembershipController {
@@ -41,7 +43,7 @@ public class MembershipController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public MembershipStatus save(@RequestBody Member member, HttpServletRequest request) throws LdapUserNotFoundException, LdapWriteException, HttpException, InsufficientQuotaException {
+	public MembershipStatus save(@RequestBody Member member, HttpServletRequest request) throws LdapUserNotFoundException, LdapWriteException, HttpException, InsufficientQuotaException, NumberParseException {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Save data of a member");
 		}
@@ -54,8 +56,6 @@ public class MembershipController {
 			if (member.getValidCG()) throw new InvalidParameterException("ADHESION.ERROR.PHONEREQUIRED");
                         // normalize
                         member.setPhoneNumber(null);
-		} else { 
-			memberManager.validatePhoneNumber(member.getPhoneNumber());
 		}
 
 		// save datas into LDAP

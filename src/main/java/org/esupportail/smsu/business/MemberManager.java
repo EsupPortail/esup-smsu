@@ -3,8 +3,10 @@ package org.esupportail.smsu.business;
 import java.security.InvalidParameterException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.esupportail.smsu.business.beans.Member;
 import org.esupportail.smsu.dao.DaoService;
@@ -20,6 +22,12 @@ import org.esupportail.smsuapi.exceptions.InsufficientQuotaException;
 import org.esupportail.smsuapi.utils.HttpException;
 import javax.inject.Inject;
 import org.springframework.beans.factory.annotation.Required;
+
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.PhoneNumberUtil.PhoneNumberFormat;
+import com.google.i18n.phonenumbers.PhoneNumberUtil.PhoneNumberType;
+import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber;
 
 /**
  * Business layer concerning smsu member.
@@ -65,6 +73,8 @@ public class MemberManager {
 	private boolean storeFrenchPhoneNumber = true;
     
 	private final Logger logger = Logger.getLogger(getClass());
+	
+	private final PhoneNumberUtil phoneNumberUtil = PhoneNumberUtil.getInstance();
 
 	///////////////////////////////////////
 	//  private method
@@ -154,12 +164,17 @@ public class MemberManager {
 		daoService.saveOrUpdatePendingMember(member.getLogin(), code);
 	}
 
-	private boolean savePhoneNumber(final Member member) throws LdapUserNotFoundException, LdapWriteException {
+	private boolean savePhoneNumber(final Member member) throws LdapUserNotFoundException, LdapWriteException, NumberParseException {
 		String login = member.getLogin();
 		String wanted = member.getPhoneNumber();
-		if (!storeFrenchPhoneNumber) wanted = fromFrenchPhoneNumber(wanted);
+		if (StringUtils.isBlank(wanted)) {
+			wanted = null;
+		} else {
+			validatePhoneNumber(wanted);
+			wanted = storeFrenchPhoneNumber ? toFrenchPhoneNumber(wanted) : fromFrenchPhoneNumber(wanted);
+		}
 		String previous = ldapUtils.getUserPagerByUid(login);
-		boolean hasChanged = previous == null || !previous.equals(wanted);
+		boolean hasChanged = !Objects.equals(previous, wanted);
 
 		if (hasChanged) {
 			// save the new phone number
@@ -189,7 +204,13 @@ public class MemberManager {
 		member.firstName = ldapUtils.getUserFirstNameByUid(userIdentifier);
 		member.lastName = ldapUtils.getUserLastNameByUid(userIdentifier);
 		member.phoneNumber = ldapUtils.getUserPagerByUid(userIdentifier);
-		if (displayFrenchPhoneNumber) member.phoneNumber = toFrenchPhoneNumber(member.phoneNumber);
+		if (displayFrenchPhoneNumber) {
+			try {
+				member.phoneNumber = toFrenchPhoneNumber(member.phoneNumber);
+			} catch (NumberParseException e) {
+				logger.error(e);
+			}
+		}
 		member.validCP = ldapUtils.getSpecificConditionsValidateByUid(userIdentifier);
 		member.flagPending = activateValidation && daoService.isPendingMember(userIdentifier);
 		member.validCG = member.flagPending || ldapUtils.isGeneralConditionValidateByUid(userIdentifier);
@@ -197,28 +218,48 @@ public class MemberManager {
 		return member;
 	}
 
-	public String toFrenchPhoneNumber(String phoneNumber) {
+	/**
+	 * @return example : 0601020304 (or +34601020304 for non-French phone numbers)
+	 */
+	public String toFrenchPhoneNumber(String phoneNumber) throws NumberParseException {
 	    if (phoneNumber == null) return null;
-	    String s = phoneNumber.replaceAll(" ", "");
-	    s = s.replaceAll("^\\+33", "0");
-	    return s;
+	    PhoneNumber phoneNumberObj = parsePhoneNumber(phoneNumber);
+	    
+	    if(phoneNumberObj.getCountryCode() == 33) {
+	    	return "0" + phoneNumberObj.getNationalNumber();
+	    }
+	    
+	    return phoneNumberUtil.format(phoneNumberObj, PhoneNumberFormat.E164);
 	}
 
-	public String fromFrenchPhoneNumber(String phoneNumber) {
+	/**
+	 * 
+	 * @return example : +33 6 01 02 03 04
+	 */
+	public String fromFrenchPhoneNumber(String phoneNumber) throws NumberParseException {
 	    if (phoneNumber == null) return null;
-	    String s = phoneNumber.replaceAll(" ", "");
-	    if (s.matches("^0[1-9]\\d{8}")) {
-	        s = s .replaceAll("\\d\\d", " $0").replaceAll("^ 0", "+33 ");
-	    }
-	    return s;
+	    PhoneNumber phoneNumberObj = parsePhoneNumber(phoneNumber);
+	    return phoneNumberUtil.format(phoneNumberObj, PhoneNumberFormat.INTERNATIONAL);
 	}
 	
-	public void validatePhoneNumber(String phoneNumber) {
-		if (!this.phoneNumberPattern.trim().equals("")) {
-			if (!phoneNumber.matches(this.phoneNumberPattern)) {
-				throw new InvalidParameterException("ADHESION.ERROR.INVALIDPHONENUMBER");
+	/**
+	 * @throws InvalidParameterException if phoneNumber doesn't match phoneNumberPattern, or if phoneNumber isn't possible mobile number
+	 */
+	public void validatePhoneNumber(String phoneNumber) throws InvalidParameterException {
+		if (StringUtils.isEmpty(this.phoneNumberPattern) || phoneNumber.matches(this.phoneNumberPattern)) {
+			try {
+				PhoneNumber phoneNumberObj = parsePhoneNumber(phoneNumber);
+				if (phoneNumberUtil.isPossibleNumberForType(phoneNumberObj, PhoneNumberType.MOBILE)) {
+					return;
+				}
+			} catch (NumberParseException e) {
 			}
 		}
+		throw new InvalidParameterException("ADHESION.ERROR.INVALIDPHONENUMBER");
+	}
+
+	private PhoneNumber parsePhoneNumber(String phoneNumber) throws NumberParseException {
+		return phoneNumberUtil.parse(phoneNumber, "FR");
 	}
 
 	/**
@@ -228,8 +269,9 @@ public class MemberManager {
 	 * @throws LdapWriteException 
 	 * @throws InsufficientQuotaException 
 	 * @throws HttpException 
+	 * @throws NumberParseException 
 	 */
-	public boolean saveOrUpdateMember(final Member member) throws LdapUserNotFoundException, LdapWriteException, HttpException, InsufficientQuotaException {
+	public boolean saveOrUpdateMember(final Member member) throws LdapUserNotFoundException, LdapWriteException, HttpException, InsufficientQuotaException, NumberParseException {
 		logger.debug("Save a member ");
 		boolean numberPhoneChanged = savePhoneNumber(member);
 

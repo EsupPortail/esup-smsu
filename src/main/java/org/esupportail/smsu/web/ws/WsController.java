@@ -34,6 +34,8 @@ import org.springframework.beans.factory.annotation.Required;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.i18n.phonenumbers.NumberParseException;
+
 @RestController
 @RequestMapping(value = "/")
 public class WsController {
@@ -103,15 +105,14 @@ public class WsController {
 	 * -H "Content-Type: application/json" \
 	 * -d '{"login": "loginTestSmsu", "phoneNumber": "0612345678", "validCG": true, "validCP": ["cas"]}}' \
 	 * http://localhost:8080/ws/member
+	 * @throws NumberParseException 
 	 */
 	@RequestMapping(method = RequestMethod.POST, value = "/member")
-	public MembershipStatus saveMember(@RequestBody Member member, HttpServletRequest request) throws LdapUserNotFoundException, LdapWriteException, HttpException, InsufficientQuotaException {
+	public MembershipStatus saveMember(@RequestBody Member member, HttpServletRequest request) throws LdapUserNotFoundException, LdapWriteException, HttpException, InsufficientQuotaException, NumberParseException {
 		if(checkClient(request)) {
 			logger.debug("Save data of a member");		
 			if (StringUtils.isEmpty(member.getPhoneNumber())) {
 				if (member.getValidCG()) throw new InvalidParameterException("ADHESION.ERROR.PHONEREQUIRED");
-			} else { 
-				memberManager.validatePhoneNumber(member.getPhoneNumber());
 			}
 	
 			// save datas into LDAP

@@ -28,6 +28,7 @@
    <bean id="StartPage" class="org.esupportail.smsu.web.StartPage">
   	  <property name="wsgroupsURL" value="${wsgroups.url}" />
 	  <property name="jsonpDisabled" value="#{'${authentication}' == 'shibboleth'}" />
+	  <property name="phoneNumberPattern" value="${recipient.phoneNumberPattern}" />
 	</bean>
   
 </beans>

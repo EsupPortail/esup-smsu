@@ -19,8 +19,9 @@ public class StartPage implements org.springframework.web.HttpRequestHandler {
     private String wsgroupsURL;
     
     private boolean jsonpDisabled = false;
+    private String phoneNumberPattern;
 
-    public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	public void handleRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
 	ServletContextWrapper context = new ServletContextWrapper(request.getSession().getServletContext());
 	boolean isWebWidget = request.getServletPath().startsWith("/WebWidget");
 	boolean genTestStaticJsonPage = request.getServletPath().equals("/GenTestStaticJsonPage");
@@ -57,6 +58,7 @@ public class StartPage implements org.springframework.web.HttpRequestHandler {
     	env.put("isWebWidget", isWebWidget);
     	env.put("jsonpDisabled", jsonpDisabled);
     	env.put("useTestStaticJson", genTestStaticJsonPage);
+    	env.put("phoneNumberPattern", phoneNumberPattern);
     	env.put("globals", new ObjectMapper().writeValueAsString(env));
 		return env;
 	}
@@ -79,4 +81,7 @@ public class StartPage implements org.springframework.web.HttpRequestHandler {
 		this.jsonpDisabled = jsonpDisabled;
 	}
 
+	public void setPhoneNumberPattern(String phoneNumberPattern) {
+		this.phoneNumberPattern = phoneNumberPattern;
+	}
 }

@@ -3,8 +3,8 @@
 
 var app = angular.module('myApp');
 
-var phoneNumberPatternOne = /^0[67]\d{8}$/;
-var phoneNumberPatternAll = /(?:\b0|[+]33)[67]\d{8}\b/g;
+var phoneNumberPatternOne =  new RegExp(document.esupSmsu.phoneNumberPattern);
+var phoneNumberPatternAll = /(?:\b0|[+])\d{7,15}\b/g;
 
 app.filter('array_difference', function (h) {
     return function (arr1, arr2) { 
