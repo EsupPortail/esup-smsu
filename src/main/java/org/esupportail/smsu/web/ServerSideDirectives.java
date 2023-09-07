@@ -13,8 +13,8 @@ import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
-import org.apache.commons.lang.StringUtils;
-import org.codehaus.jackson.map.ObjectMapper;
+import org.apache.commons.lang3.StringUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.esupportail.smsu.utils.AggregateToFile;
 import org.esupportail.smsu.utils.CachedDigest;
 

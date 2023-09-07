@@ -551,7 +551,11 @@ public class HibernateDaoServiceImpl implements DaoService {
 		Session currentSession = getCurrentSession();
 		Criteria criteria = currentSession.createCriteria(Recipient.class);
 		criteria.add(Restrictions.eq(Recipient.PROP_PHONE, strPhone));
-		criteria.add(Restrictions.eq(Recipient.PROP_LOGIN, login));
+		if(login == null) {
+			criteria.add(Restrictions.isNull(Recipient.PROP_LOGIN));
+		} else {
+			criteria.add(Restrictions.eq(Recipient.PROP_LOGIN, login));
+		}
 		Recipient recipient = (Recipient) criteria.uniqueResult();
 		return recipient;
 	}

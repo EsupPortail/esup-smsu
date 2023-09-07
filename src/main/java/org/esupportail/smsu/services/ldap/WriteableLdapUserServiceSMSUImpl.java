@@ -9,7 +9,7 @@ import java.util.TreeSet;
 
 import net.sf.ehcache.CacheManager;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.esupportail.commons.services.ldap.LdapUser;
 import org.esupportail.commons.services.ldap.WriteableLdapUserServiceImpl;

@@ -1,6 +1,6 @@
 package org.esupportail.smsu.services.wsgroups;
 
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.esupportail.smsu.services.ldap.beans.UserGroup;
 
 @JsonIgnoreProperties(ignoreUnknown = true)

@@ -20,7 +20,7 @@ public class HibernateUtils {
 	boolean participate = TransactionSynchronizationManager.hasResource(sessionFactory);
 	if (!participate) {
 	    Session session = sessionFactory.openSession();
-	    session.setFlushMode(org.hibernate.FlushMode.ALWAYS);
+	    session.setHibernateFlushMode(org.hibernate.FlushMode.ALWAYS);
 	    TransactionSynchronizationManager.bindResource(sessionFactory, new SessionHolder(session));
 	}
 	return participate;

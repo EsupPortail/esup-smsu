@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.esupportail.smsu.domain.DomainService;
 import org.esupportail.smsu.domain.beans.User;
 import org.esupportail.smsu.services.UrlGenerator;
