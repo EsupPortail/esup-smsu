@@ -535,7 +535,12 @@ public class SendSmsManager  {
 				    continue;
 			    }
 			    // not found, will search in the parents
-			    next.addAll(groupAndParents.get(label));
+			    List<String> parents = groupAndParents.get(label);
+			    if (parents != null) {
+			        next.addAll(parents);
+			    } else {
+			        logger.warn("wsgroups getSuperGroups issue: invalid parent " + label);
+			    }
 			}
 			todo = next;
 		}
